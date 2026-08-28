@@ -1,0 +1,41 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Agentic Discipline Kit</title>
+  <desc id="desc">A secure delivery path from human intent to evidence-backed release.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1830"/>
+      <stop offset="0.55" stop-color="#132F4C"/>
+      <stop offset="1" stop-color="#1A5C70"/>
+    </linearGradient>
+    <linearGradient id="line" x1="640" y1="120" x2="1120" y2="310" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8FD8FF"/>
+      <stop offset="1" stop-color="#68F0C2"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="420" rx="28" fill="url(#bg)"/>
+  <circle cx="1060" cy="45" r="180" fill="#4FD1C5" opacity="0.09"/>
+  <circle cx="1160" cy="360" r="220" fill="#6EA8FE" opacity="0.08"/>
+  <path d="M640 92C755 92 760 182 850 182C940 182 930 304 1118 304" stroke="url(#line)" stroke-width="3" opacity="0.85"/>
+  <path d="M640 182C728 182 740 120 824 120C906 120 918 237 1000 237C1055 237 1082 304 1118 304" stroke="url(#line)" stroke-width="2" opacity="0.45"/>
+  <g filter="url(#glow)">
+    <circle cx="640" cy="92" r="7" fill="#8FD8FF"/>
+    <circle cx="640" cy="182" r="7" fill="#8FD8FF"/>
+    <circle cx="850" cy="182" r="7" fill="#68F0C2"/>
+    <circle cx="1000" cy="237" r="7" fill="#68F0C2"/>
+    <circle cx="1118" cy="304" r="9" fill="#F7C873"/>
+  </g>
+  <g fill="#DCEEFF" opacity="0.68">
+    <circle cx="720" cy="52" r="2"/><circle cx="785" cy="330" r="2"/><circle cx="940" cy="62" r="2"/><circle cx="1085" cy="145" r="2"/>
+  </g>
+  <text x="72" y="112" fill="#9FD8FF" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="3">AI-ASSISTED DELIVERY</text>
+  <text x="72" y="178" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="700">Agentic Discipline</text>
+  <text x="72" y="232" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="700">Kit</text>
+  <text x="72" y="284" fill="#DCE9F6" font-family="Arial, Helvetica, sans-serif" font-size="22">Move fast with AI agents.</text>
+  <text x="72" y="316" fill="#DCE9F6" font-family="Arial, Helvetica, sans-serif" font-size="22">Keep production standards.</text>
+  <rect x="72" y="350" width="202" height="3" rx="1.5" fill="#68F0C2"/>
+  <text x="72" y="382" fill="#9FB9D1" font-family="Arial, Helvetica, sans-serif" font-size="14" letter-spacing="1">CONTRACTS  /  TESTS  /  EVIDENCE</text>
+</svg>

@@ -1,15 +1,33 @@
-# Agentic Discipline Kit
+<div align="center">
 
-**Ship faster with AI agents - without outsourcing engineering judgment to the model.**
+<img src="docs/assets/agentic-discipline-hero.svg" alt="Agentic Discipline Kit - move fast with AI agents, keep production standards" width="100%">
+
+<h1>Agentic Discipline Kit</h1>
+
+<p><strong>Ship faster with AI agents - without outsourcing engineering judgment to the model.</strong></p>
 
 [![CI](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/ci.yml)
 [![Security](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/security.yml/badge.svg)](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/security.yml)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
+<p>
+  <a href="#60-second-quick-start">Start in 60 seconds</a> ·
+  <a href="docs/workflow.md">See the workflow</a> ·
+  <a href="docs/adoption.md">Plan adoption</a>
+</p>
+
+</div>
+
 Agentic Discipline Kit is a stack-agnostic operating system for AI-assisted software delivery. It gives coding agents a repeatable workflow for requirements, implementation, testing, security, review, and release evidence.
 
-The result is simple: **agents can move quickly, while the repository keeps its standards.**
+<table>
+  <tr>
+    <td width="33%"><strong>Protect intent</strong><br>Keep requirements, architecture, and policies traceable.</td>
+    <td width="33%"><strong>Prove behavior</strong><br>Turn acceptance, tests, and quality into measurable gates.</td>
+    <td width="33%"><strong>Ship evidence</strong><br>Make every release decision reproducible and reviewable.</td>
+  </tr>
+</table>
 
 ## The problem
 
