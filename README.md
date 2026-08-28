@@ -1,147 +1,169 @@
 # Agentic Discipline Kit
 
-**Evidence-backed engineering controls for AI coding agents.**
+**Ship faster with AI agents - without outsourcing engineering judgment to the model.**
 
-Agentic Discipline Kit is a stack-agnostic framework for building software with AI agents without
-turning correctness, architecture, security, or testing into matters of model opinion.
+[![CI](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/ci.yml)
+[![Security](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/security.yml/badge.svg)](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/security.yml)
+[![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2ea44f.svg)](LICENSE)
 
-The kit combines protected specifications, executable acceptance behavior, deterministic quality
-gates, change-risk classification, differential mutation testing, anti-gaming checks, independent
-review, traceability, and release evidence.
+Agentic Discipline Kit is a stack-agnostic operating system for AI-assisted software delivery. It gives coding agents a repeatable workflow for requirements, implementation, testing, security, review, and release evidence.
 
-> **Principle:** if a deterministic tool can measure it, the agent must use the tool instead of
-> claiming that the code "looks correct."
+The result is simple: **agents can move quickly, while the repository keeps its standards.**
 
-## Why this exists
+## The problem
 
-AI coding agents are fast, but speed creates a new engineering problem: an agent can produce a large
-amount of plausible code while silently dropping requirements, weakening tests, bypassing tooling,
-or changing architecture.
+AI agents are excellent at producing plausible code. Production teams need more than plausible code:
 
-Agentic Discipline Kit moves control to a higher level:
+- requirements must remain traceable;
+- acceptance behavior must be executable;
+- quality gates must measure real metrics;
+- security and architecture rules must survive fast changes;
+- a release must come with evidence, not confidence.
 
-```text
-Human intent
-   ↓
-Requirement graph
-   ↓
-Specification
-   ↓
-Acceptance contract
-   ↓
-Implementation
-   ↓
-Deterministic verification
-   ↓
-Independent review
-   ↓
-Evidence-backed release
+This kit turns those expectations into contracts, skills, deterministic CLI checks, and CI gates.
+
+## How it works
+
+```mermaid
+flowchart LR
+    A[Human intent] --> B[Requirements]
+    B --> C[Specification]
+    C --> D[Acceptance IR]
+    D --> E[Plan + risk]
+    E --> F[Implementation]
+    F --> G[Tests + quality gates]
+    G --> H[Security + integrity]
+    H --> I[Independent review]
+    I --> J[QA + evidence]
+    J --> K[Release]
 ```
 
-## Highlights
+Each stage has explicit inputs, outputs, stop conditions, and evidence requirements. If a deterministic tool can measure a claim, the agent must use the tool instead of saying that the code “looks correct.”
 
-- **20 focused skills** with explicit inputs, outputs, evidence, forbidden actions, and stop conditions.
-- **Protected contracts**: implementation agents cannot silently modify specs, acceptance contracts,
-  architecture rules, or policies.
-- **Requirement graph**: Requirement → Spec → Acceptance → Task → Test → Code → Evidence.
-- **Acceptance IR**: stack-neutral representation for executable acceptance adapters.
-- **Risk-aware verification**: LOW / STANDARD / HIGH / CRITICAL.
-- **CRAP analysis**: combines complexity and coverage.
-- **Property testing** for invariant-heavy logic.
-- **Differential mutation testing** for changed critical code.
-- **Integrity audit** to detect skipped tests, disabled coverage, ignored linting, and similar bypasses.
-- **Metric-aware quality engine** with real thresholds instead of exit-code-only claims.
-- **Independent reviewer protocol** designed to reduce anchoring on the implementation agent.
-- **Evidence ledger** with SHA-256 hashes.
-- **Agent retrospective memory** for recurring workflow failures.
+## Why teams use it
 
-## Installation
+| Without discipline | With Agentic Discipline Kit |
+|---|---|
+| “The agent says it is done.” | A release has reproducible evidence. |
+| Requirements drift during implementation. | Requirements link to specs, acceptance, tasks, tests, code, and evidence. |
+| Tests pass after being weakened. | Integrity checks detect disabled or bypassed gates. |
+| Every change gets the same review depth. | Risk classification selects LOW, STANDARD, HIGH, or CRITICAL verification. |
+| Security is a late checklist. | Security and architecture are part of the delivery path. |
 
-Requires Python 3.11+ for the included deterministic tooling.
+## 60-second quick start
+
+Requires Python 3.11+.
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/lreyesm1999/agentic-discipline-kit.git
 cd agentic-discipline-kit
 python -m pip install -e ".[dev]"
-```
-
-Validate the repository:
-
-```bash
-make check
-```
-
-or:
-
-```bash
 agentic-discipline doctor
 ```
 
-## Use it in another project
+Run the kit's own production checks:
 
-Bootstrap a target project from either a clone or an installed wheel:
+```bash
+agentic-discipline quality --config config/self-quality.json
+agentic-discipline evidence-verify \
+  --ledger artifacts/evidence-ledger.jsonl \
+  --check-artifacts
+```
+
+Use it in another repository:
 
 ```bash
 agentic-discipline bootstrap \
   --target ../my-project \
-  --stack typescript
+  --stack python
 ```
 
-Supported bootstrap profiles are `typescript`, `python`, and `dotnet`.
+Then start your coding agent with the generated `MASTER_PROMPT.md` and follow the lifecycle below.
 
-The bootstrap copies the agent contracts and templates into the target repository and creates
-`agentic.config.json` without overwriting existing files by default.
+## The 20 skills
 
-Install the deterministic CLI from this repository when you want to run the included tooling:
-
-```bash
-python -m pip install -e /path/to/agentic-discipline-kit
-```
-
-Then start the coding agent with the target project's `MASTER_PROMPT.md`.
-
-## Default lifecycle
+Skills are focused playbooks for the agent. A skill says **when it can run, what it consumes, what it must produce, what it must never do, and what evidence is required**.
 
 ```text
-/spec <request>
-/plan <feature-id>
-/risk <feature-id>
-/build <feature-id>
-/test <feature-id>
-/harden <feature-id>
-/review <feature-id>
-/verify <feature-id>
-/release <feature-id>
-/retro <feature-id>
+01 Requirements intake       11 CRAP analysis
+02 Specification              12 Quality gates
+03 Acceptance design          13 Differential mutation
+04 Acceptance compiler        14 Architecture
+05 Task planning              15 Security
+06 Risk classification        16 Integrity audit
+07 Implementation             17 Independent review
+08 Unit testing               18 QA
+09 Property testing           19 Release evidence
+10 Refactoring                20 Agent retrospective
 ```
 
-See [docs/workflow.md](docs/workflow.md) for the full lifecycle.
+The default lifecycle is:
 
-## CLI
+```text
+/spec -> /plan -> /risk -> /build -> /test -> /harden
+     -> /review -> /verify -> /release -> /retro
+```
+
+The skills solve a common failure mode of AI coding: a fast implementation that quietly drops a requirement, weakens a test, bypasses a gate, or ships without a traceable explanation.
+
+## What you get out of the box
+
+- **Protected contracts** for specs, acceptance, architecture, and policies.
+- **Requirement graph**: Requirement -> Spec -> Acceptance -> Task -> Test -> Code -> Evidence.
+- **Acceptance IR**: a stack-neutral representation for executable acceptance adapters.
+- **Risk-aware verification** with LOW / STANDARD / HIGH / CRITICAL profiles.
+- **Metric-aware quality engine** for tests, coverage, lint, format, types, SAST, and repository checks.
+- **Property testing** for invariants and edge cases.
+- **CRAP analysis** to find complexity hidden behind coverage numbers.
+- **Differential mutation testing** for changed critical code.
+- **Integrity audit** to detect skipped tests and disabled quality controls.
+- **Independent reviewer protocol** to reduce implementation-agent anchoring.
+- **Evidence ledger** with SHA-256 hashes and chain verification.
+- **Bootstrap and packaging** for Python, TypeScript, and .NET projects.
+
+## A concrete example
+
+Request:
+
+> Add user login.
+
+The kit does not jump straight to code. It turns the request into a controlled change:
+
+```text
+Request
+  -> acceptance: valid users enter, invalid users fail
+  -> risk: authentication is high risk
+  -> implementation: smallest coherent slice
+  -> tests: unit + properties + acceptance
+  -> hardening: security + architecture + integrity
+  -> release: QA result + evidence ledger
+```
+
+The deliverable is not just a login that works on one happy path. It is a login whose behavior, risk, verification, and release decision can be explained and reproduced.
+
+## CLI highlights
 
 ```bash
-agentic-discipline doctor
+# Inspect the repository and available tools
+agentic-discipline doctor --check-tools
 
-agentic-discipline crap \
-  --complexity 7 \
-  --coverage 92 \
-  --max 8
-
+# Compile executable acceptance behavior
 agentic-discipline compile-acceptance \
   --input acceptance/checkout.feature \
   --output artifacts/acceptance/checkout.ir.json
 
+# Check requirement completeness and paths
 agentic-discipline graph-check \
   --graph artifacts/requirements/checkout.graph.json \
-  --complete
+  --complete --check-paths
 
+# Classify change risk and audit protected paths
 agentic-discipline risk --base-ref origin/main
-agentic-discipline integrity --base-ref origin/main
 agentic-discipline protected --base-ref origin/main
+agentic-discipline integrity --base-ref origin/main
 
-agentic-discipline quality \
-  --config agentic.config.json
-
+# Record and verify release evidence
 agentic-discipline evidence \
   --artifact artifacts/quality-report.json \
   --tool pytest \
@@ -153,65 +175,72 @@ agentic-discipline evidence-verify \
   --check-artifacts
 ```
 
-## Recommended starting thresholds
+## Supported stacks
 
-| Signal | Suggested default |
+The orchestration model is stack-agnostic. Included bootstrap profiles are:
+
+- Python
+- TypeScript / JavaScript
+- .NET
+
+The same contracts can be adapted to Go, Java, Rust, JVM, mobile, and other ecosystems.
+
+## Quality targets
+
+These are starting points, not invented guarantees. Tune them to your risk profile and ratchet legacy systems forward.
+
+| Signal | Suggested target |
 |---|---:|
-| Line coverage | ≥ 90% |
-| Branch coverage | ≥ 85% |
-| CRAP for changed functions | ≤ 8 |
-| Mutation score | ≥ 80% |
+| Line coverage | >= 90% |
+| Branch coverage | >= 85% |
+| CRAP for changed functions | <= 8 |
+| Mutation score | >= 80% |
 | Critical mutation survivors | 0 |
 | Architecture violations | 0 |
-| Critical security findings | 0 |
-| High security findings | 0 |
+| Critical or high security findings | 0 |
 
-For legacy systems, use **ratcheting**: record the current baseline, prevent regression, require
-stronger quality on changed code, and improve gradually.
-
-## Repository structure
+## Repository map
 
 ```text
 .
-├── .github/                 GitHub automation and contribution templates
+├── .github/                 CI, security, release, and contribution automation
 ├── adapters/                Acceptance adapters by stack
-├── config/                  Example quality/risk configurations
-├── docs/                    Architecture, workflow, security, adoption
+├── config/                  Quality and risk configurations
+├── docs/                    Workflow, architecture, security, and adoption guides
 ├── policies/                Engineering policies enforced by agents
 ├── schemas/                 Requirement graph and Acceptance IR schemas
-├── scripts/                 Portable command wrappers/helpers
-├── skills/                  20 agent skills
+├── skills/                  20 agent playbooks
 ├── src/agentic_discipline/  Deterministic Python tooling
-├── templates/               Specs, acceptance and release templates
-├── tests/                   Tests for the framework itself
+├── templates/               Specs, acceptance, and release templates
+├── tests/                   Framework tests
 ├── AGENTS.md                Orchestrator contract
-└── MASTER_PROMPT.md         Bootstrap prompt
+└── MASTER_PROMPT.md         Bootstrap prompt for coding agents
 ```
 
-## Supported stacks
+## When to adopt it
 
-The orchestration model is stack-agnostic. Example deterministic tooling is provided for:
+This kit is a strong fit when:
 
-- TypeScript / JavaScript
-- Python
-- .NET
+- multiple agents or developers touch the same repository;
+- the project has meaningful security, compliance, or architecture constraints;
+- you need reproducible release decisions;
+- your team wants AI speed without lowering its engineering bar.
 
-The same model can be adapted to Java, Go, Rust, JVM, mobile, and other ecosystems.
+For a tiny throwaway script, the full lifecycle may be unnecessary. For a product that matters, the cost of one missed requirement is usually higher than the cost of discipline.
 
-## Security
+## Documentation
 
-Do not report vulnerabilities in public Issues. Follow [SECURITY.md](SECURITY.md).
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Pull requests must include evidence for behavior and quality
-claims.
+- [Workflow](docs/workflow.md)
+- [Architecture](docs/architecture.md)
+- [Security model](docs/security-model.md)
+- [Adoption guide](docs/adoption.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
 
 ## Project status
 
-**v2.1.0 — Production/Stable.** The deterministic core fails closed, validates its contracts,
-ships the bootstrap assets in the wheel, and is verified on supported Python versions and operating
-systems. Native stack adapters and structured metric parsers will continue to grow.
+**v2.1.0 - Production/Stable.** The deterministic core validates contracts, fails closed on invalid quality configuration, ships bootstrap assets in the wheel, and is covered by CI quality and security workflows.
 
 ## License
 
