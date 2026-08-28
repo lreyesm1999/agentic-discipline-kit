@@ -1,0 +1,12 @@
+{
+  "auth": 25,
+  "money": 30,
+  "migration": 22,
+  "public_api": 18,
+  "concurrency": 18,
+  "security": 22,
+  "architecture": 14,
+  "infra": 12,
+  "destructive": 25,
+  "crypto": 25
+}

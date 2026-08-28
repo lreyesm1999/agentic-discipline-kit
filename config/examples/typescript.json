@@ -1,0 +1,61 @@
+{
+  "project": "typescript-example",
+  "artifacts_dir": "artifacts",
+  "gates": [
+    {
+      "name": "unit-tests",
+      "command": "npm test -- --runInBand",
+      "required": true
+    },
+    {
+      "name": "typecheck",
+      "command": "npx tsc --noEmit",
+      "required": true
+    },
+    {
+      "name": "lint",
+      "command": "npm run lint",
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "required": true
+    },
+    {
+      "name": "coverage",
+      "command": "npm run test:coverage",
+      "required": true,
+      "parser": {
+        "type": "regex",
+        "metrics": {
+          "line_coverage": "Lines\\s*:\\s*([0-9.]+)%",
+          "branch_coverage": "Branches\\s*:\\s*([0-9.]+)%"
+        }
+      },
+      "thresholds": {
+        "line_coverage": {
+          "min": 90
+        },
+        "branch_coverage": {
+          "min": 85
+        }
+      }
+    },
+    {
+      "name": "architecture",
+      "command": "npx depcruise src --config .dependency-cruiser.cjs",
+      "required": true
+    },
+    {
+      "name": "security-dependencies",
+      "command": "npm audit --audit-level=high",
+      "required": true
+    },
+    {
+      "name": "mutation",
+      "command": "npx stryker run",
+      "required": false
+    }
+  ]
+}

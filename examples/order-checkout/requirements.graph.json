@@ -1,0 +1,35 @@
+{
+  "feature_id": "FEAT-001",
+  "nodes": [
+    {
+      "id": "FR-001",
+      "type": "requirement",
+      "path": "specs/FEAT-001.md",
+      "meta": {}
+    },
+    {
+      "id": "FR-002",
+      "type": "requirement",
+      "path": "specs/FEAT-001.md",
+      "meta": {}
+    },
+    {
+      "id": "AC-001",
+      "type": "acceptance",
+      "path": "acceptance/checkout.feature",
+      "meta": {}
+    }
+  ],
+  "edges": [
+    {
+      "from": "FR-001",
+      "to": "AC-001",
+      "relation": "verified_by"
+    },
+    {
+      "from": "FR-002",
+      "to": "AC-001",
+      "relation": "verified_by"
+    }
+  ]
+}

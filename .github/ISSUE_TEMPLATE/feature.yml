@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose a focused improvement
+title: "[Feature]: "
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What engineering problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Deterministic evidence / tooling
+      description: What should be measured by tools rather than judged by the agent?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

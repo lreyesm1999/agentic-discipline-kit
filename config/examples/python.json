@@ -1,0 +1,57 @@
+{
+  "project": "python-example",
+  "artifacts_dir": "artifacts",
+  "gates": [
+    {
+      "name": "tests",
+      "command": "pytest -q",
+      "required": true
+    },
+    {
+      "name": "coverage-run",
+      "command": ["coverage", "run", "-m", "pytest"],
+      "required": true
+    },
+    {
+      "name": "coverage-report",
+      "command": ["coverage", "report"],
+      "required": true,
+      "parser": {
+        "type": "regex",
+        "metrics": {
+          "line_coverage": "TOTAL\\s+\\d+\\s+\\d+\\s+([0-9.]+)%"
+        }
+      },
+      "thresholds": {
+        "line_coverage": {
+          "min": 90
+        }
+      }
+    },
+    {
+      "name": "lint",
+      "command": "ruff check .",
+      "required": true
+    },
+    {
+      "name": "security-sast",
+      "command": "bandit -r . -q",
+      "required": true
+    },
+    {
+      "name": "security-dependencies",
+      "command": "pip-audit",
+      "required": true
+    },
+    {
+      "name": "architecture",
+      "command": "lint-imports",
+      "required": false
+    },
+    {
+      "name": "mutation",
+      "command": "mutmut run",
+      "required": false
+    }
+  ]
+}

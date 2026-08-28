@@ -1,0 +1,31 @@
+{
+  "project": "dotnet-example",
+  "artifacts_dir": "artifacts",
+  "gates": [
+    {
+      "name": "build",
+      "command": "dotnet build --no-restore",
+      "required": true
+    },
+    {
+      "name": "tests",
+      "command": "dotnet test --no-build",
+      "required": true
+    },
+    {
+      "name": "format",
+      "command": "dotnet format --verify-no-changes",
+      "required": true
+    },
+    {
+      "name": "security-dependencies",
+      "command": "dotnet list package --vulnerable --include-transitive",
+      "required": true
+    },
+    {
+      "name": "mutation",
+      "command": "dotnet stryker",
+      "required": false
+    }
+  ]
+}

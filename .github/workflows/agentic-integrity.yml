@@ -1,0 +1,26 @@
+name: Agentic Integrity
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  guardrails:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e .
+      - name: Risk classification
+        run: agentic-discipline risk --base-ref origin/${{ github.base_ref }}
+      - name: Integrity audit
+        run: agentic-discipline integrity --base-ref origin/${{ github.base_ref }}
+      - name: Protected contracts
+        run: agentic-discipline protected --base-ref origin/${{ github.base_ref }}

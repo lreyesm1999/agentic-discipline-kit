@@ -1,0 +1,84 @@
+{
+  "project": "agentic-discipline-kit",
+  "artifacts_dir": "artifacts",
+  "gates": [
+    {
+      "name": "tests",
+      "command": ["pytest", "-q"],
+      "required": true,
+      "timeout_seconds": 300
+    },
+    {
+      "name": "coverage-run",
+      "command": ["coverage", "run", "--branch", "-m", "pytest", "-q"],
+      "required": true,
+      "timeout_seconds": 300
+    },
+    {
+      "name": "coverage-json",
+      "command": ["coverage", "json", "-o", "coverage.json"],
+      "required": true
+    },
+    {
+      "name": "coverage-thresholds",
+      "command": [
+        "python",
+        "scripts/coverage_gate.py",
+        "--report",
+        "coverage.json",
+        "--min-line",
+        "90",
+        "--min-branch",
+        "85"
+      ],
+      "required": true,
+      "parser": {
+        "type": "json",
+        "metrics": {
+          "line_coverage": "line_coverage",
+          "branch_coverage": "branch_coverage"
+        }
+      },
+      "thresholds": {
+        "line_coverage": {"min": 90},
+        "branch_coverage": {"min": 85}
+      }
+    },
+    {
+      "name": "lint",
+      "command": ["ruff", "check", "."],
+      "required": true
+    },
+    {
+      "name": "format",
+      "command": ["ruff", "format", "--check", "."],
+      "required": true
+    },
+    {
+      "name": "types",
+      "command": ["mypy", "src"],
+      "required": true
+    },
+    {
+      "name": "security-sast",
+      "command": ["bandit", "-r", "src", "scripts", "-q", "-lll"],
+      "required": true
+    },
+    {
+      "name": "repository-integrity",
+      "command": ["python", "scripts/repo_check.py"],
+      "required": true
+    },
+    {
+      "name": "doctor",
+      "command": ["python", "-m", "agentic_discipline", "doctor"],
+      "required": true
+    },
+    {
+      "name": "package",
+      "command": ["python", "-m", "build"],
+      "required": true,
+      "timeout_seconds": 300
+    }
+  ]
+}

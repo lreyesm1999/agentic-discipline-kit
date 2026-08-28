@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Discipline Requirement Graph",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "feature_id",
+    "nodes",
+    "edges"
+  ],
+  "properties": {
+    "feature_id": {
+      "type": "string"
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "requirement",
+              "spec",
+              "acceptance",
+              "task",
+              "test",
+              "code",
+              "evidence"
+            ]
+          },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "meta": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "relation"
+        ],
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "relation": {
+            "enum": [
+              "specified_by",
+              "verified_by",
+              "implemented_by",
+              "planned_by",
+              "evidenced_by",
+              "depends_on"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
