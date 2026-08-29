@@ -9,15 +9,22 @@ from pathlib import Path
 
 from . import __version__
 from .acceptance import compile_feature
+from .adapters import sync_adapters
 from .bootstrap import bootstrap_project, initialize_project
 from .common import AgenticError, changed_files, run_git
 from .crap import crap_score
 from .evidence import append_evidence, verify_ledger
-from .integrity import audit_diff
+from .evolution import hygiene
+from .integrity import IntegrityFinding, audit_diff
+from .migration import migrate_to_v3
 from .quality import run_quality
 from .requirements import orphan_requirements, validate_requirement_graph
 from .risk import assess_risk, assess_risk_with_weights, level_at_least, load_risk_weights
 from .validation import load_json, load_quality_config
+from .verifier.executor import execute_verifier
+from .verifier.protection import check_protected_verifiers, protect_verifier
+from .verifier.registry import list_verifiers, load_verifier, register_verifier
+from .verifier.schema import load_and_validate_verifier, validate_verifier
 
 
 def _json(data: object) -> None:
@@ -163,6 +170,7 @@ def command_integrity(args: argparse.Namespace) -> int:
         print(str(exc), file=sys.stderr)
         return 2
     findings = audit_diff(diff)
+    findings.extend(IntegrityFinding(None, "protected_verifier", finding) for finding in check_protected_verifiers(Path.cwd()))
     _json({"status": "FAIL" if findings else "PASS", "findings": findings})
     return 1 if findings else 0
 
@@ -237,6 +245,72 @@ def command_init(args: argparse.Namespace) -> int:
     )
     _json(result)
     return 0
+
+
+def command_verify(args: argparse.Namespace) -> int:
+    root = Path(args.project_root).resolve()
+    ids = [args.verifier_id] if args.verifier_id else [entry["id"] for entry in list_verifiers(root)]
+    if not ids:
+        _json({"status": "NOT_APPLICABLE", "results": []})
+        return 0
+    results = [execute_verifier(root, verifier_id) for verifier_id in ids]
+    statuses = {result["status"] for result in results}
+    status = "PASS" if statuses == {"PASS"} else ("BLOCKED" if "BLOCKED" in statuses else "FAIL")
+    _json({"status": status, "results": results})
+    return 0 if status == "PASS" else 1
+
+
+def command_verifier_list(args: argparse.Namespace) -> int:
+    _json({"status": "PASS", "verifiers": list_verifiers(Path(args.project_root))})
+    return 0
+
+
+def command_verifier_inspect(args: argparse.Namespace) -> int:
+    metadata, directory = load_verifier(Path(args.project_root), args.verifier_id)
+    _json({"status": "PASS", "directory": str(directory), "verifier": metadata})
+    return 0
+
+
+def command_verifier_validate(args: argparse.Namespace) -> int:
+    if args.path:
+        metadata = load_and_validate_verifier(Path(args.path))
+    else:
+        metadata, _directory = load_verifier(Path(args.project_root), args.verifier_id)
+    errors = validate_verifier(metadata)
+    _json({"status": "PASS" if not errors else "FAIL", "errors": errors, "verifier": metadata})
+    return 0 if not errors else 1
+
+
+def command_verifier_register(args: argparse.Namespace) -> int:
+    entry = register_verifier(Path(args.path), Path(args.project_root))
+    _json({"status": "PASS", "registered": entry})
+    return 0
+
+
+def command_verifier_protect(args: argparse.Namespace) -> int:
+    entry = protect_verifier(Path(args.project_root), args.verifier_id)
+    _json({"status": "PASS", "protected": entry})
+    return 0
+
+
+def command_adapters_sync(args: argparse.Namespace) -> int:
+    result = sync_adapters(Path(args.project_root), args.adapter or None)
+    _json(result)
+    return 0
+
+
+def command_migrate(args: argparse.Namespace) -> int:
+    if args.to != "3.0":
+        raise AgenticError("only migration target 3.0 is supported")
+    result = migrate_to_v3(Path(args.project_root), force=args.force)
+    _json(result)
+    return 0
+
+
+def command_hygiene(args: argparse.Namespace) -> int:
+    result = hygiene(Path(args.project_root), args.base_ref)
+    _json(result)
+    return 0 if result["status"] == "PASS" else 1
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -317,6 +391,47 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-depth", type=int, default=4)
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=command_init)
+
+    p = sub.add_parser("verify", help="Execute registered deterministic verifiers")
+    p.add_argument("verifier_id", nargs="?")
+    p.add_argument("--project-root", default=".")
+    p.set_defaults(func=command_verify)
+
+    p = sub.add_parser("verifier", help="Manage verifier contracts and registry")
+    verifier_sub = p.add_subparsers(dest="verifier_command", required=True)
+    for name, function, help_text in (
+        ("list", command_verifier_list, "List registered verifiers"),
+        ("inspect", command_verifier_inspect, "Inspect a verifier contract"),
+        ("validate", command_verifier_validate, "Validate verifier metadata"),
+        ("register", command_verifier_register, "Register a verifier package"),
+        ("protect", command_verifier_protect, "Protect a validated verifier"),
+    ):
+        child = verifier_sub.add_parser(name, help=help_text)
+        child.set_defaults(func=function)
+        child.add_argument("--project-root", default=".")
+    verifier_sub.choices["inspect"].add_argument("verifier_id")
+    verifier_sub.choices["validate"].add_argument("verifier_id", nargs="?")
+    verifier_sub.choices["validate"].add_argument("--path")
+    verifier_sub.choices["register"].add_argument("path")
+    verifier_sub.choices["protect"].add_argument("verifier_id")
+
+    p = sub.add_parser("adapters", help="Generate portable vendor adapters")
+    adapters_sub = p.add_subparsers(dest="adapters_command", required=True)
+    child = adapters_sub.add_parser("sync", help="Synchronize adapters idempotently")
+    child.add_argument("--project-root", default=".")
+    child.add_argument("--adapter", action="append", default=[])
+    child.set_defaults(func=command_adapters_sync)
+
+    p = sub.add_parser("migrate", help="Migrate a v2 installation to the v3 payload")
+    p.add_argument("--to", default="3.0")
+    p.add_argument("--project-root", default=".")
+    p.add_argument("--force", action="store_true")
+    p.set_defaults(func=command_migrate)
+
+    p = sub.add_parser("hygiene", help="Check evolution lifecycle and repository hygiene")
+    p.add_argument("--project-root", default=".")
+    p.add_argument("--base-ref")
+    p.set_defaults(func=command_hygiene)
 
     p = sub.add_parser("bootstrap", help="Legacy alias for init")
     p.add_argument("--target", required=True)

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Discipline Evidence Record",
+  "type": "object",
+  "required": ["sequence", "timestamp_utc", "tool", "command", "exit_code", "status", "artifact", "artifact_sha256", "previous_record_sha256", "record_sha256"],
+  "additionalProperties": false,
+  "properties": {
+    "sequence": {"type": "integer", "minimum": 1},
+    "timestamp_utc": {"type": "string", "minLength": 1},
+    "tool": {"type": "string", "minLength": 1},
+    "command": {"type": "string", "minLength": 1},
+    "exit_code": {"type": "integer"},
+    "status": {"type": "string", "enum": ["PASS", "FAIL", "UNKNOWN", "BLOCKED", "NOT_APPLICABLE"]},
+    "artifact": {"type": "string", "minLength": 1},
+    "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "previous_record_sha256": {"type": ["string", "null"]},
+    "record_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

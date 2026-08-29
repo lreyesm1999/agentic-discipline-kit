@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Discipline Verification Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "verification_id", "status", "started_at", "finished_at", "command", "exit_code", "observations", "artifacts", "toolchain", "environment", "hashes"],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "verification_id": {"type": "string", "pattern": "^VER-[A-Z0-9][A-Z0-9._-]*$"},
+    "status": {"type": "string", "enum": ["PASS", "FAIL", "UNKNOWN", "BLOCKED", "NOT_APPLICABLE"]},
+    "started_at": {"type": "string", "minLength": 1},
+    "finished_at": {"type": "string", "minLength": 1},
+    "command": {"type": "string", "minLength": 1},
+    "exit_code": {"type": ["integer", "null"]},
+    "duration_seconds": {"type": "number", "minimum": 0},
+    "observations": {"type": "object"},
+    "artifacts": {"type": "array", "items": {"type": "object", "required": ["path", "sha256"], "additionalProperties": false, "properties": {"path": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}},
+    "toolchain": {"type": "object"},
+    "environment": {"type": "object"},
+    "hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{64}$"}},
+    "error": {"type": "string"}
+  }
+}

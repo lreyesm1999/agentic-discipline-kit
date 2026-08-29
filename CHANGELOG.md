@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 The format is inspired by Keep a Changelog and versions follow Semantic Versioning.
 
+## [3.0.0] - 2026-08-29
+
+### Added
+
+- Verification-native runtime with verifier contracts, registry, deterministic execution, normalized results, sensitivity states, and protected metadata hashes.
+- Canonical v3 disciplines and `.agentic` project payload installed by `agentic-discipline init`.
+- Idempotent vendor adapter synchronization, v2-to-v3 migration reports, and evolution hygiene checks.
+- Verifier, adapter, migration, and hygiene CLI commands.
+
 ## [Unreleased]
 
 ### Added

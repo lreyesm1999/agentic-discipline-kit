@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
-  "version": "2.1.0",
-  "generated_at_utc": "2026-08-29T14:27:07.415612+00:00",
+  "version": "3.0.0",
+  "generated_at_utc": "2026-08-29T16:18:35.706157+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -114,6 +114,11 @@
       "bytes": 329
     },
     {
+      "path": "agentic/constitution/CORE.md",
+      "sha256": "c501372f88a21f2c4a919bd208222a9ecdc2f1c8753522050bbe2ad56b2b88d1",
+      "bytes": 754
+    },
+    {
       "path": "agentic.config.example.json",
       "sha256": "3b5cd748d293c3b1f997adad402c96b3440a1c8eaef4db4f66a99128558be33f",
       "bytes": 1288
@@ -135,8 +140,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "19c32f35ca54942f62d3c857a4f2830d43963d841f8b77a1dd4ae5261a029459",
-      "bytes": 1903
+      "sha256": "a86ab4e7e511beaa7ba7b9a68548da00442f218e096a2b22a069a740e65cd06d",
+      "bytes": 2360
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -199,6 +204,61 @@
       "bytes": 1227
     },
     {
+      "path": "disciplines/01-source/SKILL.md",
+      "sha256": "619b68e755eb9aeb97d94c4e5d9880a5b1cfb66ea0c06e4a7314451499a214b7",
+      "bytes": 329
+    },
+    {
+      "path": "disciplines/02-specification/SKILL.md",
+      "sha256": "9173025aaf8a0194f9b4334c40e38d2117766056050971f8075bceffb8bef4c5",
+      "bytes": 197
+    },
+    {
+      "path": "disciplines/03-acceptance/SKILL.md",
+      "sha256": "1a5a2e8dd35e4020e502f1edb45260fcca793dca4733ceda4a20c40fcb88dcfa",
+      "bytes": 172
+    },
+    {
+      "path": "disciplines/04-verification-engineering/SKILL.md",
+      "sha256": "a2be605ece7b136be3a84cf230f0a0f95a0bfca2750d6b7f45f66822326a7697",
+      "bytes": 426
+    },
+    {
+      "path": "disciplines/05-coding/SKILL.md",
+      "sha256": "b98eaaaa11a4829aa9de4397da36aae4dbd920d08481d756a038a60e39fac4f1",
+      "bytes": 166
+    },
+    {
+      "path": "disciplines/06-cleaning/SKILL.md",
+      "sha256": "d58f619f619aafc2145db79ce44f153d5626d04699434c732497a340c9a7bfc1",
+      "bytes": 160
+    },
+    {
+      "path": "disciplines/07-architecture/SKILL.md",
+      "sha256": "734ec562d3b1e1a5c5cc921ea7b4ecce1d83d9808c6d609aa771fbd4c40b5b9e",
+      "bytes": 184
+    },
+    {
+      "path": "disciplines/08-hardening/SKILL.md",
+      "sha256": "f9599e998a2b66f03b4e3db7763f10972bbe416430a8b634dfa9d103856e14a2",
+      "bytes": 170
+    },
+    {
+      "path": "disciplines/09-qa/SKILL.md",
+      "sha256": "e19666b093e4760fbc0307391f81d9ad5ccc5c3f37b9904158e545fe06c4487d",
+      "bytes": 162
+    },
+    {
+      "path": "disciplines/10-evidence/SKILL.md",
+      "sha256": "bbc7f983a9de1daed2c62c3080ad581e85a71b298e804a69fc0df38ce55c4a80",
+      "bytes": 159
+    },
+    {
+      "path": "disciplines/11-evolution/SKILL.md",
+      "sha256": "154b9c899050547d34b91557479a63c74e7cf07f308ea68fb31b44900b8fd1dc",
+      "bytes": 254
+    },
+    {
       "path": "Dockerfile",
       "sha256": "b375a100aa0fb97ec987da6f335877336bc3121e5fb92ab3132f943fccac7ad9",
       "bytes": 354
@@ -220,13 +280,23 @@
     },
     {
       "path": "docs/cli.md",
-      "sha256": "f66eed1ada829675ad53cd4a8161b1f10ace2f26eea1a3a56b9648e4e506a3c0",
-      "bytes": 3128
+      "sha256": "2a78cd814527dbcb695b52020747d7a0730eb99c122950b72c3cbb5c8b2a135b",
+      "bytes": 4619
+    },
+    {
+      "path": "docs/compatibility.md",
+      "sha256": "f4b1f113753ae9b3a1fa0a8901be7e1933de616a950d21ae4f55ac572c5d10ed",
+      "bytes": 738
     },
     {
       "path": "docs/migration-v1-to-v2.md",
       "sha256": "4f7587119ac85060eb9a854052bdfcb939377d74741fd92c9763a50ddbeaf418",
       "bytes": 1062
+    },
+    {
+      "path": "docs/migration-v2-to-v3.md",
+      "sha256": "ca565c587183d99c27ab5bb1b2cfc547369dfb330f2739ef70727a8c189aa97c",
+      "bytes": 562
     },
     {
       "path": "docs/profiles.md",
@@ -242,6 +312,21 @@
       "path": "docs/security-model.md",
       "sha256": "0048c764060b6ebf7c7a2d161f045228fede7ea76cc8a5133d57452dd4911849",
       "bytes": 1128
+    },
+    {
+      "path": "docs/threat-model.md",
+      "sha256": "8d60fd189a12f55ae11b0b0866f4ce21cf085da48b22a4a21ffe56673782d397",
+      "bytes": 674
+    },
+    {
+      "path": "docs/verification-engineering.md",
+      "sha256": "e8f05d5661ddf9d4f8c6f9af7606686dc5e107fc492d77d34206f66a978dd32d",
+      "bytes": 1009
+    },
+    {
+      "path": "docs/verifier-authoring.md",
+      "sha256": "ce4292ff72a43a2c585a261a83045b8ae4577c53e520360dcdda7834908f5233",
+      "bytes": 794
     },
     {
       "path": "docs/workflow.md",
@@ -335,13 +420,13 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "d2ebc6f42b6f5af062f08daafc88baa25e0a41c6e8793e6381ca6fd8c6295d57",
-      "bytes": 4569
+      "sha256": "2eb0018df2f2a07e2bbea9667c048d7f5110451759149d185db7a5300d506f8f",
+      "bytes": 5680
     },
     {
       "path": "README.md",
-      "sha256": "7db12307605b8cccb20aa0be5ec38b93dfd702cc4cf4826a9a0fa7380d3cd1ae",
-      "bytes": 10897
+      "sha256": "09ab1efe935b85e2f848d42a9828eefe3a9088d2d85857729b7bce2af69c3579",
+      "bytes": 12182
     },
     {
       "path": "ROADMAP.md",
@@ -359,9 +444,39 @@
       "bytes": 1948
     },
     {
+      "path": "schemas/evidence.schema.json",
+      "sha256": "d93a26496ebe8c6e951142d816dac618740f7b5b6a49950cc7d941cbb37d8bba",
+      "bytes": 948
+    },
+    {
+      "path": "schemas/evolution.schema.json",
+      "sha256": "659255cfe54b6e99adbccf7de715e4e4aebd24d237f1bde0d9f646666bfac039",
+      "bytes": 836
+    },
+    {
       "path": "schemas/requirement-graph.schema.json",
       "sha256": "3e78f14d0e005816610c8036ed3fde79c7c4a1abc4c9fe197c6f50c87f3f5cf4",
       "bytes": 1640
+    },
+    {
+      "path": "schemas/verification-plan.schema.json",
+      "sha256": "8f6a756f54ef99972e3231bdbb1de62377c2175c5654e1202db16be79e075eb4",
+      "bytes": 1077
+    },
+    {
+      "path": "schemas/verification-result.schema.json",
+      "sha256": "954aa0d46903dde62999256f6ac833375cd8f3927d5369624679de6f8aba4481",
+      "bytes": 1366
+    },
+    {
+      "path": "schemas/verifier-registry.schema.json",
+      "sha256": "c519ecf75a94e7de3e86f490b87a54530b89ca5c9242e58b0c906e8edcad3ddd",
+      "bytes": 915
+    },
+    {
+      "path": "schemas/verifier.schema.json",
+      "sha256": "a19fc8b0595275ec2dc7545dce6559ceb5e0220bdd21a901bab7f68220ef6edb",
+      "bytes": 2382
     },
     {
       "path": "scripts/acceptance_compile.py",
@@ -540,7 +655,7 @@
     },
     {
       "path": "src/agentic_discipline/__init__.py",
-      "sha256": "4fef952f64acc2b23be0f53327b0539ea4e51b0cbc3ced5d327fc6b126c8085f",
+      "sha256": "49a8a9d06b0be3ac4879e62e8917b4f9fbc28961ca434a14417b211d2e7d4f9e",
       "bytes": 53
     },
     {
@@ -554,14 +669,19 @@
       "bytes": 3886
     },
     {
+      "path": "src/agentic_discipline/adapters.py",
+      "sha256": "420ce0cc2de2b6d65476463f4562b0b5417c965b6035a07b2dd689b07f7f58c0",
+      "bytes": 3413
+    },
+    {
       "path": "src/agentic_discipline/bootstrap.py",
-      "sha256": "baee62f67d8db2c13766849059d1f54450e924afbd8cac1849c3adce1e5a87ff",
-      "bytes": 6202
+      "sha256": "ddf395ccab0312c11307770b0c9ad8a2bfa6278df23f68e0dcd357da519ff181",
+      "bytes": 8815
     },
     {
       "path": "src/agentic_discipline/cli.py",
-      "sha256": "1626bf9593664e785fd14aedff6bc266933c164731d1fe28176539dabe65cb64",
-      "bytes": 12224
+      "sha256": "a47335dbb5b6b5a99866597a69c1fb2ed4a3815ba11ce627665c03fd1e4d23c8",
+      "bytes": 17381
     },
     {
       "path": "src/agentic_discipline/common.py",
@@ -579,9 +699,19 @@
       "bytes": 5441
     },
     {
+      "path": "src/agentic_discipline/evolution.py",
+      "sha256": "7627b9bcaa57827297c624e1498562a60b4d97593ded70d30236a412f54ea528",
+      "bytes": 3140
+    },
+    {
       "path": "src/agentic_discipline/integrity.py",
       "sha256": "8a118bfae56dbbd49d1dfb81b25ce91b6e3545e04e56e3a1570a9a6a0c91d9e1",
       "bytes": 2062
+    },
+    {
+      "path": "src/agentic_discipline/migration.py",
+      "sha256": "e29802a5524d5921a071791e98dda0a2fc593919fd5f2ef518222a0a17eb6da7",
+      "bytes": 1217
     },
     {
       "path": "src/agentic_discipline/profiles.py",
@@ -607,6 +737,41 @@
       "path": "src/agentic_discipline/validation.py",
       "sha256": "7b7d02136a53d56cf35da973eedc65eaf98c8f6ba61508665b63e5abf58c00f1",
       "bytes": 5307
+    },
+    {
+      "path": "src/agentic_discipline/verifier/__init__.py",
+      "sha256": "523222d8a63670b11e9371f0e62c45cc2a3a2e3a0cef043b0daff2ee44ebb81f",
+      "bytes": 339
+    },
+    {
+      "path": "src/agentic_discipline/verifier/executor.py",
+      "sha256": "78f90ebb8caf935d55925da795ff2ea1eda493b0c1f860bd3061855859796771",
+      "bytes": 5587
+    },
+    {
+      "path": "src/agentic_discipline/verifier/protection.py",
+      "sha256": "daa9f5025781fd4abbf1e3b9d7af8f8d3a2f91b6b810de6d705187523a7777ba",
+      "bytes": 1883
+    },
+    {
+      "path": "src/agentic_discipline/verifier/registry.py",
+      "sha256": "40c24418ecd8b35ba826154bf3494c45d812697539f6bc3a5f43dc4bc9e821d2",
+      "bytes": 4129
+    },
+    {
+      "path": "src/agentic_discipline/verifier/result.py",
+      "sha256": "cad52ecfc12ef75c81a08679a213f4c7e22938a6dcfc0155be974f6d5cfe9165",
+      "bytes": 701
+    },
+    {
+      "path": "src/agentic_discipline/verifier/schema.py",
+      "sha256": "6d625a996b3cf79547af79366ca9d0bdde78787e77d602a39e4de2c5db3f9731",
+      "bytes": 1352
+    },
+    {
+      "path": "src/agentic_discipline/verifier/sensitivity.py",
+      "sha256": "0ea9f1c722864f2cb6a9f33bfcc78d37870a5c1ec75004c6d11e3bfc3919e76d",
+      "bytes": 854
     },
     {
       "path": "SUPPORT.md",
@@ -689,13 +854,28 @@
       "bytes": 1851
     },
     {
+      "path": "tests/test_v3.py",
+      "sha256": "c83c1e0b03e4ad0e39b805720f71330ff13d9ae93130a7eee469c550ec17673d",
+      "bytes": 3379
+    },
+    {
+      "path": "tests/test_v3_runtime_edges.py",
+      "sha256": "12ec68d5e3de132fbec2bd737cb645921f09dc8e0b06c96aeee978de5d4a49bf",
+      "bytes": 10707
+    },
+    {
       "path": "tests/test_validation.py",
       "sha256": "7b0ca4766b2ec45b39e3bc78ece8ee8e5d7ca6efcff47e597b32899e905ab167",
       "bytes": 2879
     },
     {
+      "path": "tests/test_verifier.py",
+      "sha256": "e96b8029c731208abc3c9f367d42954c1ed139ead7ea447670c7df596f9f6136",
+      "bytes": 2332
+    },
+    {
       "path": "VERSION",
-      "sha256": "c89b87c262e9d5ffd20e73aac74a1772adcc9f5a21682cc33adcf5086e5fef5c",
+      "sha256": "2985be8b28d3ade858e8d8fb4bc22f565b1bf6020dff982dce141f7721b9999c",
       "bytes": 6
     }
   ]

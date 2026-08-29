@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Discipline Verifier Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "verifiers"],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "verifiers": {
+      "type": "array", "items": {"type": "object", "additionalProperties": false,
+        "required": ["id", "path", "trust", "persistence"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^VER-[A-Z0-9][A-Z0-9._-]*$"},
+          "path": {"type": "string", "minLength": 1},
+          "trust": {"type": "string", "enum": ["DRAFT", "VALIDATED", "PROTECTED"]},
+          "persistence": {"type": "string", "enum": ["temporary", "durable"]},
+          "last_validation": {"type": ["string", "null"]},
+          "metadata_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+        }
+      }
+    }
+  }
+}

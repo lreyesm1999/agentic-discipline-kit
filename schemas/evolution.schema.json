@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Discipline Evolution Registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "artifacts"],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "artifacts": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+      "required": ["id", "path", "state"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "minLength": 1},
+        "state": {"type": "string", "enum": ["KEEP", "MIGRATE", "DEPRECATE", "REMOVE", "TEMPORARY", "PROMOTE"]},
+        "reason": {"type": "string"},
+        "removal_condition": {"type": "string"},
+        "expires_at": {"type": "string"},
+        "supersedes": {"type": "string"}
+      }
+    }}
+  }
+}

@@ -21,6 +21,8 @@
 
 Agentic Discipline Kit is a stack-agnostic operating system for AI-assisted software delivery. It gives coding agents a repeatable workflow for requirements, implementation, testing, security, review, and release evidence.
 
+Version 3 adds Verification Engineering and Evolution Discipline: measurable claims are backed by reusable deterministic verifiers, while replacements, temporary artifacts, fallbacks, tests, and migrations receive explicit lifecycle treatment.
+
 <table>
   <tr>
     <td width="33%"><strong>Protect intent</strong><br>Keep requirements, architecture, and policies traceable.</td>
@@ -93,6 +95,20 @@ agentic-discipline evidence-verify \
   --check-artifacts
 ```
 
+For a v3 project, the same command also installs a canonical `.agentic/` payload. Register and run a
+project-specific verifier without learning a new runtime:
+
+```bash
+agentic-discipline verifier register checks/my-check
+agentic-discipline verifier list
+agentic-discipline verify VER-001
+agentic-discipline hygiene
+```
+
+`verify` produces `PASS`, `FAIL`, `UNKNOWN`, or `BLOCKED` from execution and records normalized evidence;
+model narration cannot fabricate a passing result. Use `agentic-discipline adapters sync` to generate
+thin, idempotent surfaces for the agent vendors present in a repository.
+
 Python is not required when using a standalone executable. Installing from source remains available
 for contributors and requires Python 3.11+:
 
@@ -127,6 +143,14 @@ The default lifecycle is:
 ```
 
 The skills solve a common failure mode of AI coding: a fast implementation that quietly drops a requirement, weakens a test, bypasses a gate, or ships without a traceable explanation.
+
+## The v3 disciplines
+
+The legacy 20 skills remain available for compatibility. New projects additionally receive eleven
+canonical disciplines under `.agentic/skills/`: source, specification, acceptance, verification
+engineering, coding, cleaning, architecture, hardening, QA, evidence, and evolution. These are thin
+portable playbooks; the deterministic core remains independent of Python, TypeScript, .NET, or any
+other project stack.
 
 ## What you get out of the box
 

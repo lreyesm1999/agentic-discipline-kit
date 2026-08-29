@@ -6,7 +6,7 @@ import shutil
 import sys
 import sysconfig
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, cast
 
 from .common import AgenticError
 from .profiles import (
@@ -91,6 +91,57 @@ def _write_quality_config(
     actions.append(f"WRITE {output}")
 
 
+def _install_v3_payload(kit_root: Path, target_root: Path, force: bool, actions: list[str]) -> None:
+    """Install the small canonical v3 payload beside the legacy v2 surface."""
+    canonical_items = {
+        kit_root / "agentic" / "constitution": target_root / ".agentic" / "constitution",
+        kit_root / "disciplines": target_root / ".agentic" / "skills",
+    }
+    for source, destination in canonical_items.items():
+        _copy_item(source, destination, force, actions)
+    schemas = target_root / ".agentic" / "schemas"
+    schemas.mkdir(parents=True, exist_ok=True)
+    for name in (
+        "verifier.schema.json",
+        "verification-result.schema.json",
+        "verifier-registry.schema.json",
+        "evolution.schema.json",
+        "evidence.schema.json",
+        "verification-plan.schema.json",
+    ):
+        _copy_item(kit_root / "schemas" / name, schemas / name, force, actions)
+    verification = target_root / ".agentic" / "verification"
+    for directory in (verification, verification / "generated", verification / "artifacts"):
+        directory.mkdir(parents=True, exist_ok=True)
+    registry = verification / "registry.json"
+    if not registry.exists() or force:
+        registry.write_text(json.dumps({"schema_version": "1", "verifiers": []}, indent=2) + "\n", encoding="utf-8")
+        actions.append(f"WRITE {registry}")
+    config = target_root / ".agentic" / "config.json"
+    if not config.exists() or force:
+        config.write_text(
+            json.dumps(
+                {
+                    "schema_version": "3",
+                    "adk": {"risk_default": "STANDARD", "unknown_blocks_release": True},
+                    "agents": {"mode": "auto", "adapters": ["generic"]},
+                    "verification": {
+                        "root": ".agentic/verification",
+                        "generated_root": ".agentic/verification/generated",
+                        "require_sensitivity_for_generated": True,
+                        "protect_validated_verifiers": True,
+                        "default_timeout_seconds": 120,
+                    },
+                    "evidence": {"root": "artifacts/agentic", "hash": "sha256"},
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        actions.append(f"WRITE {config}")
+
+
 def initialize_project(
     target: Path,
     profile_ids: Iterable[str] | None = None,
@@ -123,6 +174,8 @@ def initialize_project(
     for item in COPY_ITEMS:
         _copy_item(kit_root / item, target_root / item, force, actions)
 
+    _install_v3_payload(kit_root, target_root, force, actions)
+
     config = build_quality_config(target_root, detections, profiles)
     _write_quality_config(target_root, config, force, actions)
     _copy_item(
@@ -148,6 +201,10 @@ def initialize_project(
     if marker not in existing:
         gitignore.write_text(existing.rstrip() + block, encoding="utf-8")
         actions.append(f"UPDATE {gitignore}")
+    from .adapters import sync_adapters
+
+    adapter_result = sync_adapters(target_root, ["generic"])
+    actions.extend(str(action) for action in cast(list[object], adapter_result["actions"]))
     actions.append(f"READY {target_root}")
     return {
         "status": "PASS",

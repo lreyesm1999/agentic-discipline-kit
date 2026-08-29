@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentic-discipline-kit"
-version = "2.1.0"
+version = "3.0.0"
 description = "Evidence-backed engineering controls for AI coding agents."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -89,6 +89,18 @@ where = ["src"]
 "share/agentic-discipline/skills/18-qa" = ["skills/18-qa/SKILL.md"]
 "share/agentic-discipline/skills/19-release-evidence" = ["skills/19-release-evidence/SKILL.md"]
 "share/agentic-discipline/skills/20-agent-retrospective" = ["skills/20-agent-retrospective/SKILL.md"]
+"share/agentic-discipline/agentic/constitution" = ["agentic/constitution/CORE.md"]
+"share/agentic-discipline/disciplines/01-source" = ["disciplines/01-source/SKILL.md"]
+"share/agentic-discipline/disciplines/02-specification" = ["disciplines/02-specification/SKILL.md"]
+"share/agentic-discipline/disciplines/03-acceptance" = ["disciplines/03-acceptance/SKILL.md"]
+"share/agentic-discipline/disciplines/04-verification-engineering" = ["disciplines/04-verification-engineering/SKILL.md"]
+"share/agentic-discipline/disciplines/05-coding" = ["disciplines/05-coding/SKILL.md"]
+"share/agentic-discipline/disciplines/06-cleaning" = ["disciplines/06-cleaning/SKILL.md"]
+"share/agentic-discipline/disciplines/07-architecture" = ["disciplines/07-architecture/SKILL.md"]
+"share/agentic-discipline/disciplines/08-hardening" = ["disciplines/08-hardening/SKILL.md"]
+"share/agentic-discipline/disciplines/09-qa" = ["disciplines/09-qa/SKILL.md"]
+"share/agentic-discipline/disciplines/10-evidence" = ["disciplines/10-evidence/SKILL.md"]
+"share/agentic-discipline/disciplines/11-evolution" = ["disciplines/11-evolution/SKILL.md"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"

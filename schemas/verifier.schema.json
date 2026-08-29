@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Discipline Verifier Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "name", "requirement_ids", "claim", "type", "origin", "risk", "command", "timeout_seconds", "working_directory", "expected_exit_code", "sensitivity", "persistence", "protected"],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "id": {"type": "string", "pattern": "^VER-[A-Z0-9][A-Z0-9._-]*$"},
+    "name": {"type": "string", "minLength": 1},
+    "requirement_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "claim": {"type": "string", "minLength": 1},
+    "type": {"type": "string", "enum": ["unit", "integration", "architecture", "compatibility", "security", "performance", "migration", "release", "custom"]},
+    "origin": {"type": "string", "enum": ["generated", "handwritten", "imported"]},
+    "risk": {"type": "string", "enum": ["LOW", "STANDARD", "HIGH", "CRITICAL"]},
+    "command": {"oneOf": [{"type": "string", "minLength": 1}, {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}]},
+    "timeout_seconds": {"type": "number", "exclusiveMinimum": 0, "maximum": 86400},
+    "working_directory": {"type": "string", "minLength": 1},
+    "expected_exit_code": {"type": "integer"},
+    "artifacts": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "requires": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "commands": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "env": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "sensitivity": {
+      "type": "object", "additionalProperties": false,
+      "required": ["method", "status"],
+      "properties": {
+        "method": {"type": "string", "enum": ["baseline_red", "known_bad_fixture", "negative_control", "mutation", "cross_check", "none"]},
+        "evidence": {"type": "string", "minLength": 1},
+        "status": {"type": "string", "enum": ["UNPROVEN", "PROVEN"]}
+      }
+    },
+    "persistence": {"type": "string", "enum": ["temporary", "durable"]},
+    "protected": {"type": "boolean"},
+    "cleanup": {"type": "string", "minLength": 1},
+    "network": {"type": "string", "enum": ["none", "local", "external"]}
+  }
+}

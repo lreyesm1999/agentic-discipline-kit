@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agentic Discipline Verification Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "verifications"],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "verifications": {"type": "array", "items": {"type": "object", "additionalProperties": false,
+      "required": ["verification_id", "requirement_ids", "claim", "mechanizable", "strategy"],
+      "properties": {
+        "verification_id": {"type": "string", "pattern": "^VER-[A-Z0-9][A-Z0-9._-]*$"},
+        "requirement_ids": {"type": "array", "items": {"type": "string"}},
+        "claim": {"type": "string", "minLength": 1},
+        "mechanizable": {"type": "string", "enum": ["YES", "PARTIAL", "NO"]},
+        "strategy": {"type": "string", "enum": ["reuse", "generated", "manual", "not_applicable"]},
+        "verifier_type": {"type": "string"},
+        "sensitivity_method": {"type": "string"},
+        "command": {"type": "string"},
+        "persist": {"type": "boolean"}
+      }
+    }}
+  }
+}
