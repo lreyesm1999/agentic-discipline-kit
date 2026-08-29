@@ -69,7 +69,12 @@ def _prepare_target(target: Path, kit_root: Path) -> Path:
     target_root = target.resolve()
     if target_root == Path(target_root.anchor):
         raise AgenticError("refusing to bootstrap into a filesystem root")
-    if target_root == kit_root:
+    module_path = Path(__file__).resolve()
+    running_from_target = module_path.is_relative_to(target_root) and any(
+        (target_root / package_root).is_dir()
+        for package_root in (Path("src") / "agentic_discipline", Path("agentic_discipline"))
+    )
+    if target_root == kit_root or running_from_target:
         raise AgenticError("refusing to bootstrap the kit into itself")
     target_root.mkdir(parents=True, exist_ok=True)
     return target_root
