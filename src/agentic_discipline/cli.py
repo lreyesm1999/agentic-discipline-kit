@@ -9,7 +9,7 @@ from pathlib import Path
 
 from . import __version__
 from .acceptance import compile_feature
-from .bootstrap import STACKS, bootstrap_project
+from .bootstrap import bootstrap_project, initialize_project
 from .common import AgenticError, changed_files, run_git
 from .crap import crap_score
 from .evidence import append_evidence, verify_ledger
@@ -207,8 +207,20 @@ def command_evidence_verify(args: argparse.Namespace) -> int:
 
 
 def command_bootstrap(args: argparse.Namespace) -> int:
-    actions = bootstrap_project(Path(args.target), args.stack, args.force)
+    actions = bootstrap_project(Path(args.target), getattr(args, "stack", None), args.force)
     _json({"status": "PASS", "actions": actions})
+    return 0
+
+
+def command_init(args: argparse.Namespace) -> int:
+    result = initialize_project(
+        Path(args.target),
+        profile_ids=args.profile,
+        profile_files=[Path(path) for path in args.profile_file],
+        force=args.force,
+        max_depth=args.max_depth,
+    )
+    _json(result)
     return 0
 
 
@@ -271,9 +283,29 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--check-artifacts", action="store_true")
     p.set_defaults(func=command_evidence_verify)
 
-    p = sub.add_parser("bootstrap", help="Install contracts into another repository")
+    p = sub.add_parser(
+        "init", help="Detect the project and install contracts plus quality configuration"
+    )
+    p.add_argument("--target", default=".")
+    p.add_argument(
+        "--profile",
+        action="append",
+        default=[],
+        help="Override detection with a profile id; repeat for multi-stack projects",
+    )
+    p.add_argument(
+        "--profile-file",
+        action="append",
+        default=[],
+        help="Load an additional data-driven profile descriptor",
+    )
+    p.add_argument("--max-depth", type=int, default=4)
+    p.add_argument("--force", action="store_true")
+    p.set_defaults(func=command_init)
+
+    p = sub.add_parser("bootstrap", help="Legacy alias for init")
     p.add_argument("--target", required=True)
-    p.add_argument("--stack", required=True, choices=sorted(STACKS))
+    p.add_argument("--stack", help="Optional legacy profile override")
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=command_bootstrap)
 

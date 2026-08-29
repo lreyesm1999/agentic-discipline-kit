@@ -14,9 +14,7 @@ def main() -> int:
     parser.add_argument("--target", required=True, help="Target repository path")
     parser.add_argument(
         "--stack",
-        required=True,
-        choices=["typescript", "python", "dotnet"],
-        help="Quality-gate starter profile",
+        help="Optional legacy profile override; omitted means automatic detection",
     )
     parser.add_argument(
         "--force",

@@ -45,6 +45,7 @@ dev = [
   "mutmut>=3.4",
   "pip-audit>=2.8",
   "pre-commit>=4.0",
+  "pyinstaller>=6.0",
   "pytest>=8.0",
   "pytest-cov>=6.0",
   "ruff>=0.9",
@@ -62,7 +63,8 @@ where = ["src"]
 
 [tool.setuptools.data-files]
 "share/agentic-discipline" = ["AGENTS.md", "MASTER_PROMPT.md"]
-"share/agentic-discipline/config/examples" = ["config/examples/dotnet.json", "config/examples/python.json", "config/examples/typescript.json"]
+"share/agentic-discipline/config/examples" = ["config/examples/dotnet.json", "config/examples/generic.json", "config/examples/python.json", "config/examples/typescript.json"]
+"share/agentic-discipline/config/profiles" = ["config/profiles/*.json"]
 "share/agentic-discipline/config" = ["config/risk-weights.json"]
 "share/agentic-discipline/policies" = ["policies/*.md"]
 "share/agentic-discipline/schemas" = ["schemas/*.json"]

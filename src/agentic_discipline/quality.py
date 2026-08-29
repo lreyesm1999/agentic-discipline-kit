@@ -161,7 +161,11 @@ def run_gate(gate: dict[str, Any], cwd: Path | None = None) -> GateResult:
 
 def run_quality(config_path: Path, cwd: Path | None = None) -> dict[str, Any]:
     config = load_quality_config(config_path)
-    results = [run_gate(gate, cwd=cwd) for gate in config["gates"]]
+    project_root = cwd.resolve() if cwd is not None else config_path.resolve().parent
+    results = [
+        run_gate(gate, cwd=project_root / gate.get("working_directory", "."))
+        for gate in config["gates"]
+    ]
     failed = [item for item in results if item.required and item.status != "PASS"]
     return {
         "project": config.get("project", "unknown"),

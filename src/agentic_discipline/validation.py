@@ -3,9 +3,10 @@ from __future__ import annotations
 import json
 import math
 import re
+import sys
 import sysconfig
 from importlib import resources
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -21,8 +22,13 @@ def _schema_candidates(name: str) -> list[Path]:
     candidates = [
         Path.cwd() / "schemas" / name,
         Path(__file__).resolve().parents[2] / "schemas" / name,
-        Path(sysconfig.get_path("data")) / "share" / "agentic-discipline" / "schemas" / name,
     ]
+    frozen_root = getattr(sys, "_MEIPASS", None)
+    if frozen_root:
+        candidates.insert(0, Path(frozen_root) / "schemas" / name)
+    candidates.append(
+        Path(sysconfig.get_path("data")) / "share" / "agentic-discipline" / "schemas" / name
+    )
     try:
         packaged = resources.files("agentic_discipline") / "schemas" / name
         if packaged.is_file():
@@ -80,6 +86,20 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
             names.add(name)
         if gate.get("required", True) is True:
             required_count += 1
+
+        working_directory = gate.get("working_directory")
+        if isinstance(working_directory, str):
+            posix_path = PurePosixPath(working_directory)
+            windows_path = PureWindowsPath(working_directory)
+            if (
+                posix_path.is_absolute()
+                or windows_path.is_absolute()
+                or ".." in posix_path.parts
+                or ".." in windows_path.parts
+            ):
+                errors.append(
+                    f"gates.{index}.working_directory: must stay inside the project root"
+                )
 
         parser = gate.get("parser")
         thresholds = gate.get("thresholds", {})

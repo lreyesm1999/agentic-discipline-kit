@@ -6,6 +6,32 @@ The installed command is:
 agentic-discipline
 ```
 
+## init
+
+Initializes the current project without requiring a stack selection:
+
+```bash
+agentic-discipline init
+```
+
+It detects known manifests up to four directories deep, composes all detected profiles, installs the
+engineering contracts, and writes `agentic.config.json`. Existing files are preserved unless `--force`
+is supplied.
+
+Detection can be overridden or extended:
+
+```bash
+agentic-discipline init --profile typescript --profile dotnet
+agentic-discipline init --profile-file ./rust-profile.json --profile rust
+agentic-discipline init --max-depth 6
+```
+
+When nothing is recognized, `init` emits a generic Git-based gate instead of rejecting the project.
+See [Project profiles](profiles.md) for the descriptor format.
+
+The generated configuration is intentionally conservative: it recommends gates but does not install
+or execute project dependencies during initialization.
+
 ## doctor
 
 Checks Git worktree state, protected contracts, schemas and quality configuration. Add
@@ -101,8 +127,8 @@ agentic-discipline evidence-verify --check-artifacts
 
 ## bootstrap
 
-Installs the contracts and a stack profile into another repository.
+Legacy alias for `init`. `--stack` is now an optional profile override; omitting it enables detection.
 
 ```bash
-agentic-discipline bootstrap --target ../my-project --stack python
+agentic-discipline bootstrap --target ../my-project
 ```

@@ -1,0 +1,14 @@
+{
+  "id": "python",
+  "label": "Python",
+  "config": "../examples/python.json",
+  "detectors": [
+    {"pattern": "pyproject.toml", "confidence": 1.0},
+    {"pattern": "setup.py", "confidence": 0.9},
+    {"pattern": "setup.cfg", "confidence": 0.9},
+    {"pattern": "requirements*.txt", "confidence": 0.8},
+    {"pattern": "Pipfile", "confidence": 0.8},
+    {"pattern": "poetry.lock", "confidence": 0.8},
+    {"pattern": "uv.lock", "confidence": 0.8}
+  ]
+}

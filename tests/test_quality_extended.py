@@ -107,6 +107,34 @@ def test_run_quality_pass_and_fail(tmp_path: Path) -> None:
     assert report["results"][0]["exit_code"] == 3
 
 
+def test_run_quality_uses_gate_working_directory(tmp_path: Path) -> None:
+    component = tmp_path / "component"
+    component.mkdir()
+    config = tmp_path / "config.json"
+    config.write_text(
+        json.dumps(
+            {
+                "project": "monorepo",
+                "gates": [
+                    {
+                        "name": "cwd",
+                        "command": [
+                            "python",
+                            "-c",
+                            "import pathlib; raise SystemExit(0 if pathlib.Path('marker').exists() else 1)",
+                        ],
+                        "working_directory": "component",
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    (component / "marker").write_text("", encoding="utf-8")
+
+    assert run_quality(config)["status"] == "PASS"
+
+
 def test_run_quality_rejects_empty_or_optional_only_gates(tmp_path: Path) -> None:
     config = tmp_path / "config.json"
     config.write_text(json.dumps({"project": "demo", "gates": []}), encoding="utf-8")

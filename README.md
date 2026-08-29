@@ -71,30 +71,33 @@ Each stage has explicit inputs, outputs, stop conditions, and evidence requireme
 
 ## 60-second quick start
 
-Requires Python 3.11+.
+Download the standalone executable for Windows, macOS, or Linux from
+[GitHub Releases](https://github.com/lreyesm1999/agentic-discipline-kit/releases), place it on your
+`PATH`, and run this inside your project:
 
 ```bash
-git clone https://github.com/lreyesm1999/agentic-discipline-kit.git
-cd agentic-discipline-kit
-python -m pip install -e ".[dev]"
-agentic-discipline doctor
+agentic-discipline init
+agentic-discipline doctor --check-tools
 ```
 
-Run the kit's own production checks:
+`init` detects project manifests, supports mixed-stack repositories, installs the contracts, and
+generates the quality configuration. If it cannot recognize an ecosystem, it creates a safe generic
+configuration that can run commands from any toolchain.
+
+Run the generated project checks:
 
 ```bash
-agentic-discipline quality --config config/self-quality.json
+agentic-discipline quality --config agentic.config.json
 agentic-discipline evidence-verify \
   --ledger artifacts/evidence-ledger.jsonl \
   --check-artifacts
 ```
 
-Use it in another repository:
+Python is not required when using a standalone executable. Installing from source remains available
+for contributors and requires Python 3.11+:
 
 ```bash
-agentic-discipline bootstrap \
-  --target ../my-project \
-  --stack python
+python -m pip install -e ".[dev]"
 ```
 
 Then start your coding agent with the generated `MASTER_PROMPT.md` and follow the lifecycle below.
@@ -138,7 +141,8 @@ The skills solve a common failure mode of AI coding: a fast implementation that 
 - **Integrity audit** to detect skipped tests and disabled quality controls.
 - **Independent reviewer protocol** to reduce implementation-agent anchoring.
 - **Evidence ledger** with SHA-256 hashes and chain verification.
-- **Bootstrap and packaging** for Python, TypeScript, and .NET projects.
+- **Automatic project discovery** with composable profiles and a generic fallback for any toolchain.
+- **Standalone binaries, container image, and GitHub Action** so adopters do not manage the CLI runtime.
 
 ## A concrete example
 
@@ -193,15 +197,19 @@ agentic-discipline evidence-verify \
   --check-artifacts
 ```
 
-## Supported stacks
+## Project profiles, not stack limits
 
-The orchestration model is stack-agnostic. Included bootstrap profiles are:
+The orchestration model and quality runner are command-based and stack-agnostic. Automatic profiles
+included out of the box are:
 
 - Python
 - TypeScript / JavaScript
 - .NET
 
-The same contracts can be adapted to Go, Java, Rust, JVM, mobile, and other ecosystems.
+These profiles are onboarding accelerators, not a compatibility boundary. Unknown ecosystems receive
+a generic configuration, and teams can add a data-only profile for Go, Java, Rust, mobile, proprietary
+toolchains, or anything else that exposes deterministic commands. Use repeated `--profile` options to
+override detection in a mixed project, or `--profile-file` to load a custom descriptor.
 
 ## Quality targets
 

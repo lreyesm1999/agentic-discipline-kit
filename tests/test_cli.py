@@ -35,6 +35,31 @@ def test_acceptance_command(tmp_path: Path) -> None:
     assert json.loads(target.read_text(encoding="utf-8"))["scenarios"][0]["id"] == "AC-001"
 
 
+def test_init_command_reports_detected_profile(tmp_path: Path) -> None:
+    target = tmp_path / "project"
+    target.mkdir()
+    (target / "package.json").write_text("{}", encoding="utf-8")
+
+    assert (
+        cli.command_init(
+            ns(
+                target=str(target),
+                profile=[],
+                profile_file=[],
+                force=False,
+                max_depth=4,
+            )
+        )
+        == 0
+    )
+
+
+def test_bootstrap_command_remains_usable_without_stack(tmp_path: Path) -> None:
+    target = tmp_path / "project"
+
+    assert cli.command_bootstrap(ns(target=str(target), stack=None, force=False)) == 0
+
+
 def test_graph_command_pass_and_fail(tmp_path: Path) -> None:
     good = tmp_path / "good.json"
     good.write_text(
@@ -144,6 +169,9 @@ def test_parser_and_main(monkeypatch: pytest.MonkeyPatch) -> None:
     parser = cli.build_parser()
     parsed = parser.parse_args(["crap", "--complexity", "7", "--coverage", "92"])
     assert parsed.command == "crap"
+    initialized = parser.parse_args(["init"])
+    assert initialized.target == "."
+    assert initialized.profile == []
 
     monkeypatch.setattr(
         sys,

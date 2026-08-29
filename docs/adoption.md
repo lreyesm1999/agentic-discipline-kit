@@ -1,5 +1,18 @@
 # Adoption Guide
 
+## Zero-configuration start
+
+Run `agentic-discipline init` from the repository root. The command detects included project profiles,
+supports mixed repositories, and falls back to a generic command-based configuration when the stack
+is unknown. Review the generated gates before making them blocking in CI.
+
+Adopters can use a standalone executable, the container image, or the repository's GitHub Composite
+Action; Python is only required when installing the CLI from source.
+
+The container image contains the Agentic Discipline CLI, not every possible project toolchain. For
+Node, .NET, or other ecosystems, derive a project image with those tools installed, or use the
+Composite Action so gates run directly on the hosted runner.
+
 ## Greenfield repository
 
 Start with the default thresholds and all protected paths enabled.

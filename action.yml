@@ -1,0 +1,28 @@
+name: Agentic Discipline Quality
+description: Run deterministic project quality gates without requiring users to manage the CLI runtime.
+inputs:
+  config:
+    description: Path to the Agentic Discipline configuration.
+    required: false
+    default: agentic.config.json
+  artifacts:
+    description: Directory for the generated quality report.
+    required: false
+    default: artifacts
+runs:
+  using: composite
+  steps:
+    - name: Prepare Agentic Discipline CLI
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
+        cache: pip
+    - name: Install Agentic Discipline CLI
+      shell: bash
+      run: python -m pip install --quiet "${GITHUB_ACTION_PATH}"
+    - name: Run quality gates
+      shell: bash
+      run: >-
+        agentic-discipline quality
+        --config "${{ inputs.config }}"
+        --artifacts "${{ inputs.artifacts }}"

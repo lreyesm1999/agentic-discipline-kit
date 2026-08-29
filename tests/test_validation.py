@@ -70,3 +70,20 @@ def test_quality_config_rejects_invalid_regex() -> None:
         }
     )
     assert any("invalid regex" in error for error in errors)
+
+
+@pytest.mark.parametrize("working_directory", ["../outside", "/tmp/outside", "C:\\outside"])
+def test_quality_config_rejects_working_directory_escape(working_directory: str) -> None:
+    errors = validate_quality_config(
+        {
+            "project": "demo",
+            "gates": [
+                {
+                    "name": "test",
+                    "command": ["tool", "test"],
+                    "working_directory": working_directory,
+                }
+            ],
+        }
+    )
+    assert any("must stay inside" in error for error in errors)

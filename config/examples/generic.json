@@ -1,0 +1,11 @@
+{
+  "project": "generic-project",
+  "artifacts_dir": "artifacts",
+  "gates": [
+    {
+      "name": "diff-check",
+      "command": ["git", "diff", "--check"],
+      "required": true
+    }
+  ]
+}

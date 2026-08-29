@@ -1,0 +1,12 @@
+{
+  "id": "dotnet",
+  "label": ".NET",
+  "config": "../examples/dotnet.json",
+  "detectors": [
+    {"pattern": "*.sln", "confidence": 1.0},
+    {"pattern": "*.slnx", "confidence": 1.0},
+    {"pattern": "*.csproj", "confidence": 0.9},
+    {"pattern": "*.fsproj", "confidence": 0.9},
+    {"pattern": "*.vbproj", "confidence": 0.9}
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "id": "generic",
+  "label": "Generic command-based project",
+  "config": "../examples/generic.json",
+  "detectors": []
+}

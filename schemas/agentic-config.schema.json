@@ -27,6 +27,7 @@
             ]
           },
           "required": {"type": "boolean", "default": true},
+          "working_directory": {"type": "string", "minLength": 1},
           "timeout_seconds": {"type": "number", "minimum": 1, "maximum": 86400},
           "parser": {
             "type": "object",

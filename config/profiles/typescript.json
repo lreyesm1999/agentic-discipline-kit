@@ -1,0 +1,10 @@
+{
+  "id": "typescript",
+  "label": "TypeScript / JavaScript",
+  "config": "../examples/typescript.json",
+  "detectors": [
+    {"pattern": "package.json", "confidence": 1.0},
+    {"pattern": "deno.json", "confidence": 0.9},
+    {"pattern": "deno.jsonc", "confidence": 0.9}
+  ]
+}
