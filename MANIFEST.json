@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.0.0",
-  "generated_at_utc": "2026-08-29T16:44:58.769493+00:00",
+  "generated_at_utc": "2026-08-29T17:39:28.829965+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/release.yml",
-      "sha256": "ff4c4ea2b21860dd30976530493d49ea3000cb2c8b7ba9458464b107d381f4ce",
-      "bytes": 2604
+      "sha256": "fb980feebc5ff0266af7ed0141a93f87f328b207cf30099aee6a1fe175de7295",
+      "bytes": 2722
     },
     {
       "path": ".github/workflows/security.yml",
@@ -375,8 +375,8 @@
     },
     {
       "path": "packaging/agentic-discipline.spec",
-      "sha256": "0f7e376f45c77ad108b2d32e077e9736e729db126b6a8534d13fcf031b31217b",
-      "bytes": 1024
+      "sha256": "6cc1f375152efe8eb29d1e3bad35109244b77bed7dff46d9940e34c7bde3c6ea",
+      "bytes": 1088
     },
     {
       "path": "packaging/entrypoint.py",

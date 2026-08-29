@@ -23,6 +23,7 @@ jobs:
       - run: python -m pip install dist/*.whl
       - run: pip-audit --format cyclonedx-json --output sbom.json
       - uses: actions/attest-build-provenance@v3
+        if: github.event.repository.visibility == 'public'
         with:
           subject-path: "dist/*"
       - uses: actions/upload-artifact@v4
@@ -59,6 +60,7 @@ jobs:
           .\dist\agentic-discipline.exe init --target standalone-smoke
           Compress-Archive -LiteralPath .\dist\agentic-discipline.exe -DestinationPath "agentic-discipline-$env:RUNNER_OS-$env:RUNNER_ARCH.zip"
       - uses: actions/attest-build-provenance@v3
+        if: github.event.repository.visibility == 'public'
         with:
           subject-path: "agentic-discipline-*"
       - uses: actions/upload-artifact@v4

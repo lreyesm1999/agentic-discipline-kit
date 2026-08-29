@@ -6,6 +6,8 @@ project_root = Path(SPECPATH).parent
 data_paths = [
     ("AGENTS.md", "."),
     ("MASTER_PROMPT.md", "."),
+    ("agentic", "agentic"),
+    ("disciplines", "disciplines"),
     ("skills", "skills"),
     ("policies", "policies"),
     ("schemas", "schemas"),
