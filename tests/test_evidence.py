@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from agentic_discipline import evidence
 from agentic_discipline.common import AgenticError
 from agentic_discipline.evidence import append_evidence, sha256_file, verify_ledger
 
@@ -68,6 +69,50 @@ def test_concurrent_evidence_appends_are_serialized(tmp_path: Path) -> None:
     result = verify_ledger(ledger, check_artifacts=True)
     assert result["status"] == "PASS"
     assert result["records"] == 8
+
+
+def test_ledger_lock_retries_windows_permission_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ledger = tmp_path / "ledger.jsonl"
+    lock = ledger.with_suffix(ledger.suffix + ".lock")
+    lock.write_text("held", encoding="utf-8")
+    real_open = evidence.os.open
+    attempts = 0
+
+    def open_with_windows_contention(path: Path, flags: int, mode: int) -> int:
+        nonlocal attempts
+        attempts += 1
+        if attempts == 1:
+            raise PermissionError(13, "file is being used by another process", str(path))
+        return real_open(path, flags, mode)
+
+    def release_lock(_: float) -> None:
+        lock.unlink(missing_ok=True)
+
+    monkeypatch.setattr(evidence.os, "open", open_with_windows_contention)
+    monkeypatch.setattr(evidence.time, "sleep", release_lock)
+
+    with evidence._ledger_lock(ledger):
+        assert lock.exists()
+
+    assert attempts == 2
+    assert not lock.exists()
+
+
+def test_ledger_lock_preserves_real_permission_error(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    ledger = tmp_path / "ledger.jsonl"
+
+    def deny_open(path: Path, flags: int, mode: int) -> int:
+        raise PermissionError(13, "permission denied", str(path))
+
+    monkeypatch.setattr(evidence.os, "open", deny_open)
+
+    with pytest.raises(PermissionError, match="permission denied"):
+        with evidence._ledger_lock(ledger):
+            pass
 
 
 def test_ledger_verifier_reports_sequence_chain_and_artifact_failures(tmp_path: Path) -> None:

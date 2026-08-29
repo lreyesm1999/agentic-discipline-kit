@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.0.0",
-  "generated_at_utc": "2026-08-29T17:41:40.859447+00:00",
+  "generated_at_utc": "2026-08-29T17:50:38.754986+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/release.yml",
-      "sha256": "a0986643f6dfe3abf1b5ff971662e775d4fdb1a531f969a08cea70ee87a4db7a",
-      "bytes": 2766
+      "sha256": "ccf865d9d340ee4cc86e4f24c4f4dfd50f6699e5c40ce6ebb79fb03b8bf36155",
+      "bytes": 2940
     },
     {
       "path": ".github/workflows/security.yml",
@@ -695,8 +695,8 @@
     },
     {
       "path": "src/agentic_discipline/evidence.py",
-      "sha256": "9ef3d7b71791ea1b8caa2dbfd51dd3e4e4926b3a7016e03c4f005ea14e982aa3",
-      "bytes": 5441
+      "sha256": "b8404599a5e3bfa46a71ab7b29964f60281b1cc1dfcb0fcf73dc85ece7606e54",
+      "bytes": 5941
     },
     {
       "path": "src/agentic_discipline/evolution.py",
@@ -820,8 +820,8 @@
     },
     {
       "path": "tests/test_evidence.py",
-      "sha256": "ad207c7dd136db1da6627e12d8481e7235abf73c048ebbbc0dd3998a40892d33",
-      "bytes": 3797
+      "sha256": "c13f98131cd0d87c46c4db8f0263768aea40b91613ba2d40905280482138bb76",
+      "bytes": 5250
     },
     {
       "path": "tests/test_integrity.py",

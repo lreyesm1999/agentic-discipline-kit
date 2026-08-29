@@ -37,6 +37,15 @@ def _ledger_lock(ledger: Path, timeout_seconds: float = 10.0) -> Any:
             if time.monotonic() >= deadline:
                 raise AgenticError(f"timed out waiting for evidence ledger lock: {lock}") from None
             time.sleep(0.05)
+        except PermissionError as exc:
+            # Windows can report an existing, exclusively held file as EACCES
+            # instead of EEXIST. Only treat it as contention when the lock is
+            # visible; preserve genuine directory/file permission failures.
+            if not lock.exists():
+                raise
+            if time.monotonic() >= deadline:
+                raise AgenticError(f"timed out waiting for evidence ledger lock: {lock}") from exc
+            time.sleep(0.05)
     try:
         os.write(descriptor, str(os.getpid()).encode("ascii"))
         os.close(descriptor)
