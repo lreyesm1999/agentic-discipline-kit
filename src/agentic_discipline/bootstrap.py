@@ -20,7 +20,8 @@ COPY_ITEMS = ["AGENTS.md", "MASTER_PROMPT.md", "skills", "policies", "schemas", 
 
 
 def find_contract_root() -> Path:
-    candidates = [Path(__file__).resolve().parents[2]]
+    module_path = Path(__file__).resolve()
+    candidates = list(module_path.parents)
     frozen_root = getattr(sys, "_MEIPASS", None)
     if frozen_root:
         candidates.append(Path(frozen_root))
