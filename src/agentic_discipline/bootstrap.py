@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sys
 import sysconfig
@@ -21,13 +22,31 @@ COPY_ITEMS = ["AGENTS.md", "MASTER_PROMPT.md", "skills", "policies", "schemas", 
 
 def find_contract_root() -> Path:
     module_path = Path(__file__).resolve()
-    candidates = list(module_path.parents)
+    candidates: list[Path] = []
+    configured_root = os.environ.get("AGENTIC_DISCIPLINE_CONTRACT_ROOT")
+    if configured_root:
+        candidates.append(Path(configured_root).expanduser())
+    candidates.extend(module_path.parents)
+    candidates.extend(Path.cwd().parents)
+    candidates.append(Path.cwd())
     frozen_root = getattr(sys, "_MEIPASS", None)
     if frozen_root:
         candidates.append(Path(frozen_root))
     candidates.append(Path(sysconfig.get_path("data")) / "share" / "agentic-discipline")
+    seen: set[Path] = set()
     for candidate in candidates:
-        if (candidate / "AGENTS.md").is_file() and (candidate / "skills").is_dir():
+        candidate = candidate.resolve()
+        if candidate in seen:
+            continue
+        seen.add(candidate)
+        # Mutmut and similar tools may copy only part of the repository.  A
+        # partial copy can contain AGENTS.md/skills but not the profile data;
+        # require the complete contract bundle before accepting a candidate.
+        if (
+            (candidate / "AGENTS.md").is_file()
+            and (candidate / "skills").is_dir()
+            and (candidate / "config" / "profiles" / "generic.json").is_file()
+        ):
             return candidate
     raise AgenticError("packaged Agentic Discipline contracts were not found")
 
