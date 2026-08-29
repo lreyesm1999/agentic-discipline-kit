@@ -23,7 +23,9 @@ from agentic_discipline.verifier.schema import validate_verifier
 from agentic_discipline.verifier.sensitivity import sensitivity_status
 
 
-def _write_contract(path: Path, verifier_id: str, *, command: list[str], **overrides: object) -> None:
+def _write_contract(
+    path: Path, verifier_id: str, *, command: list[str], **overrides: object
+) -> None:
     path.mkdir()
     data: dict[str, object] = {
         "schema_version": "1",
@@ -64,11 +66,17 @@ def test_executor_reports_fail_timeout_and_artifact_hash(tmp_path: Path) -> None
     assert execute_verifier(project, "VER-TIMEOUT")["status"] == "BLOCKED"
 
     artifact = tmp_path / "artifact"
-    _write_contract(artifact, "VER-ARTIFACT", command=[sys.executable, "run.py"], artifacts=["artifact.txt"])
-    (artifact / "run.py").write_text("from pathlib import Path\nPath('artifact.txt').write_text('ok')\n", encoding="utf-8")
+    _write_contract(
+        artifact, "VER-ARTIFACT", command=[sys.executable, "run.py"], artifacts=["artifact.txt"]
+    )
+    (artifact / "run.py").write_text(
+        "from pathlib import Path\nPath('artifact.txt').write_text('ok')\n", encoding="utf-8"
+    )
     register_verifier(artifact, project)
     result = execute_verifier(project, "VER-ARTIFACT")
-    assert result["artifacts"][0]["sha256"] == hash_file(project / ".agentic/verification/generated/VER-ARTIFACT/artifact.txt")
+    assert result["artifacts"][0]["sha256"] == hash_file(
+        project / ".agentic/verification/generated/VER-ARTIFACT/artifact.txt"
+    )
     assert artifact_hashes(project, ["missing.txt"]) == []
 
 
@@ -82,7 +90,9 @@ def test_registry_and_sensitivity_error_paths(tmp_path: Path) -> None:
     with pytest.raises(AgenticError, match="already registered"):
         register_verifier(source, project)
     with pytest.raises(AgenticError, match="verifier not found"):
-        cli.command_verifier_inspect(argparse.Namespace(project_root=str(project), verifier_id="VER-NOPE"))
+        cli.command_verifier_inspect(
+            argparse.Namespace(project_root=str(project), verifier_id="VER-NOPE")
+        )
     assert load_registry(project)["schema_version"] == "1"
     with pytest.raises(AgenticError, match="evidence"):
         sensitivity_status(
@@ -92,7 +102,7 @@ def test_registry_and_sensitivity_error_paths(tmp_path: Path) -> None:
         )
 
 
-def test_cli_v3_commands_and_adapters(tmp_path: Path) -> None:
+def test_verification_commands_and_adapters(tmp_path: Path) -> None:
     project = tmp_path / "project"
     initialize_project(project)
     (project / ".cursor").mkdir()
@@ -102,7 +112,11 @@ def test_cli_v3_commands_and_adapters(tmp_path: Path) -> None:
     assert cli.command_adapters_sync(argparse.Namespace(project_root=str(project), adapter=[])) == 0
     assert cli.command_verifier_list(argparse.Namespace(project_root=str(project))) == 0
     with pytest.raises(AgenticError, match="not found"):
-        cli.command_verifier_validate(argparse.Namespace(project_root=str(project), verifier_id=None, path=str(project / "bad.json")))
+        cli.command_verifier_validate(
+            argparse.Namespace(
+                project_root=str(project), verifier_id=None, path=str(project / "bad.json")
+            )
+        )
     assert cli.command_verify(argparse.Namespace(project_root=str(project), verifier_id=None)) == 0
     assert cli.command_hygiene(argparse.Namespace(project_root=str(project), base_ref=None)) == 0
     assert set(detect_adapters(project)) >= {"generic", "cursor", "windsurf", "copilot", "gemini"}
@@ -136,14 +150,20 @@ def test_registry_invalid_and_protected_entries_are_rejected(tmp_path: Path) -> 
     project = tmp_path / "project"
     initialize_project(project)
     registry = project / ".agentic" / "verification" / "registry.json"
-    registry.write_text('{"schema_version":"1","verifiers":[{"id":"VER-X","path":"../outside","trust":"DRAFT","persistence":"durable"}]}\n', encoding="utf-8")
+    registry.write_text(
+        '{"schema_version":"1","verifiers":[{"id":"VER-X","path":"../outside","trust":"DRAFT","persistence":"durable"}]}\n',
+        encoding="utf-8",
+    )
     with pytest.raises(AgenticError, match="escapes"):
         load_verifier(project, "VER-X")
-    registry.write_text('{"schema_version":"1","verifiers":[{"id":"VER-X","path":"missing","trust":"PROTECTED","persistence":"durable"}]}\n', encoding="utf-8")
+    registry.write_text(
+        '{"schema_version":"1","verifiers":[{"id":"VER-X","path":"missing","trust":"PROTECTED","persistence":"durable"}]}\n',
+        encoding="utf-8",
+    )
     assert check_protected_verifiers(project) == ["protected verifier missing: VER-X"]
 
 
-def test_v3_branch_edges_for_schema_sensitivity_and_protection(tmp_path: Path) -> None:
+def test_branch_edges_for_schema_sensitivity_and_protection(tmp_path: Path) -> None:
     project = tmp_path / "project"
     initialize_project(project)
     assert validate_verifier({"working_directory": "../escape"})
@@ -152,15 +172,21 @@ def test_v3_branch_edges_for_schema_sensitivity_and_protection(tmp_path: Path) -
 
     root_evidence = project / "sensitivity.json"
     root_evidence.write_text("{}\n", encoding="utf-8")
-    assert sensitivity_status(
-        {"sensitivity": {"status": "PROVEN", "evidence": "sensitivity.json"}}, project, project
-    ) == "VALIDATED"
+    assert (
+        sensitivity_status(
+            {"sensitivity": {"status": "PROVEN", "evidence": "sensitivity.json"}}, project, project
+        )
+        == "VALIDATED"
+    )
     verifier_dir = tmp_path / "verifier"
     verifier_dir.mkdir()
     (verifier_dir / "local.json").write_text("{}\n", encoding="utf-8")
-    assert sensitivity_status(
-        {"sensitivity": {"status": "PROVEN", "evidence": "local.json"}}, project, verifier_dir
-    ) == "VALIDATED"
+    assert (
+        sensitivity_status(
+            {"sensitivity": {"status": "PROVEN", "evidence": "local.json"}}, project, verifier_dir
+        )
+        == "VALIDATED"
+    )
 
     source = tmp_path / "proven"
     _write_contract(
@@ -174,7 +200,9 @@ def test_v3_branch_edges_for_schema_sensitivity_and_protection(tmp_path: Path) -
     register_verifier(source, project)
     protect_verifier(project, "VER-PROVEN-EDGE")
     assert check_protected_verifiers(project) == []
-    metadata = project / ".agentic" / "verification" / "generated" / "VER-PROVEN-EDGE" / "verifier.json"
+    metadata = (
+        project / ".agentic" / "verification" / "generated" / "VER-PROVEN-EDGE" / "verifier.json"
+    )
     metadata.write_text(metadata.read_text(encoding="utf-8") + "\n", encoding="utf-8")
     assert check_protected_verifiers(project) == ["protected verifier changed: VER-PROVEN-EDGE"]
     with pytest.raises(AgenticError, match="not found"):
@@ -182,30 +210,58 @@ def test_v3_branch_edges_for_schema_sensitivity_and_protection(tmp_path: Path) -
 
     registry = project / ".agentic" / "verification" / "registry.json"
     registry.write_text(
-        json.dumps({
-            "schema_version": "1",
-            "verifiers": [{"id": "VER-NOHASH", "path": ".agentic/verification/generated/VER-PROVEN-EDGE", "trust": "PROTECTED", "persistence": "durable"}],
-        }) + "\n",
+        json.dumps(
+            {
+                "schema_version": "1",
+                "verifiers": [
+                    {
+                        "id": "VER-NOHASH",
+                        "path": ".agentic/verification/generated/VER-PROVEN-EDGE",
+                        "trust": "PROTECTED",
+                        "persistence": "durable",
+                    }
+                ],
+            }
+        )
+        + "\n",
         encoding="utf-8",
     )
     assert check_protected_verifiers(project) == []
 
 
-def test_v3_cli_and_evolution_error_edges(tmp_path: Path) -> None:
+def test_cli_and_evolution_error_edges(tmp_path: Path) -> None:
     project = tmp_path / "project"
     initialize_project(project)
     source = tmp_path / "cli-verifier"
     _write_contract(source, "VER-CLI", command=[sys.executable, "run.py"])
     (source / "run.py").write_text("raise SystemExit(0)\n", encoding="utf-8")
-    assert cli.command_verifier_register(argparse.Namespace(path=str(source), project_root=str(project))) == 0
-    assert cli.command_verify(argparse.Namespace(project_root=str(project), verifier_id="VER-CLI")) == 0
-    assert cli.command_verifier_validate(argparse.Namespace(project_root=str(project), verifier_id="VER-CLI", path=None)) == 0
-    assert cli.command_doctor(argparse.Namespace(config=str(project / "agentic.config.json"), check_tools=True)) in (0, 1)
+    assert (
+        cli.command_verifier_register(
+            argparse.Namespace(path=str(source), project_root=str(project))
+        )
+        == 0
+    )
+    assert (
+        cli.command_verify(argparse.Namespace(project_root=str(project), verifier_id="VER-CLI"))
+        == 0
+    )
+    assert (
+        cli.command_verifier_validate(
+            argparse.Namespace(project_root=str(project), verifier_id="VER-CLI", path=None)
+        )
+        == 0
+    )
+    assert cli.command_doctor(
+        argparse.Namespace(config=str(project / "agentic.config.json"), check_tools=True)
+    ) in (0, 1)
     with pytest.raises(ValueError, match="unknown adapters"):
         sync_adapters(project, ["unknown"])
     with pytest.raises(AgenticError, match="only migration"):
-        cli.command_migrate(argparse.Namespace(project_root=str(project), to="2.0", force=False))
-    assert cli.command_migrate(argparse.Namespace(project_root=str(project), to="3.0", force=False)) == 0
+        cli.command_migrate(argparse.Namespace(project_root=str(project), to="999.0", force=False))
+    assert (
+        cli.command_migrate(argparse.Namespace(project_root=str(project), to="3.0", force=False))
+        == 0
+    )
     with pytest.raises(AgenticError, match="requires"):
         register_lifecycle(project, {"id": "bad"})
     assert hygiene(project, "not-a-real-ref")["status"] == "PASS"

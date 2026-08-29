@@ -139,7 +139,9 @@ def _candidate_directories(root: Path, max_depth: int) -> list[Path]:
     return candidates
 
 
-def detect_projects(root: Path, profiles: dict[str, Profile], max_depth: int = 4) -> list[Detection]:
+def detect_projects(
+    root: Path, profiles: dict[str, Profile], max_depth: int = 4
+) -> list[Detection]:
     if max_depth < 0:
         raise AgenticError("max detection depth must be zero or greater")
     root = root.resolve()
@@ -150,7 +152,9 @@ def detect_projects(root: Path, profiles: dict[str, Profile], max_depth: int = 4
                 continue
             matches: list[tuple[str, float]] = []
             for detector in profile.detectors:
-                names = sorted(path.name for path in directory.glob(detector.pattern) if path.is_file())
+                names = sorted(
+                    path.name for path in directory.glob(detector.pattern) if path.is_file()
+                )
                 matches.extend((name, detector.confidence) for name in names)
             if matches:
                 detections.append(

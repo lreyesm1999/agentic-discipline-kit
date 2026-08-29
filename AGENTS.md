@@ -1,4 +1,4 @@
-# AGENTS.md — Agentic Discipline v2 Orchestrator
+# AGENTS.md — Agentic Discipline Orchestrator
 
 ## Authority order
 

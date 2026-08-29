@@ -5,11 +5,9 @@
 | Version | Supported |
 |---|---|
 | 1.x | Yes |
-| 2.1.x | Internal compatibility milestone only |
-| < 1.0 | No |
+| Any other public version | No |
 
-The current security-supported line is 1.x. Version 2.1 was an internal pre-public compatibility
-milestone; new security fixes target the public 1.x line.
+The current and only security-supported public line is 1.x.
 
 ## Reporting a vulnerability
 

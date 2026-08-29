@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.0.0",
-  "generated_at_utc": "2026-08-29T17:50:38.754986+00:00",
+  "generated_at_utc": "2026-08-29T18:25:45.238722+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -40,7 +40,7 @@
     },
     {
       "path": ".github/ISSUE_TEMPLATE/bug.yml",
-      "sha256": "39303cb51b03898654d70215fc49ee7ea2893c6a6137d12c653a80ff8d856037",
+      "sha256": "e6fda095c96ea230fdc39264ee5cc0dc98af8e23dfcdf884c8a6a48223b699b2",
       "bytes": 1216
     },
     {
@@ -60,22 +60,22 @@
     },
     {
       "path": ".github/workflows/agentic-integrity.yml",
-      "sha256": "12dbf53b56f0482f8f6a31d4e7c4675b63e145215d56481c126d1d27e1ce5438",
+      "sha256": "e690383d1e1d6b022c940ab2dc18685af013894dd834a5a4ec2f5e10d0e2f5b0",
       "bytes": 696
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "b28cf77cd41d304886a994c35f58110f0f16c9d8d46789707615f834eafbf568",
+      "sha256": "b5e63cdf71e8732106ffe65700ce3f234b8f0f08b810431d70291241c77c9e11",
       "bytes": 2986
     },
     {
       "path": ".github/workflows/release.yml",
-      "sha256": "ccf865d9d340ee4cc86e4f24c4f4dfd50f6699e5c40ce6ebb79fb03b8bf36155",
-      "bytes": 2940
+      "sha256": "01ca5f5484e5a9856e91a0c14de2862f163df70380582ca39cb42d4a51f8857c",
+      "bytes": 2906
     },
     {
       "path": ".github/workflows/security.yml",
-      "sha256": "6c1570aa36222435115ca5f17ba5c06740e953f639adb1934d10873f5093cbc3",
+      "sha256": "beaecfcd0cd5c1aa3c26cb45c4458c0022deff2bf18e3227ef70be4b4af1e1c2",
       "bytes": 1242
     },
     {
@@ -85,7 +85,7 @@
     },
     {
       "path": ".pre-commit-config.yaml",
-      "sha256": "a7ebbd24ebf0fa5f876013c213bf4cb47c1661f6633e4956dbe835e2b6310bd0",
+      "sha256": "df4e76979a7be3662922bbdb5e2733305f167ec9ddf1ed949e2578b6484d11fb",
       "bytes": 475
     },
     {
@@ -95,7 +95,7 @@
     },
     {
       "path": "action.yml",
-      "sha256": "3eeadb6696fe3209d1f04780bdb4a6126900e8689aed3adbe827bde55c34883b",
+      "sha256": "273f653162e3516c0ee10127abfdf98a6c3c9f8da4453020081593ce2d64ce97",
       "bytes": 872
     },
     {
@@ -125,8 +125,8 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "24f1e7607196865f117e2b438fedc043d058124fd9b8700fff503b915c585191",
-      "bytes": 3452
+      "sha256": "1734b5de486ee28c6e42b0847406c17efe461d85f425d68c2f7c1c83acf8405c",
+      "bytes": 3449
     },
     {
       "path": "architecture/production-trust-boundaries.md",
@@ -140,8 +140,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "6f8991d46eeecad2c0eb8a7bb507574c914387514a8975b574cd963977a2151d",
-      "bytes": 1910
+      "sha256": "8185571d4b4fea69a8240b78940523d34e72b991ba0b6a3d98f20e71b06b6cab",
+      "bytes": 1931
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -280,8 +280,8 @@
     },
     {
       "path": "docs/cli.md",
-      "sha256": "e741afc0aa2c43bd6670e78ad729237bdc17b303c8518af647e417d685708005",
-      "bytes": 4694
+      "sha256": "aa25b57abe0786afa96ca60aeb80bf7840d8abf941b343bd1e75ed6b06001bd3",
+      "bytes": 4702
     },
     {
       "path": "docs/compatibility.md",
@@ -289,14 +289,9 @@
       "bytes": 738
     },
     {
-      "path": "docs/migration-v1-to-v2.md",
-      "sha256": "4f7587119ac85060eb9a854052bdfcb939377d74741fd92c9763a50ddbeaf418",
-      "bytes": 1062
-    },
-    {
-      "path": "docs/migration-v2-to-v3.md",
-      "sha256": "e9a3eeb573840c877d30020530f502ffad8976796c4f503659ab6a3c4eea7c86",
-      "bytes": 826
+      "path": "docs/payload-migration.md",
+      "sha256": "8d197e23016cd612a6cc5145befbc03b744f048b15b301e8e12b7ce1a0cbeec7",
+      "bytes": 874
     },
     {
       "path": "docs/profiles.md",
@@ -350,8 +345,8 @@
     },
     {
       "path": "GITHUB_SETUP.md",
-      "sha256": "4945ae886daa54e48d6f38cadca00fa35f8196ba34da83d8b130701c486f85f8",
-      "bytes": 2085
+      "sha256": "7f1a8259135ae959a64e0833f4488e8a3460b0884547e65e7ddffcab185f1bf5",
+      "bytes": 2041
     },
     {
       "path": "GOVERNANCE.md",
@@ -370,8 +365,8 @@
     },
     {
       "path": "MASTER_PROMPT.md",
-      "sha256": "488f15bc3e5d49c8f2e34c57351d9649c4a4b5b02df81e603901cb2a574afe1e",
-      "bytes": 2476
+      "sha256": "3c892fecc5cd54d8b95533c1cbf68a11bf261c8484131ed90ec0f71d7949d912",
+      "bytes": 2473
     },
     {
       "path": "packaging/agentic-discipline.spec",
@@ -385,13 +380,13 @@
     },
     {
       "path": "policies/architecture.md",
-      "sha256": "17c6391d44172eed1964f961f698138f362f1ab191a98cef424dfc580b15afa1",
-      "bytes": 441
+      "sha256": "20a8ac966b5d91443d5d1295cea63066105f93fc60ef6e37886e1396526fd132",
+      "bytes": 438
     },
     {
       "path": "policies/definition-of-done.md",
-      "sha256": "827ece7b59010c7bb15a4efa2a29fed8c83b569dc1eecd641c82059467a63187",
-      "bytes": 897
+      "sha256": "334644c16f2dcf94a227f3fba7bd35d222bbcf6c53df4d2e92b763a9a58a7884",
+      "bytes": 894
     },
     {
       "path": "policies/integrity.md",
@@ -400,8 +395,8 @@
     },
     {
       "path": "policies/quality-gates.md",
-      "sha256": "b8d639b37a99eb2de4fa9d8b334e756b04aba0593ade232c4ec24ed35d4a97e6",
-      "bytes": 601
+      "sha256": "8ebb1ca80f67047d40d145a9a573dca7ef96f62b2d3c672d9ae0f6e87f0c67a1",
+      "bytes": 598
     },
     {
       "path": "policies/risk.md",
@@ -410,8 +405,8 @@
     },
     {
       "path": "policies/security.md",
-      "sha256": "e889b969ea524d9d7de62bd48e36be8042277923178f286d188eebe179f9500d",
-      "bytes": 386
+      "sha256": "54aa21bb404811511cb24316aa7950ee4a81d8f634e86a090bd97ee1bdf5008a",
+      "bytes": 383
     },
     {
       "path": "policies/spec-protection.md",
@@ -425,8 +420,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "1b0c3b02b00c9d4e0fc4864e58b6edddec326fa7c675975c6ece63d6daf16055",
-      "bytes": 12365
+      "sha256": "6c8ceea3407d9fd3749c77d0585a6644343ad946317f9ecd2966b84605c47d7b",
+      "bytes": 12450
     },
     {
       "path": "ROADMAP.md",
@@ -495,8 +490,8 @@
     },
     {
       "path": "scripts/bootstrap_project.py",
-      "sha256": "c0b6f43fa70cfc99a7f5c12d3fca487ee2a79f6d1117825e709e52b6db5802fa",
-      "bytes": 871
+      "sha256": "585b0b8ad145261acc22bf958cc16d9e07c4d7dadda740e495d6a5887c784b41",
+      "bytes": 878
     },
     {
       "path": "scripts/build_manifest.py",
@@ -545,8 +540,8 @@
     },
     {
       "path": "SECURITY.md",
-      "sha256": "d1d795fd1b0a88db2fb5a49ea5ca81313854ea203e06a8bdd6764afbd4ea4d81",
-      "bytes": 952
+      "sha256": "11bfee31e3ff715d0c0f25dbdba6581e89815b4a5a19681be896a94ad46e03f0",
+      "bytes": 826
     },
     {
       "path": "skills/01-requirements-intake/SKILL.md",
@@ -670,18 +665,18 @@
     },
     {
       "path": "src/agentic_discipline/adapters.py",
-      "sha256": "420ce0cc2de2b6d65476463f4562b0b5417c965b6035a07b2dd689b07f7f58c0",
-      "bytes": 3413
+      "sha256": "085ab0dfd042371b8d13c617aa1d1400b30c226ba190f72478726111212adbe4",
+      "bytes": 3419
     },
     {
       "path": "src/agentic_discipline/bootstrap.py",
-      "sha256": "ddf395ccab0312c11307770b0c9ad8a2bfa6278df23f68e0dcd357da519ff181",
-      "bytes": 8815
+      "sha256": "07e172eee860dcea95c9793983164f299c9213eeaafa806c200276a8f69c4bc8",
+      "bytes": 8826
     },
     {
       "path": "src/agentic_discipline/cli.py",
-      "sha256": "a47335dbb5b6b5a99866597a69c1fb2ed4a3815ba11ce627665c03fd1e4d23c8",
-      "bytes": 17381
+      "sha256": "9b9448c0d154956130d1a4952bd0e4c4b063945f52482186291bcad5deea3053",
+      "bytes": 17480
     },
     {
       "path": "src/agentic_discipline/common.py",
@@ -700,8 +695,8 @@
     },
     {
       "path": "src/agentic_discipline/evolution.py",
-      "sha256": "7627b9bcaa57827297c624e1498562a60b4d97593ded70d30236a412f54ea528",
-      "bytes": 3140
+      "sha256": "705f7f03a99825790743e88f415efd72a3c00f87023fc6a3a2418199ec86c345",
+      "bytes": 3272
     },
     {
       "path": "src/agentic_discipline/integrity.py",
@@ -710,13 +705,13 @@
     },
     {
       "path": "src/agentic_discipline/migration.py",
-      "sha256": "e29802a5524d5921a071791e98dda0a2fc593919fd5f2ef518222a0a17eb6da7",
-      "bytes": 1217
+      "sha256": "904a57fbd4f1790aa1cde98baee56d1f507cfc69f54ed901914f2206d004c532",
+      "bytes": 1348
     },
     {
       "path": "src/agentic_discipline/profiles.py",
-      "sha256": "7191b367b697d4cf64aa8cf57584633caa669caa0729f68c23ffdb1511585a71",
-      "bytes": 8593
+      "sha256": "a7b2356104298872dee9cdefc6bed7542b4a96e7c73fd387a74b902dbbf098d6",
+      "bytes": 8637
     },
     {
       "path": "src/agentic_discipline/quality.py",
@@ -735,28 +730,28 @@
     },
     {
       "path": "src/agentic_discipline/validation.py",
-      "sha256": "7b7d02136a53d56cf35da973eedc65eaf98c8f6ba61508665b63e5abf58c00f1",
-      "bytes": 5307
+      "sha256": "cd72053191bfe6b41fd97848d9576bd9ffd435c8338f4ac88a2bee217ef0dd76",
+      "bytes": 5269
     },
     {
       "path": "src/agentic_discipline/verifier/__init__.py",
-      "sha256": "523222d8a63670b11e9371f0e62c45cc2a3a2e3a0cef043b0daff2ee44ebb81f",
-      "bytes": 339
+      "sha256": "23bec4ad2513960121bc694cb71c2a7b987a81f307168d82077ebeb5c8eb1acb",
+      "bytes": 362
     },
     {
       "path": "src/agentic_discipline/verifier/executor.py",
-      "sha256": "78f90ebb8caf935d55925da795ff2ea1eda493b0c1f860bd3061855859796771",
-      "bytes": 5587
+      "sha256": "98c93c8edda67a3e426e4af8ad0bccfe3908786f2b212ee5c04ba176e17a0296",
+      "bytes": 5811
     },
     {
       "path": "src/agentic_discipline/verifier/protection.py",
-      "sha256": "daa9f5025781fd4abbf1e3b9d7af8f8d3a2f91b6b810de6d705187523a7777ba",
-      "bytes": 1883
+      "sha256": "499d6672a4160157f4be3caa4cd50a8a3a66b2aa66061d5d3bc0f7a188679b34",
+      "bytes": 1913
     },
     {
       "path": "src/agentic_discipline/verifier/registry.py",
-      "sha256": "40c24418ecd8b35ba826154bf3494c45d812697539f6bc3a5f43dc4bc9e821d2",
-      "bytes": 4129
+      "sha256": "2e4fd41fa8fc2d7460b4bea6a6855727e738c55e24bbf5231663ab86c88d9568",
+      "bytes": 4175
     },
     {
       "path": "src/agentic_discipline/verifier/result.py",
@@ -765,8 +760,8 @@
     },
     {
       "path": "src/agentic_discipline/verifier/schema.py",
-      "sha256": "6d625a996b3cf79547af79366ca9d0bdde78787e77d602a39e4de2c5db3f9731",
-      "bytes": 1352
+      "sha256": "b8fd896a36229570b840a95e3c6dc3deb9f474a46318478d5f8571f318e69c41",
+      "bytes": 1376
     },
     {
       "path": "src/agentic_discipline/verifier/sensitivity.py",
@@ -854,24 +849,24 @@
       "bytes": 1851
     },
     {
-      "path": "tests/test_v3.py",
-      "sha256": "c83c1e0b03e4ad0e39b805720f71330ff13d9ae93130a7eee469c550ec17673d",
-      "bytes": 3379
-    },
-    {
-      "path": "tests/test_v3_runtime_edges.py",
-      "sha256": "12ec68d5e3de132fbec2bd737cb645921f09dc8e0b06c96aeee978de5d4a49bf",
-      "bytes": 10707
-    },
-    {
       "path": "tests/test_validation.py",
       "sha256": "7b0ca4766b2ec45b39e3bc78ece8ee8e5d7ca6efcff47e597b32899e905ab167",
       "bytes": 2879
     },
     {
+      "path": "tests/test_verification_evolution.py",
+      "sha256": "603a9b5ed50f36d873b316380324f7034454a83401c9c137fd143fdb68091a22",
+      "bytes": 3519
+    },
+    {
+      "path": "tests/test_verification_runtime_edges.py",
+      "sha256": "04958f076a69f31cc59a45c1381c6a59ef18f3c0a2f99486b89db8154ab10400",
+      "bytes": 11310
+    },
+    {
       "path": "tests/test_verifier.py",
-      "sha256": "e96b8029c731208abc3c9f367d42954c1ed139ead7ea447670c7df596f9f6136",
-      "bytes": 2332
+      "sha256": "f0d820a552f573857f12f7f77f9c4118930e4d668d6b81563725bcff9a7e289a",
+      "bytes": 2338
     },
     {
       "path": "VERSION",

@@ -127,7 +127,7 @@ agentic-discipline evidence-verify --check-artifacts
 
 ## bootstrap
 
-Legacy alias for `init`. `--stack` is now an optional profile override; omitting it enables detection.
+Compatibility alias for `init`. `--stack` is an optional profile override; omitting it enables detection.
 
 ```bash
 agentic-discipline bootstrap --target ../my-project
@@ -164,14 +164,14 @@ agentic-discipline adapters sync --adapter claude --adapter cursor
 
 ## migrate
 
-Migrate an existing pre-public v2.1 installation without deleting contracts or evidence. The `3.0`
-target names the internal payload format, not the public package version:
+Migrate an earlier internal installation without deleting contracts or evidence. The `3.0` target
+names the current internal payload format, not the public package version:
 
 ```bash
 agentic-discipline migrate --to 3.0
 ```
 
-The command writes `artifacts/migration-v3-report.json`.
+The command writes `artifacts/payload-migration-report.json`.
 
 ## hygiene
 

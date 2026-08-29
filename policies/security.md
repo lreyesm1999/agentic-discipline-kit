@@ -1,4 +1,4 @@
-# Security Policy v2
+# Security Policy
 
 Required where applicable:
 - dependency vulnerability scan

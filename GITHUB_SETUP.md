@@ -10,7 +10,7 @@ Create an empty GitHub repository, then run:
 ```bash
 git init
 git add .
-git commit -m "chore: initial Agentic Discipline Kit v2 repository"
+git commit -m "chore: initialize Agentic Discipline Kit repository"
 git branch -M main
 git remote add origin <repository-url>
 git push -u origin main
@@ -66,9 +66,8 @@ Security / dependency-review
 Security / codeql
 ```
 
-Before the first push, replace the placeholder owner `@agentic-discipline-maintainers` in
-`.github/CODEOWNERS` with a real user or team that has write access. Require Code Owner approval for
-protected-contract and workflow changes.
+If the repository is transferred or forked, update `.github/CODEOWNERS` with a user or team that has
+write access. Require Code Owner approval for protected-contract and workflow changes.
 
 Mutation testing runs on Linux because current Mutmut releases require operating-system `fork`
 support. Keep `CI / mutation` required for changes to the deterministic Python core.

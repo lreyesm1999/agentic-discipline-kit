@@ -6,7 +6,9 @@ from agentic_discipline.verifier.executor import execute_verifier
 from agentic_discipline.verifier.registry import list_verifiers, register_verifier
 
 
-def _contract(path: Path, *, command: list[str] | None = None, requires: dict | None = None) -> None:
+def _contract(
+    path: Path, *, command: list[str] | None = None, requires: dict | None = None
+) -> None:
     path.mkdir()
     (path / "verifier.json").write_text(
         json.dumps(

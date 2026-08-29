@@ -7,7 +7,7 @@ from agentic_discipline.adapters import sync_adapters
 from agentic_discipline.bootstrap import initialize_project
 from agentic_discipline.common import AgenticError
 from agentic_discipline.evolution import hygiene, register_lifecycle
-from agentic_discipline.migration import migrate_to_v3
+from agentic_discipline.migration import migrate_payload
 from agentic_discipline.verifier.protection import protect_verifier
 from agentic_discipline.verifier.registry import load_verifier, register_verifier
 
@@ -29,7 +29,11 @@ def _validated_verifier(path: Path) -> None:
                 "timeout_seconds": 10,
                 "working_directory": ".",
                 "expected_exit_code": 0,
-                "sensitivity": {"method": "known_bad_fixture", "evidence": "sensitivity.json", "status": "PROVEN"},
+                "sensitivity": {
+                    "method": "known_bad_fixture",
+                    "evidence": "sensitivity.json",
+                    "status": "PROVEN",
+                },
                 "persistence": "durable",
                 "protected": False,
             },
@@ -42,7 +46,7 @@ def _validated_verifier(path: Path) -> None:
     (path / "sensitivity.json").write_text('{"status":"FAIL"}\n', encoding="utf-8")
 
 
-def test_adapter_sync_is_idempotent_and_migration_is_reported(tmp_path: Path) -> None:
+def test_adapter_sync_is_idempotent_and_payload_migration_is_reported(tmp_path: Path) -> None:
     project = tmp_path / "project"
     initialize_project(project)
     assert (project / ".agentic" / "schemas" / "evidence.schema.json").is_file()
@@ -51,10 +55,12 @@ def test_adapter_sync_is_idempotent_and_migration_is_reported(tmp_path: Path) ->
     first = sync_adapters(project)
     second = sync_adapters(project)
     assert "claude" in first["adapters"]
-    assert all(str(item).startswith("SKIP") for item in second["actions"] if "SKILL" not in str(item))
-    report = migrate_to_v3(project)
+    assert all(
+        str(item).startswith("SKIP") for item in second["actions"] if "SKILL" not in str(item)
+    )
+    report = migrate_payload(project)
     assert report["to"] == "3.0"
-    assert (project / "artifacts" / "migration-v3-report.json").is_file()
+    assert (project / "artifacts" / "payload-migration-report.json").is_file()
 
 
 def test_protected_verifier_change_is_rejected(tmp_path: Path) -> None:
@@ -64,8 +70,12 @@ def test_protected_verifier_change_is_rejected(tmp_path: Path) -> None:
     _validated_verifier(source)
     register_verifier(source, project)
     protect_verifier(project, "VER-PROTECTED")
-    metadata = project / ".agentic" / "verification" / "generated" / "VER-PROTECTED" / "verifier.json"
-    metadata.write_text(metadata.read_text(encoding="utf-8").replace("protected smoke", "changed"), encoding="utf-8")
+    metadata = (
+        project / ".agentic" / "verification" / "generated" / "VER-PROTECTED" / "verifier.json"
+    )
+    metadata.write_text(
+        metadata.read_text(encoding="utf-8").replace("protected smoke", "changed"), encoding="utf-8"
+    )
     with pytest.raises(AgenticError, match="protected verifier changed"):
         load_verifier(project, "VER-PROTECTED")
 

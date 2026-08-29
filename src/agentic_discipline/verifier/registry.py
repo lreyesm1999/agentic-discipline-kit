@@ -68,7 +68,9 @@ def load_verifier(project_root: Path, verifier_id: str) -> tuple[dict[str, Any],
             raise AgenticError(f"protected verifier changed: {verifier_id}")
     metadata = load_and_validate_verifier(metadata_path)
     if metadata["id"] != verifier_id:
-        raise AgenticError(f"verifier id mismatch: registry={verifier_id}, metadata={metadata['id']}")
+        raise AgenticError(
+            f"verifier id mismatch: registry={verifier_id}, metadata={metadata['id']}"
+        )
     return metadata, directory
 
 
@@ -92,7 +94,9 @@ def register_verifier(source: Path, project_root: Path) -> dict[str, Any]:
             "path": destination.relative_to(project_root.resolve()).as_posix(),
             "trust": "VALIDATED" if metadata["sensitivity"]["status"] == "PROVEN" else "DRAFT",
             "persistence": metadata["persistence"],
-            "last_validation": datetime.now(timezone.utc).isoformat() if metadata["sensitivity"]["status"] == "PROVEN" else None,
+            "last_validation": datetime.now(timezone.utc).isoformat()
+            if metadata["sensitivity"]["status"] == "PROVEN"
+            else None,
             "metadata_sha256": _metadata_hash(destination / "verifier.json"),
         }
     )

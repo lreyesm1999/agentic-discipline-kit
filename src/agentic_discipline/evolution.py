@@ -9,7 +9,9 @@ from .common import AgenticError, changed_files, run_git
 from .validation import load_json, validate_schema
 
 TEMPORARY_PATTERNS = ("debug_", "inspect_", "reproduce_", "migration_helper")
-FALLBACK_PATTERN = re.compile(r"except\s+[^:]+:\s*[\r\n]+\s*(?:return|use_|fallback)", re.IGNORECASE)
+FALLBACK_PATTERN = re.compile(
+    r"except\s+[^:]+:\s*[\r\n]+\s*(?:return|use_|fallback)", re.IGNORECASE
+)
 
 
 def lifecycle_path(project_root: Path) -> Path:
@@ -32,7 +34,9 @@ def register_lifecycle(project_root: Path, item: dict[str, Any]) -> dict[str, An
     if not required.issubset(item):
         raise AgenticError("lifecycle item requires id, path, and state")
     registry = load_lifecycle(project_root)
-    registry["artifacts"] = [existing for existing in registry["artifacts"] if existing["id"] != item["id"]]
+    registry["artifacts"] = [
+        existing for existing in registry["artifacts"] if existing["id"] != item["id"]
+    ]
     registry["artifacts"].append(item)
     output = lifecycle_path(project_root)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -53,13 +57,27 @@ def hygiene(project_root: Path, base_ref: str | None = None) -> dict[str, Any]:
     else:
         diff = ""
     for relative in changed:
-        if relative not in added and any(Path(relative).name.lower().startswith(prefix) for prefix in TEMPORARY_PATTERNS):
+        if relative not in added and any(
+            Path(relative).name.lower().startswith(prefix) for prefix in TEMPORARY_PATTERNS
+        ):
             added.append(relative)
-    fallbacks = [line.strip() for line in diff.splitlines() if line.startswith("+") and FALLBACK_PATTERN.search(line[1:])]
+    fallbacks = [
+        line.strip()
+        for line in diff.splitlines()
+        if line.startswith("+") and FALLBACK_PATTERN.search(line[1:])
+    ]
     lifecycle = load_lifecycle(root)
     temporary = [item for item in lifecycle["artifacts"] if item["state"] == "TEMPORARY"]
-    deprecated = [item for item in lifecycle["artifacts"] if item["state"] == "DEPRECATE" and not item.get("removal_condition")]
-    unresolved = [item["id"] for item in lifecycle["artifacts"] if item["state"] == "REMOVE" and (root / item["path"]).exists()]
+    deprecated = [
+        item
+        for item in lifecycle["artifacts"]
+        if item["state"] == "DEPRECATE" and not item.get("removal_condition")
+    ]
+    unresolved = [
+        item["id"]
+        for item in lifecycle["artifacts"]
+        if item["state"] == "REMOVE" and (root / item["path"]).exists()
+    ]
     result = {
         "status": "FAIL" if fallbacks or deprecated or unresolved or added else "PASS",
         "temporary_artifacts": temporary,

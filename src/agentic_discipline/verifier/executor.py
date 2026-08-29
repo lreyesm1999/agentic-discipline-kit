@@ -35,7 +35,9 @@ def _safe_working_directory(project_root: Path, relative: str) -> Path:
     root = project_root.resolve()
     path = (root / relative).resolve()
     if not path.is_relative_to(root) or not path.is_dir():
-        raise AgenticError("verifier working_directory must be an existing project-relative directory")
+        raise AgenticError(
+            "verifier working_directory must be an existing project-relative directory"
+        )
     return path
 
 
@@ -73,7 +75,11 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
         # A verifier package is self-contained by default, so `python run.py`
         # resolves beside verifier.json.  Set an explicit project-relative
         # directory when the verifier intentionally operates from the project.
-        cwd = directory if working_directory == "." else _safe_working_directory(project_root, working_directory)
+        cwd = (
+            directory
+            if working_directory == "."
+            else _safe_working_directory(project_root, working_directory)
+        )
         env = os.environ.copy()
         result_path = verification_root(project_root) / "artifacts" / f"{verifier_id}.raw.json"
         result_path.parent.mkdir(parents=True, exist_ok=True)
@@ -98,16 +104,26 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
         except subprocess.TimeoutExpired as exc:
             result["status"] = "BLOCKED"
             result["error"] = f"verifier timed out after {metadata['timeout_seconds']} seconds"
-            result["observations"] = {"stdout": str(exc.stdout or ""), "stderr": str(exc.stderr or "")}
+            result["observations"] = {
+                "stdout": str(exc.stdout or ""),
+                "stderr": str(exc.stderr or ""),
+            }
     result["duration_seconds"] = round(time.monotonic() - start_clock, 6)
     result["finished_at"] = datetime.now(timezone.utc).isoformat()
     result["artifacts"] = artifact_hashes(project_root, metadata.get("artifacts", []))
     seen_artifacts = {item["path"] for item in result["artifacts"]}
     for relative in metadata.get("artifacts", []):
         package_path = (directory / relative).resolve()
-        if package_path.is_file() and package_path.is_relative_to(project_root) and relative not in seen_artifacts:
+        if (
+            package_path.is_file()
+            and package_path.is_relative_to(project_root)
+            and relative not in seen_artifacts
+        ):
             result["artifacts"].append(
-                {"path": package_path.relative_to(project_root).as_posix(), "sha256": hash_file(package_path)}
+                {
+                    "path": package_path.relative_to(project_root).as_posix(),
+                    "sha256": hash_file(package_path),
+                }
             )
     output = verification_root(project_root) / "artifacts" / f"{verifier_id}.json"
     output.parent.mkdir(parents=True, exist_ok=True)

@@ -17,13 +17,13 @@ No unreleased changes.
 - Idempotent vendor adapter synchronization, migration reports, and evolution hygiene checks.
 - Verifier, adapter, migration, and hygiene CLI commands.
 
-## Pre-public development milestones
+## Pre-release development
 
-The 2.x entries below describe internal milestones and were not released publicly.
+The following capabilities were built during private development and first shipped publicly in
+1.0.0.
 
-## [2.1.0] - 2026-08-28
+### Verification foundation
 
-### Added
 - Fail-closed quality configuration validated by JSON Schema.
 - Typed requirement-graph validation and complete evidence-path checks.
 - Strict Acceptance IR compilation and schema validation.
@@ -31,15 +31,15 @@ The 2.x entries below describe internal milestones and were not released publicl
 - Packaged bootstrap command and wheel smoke testing.
 - Cross-platform CI, protected-contract enforcement, security audit and build provenance.
 
-### Changed
+### Workflow improvements
+
 - `doctor` now verifies Git, contracts, schemas and quality configuration.
 - Risk classification can use external weights and fail CI at a configured level.
 - Integrity auditing detects removed tests/assertions and disabled workflows.
 - Production contracts, workflows and executable configuration are protected boundaries.
 
-## [2.0.0] - 2026-08-28
+### Engineering lifecycle foundation
 
-### Added
 - 20-skill engineering lifecycle.
 - Requirement graph.
 - Acceptance IR/compiler.

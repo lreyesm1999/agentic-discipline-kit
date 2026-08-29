@@ -1,4 +1,4 @@
-# Quality Gates Policy v2
+# Quality Gates Policy
 
 ## Deterministic evidence
 

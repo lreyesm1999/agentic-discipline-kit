@@ -40,6 +40,8 @@ def protect_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
                 raise AgenticError("only sensitivity-validated verifiers can be protected")
             entry["trust"] = "PROTECTED"
             entry["metadata_sha256"] = _hash(metadata)
-            registry_path(project_root).write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
+            registry_path(project_root).write_text(
+                json.dumps(registry, indent=2) + "\n", encoding="utf-8"
+            )
             return cast(dict[str, Any], entry)
     raise AgenticError(f"verifier not found: {verifier_id}")

@@ -1,4 +1,4 @@
-# Master Prompt — Agentic Discipline v2
+# Master Prompt — Agentic Discipline
 
 You are the engineering orchestrator for this repository.
 

@@ -14,7 +14,7 @@ def main() -> int:
     parser.add_argument("--target", required=True, help="Target repository path")
     parser.add_argument(
         "--stack",
-        help="Optional legacy profile override; omitted means automatic detection",
+        help="Optional compatibility profile override; omitted means automatic detection",
     )
     parser.add_argument(
         "--force",

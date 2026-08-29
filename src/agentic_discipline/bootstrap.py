@@ -91,8 +91,8 @@ def _write_quality_config(
     actions.append(f"WRITE {output}")
 
 
-def _install_v3_payload(kit_root: Path, target_root: Path, force: bool, actions: list[str]) -> None:
-    """Install the small canonical v3 payload beside the legacy v2 surface."""
+def _install_payload(kit_root: Path, target_root: Path, force: bool, actions: list[str]) -> None:
+    """Install the canonical payload beside the compatibility surface."""
     canonical_items = {
         kit_root / "agentic" / "constitution": target_root / ".agentic" / "constitution",
         kit_root / "disciplines": target_root / ".agentic" / "skills",
@@ -115,7 +115,9 @@ def _install_v3_payload(kit_root: Path, target_root: Path, force: bool, actions:
         directory.mkdir(parents=True, exist_ok=True)
     registry = verification / "registry.json"
     if not registry.exists() or force:
-        registry.write_text(json.dumps({"schema_version": "1", "verifiers": []}, indent=2) + "\n", encoding="utf-8")
+        registry.write_text(
+            json.dumps({"schema_version": "1", "verifiers": []}, indent=2) + "\n", encoding="utf-8"
+        )
         actions.append(f"WRITE {registry}")
     config = target_root / ".agentic" / "config.json"
     if not config.exists() or force:
@@ -174,7 +176,7 @@ def initialize_project(
     for item in COPY_ITEMS:
         _copy_item(kit_root / item, target_root / item, force, actions)
 
-    _install_v3_payload(kit_root, target_root, force, actions)
+    _install_payload(kit_root, target_root, force, actions)
 
     config = build_quality_config(target_root, detections, profiles)
     _write_quality_config(target_root, config, force, actions)

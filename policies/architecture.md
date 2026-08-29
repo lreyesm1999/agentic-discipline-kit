@@ -1,4 +1,4 @@
-# Architecture Policy v2
+# Architecture Policy
 
 Architecture boundaries should be executable.
 

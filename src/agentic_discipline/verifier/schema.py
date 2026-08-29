@@ -19,7 +19,10 @@ def validate_verifier(metadata: dict[str, Any]) -> list[str]:
         evidence = sensitivity.get("evidence")
         if not isinstance(evidence, str) or not evidence:
             errors.append("sensitivity.evidence: required when status is PROVEN")
-    if metadata.get("protected") is True and metadata.get("sensitivity", {}).get("status") != "PROVEN":
+    if (
+        metadata.get("protected") is True
+        and metadata.get("sensitivity", {}).get("status") != "PROVEN"
+    ):
         errors.append("protected verifiers must have PROVEN sensitivity")
     return errors
 

@@ -16,7 +16,7 @@ from .crap import crap_score
 from .evidence import append_evidence, verify_ledger
 from .evolution import hygiene
 from .integrity import IntegrityFinding, audit_diff
-from .migration import migrate_to_v3
+from .migration import migrate_payload
 from .quality import run_quality
 from .requirements import orphan_requirements, validate_requirement_graph
 from .risk import assess_risk, assess_risk_with_weights, level_at_least, load_risk_weights
@@ -50,7 +50,9 @@ def command_doctor(args: argparse.Namespace) -> int:
     git_worktree = False
     if git_available:
         try:
-            git_worktree = run_git(["rev-parse", "--is-inside-work-tree"], cwd=root).strip() == "true"
+            git_worktree = (
+                run_git(["rev-parse", "--is-inside-work-tree"], cwd=root).strip() == "true"
+            )
         except AgenticError:
             git_worktree = False
     skills_path = root / "skills"
@@ -170,7 +172,10 @@ def command_integrity(args: argparse.Namespace) -> int:
         print(str(exc), file=sys.stderr)
         return 2
     findings = audit_diff(diff)
-    findings.extend(IntegrityFinding(None, "protected_verifier", finding) for finding in check_protected_verifiers(Path.cwd()))
+    findings.extend(
+        IntegrityFinding(None, "protected_verifier", finding)
+        for finding in check_protected_verifiers(Path.cwd())
+    )
     _json({"status": "FAIL" if findings else "PASS", "findings": findings})
     return 1 if findings else 0
 
@@ -249,7 +254,9 @@ def command_init(args: argparse.Namespace) -> int:
 
 def command_verify(args: argparse.Namespace) -> int:
     root = Path(args.project_root).resolve()
-    ids = [args.verifier_id] if args.verifier_id else [entry["id"] for entry in list_verifiers(root)]
+    ids = (
+        [args.verifier_id] if args.verifier_id else [entry["id"] for entry in list_verifiers(root)]
+    )
     if not ids:
         _json({"status": "NOT_APPLICABLE", "results": []})
         return 0
@@ -302,7 +309,7 @@ def command_adapters_sync(args: argparse.Namespace) -> int:
 def command_migrate(args: argparse.Namespace) -> int:
     if args.to != "3.0":
         raise AgenticError("only migration target 3.0 is supported")
-    result = migrate_to_v3(Path(args.project_root), force=args.force)
+    result = migrate_payload(Path(args.project_root), force=args.force)
     _json(result)
     return 0
 
@@ -422,7 +429,7 @@ def build_parser() -> argparse.ArgumentParser:
     child.add_argument("--adapter", action="append", default=[])
     child.set_defaults(func=command_adapters_sync)
 
-    p = sub.add_parser("migrate", help="Migrate a v2 installation to the v3 payload")
+    p = sub.add_parser("migrate", help="Migrate an earlier installation to the current payload")
     p.add_argument("--to", default="3.0")
     p.add_argument("--project-root", default=".")
     p.add_argument("--force", action="store_true")
@@ -433,9 +440,9 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--base-ref")
     p.set_defaults(func=command_hygiene)
 
-    p = sub.add_parser("bootstrap", help="Legacy alias for init")
+    p = sub.add_parser("bootstrap", help="Compatibility alias for init")
     p.add_argument("--target", required=True)
-    p.add_argument("--stack", help="Optional legacy profile override")
+    p.add_argument("--stack", help="Optional compatibility profile override")
     p.add_argument("--force", action="store_true")
     p.set_defaults(func=command_bootstrap)
 

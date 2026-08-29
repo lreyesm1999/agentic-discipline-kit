@@ -53,7 +53,9 @@ def _sync_file(path: Path, body: str) -> str:
     return f"SKIP {path} (already synchronized)"
 
 
-def sync_adapters(project_root: Path, adapter_names: Iterable[str] | None = None) -> dict[str, object]:
+def sync_adapters(
+    project_root: Path, adapter_names: Iterable[str] | None = None
+) -> dict[str, object]:
     root = project_root.resolve()
     kit_root = find_contract_root()
     names = list(adapter_names) if adapter_names is not None else detect_adapters(root)

@@ -148,7 +148,7 @@ The skills solve a common failure mode of AI coding: a fast implementation that 
 
 ## The current disciplines
 
-The legacy 20 skills remain available for compatibility. New projects additionally receive eleven
+The 20 workflow skills remain available. New projects additionally receive eleven
 canonical disciplines under `.agentic/skills/`: source, specification, acceptance, verification
 engineering, coding, cleaning, architecture, hardening, QA, evidence, and evolution. These are thin
 portable playbooks; the deterministic core remains independent of Python, TypeScript, .NET, or any
@@ -288,13 +288,14 @@ For a tiny throwaway script, the full lifecycle may be unnecessary. For a produc
 - [Architecture](docs/architecture.md)
 - [Security model](docs/security-model.md)
 - [Adoption guide](docs/adoption.md)
+- [Internal payload migration](docs/payload-migration.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
 - [Changelog](CHANGELOG.md)
 
 ## Project status
 
-**v1.0.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, supports portable adapters, and includes compatibility migration for the pre-public v2.1 workflow.
+**v1.0.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, supports portable adapters, and can migrate earlier internal payloads without presenting their format revision as the public package version.
 
 ## License
 

@@ -97,9 +97,7 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
                 or ".." in posix_path.parts
                 or ".." in windows_path.parts
             ):
-                errors.append(
-                    f"gates.{index}.working_directory: must stay inside the project root"
-                )
+                errors.append(f"gates.{index}.working_directory: must stay inside the project root")
 
         parser = gate.get("parser")
         thresholds = gate.get("thresholds", {})

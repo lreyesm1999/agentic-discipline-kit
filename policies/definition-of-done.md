@@ -1,4 +1,4 @@
-# Definition of Done v2
+# Definition of Done
 
 A change is DONE only if all required gates for its risk profile are PASS.
 
