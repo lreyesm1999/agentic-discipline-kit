@@ -24,22 +24,37 @@ def _json(data: object) -> None:
     print(json.dumps(data, indent=2, default=lambda value: value.__dict__))
 
 
+def _doctor_root() -> Path:
+    current = Path.cwd().resolve()
+    candidates = [current, *current.parents]
+    for candidate in candidates:
+        if (
+            (candidate / "AGENTS.md").is_file()
+            and (candidate / "MASTER_PROMPT.md").is_file()
+            and (candidate / "schemas" / "agentic-config.schema.json").is_file()
+        ):
+            return candidate
+    return current
+
+
 def command_doctor(args: argparse.Namespace) -> int:
+    root = _doctor_root()
     git_available = shutil.which("git") is not None
     git_worktree = False
     if git_available:
         try:
-            git_worktree = run_git(["rev-parse", "--is-inside-work-tree"]).strip() == "true"
+            git_worktree = run_git(["rev-parse", "--is-inside-work-tree"], cwd=root).strip() == "true"
         except AgenticError:
             git_worktree = False
-    skill_count = len(list(Path("skills").glob("*/SKILL.md"))) if Path("skills").exists() else 0
+    skills_path = root / "skills"
+    skill_count = len(list(skills_path.glob("*/SKILL.md"))) if skills_path.exists() else 0
     config_arg = getattr(args, "config", None)
     config_path = Path(config_arg) if config_arg else None
     if config_path is None:
-        if Path("agentic.config.json").is_file():
-            config_path = Path("agentic.config.json")
-        elif Path("agentic.config.example.json").is_file():
-            config_path = Path("agentic.config.example.json")
+        if (root / "agentic.config.json").is_file():
+            config_path = root / "agentic.config.json"
+        elif (root / "agentic.config.example.json").is_file():
+            config_path = root / "agentic.config.example.json"
     config_valid = False
     tools: dict[str, bool] = {}
     config_error: str | None = None
@@ -57,10 +72,10 @@ def command_doctor(args: argparse.Namespace) -> int:
         except AgenticError as exc:
             config_error = str(exc)
     required_files = {
-        "agents_md": Path("AGENTS.md").is_file(),
-        "master_prompt": Path("MASTER_PROMPT.md").is_file(),
+        "agents_md": (root / "AGENTS.md").is_file(),
+        "master_prompt": (root / "MASTER_PROMPT.md").is_file(),
         "config": config_path is not None and config_path.is_file(),
-        "config_schema": Path("schemas/agentic-config.schema.json").is_file(),
+        "config_schema": (root / "schemas" / "agentic-config.schema.json").is_file(),
     }
     status = "PASS"
     if (
