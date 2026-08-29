@@ -32,6 +32,10 @@ jobs:
       - uses: actions/dependency-review-action@v4
 
   codeql:
+    # CodeQL upload requires GitHub code scanning to be enabled (for example,
+    # through GitHub Advanced Security on private repositories). Enable this
+    # job by setting the repository variable CODEQL_ENABLED=true.
+    if: vars.CODEQL_ENABLED == 'true'
     runs-on: ubuntu-latest
     permissions:
       security-events: write

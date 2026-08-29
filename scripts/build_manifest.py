@@ -17,12 +17,13 @@ EXCLUDED_PARTS = {
 }
 
 
-def included(path: Path) -> bool:
+def included(path: Path, root: Path) -> bool:
+    relative = path.relative_to(root)
     if path.name in {"MANIFEST.json", ".coverage", "coverage.json", "coverage.xml"} or any(
-        part in EXCLUDED_PARTS or part.endswith(".egg-info") for part in path.parts
+        part in EXCLUDED_PARTS or part.endswith(".egg-info") for part in relative.parts
     ):
         return False
-    if path.parts and path.parts[0] in {"artifacts", ".agent-memory"}:
+    if relative.parts and relative.parts[0] in {"artifacts", ".agent-memory"}:
         return path.name == ".gitkeep"
     return path.is_file()
 
@@ -30,7 +31,7 @@ def included(path: Path) -> bool:
 def main() -> int:
     root = Path.cwd()
     files = []
-    for path in sorted((item for item in root.rglob("*") if included(item))):
+    for path in sorted((item for item in root.rglob("*") if included(item, root))):
         relative = path.relative_to(root).as_posix()
         content = path.read_bytes()
         files.append(

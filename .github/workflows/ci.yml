@@ -67,6 +67,7 @@ jobs:
         run: |
           python -m venv smoke-venv
           smoke-venv/bin/pip install dist/*.whl
+          mkdir -p smoke-project
           touch smoke-project/pyproject.toml
           smoke-venv/bin/agentic-discipline init --target smoke-project
           git -C smoke-project init

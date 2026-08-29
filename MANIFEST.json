@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-08-29T13:31:07.593992+00:00",
+  "generated_at_utc": "2026-08-29T14:15:36.887683+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -65,8 +65,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "4d868814b4fbecda3b58f5ea726118549514b5a7fa514feb9f0ee761b0a96c8c",
-      "bytes": 2953
+      "sha256": "b28cf77cd41d304886a994c35f58110f0f16c9d8d46789707615f834eafbf568",
+      "bytes": 2986
     },
     {
       "path": ".github/workflows/release.yml",
@@ -75,8 +75,8 @@
     },
     {
       "path": ".github/workflows/security.yml",
-      "sha256": "5ab9de920f5b48b5ec28deeebb2fa9a38bdd98213c30c23c1cc5173408f11da9",
-      "bytes": 983
+      "sha256": "6c1570aa36222435115ca5f17ba5c06740e953f639adb1934d10873f5093cbc3",
+      "bytes": 1242
     },
     {
       "path": ".gitignore",
@@ -132,21 +132,6 @@
       "path": "artifacts/.gitkeep",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0
-    },
-    {
-      "path": "artifacts/evidence-ledger.jsonl",
-      "sha256": "02dff4223d38e9890daa191407f01a2c9ffcaa4d47039d38d960d028ac3458c1",
-      "bytes": 511
-    },
-    {
-      "path": "artifacts/production-hardening.ir.json",
-      "sha256": "c0e77bdf8634f7d19d84c90c88fda4f6436ac3a826786900134298703c52c491",
-      "bytes": 3596
-    },
-    {
-      "path": "artifacts/quality-report.json",
-      "sha256": "080e2eebb041d67030c3ed5efdaf9d99a291788f4b4d599a50c18a162d9401f5",
-      "bytes": 26870
     },
     {
       "path": "CHANGELOG.md",
@@ -400,8 +385,8 @@
     },
     {
       "path": "scripts/build_manifest.py",
-      "sha256": "2e2ed35c961a3676b464cc179fc13fff5f1976a7569dba2f2c524dfe754a974e",
-      "bytes": 1552
+      "sha256": "20b78eefbe8fda78571da10897ddfca8d6850979a3da9a59c3ee16270939b467",
+      "bytes": 1620
     },
     {
       "path": "scripts/checkpoint.py",
@@ -620,8 +605,8 @@
     },
     {
       "path": "src/agentic_discipline/validation.py",
-      "sha256": "6d430f8581b7a53985c5f34c6d935936a2ed66b6ad14189683ffc2d9329942a2",
-      "bytes": 5130
+      "sha256": "7b7d02136a53d56cf35da973eedc65eaf98c8f6ba61508665b63e5abf58c00f1",
+      "bytes": 5307
     },
     {
       "path": "SUPPORT.md",

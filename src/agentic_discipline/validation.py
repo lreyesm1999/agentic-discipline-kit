@@ -19,10 +19,10 @@ class ValidationError(AgenticError):
 
 
 def _schema_candidates(name: str) -> list[Path]:
-    candidates = [
-        Path.cwd() / "schemas" / name,
-        Path(__file__).resolve().parents[2] / "schemas" / name,
-    ]
+    candidates = [Path.cwd() / "schemas" / name]
+    # Mutation runners and source checkouts may relocate this module below the
+    # repository root. Search all ancestors instead of assuming one fixed depth.
+    candidates.extend(parent / "schemas" / name for parent in Path(__file__).resolve().parents)
     frozen_root = getattr(sys, "_MEIPASS", None)
     if frozen_root:
         candidates.insert(0, Path(frozen_root) / "schemas" / name)
