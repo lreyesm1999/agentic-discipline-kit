@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/dependency-review-action@v4
+      - uses: actions/dependency-review-action@v5
 
   codeql:
     # CodeQL upload requires GitHub code scanning to be enabled (for example,
