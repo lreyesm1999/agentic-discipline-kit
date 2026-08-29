@@ -140,7 +140,7 @@ executable entrypoint. The metadata declares the claim, requirement IDs, command
 exit code, dependencies, and sensitivity state.
 
 ```bash
-agentic-discipline verifier register .agentic/verification/generated/payment-check
+agentic-discipline verifier register checks/payment-check
 agentic-discipline verifier list
 agentic-discipline verifier inspect VER-017
 agentic-discipline verifier validate VER-017

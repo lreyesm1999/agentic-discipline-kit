@@ -258,8 +258,10 @@ These are starting points, not invented guarantees. Tune them to your risk profi
 ├── config/                  Quality and risk configurations
 ├── docs/                    Workflow, architecture, security, and adoption guides
 ├── policies/                Engineering policies enforced by agents
-├── schemas/                 Requirement graph and Acceptance IR schemas
+├── schemas/                 Requirement, acceptance, verification, and evidence schemas
 ├── skills/                  20 agent playbooks
+├── agentic/                 Canonical v3 constitution source
+├── disciplines/             Canonical v3 discipline source
 ├── src/agentic_discipline/  Deterministic Python tooling
 ├── templates/               Specs, acceptance, and release templates
 ├── tests/                   Framework tests
@@ -290,7 +292,7 @@ For a tiny throwaway script, the full lifecycle may be unnecessary. For a produc
 
 ## Project status
 
-**v2.1.0 - Production/Stable.** The deterministic core validates contracts, fails closed on invalid quality configuration, ships bootstrap assets in the wheel, and is covered by CI quality and security workflows.
+**v3.0.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, supports portable adapters, and remains compatible with the legacy v2.1 workflow.
 
 ## License
 
