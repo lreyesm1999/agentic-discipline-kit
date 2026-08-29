@@ -1,6 +1,6 @@
 # Verification Engineering
 
-Verification Engineering is the v3 discipline for turning important correctness claims into
+Verification Engineering is a core discipline for turning important correctness claims into
 reproducible evidence.
 
 1. Extract claims from the approved requirement.

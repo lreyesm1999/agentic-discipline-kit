@@ -135,7 +135,7 @@ agentic-discipline bootstrap --target ../my-project
 
 ## verify and verifier
 
-`init` installs the v3 `.agentic/` payload. A verifier package contains `verifier.json` and its
+`init` installs the current `.agentic/` payload. A verifier package contains `verifier.json` and its
 executable entrypoint. The metadata declares the claim, requirement IDs, command, timeout, expected
 exit code, dependencies, and sensitivity state.
 
@@ -164,7 +164,8 @@ agentic-discipline adapters sync --adapter claude --adapter cursor
 
 ## migrate
 
-Migrate an existing v2.1 installation without deleting contracts or evidence:
+Migrate an existing pre-public v2.1 installation without deleting contracts or evidence. The `3.0`
+target names the internal payload format, not the public package version:
 
 ```bash
 agentic-discipline migrate --to 3.0

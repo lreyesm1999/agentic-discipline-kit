@@ -21,7 +21,9 @@
 
 Agentic Discipline Kit is a stack-agnostic operating system for AI-assisted software delivery. It gives coding agents a repeatable workflow for requirements, implementation, testing, security, review, and release evidence.
 
-Version 3 adds Verification Engineering and Evolution Discipline: measurable claims are backed by reusable deterministic verifiers, while replacements, temporary artifacts, fallbacks, tests, and migrations receive explicit lifecycle treatment.
+The first public release adds Verification Engineering and Evolution Discipline: measurable claims are
+backed by reusable deterministic verifiers, while replacements, temporary artifacts, fallbacks, tests,
+and migrations receive explicit lifecycle treatment.
 
 <table>
   <tr>
@@ -95,7 +97,7 @@ agentic-discipline evidence-verify \
   --check-artifacts
 ```
 
-For a v3 project, the same command also installs a canonical `.agentic/` payload. Register and run a
+For a new project, the same command also installs a canonical `.agentic/` payload. Register and run a
 project-specific verifier without learning a new runtime:
 
 ```bash
@@ -144,7 +146,7 @@ The default lifecycle is:
 
 The skills solve a common failure mode of AI coding: a fast implementation that quietly drops a requirement, weakens a test, bypasses a gate, or ships without a traceable explanation.
 
-## The v3 disciplines
+## The current disciplines
 
 The legacy 20 skills remain available for compatibility. New projects additionally receive eleven
 canonical disciplines under `.agentic/skills/`: source, specification, acceptance, verification
@@ -260,8 +262,8 @@ These are starting points, not invented guarantees. Tune them to your risk profi
 ├── policies/                Engineering policies enforced by agents
 ├── schemas/                 Requirement, acceptance, verification, and evidence schemas
 ├── skills/                  20 agent playbooks
-├── agentic/                 Canonical v3 constitution source
-├── disciplines/             Canonical v3 discipline source
+├── agentic/                 Canonical constitution source
+├── disciplines/             Canonical discipline source
 ├── src/agentic_discipline/  Deterministic Python tooling
 ├── templates/               Specs, acceptance, and release templates
 ├── tests/                   Framework tests
@@ -292,7 +294,7 @@ For a tiny throwaway script, the full lifecycle may be unnecessary. For a produc
 
 ## Project status
 
-**v3.0.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, supports portable adapters, and remains compatible with the legacy v2.1 workflow.
+**v1.0.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, supports portable adapters, and includes compatibility migration for the pre-public v2.1 workflow.
 
 ## License
 

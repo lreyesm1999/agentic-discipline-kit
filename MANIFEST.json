@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
-  "version": "3.0.0",
-  "generated_at_utc": "2026-08-29T16:33:12.657606+00:00",
+  "version": "1.0.0",
+  "generated_at_utc": "2026-08-29T16:44:58.769493+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -140,8 +140,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "a86ab4e7e511beaa7ba7b9a68548da00442f218e096a2b22a069a740e65cd06d",
-      "bytes": 2360
+      "sha256": "6f8991d46eeecad2c0eb8a7bb507574c914387514a8975b574cd963977a2151d",
+      "bytes": 1910
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -280,8 +280,8 @@
     },
     {
       "path": "docs/cli.md",
-      "sha256": "399a873aec6714b5b887f4c5e8d4de72f79af42cfbbded198eda16c4087119ab",
-      "bytes": 4594
+      "sha256": "e741afc0aa2c43bd6670e78ad729237bdc17b303c8518af647e417d685708005",
+      "bytes": 4694
     },
     {
       "path": "docs/compatibility.md",
@@ -295,8 +295,8 @@
     },
     {
       "path": "docs/migration-v2-to-v3.md",
-      "sha256": "ca565c587183d99c27ab5bb1b2cfc547369dfb330f2739ef70727a8c189aa97c",
-      "bytes": 562
+      "sha256": "e9a3eeb573840c877d30020530f502ffad8976796c4f503659ab6a3c4eea7c86",
+      "bytes": 826
     },
     {
       "path": "docs/profiles.md",
@@ -315,12 +315,12 @@
     },
     {
       "path": "docs/threat-model.md",
-      "sha256": "8d60fd189a12f55ae11b0b0866f4ce21cf085da48b22a4a21ffe56673782d397",
-      "bytes": 674
+      "sha256": "31ff4cbc857f6e461adc5bfed5fedda74d2e4d392dc66ec3dcf1480e578dbe7b",
+      "bytes": 671
     },
     {
       "path": "docs/verification-engineering.md",
-      "sha256": "e8f05d5661ddf9d4f8c6f9af7606686dc5e107fc492d77d34206f66a978dd32d",
+      "sha256": "1c80dbba42ee36d2945a8eccc1e6f06a6914887f0397792996f2bcc70526c01f",
       "bytes": 1009
     },
     {
@@ -350,8 +350,8 @@
     },
     {
       "path": "GITHUB_SETUP.md",
-      "sha256": "65ad17b1e6a379c97d041c7dcf3372c8da95f5a73f3586ffed9d89f663c522c6",
-      "bytes": 2077
+      "sha256": "4945ae886daa54e48d6f38cadca00fa35f8196ba34da83d8b130701c486f85f8",
+      "bytes": 2085
     },
     {
       "path": "GOVERNANCE.md",
@@ -420,13 +420,13 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "2eb0018df2f2a07e2bbea9667c048d7f5110451759149d185db7a5300d506f8f",
+      "sha256": "0945fd6ffbaaa658ff867dd3c2069df55750371d148023f46cbd0a572735142f",
       "bytes": 5680
     },
     {
       "path": "README.md",
-      "sha256": "324ad2ec5a893df67bb2235806de4e9dd4f26a5b7228fb076d6c5a3b2256d9f5",
-      "bytes": 12333
+      "sha256": "1b0c3b02b00c9d4e0fc4864e58b6edddec326fa7c675975c6ece63d6daf16055",
+      "bytes": 12365
     },
     {
       "path": "ROADMAP.md",
@@ -545,8 +545,8 @@
     },
     {
       "path": "SECURITY.md",
-      "sha256": "b354cd4c39c72910f6f8bb81ef6799bc89e137a928dc864f3a738e6ca3a8082e",
-      "bytes": 986
+      "sha256": "d1d795fd1b0a88db2fb5a49ea5ca81313854ea203e06a8bdd6764afbd4ea4d81",
+      "bytes": 952
     },
     {
       "path": "skills/01-requirements-intake/SKILL.md",
@@ -655,7 +655,7 @@
     },
     {
       "path": "src/agentic_discipline/__init__.py",
-      "sha256": "49a8a9d06b0be3ac4879e62e8917b4f9fbc28961ca434a14417b211d2e7d4f9e",
+      "sha256": "5eb0f50c83d9c2c53c441dcd6431afbae89845862c520ae5193d448efb1c048b",
       "bytes": 53
     },
     {
@@ -875,7 +875,7 @@
     },
     {
       "path": "VERSION",
-      "sha256": "2985be8b28d3ade858e8d8fb4bc22f565b1bf6020dff982dce141f7721b9999c",
+      "sha256": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03",
       "bytes": 6
     }
   ]

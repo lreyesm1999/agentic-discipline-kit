@@ -4,26 +4,22 @@ All notable changes to this project are documented here.
 
 The format is inspired by Keep a Changelog and versions follow Semantic Versioning.
 
-## [3.0.0] - 2026-08-29
+## [Unreleased]
+
+No unreleased changes.
+
+## [1.0.0] - 2026-08-29
 
 ### Added
 
 - Verification-native runtime with verifier contracts, registry, deterministic execution, normalized results, sensitivity states, and protected metadata hashes.
-- Canonical v3 disciplines and `.agentic` project payload installed by `agentic-discipline init`.
-- Idempotent vendor adapter synchronization, v2-to-v3 migration reports, and evolution hygiene checks.
+- Canonical disciplines and `.agentic` project payload installed by `agentic-discipline init`.
+- Idempotent vendor adapter synchronization, migration reports, and evolution hygiene checks.
 - Verifier, adapter, migration, and hygiene CLI commands.
 
-## [Unreleased]
+## Pre-public development milestones
 
-### Added
-- Zero-configuration `init` command with manifest-based project detection.
-- Composable multi-stack quality configuration with safe per-gate working directories.
-- Data-driven custom project profiles and a generic fallback for unknown ecosystems.
-- Standalone Windows, macOS, and Linux release builds, a container image, and a GitHub Composite Action.
-
-### Changed
-- `bootstrap --stack` is retained as an optional compatibility alias instead of a fixed stack whitelist.
-- Python remains an internal/source-development runtime and is no longer required by standalone users.
+The 2.x entries below describe internal milestones and were not released publicly.
 
 ## [2.1.0] - 2026-08-28
 

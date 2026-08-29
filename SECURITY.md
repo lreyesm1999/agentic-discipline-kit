@@ -4,12 +4,12 @@
 
 | Version | Supported |
 |---|---|
-| 3.x | Yes |
-| 2.1.x | Compatibility and migration support only |
-| < 2.1 | No |
+| 1.x | Yes |
+| 2.1.x | Internal compatibility milestone only |
+| < 1.0 | No |
 
-The current security-supported line is 3.x. Version 2.1 remains available for compatibility while
-repositories migrate to the v3 payload, but new security fixes target the current line.
+The current security-supported line is 1.x. Version 2.1 was an internal pre-public compatibility
+milestone; new security fixes target the public 1.x line.
 
 ## Reporting a vulnerability
 

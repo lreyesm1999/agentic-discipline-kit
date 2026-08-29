@@ -1,4 +1,4 @@
-# v3 threat model
+# Threat model
 
 Generated verifiers are executable code, not trusted prose. The runtime therefore:
 

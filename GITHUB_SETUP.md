@@ -78,13 +78,10 @@ adjust the required checks to the security capabilities available to that reposi
 
 ## Release convention
 
-Use Semantic Versioning:
+Use Semantic Versioning. The first public release is:
 
 ```text
-v2.0.0
-v2.1.0
-v2.1.1
-v3.0.0
+v1.0.0
 ```
 
 The included release workflow builds the Python distribution when a `v*.*.*` tag is pushed.

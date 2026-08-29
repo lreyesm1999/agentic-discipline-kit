@@ -1,4 +1,8 @@
-# Migration v2.1 to v3
+# Migration from the pre-public v2.1 payload
+
+This document covers migration from the internal v2.1 milestone to the current public 1.x release.
+The command's `3.0` target refers to the internal payload format retained for compatibility; it does
+not indicate the public package version.
 
 Run:
 
