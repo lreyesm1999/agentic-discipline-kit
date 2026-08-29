@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "3.0.0",
-  "generated_at_utc": "2026-08-29T16:22:43.736448+00:00",
+  "generated_at_utc": "2026-08-29T16:33:12.657606+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -30,8 +30,8 @@
     },
     {
       "path": ".github/CODEOWNERS",
-      "sha256": "616bf360a3551b6335518e5cde678cbac4a1aadb780f3d6eb2e630eb6b08dbd7",
-      "bytes": 271
+      "sha256": "35d7f7dfa8a0e66f80996ded9f178dc6441ef06b31392c38edbb7a962027f3b2",
+      "bytes": 157
     },
     {
       "path": ".github/dependabot.yml",
@@ -545,8 +545,8 @@
     },
     {
       "path": "SECURITY.md",
-      "sha256": "06a86a211dd852abf90da76f41f6118536f7342884e40b9724c08589062391d5",
-      "bytes": 746
+      "sha256": "b354cd4c39c72910f6f8bb81ef6799bc89e137a928dc864f3a738e6ca3a8082e",
+      "bytes": 986
     },
     {
       "path": "skills/01-requirements-intake/SKILL.md",
