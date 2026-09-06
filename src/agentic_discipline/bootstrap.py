@@ -219,11 +219,21 @@ def initialize_project(
     actions.extend(str(action) for action in cast(list[object], adapter_result["actions"]))
     actions.append(f"READY {target_root}")
 
+    # A gate carrying a note was either relaxed or added; only the relaxed ones
+    # are a caveat the reader has to act on.
     relaxed = [
         {"name": gate["name"], "note": gate["note"]}
         for gate in config["gates"]
-        if isinstance(gate, dict) and "note" in gate
+        if isinstance(gate, dict) and "note" in gate and not gate.get("required", True)
     ]
+    baseline = next(
+        (
+            gate["name"]
+            for gate in config["gates"]
+            if isinstance(gate, dict) and str(gate.get("note", "")).startswith("added by init")
+        ),
+        None,
+    )
     return {
         "status": "PASS",
         "target": str(target_root),
@@ -236,6 +246,7 @@ def initialize_project(
         "disciplines": adapter_result["disciplines"],
         "gates": len(config["gates"]),
         "relaxed_gates": relaxed,
+        "baseline_gate": baseline,
         "actions": actions,
     }
 

@@ -94,6 +94,9 @@ def _render_init(result: dict[str, object]) -> None:
     for gate in relaxed:
         reason = gate["note"].removeprefix("disabled by init: ")
         print(f"                   ! {gate['name']}: {reason}")
+    baseline = result.get("baseline_gate")
+    if baseline:
+        print(f"                   + {baseline}: added so the config still checks something")
     tally = ", ".join(f"{count} {verb.lower()}" for verb, count in sorted(_counts(actions).items()))
     print(f"  Files            {tally}")
     print("")

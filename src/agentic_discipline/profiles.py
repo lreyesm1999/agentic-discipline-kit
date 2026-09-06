@@ -302,6 +302,14 @@ def _unavailable_reason(gate: dict[str, Any], root: Path) -> str | None:
     return None
 
 
+BASELINE_GATE = {
+    "name": "repository/diff-check",
+    "command": ["git", "diff", "--check"],
+    "required": True,
+    "note": "added by init: every other generated gate needs tooling this project does not have yet",
+}
+
+
 def annotate_gate_availability(repository_root: Path, config: dict[str, Any]) -> dict[str, Any]:
     """Downgrade generated gates that cannot run, so the first run is honest.
 
@@ -310,12 +318,17 @@ def annotate_gate_availability(repository_root: Path, config: dict[str, Any]) ->
     """
 
     root = repository_root.resolve()
-    for gate in config.get("gates", []):
-        if not isinstance(gate, dict):
-            continue
+    gates = [gate for gate in config.get("gates", []) if isinstance(gate, dict)]
+    for gate in gates:
         reason = _unavailable_reason(gate, root)
         if reason is None:
             continue
         gate["required"] = False
         gate["note"] = f"disabled by init: {reason}"
+
+    # A configuration where nothing is required is refused by the schema, and it
+    # would be a lie anyway: a project that checks nothing is not configured.
+    # Fall back to the one gate that needs no toolchain beyond git.
+    if gates and not any(gate.get("required", True) for gate in gates):
+        config["gates"] = [*config["gates"], copy.deepcopy(BASELINE_GATE)]
     return config

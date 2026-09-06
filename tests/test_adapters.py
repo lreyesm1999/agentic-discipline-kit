@@ -190,6 +190,68 @@ def test_init_relaxes_gates_the_project_cannot_run(tmp_path: Path) -> None:
     assert [item["name"] for item in result["relaxed_gates"]]
 
 
+def test_relaxing_every_gate_still_leaves_something_required(tmp_path: Path) -> None:
+    """A runner without the project's toolchain relaxed every gate, and the
+    schema refuses a configuration where nothing is required at all."""
+
+    from agentic_discipline.profiles import annotate_gate_availability
+
+    config = {
+        "project": "bare",
+        "artifacts_dir": "artifacts",
+        "gates": [
+            {
+                "name": "python/unit-tests",
+                "command": "pytest-that-is-not-installed",
+                "required": True,
+            },
+            {"name": "python/lint", "command": "ruff-that-is-not-installed", "required": True},
+        ],
+    }
+
+    annotate_gate_availability(tmp_path, config)
+
+    assert all("disabled by init" in gate["note"] for gate in config["gates"][:2])
+    baseline = config["gates"][-1]
+    assert baseline["required"] is True
+    assert baseline["command"] == ["git", "diff", "--check"]
+    assert "added by init" in baseline["note"]
+
+
+def test_a_project_that_can_run_something_gets_no_baseline_gate(tmp_path: Path) -> None:
+    from agentic_discipline.profiles import annotate_gate_availability
+
+    config = {
+        "project": "partial",
+        "artifacts_dir": "artifacts",
+        "gates": [
+            {"name": "repository/diff", "command": ["git", "diff", "--check"], "required": True},
+            {"name": "python/lint", "command": "ruff-that-is-not-installed", "required": True},
+        ],
+    }
+
+    annotate_gate_availability(tmp_path, config)
+
+    assert len(config["gates"]) == 2
+    assert config["gates"][0]["required"] is True
+    assert "note" not in config["gates"][0]
+
+
+def test_generated_configuration_always_satisfies_its_own_validator(tmp_path: Path) -> None:
+    from agentic_discipline.validation import load_quality_config
+
+    project = tmp_path / "bare"
+    project.mkdir()
+    (project / "main.py").write_text("print('hi')\n", encoding="utf-8")
+
+    initialize_project(project, profile_ids=["python"])
+
+    # `doctor` loads this file through the same validator, so a configuration
+    # init writes must never be one it then rejects.
+    config = load_quality_config(project / "agentic.config.json")
+    assert any(gate.get("required", True) for gate in config["gates"])
+
+
 def test_init_dry_run_reports_without_touching_the_project(tmp_path: Path) -> None:
     project = tmp_path / "project"
     project.mkdir()
