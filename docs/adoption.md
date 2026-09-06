@@ -2,12 +2,21 @@
 
 ## Zero-configuration start
 
-Run `agentic-discipline init` from the repository root. The command detects included project profiles,
-supports mixed repositories, and falls back to a generic command-based configuration when the stack
-is unknown. Review the generated gates before making them blocking in CI.
+Run `npx agentic-discipline init` from the repository root. See the
+[install guide](install.md) for every entry point, including the Claude Code
+plugin and the ChatGPT bundle.
 
-Adopters can use a standalone executable, the container image, or the repository's GitHub Composite
-Action; Python is only required when installing the CLI from source.
+The command detects included project profiles, supports mixed repositories, and falls back to a
+generic command-based configuration when the stack is unknown. Gates whose commands cannot run in
+the repository are written non-blocking with the reason recorded in a `note`; review them, wire up
+the missing scripts, and promote them to `required` deliberately.
+
+The payload installs under `.agentic/`. Only `AGENTS.md` and `agentic.config.json` are added to the
+repository root, which is usually what makes the adoption PR reviewable.
+
+Installing the disciplines needs no runtime at all. The Python CLI is only required for the
+deterministic gates, and adopters can use a standalone executable, the container image, or the
+repository's GitHub Composite Action instead of managing it.
 
 The container image contains the Agentic Discipline CLI, not every possible project toolchain. For
 Node, .NET, or other ecosystems, derive a project image with those tools installed, or use the

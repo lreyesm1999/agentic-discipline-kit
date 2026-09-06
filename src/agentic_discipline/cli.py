@@ -6,10 +6,11 @@ import shlex
 import shutil
 import sys
 from pathlib import Path
+from typing import cast
 
 from . import __version__
 from .acceptance import compile_feature
-from .adapters import sync_adapters
+from .adapters import ADAPTERS, ALIASES, EMITTERS, LABELS, detect_adapters, sync_adapters
 from .bootstrap import bootstrap_project, initialize_project
 from .common import AgenticError, changed_files, run_git
 from .crap import crap_score
@@ -26,22 +27,102 @@ from .verifier.protection import check_protected_verifiers, protect_verifier
 from .verifier.registry import list_verifiers, load_verifier, register_verifier
 from .verifier.schema import load_and_validate_verifier, validate_verifier
 
+EXPECTED_DISCIPLINES = 11
+
 
 def _json(data: object) -> None:
     print(json.dumps(data, indent=2, default=lambda value: value.__dict__))
 
 
 def _doctor_root() -> Path:
+    """Find the installed project or the kit checkout, whichever encloses cwd."""
+
     current = Path.cwd().resolve()
-    candidates = [current, *current.parents]
-    for candidate in candidates:
-        if (
-            (candidate / "AGENTS.md").is_file()
-            and (candidate / "MASTER_PROMPT.md").is_file()
-            and (candidate / "schemas" / "agentic-config.schema.json").is_file()
-        ):
+    for candidate in [current, *current.parents]:
+        installed = (candidate / "AGENTS.md").is_file() and (candidate / ".agentic").is_dir()
+        checkout = (candidate / "AGENTS.md").is_file() and (candidate / "disciplines").is_dir()
+        if installed or checkout:
             return candidate
     return current
+
+
+def _installed_skills(root: Path) -> int:
+    for relative in (Path(".agentic") / "skills", Path("disciplines")):
+        directory = root / relative
+        if directory.is_dir():
+            return len(list(directory.glob("*/SKILL.md")))
+    return 0
+
+
+def _first_existing(root: Path, *candidates: Path) -> bool:
+    return any((root / candidate).is_file() for candidate in candidates)
+
+
+def _relative(path: str, root: Path) -> str:
+    try:
+        return Path(path).resolve().relative_to(root).as_posix()
+    except ValueError:
+        return path
+
+
+def _counts(actions: list[str]) -> dict[str, int]:
+    tally: dict[str, int] = {}
+    for action in actions:
+        verb = action.split(" ", 1)[0]
+        tally[verb] = tally.get(verb, 0) + 1
+    return tally
+
+
+def _render_init(result: dict[str, object]) -> None:
+    root = Path(str(result["target"])).resolve()
+    dry_run = bool(result.get("dry_run"))
+    detections = cast(list[dict[str, object]], result["detections"])
+    adapters = cast(list[str], result["adapters"])
+    labels = cast(list[str], result["adapter_labels"])
+    relaxed = cast(list[dict[str, str]], result["relaxed_gates"])
+    actions = [str(action) for action in cast(list[object], result["actions"])]
+
+    print(f"Agentic Discipline -> {root}")
+    print("DRY RUN - nothing was written." if dry_run else "")
+    stacks = ", ".join(f"{item['label']} ({item['root']})" for item in detections)
+    print(f"  Detected stack   {stacks}")
+    print(f"  Disciplines      {len(cast(list[str], result['disciplines']))} installed")
+    print(f"  Agent surfaces   {len(adapters)}")
+    for label in labels:
+        print(f"                   - {label}")
+    print(f"  Quality gates    {result['gates']} generated, {len(relaxed)} relaxed")
+    for gate in relaxed:
+        reason = gate["note"].removeprefix("disabled by init: ")
+        print(f"                   ! {gate['name']}: {reason}")
+    tally = ", ".join(f"{count} {verb.lower()}" for verb, count in sorted(_counts(actions).items()))
+    print(f"  Files            {tally}")
+    print("")
+    print("Visible in your repository root: AGENTS.md, agentic.config.json")
+    print("Everything else lives in .agentic/")
+    print("")
+    if relaxed:
+        print("Review the relaxed gates in agentic.config.json before making CI blocking.")
+    print("Next:  agentic-discipline doctor --check-tools")
+
+
+def _render_adapters(result: dict[str, object], root: Path) -> None:
+    actions = [str(action) for action in cast(list[object], result["actions"])]
+    labels = cast(list[str], result["labels"])
+    if result.get("dry_run"):
+        print("DRY RUN - nothing was written.")
+        print("")
+    print(f"Compiled {len(cast(list[str], result['disciplines']))} disciplines for:")
+    for label in labels:
+        print(f"  - {label}")
+    changed = [action for action in actions if not action.startswith("SKIP")]
+    if not changed:
+        print("")
+        print("Everything already synchronized.")
+        return
+    print()
+    for action in changed:
+        verb, _, path = action.partition(" ")
+        print(f"  {verb:<7}{_relative(path.split(' (')[0], root)}")
 
 
 def command_doctor(args: argparse.Namespace) -> int:
@@ -55,8 +136,7 @@ def command_doctor(args: argparse.Namespace) -> int:
             )
         except AgenticError:
             git_worktree = False
-    skills_path = root / "skills"
-    skill_count = len(list(skills_path.glob("*/SKILL.md"))) if skills_path.exists() else 0
+    skill_count = _installed_skills(root)
     config_arg = getattr(args, "config", None)
     config_path = Path(config_arg) if config_arg else None
     if config_path is None:
@@ -66,6 +146,7 @@ def command_doctor(args: argparse.Namespace) -> int:
             config_path = root / "agentic.config.example.json"
     config_valid = False
     tools: dict[str, bool] = {}
+    missing_tools: list[str] = []
     config_error: str | None = None
     if config_path is not None:
         try:
@@ -77,22 +158,33 @@ def command_doctor(args: argparse.Namespace) -> int:
                     executable = (
                         command[0] if isinstance(command, list) else shlex.split(command)[0]
                     )
-                    tools[executable] = shutil.which(executable) is not None
+                    available = shutil.which(executable) is not None
+                    tools[executable] = available
+                    # A gate `init` already relaxed is reported but never fails
+                    # the check, so a clean install does not open on red.
+                    if not available and gate.get("required", True):
+                        missing_tools.append(executable)
         except AgenticError as exc:
             config_error = str(exc)
     required_files = {
         "agents_md": (root / "AGENTS.md").is_file(),
-        "master_prompt": (root / "MASTER_PROMPT.md").is_file(),
+        "master_prompt": _first_existing(
+            root, Path(".agentic") / "MASTER_PROMPT.md", Path("MASTER_PROMPT.md")
+        ),
         "config": config_path is not None and config_path.is_file(),
-        "config_schema": (root / "schemas" / "agentic-config.schema.json").is_file(),
+        "config_schema": _first_existing(
+            root,
+            Path(".agentic") / "schemas" / "agentic-config.schema.json",
+            Path("schemas") / "agentic-config.schema.json",
+        ),
     }
     status = "PASS"
     if (
         not git_worktree
-        or skill_count < 20
+        or skill_count < EXPECTED_DISCIPLINES
         or not all(required_files.values())
         or not config_valid
-        or any(not available for available in tools.values())
+        or missing_tools
     ):
         status = "FAIL"
     checks: dict[str, object] = {
@@ -153,8 +245,11 @@ def command_risk(args: argparse.Namespace) -> int:
         print(str(exc), file=sys.stderr)
         return 2
     weights_path = getattr(args, "weights", None)
-    if weights_path is None and Path("config/risk-weights.json").is_file():
-        weights_path = "config/risk-weights.json"
+    if weights_path is None:
+        for candidate in (".agentic/config/risk-weights.json", "config/risk-weights.json"):
+            if Path(candidate).is_file():
+                weights_path = candidate
+                break
     result = (
         assess_risk_with_weights(diff, files, load_risk_weights(Path(weights_path)))
         if weights_path
@@ -187,6 +282,7 @@ def command_protected(args: argparse.Namespace) -> int:
         print(str(exc), file=sys.stderr)
         return 2
     protected_prefixes = (
+        ".agentic/",
         "specs/",
         "acceptance/",
         "architecture/",
@@ -247,8 +343,13 @@ def command_init(args: argparse.Namespace) -> int:
         profile_files=[Path(path) for path in args.profile_file],
         force=args.force,
         max_depth=args.max_depth,
+        adapters=args.adapter or None,
+        dry_run=args.dry_run,
     )
-    _json(result)
+    if args.json:
+        _json(result)
+    else:
+        _render_init(result)
     return 0
 
 
@@ -301,15 +402,36 @@ def command_verifier_protect(args: argparse.Namespace) -> int:
 
 
 def command_adapters_sync(args: argparse.Namespace) -> int:
-    result = sync_adapters(Path(args.project_root), args.adapter or None)
-    _json(result)
+    root = Path(args.project_root).resolve()
+    result = sync_adapters(root, args.adapter or None, dry_run=args.dry_run)
+    if args.json:
+        _json(result)
+    else:
+        _render_adapters(result, root)
+    return 0
+
+
+def command_adapters_list(args: argparse.Namespace) -> int:
+    _json(
+        {
+            "status": "PASS",
+            "adapters": [
+                {"id": name, "label": LABELS[name], "output": ADAPTERS[name]}
+                for name in sorted(EMITTERS)
+            ],
+            "aliases": ALIASES,
+            "detected": detect_adapters(Path(args.project_root)),
+        }
+    )
     return 0
 
 
 def command_migrate(args: argparse.Namespace) -> int:
     if args.to != "3.0":
         raise AgenticError("only migration target 3.0 is supported")
-    result = migrate_payload(Path(args.project_root), force=args.force)
+    result = migrate_payload(
+        Path(args.project_root), force=args.force, prune=getattr(args, "prune", False)
+    )
     _json(result)
     return 0
 
@@ -397,6 +519,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument("--max-depth", type=int, default=4)
     p.add_argument("--force", action="store_true")
+    p.add_argument(
+        "--adapter",
+        action="append",
+        default=[],
+        help="Emit only these agent surfaces; repeat the option. Defaults to auto-detection",
+    )
+    p.add_argument(
+        "--dry-run", action="store_true", help="Report what would change without writing"
+    )
+    p.add_argument("--json", action="store_true", help="Emit machine-readable output")
     p.set_defaults(func=command_init)
 
     p = sub.add_parser("verify", help="Execute registered deterministic verifiers")
@@ -427,12 +559,25 @@ def build_parser() -> argparse.ArgumentParser:
     child = adapters_sub.add_parser("sync", help="Synchronize adapters idempotently")
     child.add_argument("--project-root", default=".")
     child.add_argument("--adapter", action="append", default=[])
+    child.add_argument(
+        "--dry-run", action="store_true", help="Report what would change without writing"
+    )
+    child.add_argument("--json", action="store_true", help="Emit machine-readable output")
     child.set_defaults(func=command_adapters_sync)
+
+    child = adapters_sub.add_parser("list", help="List supported agent tools and their outputs")
+    child.add_argument("--project-root", default=".")
+    child.set_defaults(func=command_adapters_list)
 
     p = sub.add_parser("migrate", help="Migrate an earlier installation to the current payload")
     p.add_argument("--to", default="3.0")
     p.add_argument("--project-root", default=".")
     p.add_argument("--force", action="store_true")
+    p.add_argument(
+        "--prune",
+        action="store_true",
+        help="Delete the legacy root payload once it has been reinstalled under .agentic/",
+    )
     p.set_defaults(func=command_migrate)
 
     p = sub.add_parser("hygiene", help="Check evolution lifecycle and repository hygiene")

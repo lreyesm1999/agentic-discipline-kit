@@ -12,8 +12,9 @@ def test_bootstrap_creates_complete_target(tmp_path: Path) -> None:
     actions = bootstrap_project(target, "python")
     assert (target / "AGENTS.md").is_file()
     assert (target / "agentic.config.json").is_file()
-    assert (target / "config" / "risk-weights.json").is_file()
-    assert len(list((target / "skills").glob("*/SKILL.md"))) == 20
+    assert (target / ".agentic" / "config" / "risk-weights.json").is_file()
+    assert len(list((target / ".agentic" / "skills").glob("*/SKILL.md"))) == 11
+    assert len(list((target / ".agentic" / "playbooks").glob("*/SKILL.md"))) == 20
     assert any(action.startswith("READY") for action in actions)
     repeated = bootstrap_project(target, "python")
     assert any(action.startswith("SKIP") for action in repeated)

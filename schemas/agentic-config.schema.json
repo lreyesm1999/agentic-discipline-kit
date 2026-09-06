@@ -2,43 +2,85 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Agentic Discipline Quality Configuration",
   "type": "object",
-  "required": ["project", "gates"],
+  "required": [
+    "project",
+    "gates"
+  ],
   "additionalProperties": false,
   "properties": {
-    "project": {"type": "string", "minLength": 1},
-    "artifacts_dir": {"type": "string", "minLength": 1},
+    "project": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifacts_dir": {
+      "type": "string",
+      "minLength": 1
+    },
     "gates": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["name", "command"],
+        "required": [
+          "name",
+          "command"
+        ],
         "additionalProperties": false,
         "properties": {
-          "name": {"type": "string", "minLength": 1},
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
           "command": {
             "oneOf": [
-              {"type": "string", "minLength": 1},
+              {
+                "type": "string",
+                "minLength": 1
+              },
               {
                 "type": "array",
                 "minItems": 1,
-                "items": {"type": "string", "minLength": 1}
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
               }
             ]
           },
-          "required": {"type": "boolean", "default": true},
-          "working_directory": {"type": "string", "minLength": 1},
-          "timeout_seconds": {"type": "number", "minimum": 1, "maximum": 86400},
+          "required": {
+            "type": "boolean",
+            "default": true
+          },
+          "working_directory": {
+            "type": "string",
+            "minLength": 1
+          },
+          "timeout_seconds": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 86400
+          },
           "parser": {
             "type": "object",
-            "required": ["type", "metrics"],
+            "required": [
+              "type",
+              "metrics"
+            ],
             "additionalProperties": false,
             "properties": {
-              "type": {"enum": ["regex", "json"]},
+              "type": {
+                "enum": [
+                  "regex",
+                  "json"
+                ]
+              },
               "metrics": {
                 "type": "object",
                 "minProperties": 1,
-                "additionalProperties": {"type": "string", "minLength": 1}
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                }
               }
             }
           },
@@ -49,11 +91,22 @@
               "minProperties": 1,
               "additionalProperties": false,
               "properties": {
-                "min": {"type": "number"},
-                "max": {"type": "number"},
-                "eq": {"type": "number"}
+                "min": {
+                  "type": "number"
+                },
+                "max": {
+                  "type": "number"
+                },
+                "eq": {
+                  "type": "number"
+                }
               }
             }
+          },
+          "note": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Human-readable provenance for a gate that init relaxed."
           }
         }
       }

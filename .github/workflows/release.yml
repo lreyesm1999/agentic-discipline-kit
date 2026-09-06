@@ -68,6 +68,51 @@ jobs:
           name: standalone-${{ runner.os }}-${{ runner.arch }}
           path: agentic-discipline-*
 
+  pypi:
+    name: Publish to PyPI
+    needs: [build, standalone]
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: python-distribution
+          path: dist
+      - name: Drop the SBOM before upload
+        run: rm -f dist/sbom.json
+      # Trusted publishing: configure this repository, workflow and the `pypi`
+      # environment as a publisher on PyPI. No API token is stored here.
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  npm:
+    name: Publish npm launcher
+    needs: [standalone]
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: Verify the launcher version matches the tag
+        working-directory: packaging/npm
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          test "v${version}" = "${GITHUB_REF_NAME}" || {
+            echo "packaging/npm/package.json is ${version}, tag is ${GITHUB_REF_NAME}" >&2
+            exit 1
+          }
+      - name: Publish
+        working-directory: packaging/npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
   publish:
     needs: [build, standalone]
     runs-on: ubuntu-latest

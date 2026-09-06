@@ -1,0 +1,16 @@
+{
+  "name": "agentic-discipline",
+  "description": "Evidence-backed engineering discipline for AI coding agents: requirements, acceptance, verification, hardening, and release evidence.",
+  "version": "1.1.0",
+  "author": {
+    "name": "Agentic Discipline Kit Contributors"
+  },
+  "homepage": "https://github.com/lreyesm1999/agentic-discipline-kit",
+  "license": "MIT",
+  "keywords": [
+    "quality-gates",
+    "verification",
+    "acceptance-testing",
+    "evidence"
+  ]
+}

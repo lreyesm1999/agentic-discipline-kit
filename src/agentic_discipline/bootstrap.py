@@ -11,13 +11,27 @@ from typing import Any, Iterable, cast
 from .common import AgenticError
 from .profiles import (
     Detection,
+    annotate_gate_availability,
     build_quality_config,
     detect_projects,
     load_profiles,
     requested_projects,
 )
 
-COPY_ITEMS = ["AGENTS.md", "MASTER_PROMPT.md", "skills", "policies", "schemas", "templates"]
+# The kit installs into `.agentic/` so an adopting repository keeps its root:
+# only AGENTS.md and agentic.config.json stay visible, the way `.github/` does.
+PAYLOAD = {
+    "MASTER_PROMPT.md": ".agentic/MASTER_PROMPT.md",
+    "skills": ".agentic/playbooks",
+    "policies": ".agentic/policies",
+    "schemas": ".agentic/schemas",
+    "templates": ".agentic/templates",
+    "config/risk-weights.json": ".agentic/config/risk-weights.json",
+}
+
+# Directories such as `specs/`, `acceptance/` and `artifacts/` are created on
+# demand by the phase that needs them; pre-creating them littered an adopting
+# repository with `.gitkeep` files for phases a project may never reach.
 
 
 def find_contract_root() -> Path:
@@ -44,28 +58,32 @@ def find_contract_root() -> Path:
         # require the complete contract bundle before accepting a candidate.
         if (
             (candidate / "AGENTS.md").is_file()
-            and (candidate / "skills").is_dir()
+            and (candidate / "disciplines").is_dir()
             and (candidate / "config" / "profiles" / "generic.json").is_file()
         ):
             return candidate
     raise AgenticError("packaged Agentic Discipline contracts were not found")
 
 
-def _copy_item(source: Path, target: Path, force: bool, actions: list[str]) -> None:
+def _copy_item(
+    source: Path, target: Path, force: bool, actions: list[str], dry_run: bool = False
+) -> None:
     if target.exists() and not force:
         actions.append(f"SKIP {target} (already exists)")
         return
-    if source.is_dir():
-        if target.exists():
-            shutil.rmtree(target)
-        shutil.copytree(source, target)
-    else:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(source, target)
+    if not dry_run:
+        if source.is_dir():
+            if target.exists():
+                shutil.rmtree(target)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copytree(source, target)
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
     actions.append(f"COPY {target}")
 
 
-def _prepare_target(target: Path, kit_root: Path) -> Path:
+def _prepare_target(target: Path, kit_root: Path, dry_run: bool = False) -> Path:
     target_root = target.resolve()
     if target_root == Path(target_root.anchor):
         raise AgenticError("refusing to bootstrap into a filesystem root")
@@ -76,72 +94,83 @@ def _prepare_target(target: Path, kit_root: Path) -> Path:
     )
     if target_root == kit_root or running_from_target:
         raise AgenticError("refusing to bootstrap the kit into itself")
-    target_root.mkdir(parents=True, exist_ok=True)
+    if not dry_run:
+        target_root.mkdir(parents=True, exist_ok=True)
     return target_root
 
 
-def _write_quality_config(
-    target: Path, config: dict[str, Any], force: bool, actions: list[str]
+def _write_json(
+    path: Path, payload: dict[str, Any], force: bool, actions: list[str], dry_run: bool
 ) -> None:
-    output = target / "agentic.config.json"
-    if output.exists() and not force:
-        actions.append(f"SKIP {output} (already exists)")
+    if path.exists() and not force:
+        actions.append(f"SKIP {path} (already exists)")
         return
-    output.write_text(json.dumps(config, indent=2) + "\n", encoding="utf-8")
-    actions.append(f"WRITE {output}")
+    if not dry_run:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    actions.append(f"WRITE {path}")
 
 
-def _install_payload(kit_root: Path, target_root: Path, force: bool, actions: list[str]) -> None:
-    """Install the canonical payload beside the compatibility surface."""
-    canonical_items = {
-        kit_root / "agentic" / "constitution": target_root / ".agentic" / "constitution",
-        kit_root / "disciplines": target_root / ".agentic" / "skills",
-    }
-    for source, destination in canonical_items.items():
-        _copy_item(source, destination, force, actions)
-    schemas = target_root / ".agentic" / "schemas"
-    schemas.mkdir(parents=True, exist_ok=True)
-    for name in (
-        "verifier.schema.json",
-        "verification-result.schema.json",
-        "verifier-registry.schema.json",
-        "evolution.schema.json",
-        "evidence.schema.json",
-        "verification-plan.schema.json",
-    ):
-        _copy_item(kit_root / "schemas" / name, schemas / name, force, actions)
+def _install_payload(
+    kit_root: Path, target_root: Path, force: bool, actions: list[str], dry_run: bool
+) -> None:
+    """Install the vendor-neutral payload under `.agentic/`."""
+
+    for source_name, destination_name in PAYLOAD.items():
+        source = kit_root / source_name
+        if not source.exists():
+            continue
+        _copy_item(source, target_root / destination_name, force, actions, dry_run)
+
     verification = target_root / ".agentic" / "verification"
-    for directory in (verification, verification / "generated", verification / "artifacts"):
-        directory.mkdir(parents=True, exist_ok=True)
-    registry = verification / "registry.json"
-    if not registry.exists() or force:
-        registry.write_text(
-            json.dumps({"schema_version": "1", "verifiers": []}, indent=2) + "\n", encoding="utf-8"
-        )
-        actions.append(f"WRITE {registry}")
-    config = target_root / ".agentic" / "config.json"
-    if not config.exists() or force:
-        config.write_text(
-            json.dumps(
-                {
-                    "schema_version": "3",
-                    "adk": {"risk_default": "STANDARD", "unknown_blocks_release": True},
-                    "agents": {"mode": "auto", "adapters": ["generic"]},
-                    "verification": {
-                        "root": ".agentic/verification",
-                        "generated_root": ".agentic/verification/generated",
-                        "require_sensitivity_for_generated": True,
-                        "protect_validated_verifiers": True,
-                        "default_timeout_seconds": 120,
-                    },
-                    "evidence": {"root": "artifacts/agentic", "hash": "sha256"},
-                },
-                indent=2,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
-        actions.append(f"WRITE {config}")
+    if not dry_run:
+        for directory in (verification, verification / "generated", verification / "artifacts"):
+            directory.mkdir(parents=True, exist_ok=True)
+    _write_json(
+        verification / "registry.json",
+        {"schema_version": "1", "verifiers": []},
+        force,
+        actions,
+        dry_run,
+    )
+    _write_json(
+        target_root / ".agentic" / "config.json",
+        {
+            "schema_version": "3",
+            "adk": {"risk_default": "STANDARD", "unknown_blocks_release": True},
+            "agents": {"mode": "auto", "adapters": ["generic"]},
+            "verification": {
+                "root": ".agentic/verification",
+                "generated_root": ".agentic/verification/generated",
+                "require_sensitivity_for_generated": True,
+                "protect_validated_verifiers": True,
+                "default_timeout_seconds": 120,
+            },
+            "evidence": {"root": "artifacts/agentic", "hash": "sha256"},
+        },
+        force,
+        actions,
+        dry_run,
+    )
+
+
+def _update_gitignore(target_root: Path, actions: list[str], dry_run: bool) -> None:
+    gitignore = target_root / ".gitignore"
+    marker = "# Agentic Discipline managed outputs"
+    block = (
+        f"\n{marker}\n"
+        "artifacts/\n"
+        ".agent-memory/\n"
+        ".agentic/verification/artifacts/\n"
+        ".agentic/export/\n"
+    )
+    existing = gitignore.read_text(encoding="utf-8") if gitignore.exists() else ""
+    if marker in existing:
+        actions.append(f"SKIP {gitignore} (already configured)")
+        return
+    if not dry_run:
+        gitignore.write_text(existing.rstrip() + block, encoding="utf-8")
+    actions.append(f"UPDATE {gitignore}")
 
 
 def initialize_project(
@@ -150,9 +179,11 @@ def initialize_project(
     profile_files: Iterable[Path] = (),
     force: bool = False,
     max_depth: int = 4,
+    adapters: Iterable[str] | None = None,
+    dry_run: bool = False,
 ) -> dict[str, Any]:
     kit_root = find_contract_root().resolve()
-    target_root = _prepare_target(target, kit_root)
+    target_root = _prepare_target(target, kit_root, dry_run)
     profiles = load_profiles(kit_root, profile_files)
     requested = list(profile_ids or [])
     detections = (
@@ -173,47 +204,38 @@ def initialize_project(
         ]
 
     actions: list[str] = []
-    for item in COPY_ITEMS:
-        _copy_item(kit_root / item, target_root / item, force, actions)
+    _install_payload(kit_root, target_root, force, actions, dry_run)
 
-    _install_payload(kit_root, target_root, force, actions)
-
-    config = build_quality_config(target_root, detections, profiles)
-    _write_quality_config(target_root, config, force, actions)
-    _copy_item(
-        kit_root / "config" / "risk-weights.json",
-        target_root / "config" / "risk-weights.json",
-        force,
-        actions,
+    config = annotate_gate_availability(
+        target_root, build_quality_config(target_root, detections, profiles)
     )
+    _write_json(target_root / "agentic.config.json", config, force, actions, dry_run)
+    _update_gitignore(target_root, actions, dry_run)
 
-    for managed_dir in ("specs", "acceptance", "architecture", "artifacts", ".agent-memory"):
-        directory = target_root / managed_dir
-        directory.mkdir(parents=True, exist_ok=True)
-        gitkeep = directory / ".gitkeep"
-        if not gitkeep.exists():
-            gitkeep.write_text("", encoding="utf-8")
+    from .adapters import detect_adapters, sync_adapters
 
-    gitignore = target_root / ".gitignore"
-    marker = "# Agentic Discipline managed outputs"
-    block = (
-        f"\n{marker}\nartifacts/*\n!artifacts/.gitkeep\n.agent-memory/*\n!.agent-memory/.gitkeep\n"
-    )
-    existing = gitignore.read_text(encoding="utf-8") if gitignore.exists() else ""
-    if marker not in existing:
-        gitignore.write_text(existing.rstrip() + block, encoding="utf-8")
-        actions.append(f"UPDATE {gitignore}")
-    from .adapters import sync_adapters
-
-    adapter_result = sync_adapters(target_root, ["generic"])
+    selected = list(adapters) if adapters is not None else detect_adapters(target_root)
+    adapter_result = sync_adapters(target_root, selected, dry_run=dry_run)
     actions.extend(str(action) for action in cast(list[object], adapter_result["actions"]))
     actions.append(f"READY {target_root}")
+
+    relaxed = [
+        {"name": gate["name"], "note": gate["note"]}
+        for gate in config["gates"]
+        if isinstance(gate, dict) and "note" in gate
+    ]
     return {
         "status": "PASS",
         "target": str(target_root),
+        "dry_run": dry_run,
         "profiles": [detection.profile for detection in detections],
         "detections": [detection.report(target_root) for detection in detections],
         "config": str(target_root / "agentic.config.json"),
+        "adapters": adapter_result["adapters"],
+        "adapter_labels": adapter_result["labels"],
+        "disciplines": adapter_result["disciplines"],
+        "gates": len(config["gates"]),
+        "relaxed_gates": relaxed,
         "actions": actions,
     }
 

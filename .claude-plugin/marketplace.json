@@ -1,0 +1,31 @@
+{
+  "name": "agentic-discipline-kit",
+  "owner": {
+    "name": "Agentic Discipline Kit Contributors",
+    "url": "https://github.com/lreyesm1999/agentic-discipline-kit"
+  },
+  "metadata": {
+    "description": "Evidence-backed engineering controls for AI coding agents.",
+    "version": "1.1.0"
+  },
+  "plugins": [
+    {
+      "name": "agentic-discipline",
+      "source": "./packaging/claude-plugin",
+      "description": "Eleven engineering disciplines plus the /spec to /retro lifecycle as slash commands. Keeps requirements traceable, verification executable, and release decisions backed by evidence.",
+      "version": "1.1.0",
+      "author": {
+        "name": "Agentic Discipline Kit Contributors"
+      },
+      "homepage": "https://github.com/lreyesm1999/agentic-discipline-kit",
+      "license": "MIT",
+      "keywords": [
+        "quality-gates",
+        "verification",
+        "acceptance-testing",
+        "evidence",
+        "code-review"
+      ]
+    }
+  ]
+}

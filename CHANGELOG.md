@@ -4,9 +4,49 @@ All notable changes to this project are documented here.
 
 The format is inspired by Keep a Changelog and versions follow Semantic Versioning.
 
-## [Unreleased]
+## [1.1.0] - 2026-09-06
 
-No unreleased changes.
+### Migration required for existing installations
+
+`init` now installs its payload under `.agentic/` instead of the repository root. Existing
+installations keep working, but the old root copies of `skills/`, `policies/`, `schemas/`,
+`templates/`, `config/risk-weights.json` and `MASTER_PROMPT.md` become stale duplicates. Move them
+with `agentic-discipline migrate --to 3.0`, review
+`artifacts/payload-migration-report.json`, then remove the legacy copies with
+`agentic-discipline migrate --to 3.0 --prune`.
+
+### Added
+- Multi-tool skill compiler: every agent surface is emitted in the format its tool actually loads -
+  Claude Code and Antigravity skills with `name`/`description`, Cursor `.mdc` rules with `globs`,
+  Copilot `.instructions.md` with `applyTo`, Windsurf rules with trigger modes, `GEMINI.md`, and
+  `AGENTS.md` for Codex, Zed, Cline, Aider and Jules.
+- Canonical activation metadata on all eleven disciplines, split into `description` (what the
+  discipline does) and `when_to_use` (when it applies), so a tool can decide when to load each one.
+  Formats with a single description field receive both halves combined, keeping selective activation.
+- `argument-hint` on every generated slash command, so the host shows the expected argument while
+  the user is typing.
+- `npx agentic-discipline init`: zero-install entry point that needs neither Python nor a `PATH` setup.
+- Installable Claude Code plugin with the `/spec` to `/retro` lifecycle as slash commands, generated
+  from the canonical disciplines and guarded against drift by a test.
+- ChatGPT export bundle for Projects and Custom GPTs, where no project filesystem exists.
+- `--dry-run` on `init` and `adapters sync`; `adapters list`; `--json` for machine-readable output.
+- `migrate --prune` to remove the legacy root payload after it is reinstalled under `.agentic/`.
+- PyPI trusted publishing and npm publication in the release workflow.
+
+### Changed
+- `init` installs the payload under `.agentic/`; only `AGENTS.md` and `agentic.config.json` are added
+  to the repository root, down from fifteen top-level entries.
+- Generated gates that cannot run in the repository are written with `required: false` and a `note`
+  explaining why, instead of failing on first use.
+- `init` and `adapters sync` print a human summary by default.
+- The 20 workflow playbooks install to `.agentic/playbooks/` as reference for the eleven disciplines,
+  resolving the overlap between the two sets.
+- Phase directories are created on demand rather than pre-created with `.gitkeep` files.
+
+### Fixed
+- Adapters emitted one byte-identical file to every tool path, so Claude Code, Cursor, Windsurf and
+  Antigravity never registered the disciplines as skills or rules at all.
+- `parse_frontmatter` now unquotes values, making a render/parse round trip lossless.
 
 ## [1.0.0] - 2026-08-29
 

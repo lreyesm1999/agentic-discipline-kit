@@ -48,6 +48,9 @@ def test_init_command_reports_detected_profile(tmp_path: Path) -> None:
                 profile_file=[],
                 force=False,
                 max_depth=4,
+                adapter=[],
+                dry_run=False,
+                json=True,
             )
         )
         == 0

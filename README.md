@@ -13,6 +13,7 @@
 
 <p>
   <a href="#60-second-quick-start">Start in 60 seconds</a> ·
+  <a href="docs/install.md">Install guide</a> ·
   <a href="docs/workflow.md">See the workflow</a> ·
   <a href="docs/adoption.md">Plan adoption</a>
 </p>
@@ -21,9 +22,9 @@
 
 Agentic Discipline Kit is a stack-agnostic operating system for AI-assisted software delivery. It gives coding agents a repeatable workflow for requirements, implementation, testing, security, review, and release evidence.
 
-The first public release adds Verification Engineering and Evolution Discipline: measurable claims are
-backed by reusable deterministic verifiers, while replacements, temporary artifacts, fallbacks, tests,
-and migrations receive explicit lifecycle treatment.
+It installs with one command into whichever agent tools a repository already uses, keeps its payload
+in `.agentic/` instead of scattering files through the project root, and backs measurable claims with
+reusable deterministic verifiers rather than model narration.
 
 <table>
   <tr>
@@ -75,67 +76,88 @@ Each stage has explicit inputs, outputs, stop conditions, and evidence requireme
 
 ## 60-second quick start
 
-Download the standalone executable for Windows, macOS, or Linux from
-[GitHub Releases](https://github.com/lreyesm1999/agentic-discipline-kit/releases), place it on your
-`PATH`, and run this inside your project:
-
 ```bash
-agentic-discipline init
-agentic-discipline doctor --check-tools
+npx agentic-discipline init
 ```
 
-`init` detects project manifests, supports mixed-stack repositories, installs the contracts, and
-generates the quality configuration. If it cannot recognize an ecosystem, it creates a safe generic
-configuration that can run commands from any toolchain.
+That is the whole install. It detects the agent tools your repository already
+uses and writes each one's native format - Claude Code skills, Cursor rules,
+Copilot instructions, Windsurf rules, `AGENTS.md` for everything that reads it -
+all compiled from one canonical source so they cannot drift apart.
 
-Run the generated project checks:
+Two files appear in your repository root:
+
+```text
+AGENTS.md              read by Codex, Zed, Cline, Aider, Jules and others
+agentic.config.json    quality gates, generated for your detected stack
+.agentic/              everything else, the way tooling belongs in .github/
+```
+
+Preview before writing anything with `--dry-run`, and check the result with
+`agentic-discipline doctor --check-tools`.
+
+Using Claude Code? Install it as a plugin instead, and get the lifecycle as
+slash commands:
+
+```text
+/plugin marketplace add lreyesm1999/agentic-discipline-kit
+/plugin install agentic-discipline@agentic-discipline-kit
+```
+
+The deterministic gates are a separate, optional install - you only need them
+when you want to run checks rather than guide an agent:
+
+```bash
+pipx install agentic-discipline-kit
+```
+
+Then:
 
 ```bash
 agentic-discipline quality --config agentic.config.json
-agentic-discipline evidence-verify \
-  --ledger artifacts/evidence-ledger.jsonl \
-  --check-artifacts
-```
-
-For a new project, the same command also installs a canonical `.agentic/` payload. Register and run a
-project-specific verifier without learning a new runtime:
-
-```bash
-agentic-discipline verifier register checks/my-check
-agentic-discipline verifier list
 agentic-discipline verify VER-001
-agentic-discipline hygiene
+agentic-discipline evidence-verify --ledger artifacts/evidence-ledger.jsonl --check-artifacts
 ```
 
-`verify` produces `PASS`, `FAIL`, `UNKNOWN`, or `BLOCKED` from execution and records normalized evidence;
-model narration cannot fabricate a passing result. Use `agentic-discipline adapters sync` to generate
-thin, idempotent surfaces for the agent vendors present in a repository.
+`verify` produces `PASS`, `FAIL`, `UNKNOWN` or `BLOCKED` from execution and records
+normalized evidence; model narration cannot fabricate a passing result.
 
-Python is not required when using a standalone executable. Installing from source remains available
-for contributors and requires Python 3.11+:
+Full matrix, per-tool details and the ChatGPT bundle: [Install guide](docs/install.md).
 
-```bash
-python -m pip install -e ".[dev]"
-```
+## Works with the tools you already use
 
-Then start your coding agent with the generated `MASTER_PROMPT.md` and follow the lifecycle below.
+| Tool | Receives |
+|---|---|
+| Claude Code | `.claude/skills/agentic-*/SKILL.md`, or the plugin with `/spec` to `/retro` |
+| Cursor | `.cursor/rules/agentic-*.mdc`, scoped by `globs` |
+| GitHub Copilot | `.github/instructions/agentic-*.instructions.md`, scoped by `applyTo` |
+| Windsurf | `.windsurf/rules/agentic-*.md`, with trigger modes |
+| Antigravity | `.agents/skills/agentic-*/SKILL.md` |
+| Gemini CLI | `GEMINI.md` |
+| Codex, Zed, Cline, Aider, Jules | `AGENTS.md` |
+| ChatGPT | a paste-ready bundle for Projects and Custom GPTs |
 
-## The 20 skills
+Each surface is emitted in the format that tool actually loads, not the same
+file under a different extension, so selective activation works: the coding
+discipline loads when code changes, hardening when tests do.
 
-Skills are focused playbooks for the agent. A skill says **when it can run, what it consumes, what it must produce, what it must never do, and what evidence is required**.
+## The 11 disciplines
+
+A discipline is a focused playbook that says **when it applies, what it consumes,
+what it must produce, what it must never do, and what evidence is required**.
+These are what get installed into your agent tools:
 
 ```text
-01 Requirements intake       11 CRAP analysis
-02 Specification              12 Quality gates
-03 Acceptance design          13 Differential mutation
-04 Acceptance compiler        14 Architecture
-05 Task planning              15 Security
-06 Risk classification        16 Integrity audit
-07 Implementation             17 Independent review
-08 Unit testing               18 QA
-09 Property testing           19 Release evidence
-10 Refactoring                20 Agent retrospective
+01 Source            07 Architecture
+02 Specification     08 Hardening
+03 Acceptance        09 QA
+04 Verification      10 Evidence
+05 Coding            11 Evolution
+06 Cleaning
 ```
+
+Each one carries the activation metadata its host tool needs, so it loads when
+it is relevant rather than sitting in a folder the agent never reads.
 
 The default lifecycle is:
 
@@ -144,15 +166,18 @@ The default lifecycle is:
      -> /review -> /verify -> /release -> /retro
 ```
 
-The skills solve a common failure mode of AI coding: a fast implementation that quietly drops a requirement, weakens a test, bypasses a gate, or ships without a traceable explanation.
+The Claude Code plugin ships these as slash commands. In other tools they are
+the phases the disciplines refer to.
 
-## The current disciplines
+Behind the disciplines sit 20 detailed workflow playbooks - requirements intake,
+CRAP analysis, differential mutation, integrity audit, independent review and
+the rest. `init` installs them to `.agentic/playbooks/` as reference material
+the disciplines cite; they are not separate skills competing for the agent's
+attention.
 
-The 20 workflow skills remain available. New projects additionally receive eleven
-canonical disciplines under `.agentic/skills/`: source, specification, acceptance, verification
-engineering, coding, cleaning, architecture, hardening, QA, evidence, and evolution. These are thin
-portable playbooks; the deterministic core remains independent of Python, TypeScript, .NET, or any
-other project stack.
+Together they solve a common failure mode of AI coding: a fast implementation
+that quietly drops a requirement, weakens a test, bypasses a gate, or ships
+without a traceable explanation.
 
 ## What you get out of the box
 
@@ -168,7 +193,9 @@ other project stack.
 - **Independent reviewer protocol** to reduce implementation-agent anchoring.
 - **Evidence ledger** with SHA-256 hashes and chain verification.
 - **Automatic project discovery** with composable profiles and a generic fallback for any toolchain.
-- **Standalone binaries, container image, and GitHub Action** so adopters do not manage the CLI runtime.
+- **A multi-tool skill compiler** that emits Claude Code, Cursor, Copilot, Windsurf, Antigravity, Gemini and `AGENTS.md` surfaces from one canonical source.
+- **Honest generated gates**: a gate whose command cannot run here is written non-blocking with the reason, never silently enabled.
+- **Standalone binaries, container image, npm launcher, Claude Code plugin, and GitHub Action** so adopters do not manage the CLI runtime.
 
 ## A concrete example
 
@@ -255,21 +282,26 @@ These are starting points, not invented guarantees. Tune them to your risk profi
 
 ```text
 .
+├── .claude-plugin/          Claude Code marketplace manifest
 ├── .github/                 CI, security, release, and contribution automation
 ├── adapters/                Acceptance adapters by stack
-├── config/                  Quality and risk configurations
-├── docs/                    Workflow, architecture, security, and adoption guides
+├── agentic/                 Canonical constitution source
+├── config/                  Quality profiles and risk configuration
+├── disciplines/             Canonical discipline source - every surface compiles from here
+├── docs/                    Install, workflow, architecture, security, adoption
+├── packaging/               npm launcher, Claude Code plugin, standalone build spec
 ├── policies/                Engineering policies enforced by agents
 ├── schemas/                 Requirement, acceptance, verification, and evidence schemas
-├── skills/                  20 agent playbooks
-├── agentic/                 Canonical constitution source
-├── disciplines/             Canonical discipline source
+├── skills/                  20 detailed workflow playbooks
 ├── src/agentic_discipline/  Deterministic Python tooling
 ├── templates/               Specs, acceptance, and release templates
 ├── tests/                   Framework tests
 ├── AGENTS.md                Orchestrator contract
 └── MASTER_PROMPT.md         Bootstrap prompt for coding agents
 ```
+
+`packaging/claude-plugin/` is generated from `disciplines/`, never edited by
+hand; a test fails the build if the committed copy falls behind.
 
 ## When to adopt it
 
@@ -284,6 +316,7 @@ For a tiny throwaway script, the full lifecycle may be unnecessary. For a produc
 
 ## Documentation
 
+- [Install guide](docs/install.md)
 - [Workflow](docs/workflow.md)
 - [Architecture](docs/architecture.md)
 - [Security model](docs/security-model.md)
@@ -295,7 +328,7 @@ For a tiny throwaway script, the full lifecycle may be unnecessary. For a produc
 
 ## Project status
 
-**v1.0.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, supports portable adapters, and can migrate earlier internal payloads without presenting their format revision as the public package version.
+**v1.1.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, and compiles one canonical discipline set into every supported agent tool. Installations from earlier versions should run `agentic-discipline migrate --to 3.0` to move the payload under `.agentic/`.
 
 ## License
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import json
 import os
+import shutil
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
@@ -238,3 +239,83 @@ def build_quality_config(
         "artifacts_dir": "artifacts",
         "gates": gates,
     }
+
+
+def _command_words(command: Any) -> list[str]:
+    if isinstance(command, list):
+        return [str(item) for item in command]
+    if isinstance(command, str):
+        return command.split()
+    return []
+
+
+def _package_scripts(directory: Path) -> dict[str, Any] | None:
+    manifest = directory / "package.json"
+    if not manifest.is_file():
+        return None
+    try:
+        data = json.loads(manifest.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return None
+    scripts = data.get("scripts")
+    return scripts if isinstance(scripts, dict) else {}
+
+
+def _unavailable_reason(gate: dict[str, Any], root: Path) -> str | None:
+    """Return why a generated gate cannot run here, or ``None`` when it can.
+
+    Profiles describe the conventional commands of an ecosystem, not the scripts
+    a given repository actually defines, so a generated gate is only trusted
+    once its executable and its npm script are both present.
+    """
+
+    words = _command_words(gate.get("command"))
+    if not words:
+        return None
+    executable = words[0]
+    if shutil.which(executable) is None:
+        return f"executable not found on PATH: {executable}"
+    working_directory = gate.get("working_directory")
+    directory = root / working_directory if isinstance(working_directory, str) else root
+    if executable == "npm":
+        scripts = _package_scripts(directory)
+        if scripts is None:
+            return "package.json not found"
+        # `npm test` resolves the `test` script; `npm run <name>` names it directly.
+        script = None
+        if len(words) >= 3 and words[1] in {"run", "run-script"}:
+            script = words[2]
+        elif len(words) >= 2 and words[1] == "test":
+            script = "test"
+        if script is not None and script not in scripts:
+            return f"package.json defines no {script!r} script"
+    if executable == "npx" and len(words) >= 2:
+        # Only decide once dependencies are installed: an absent `node_modules`
+        # means unknown, and unknown must not silently relax a gate.
+        modules = directory / "node_modules"
+        binary = words[1]
+        if modules.is_dir() and not any(
+            (modules / ".bin" / f"{binary}{extension}").exists()
+            for extension in ("", ".cmd", ".ps1", ".exe")
+        ):
+            return f"node_modules provides no {binary!r} binary"
+    return None
+
+
+def annotate_gate_availability(repository_root: Path, config: dict[str, Any]) -> dict[str, Any]:
+    """Downgrade generated gates that cannot run, so the first run is honest.
+
+    Gates are only ever relaxed: a gate that can run keeps whatever the profile
+    declared, and the reason is recorded so a team can restore it deliberately.
+    """
+
+    root = repository_root.resolve()
+    for gate in config.get("gates", []):
+        if not isinstance(gate, dict):
+            continue
+        reason = _unavailable_reason(gate, root)
+        if reason is None:
+            continue
+        gate["required"] = False
+        gate["note"] = f"disabled by init: {reason}"
+    return config

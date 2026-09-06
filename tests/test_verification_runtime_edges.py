@@ -109,7 +109,12 @@ def test_verification_commands_and_adapters(tmp_path: Path) -> None:
     (project / ".windsurf").mkdir()
     (project / ".github").mkdir()
     (project / "GEMINI.md").write_text("# Gemini\n", encoding="utf-8")
-    assert cli.command_adapters_sync(argparse.Namespace(project_root=str(project), adapter=[])) == 0
+    assert (
+        cli.command_adapters_sync(
+            argparse.Namespace(project_root=str(project), adapter=[], dry_run=False, json=True)
+        )
+        == 0
+    )
     assert cli.command_verifier_list(argparse.Namespace(project_root=str(project))) == 0
     with pytest.raises(AgenticError, match="not found"):
         cli.command_verifier_validate(
