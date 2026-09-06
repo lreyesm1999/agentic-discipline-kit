@@ -15,10 +15,11 @@ The payload installs under `.agentic/`. Only `AGENTS.md` and `agentic.config.jso
 repository root, which is usually what makes the adoption PR reviewable.
 
 Installing the disciplines needs no runtime at all. The Python CLI is only required for the
-deterministic gates, and adopters can use a standalone executable, the container image, or the
-repository's GitHub Composite Action instead of managing it.
+deterministic gates, and adopters can use a standalone executable, a container built from the
+repository's `Dockerfile`, or the GitHub Composite Action instead of managing it.
 
-The container image contains the Agentic Discipline CLI, not every possible project toolchain. For
+No container image is published; the repository ships a `Dockerfile` you build yourself. It
+contains the Agentic Discipline CLI, not every possible project toolchain. For
 Node, .NET, or other ecosystems, derive a project image with those tools installed, or use the
 Composite Action so gates run directly on the hosted runner.
 

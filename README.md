@@ -6,6 +6,8 @@
 
 <p><strong>Ship faster with AI agents - without outsourcing engineering judgment to the model.</strong></p>
 
+[![npm](https://img.shields.io/npm/v/agentic-discipline?logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/agentic-discipline)
+[![PyPI](https://img.shields.io/pypi/v/agentic-discipline-kit?logo=pypi&logoColor=white&label=PyPI)](https://pypi.org/project/agentic-discipline-kit/)
 [![CI](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/ci.yml)
 [![Security](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/security.yml/badge.svg)](https://github.com/lreyesm1999/agentic-discipline-kit/actions/workflows/security.yml)
 [![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -195,7 +197,7 @@ without a traceable explanation.
 - **Automatic project discovery** with composable profiles and a generic fallback for any toolchain.
 - **A multi-tool skill compiler** that emits Claude Code, Cursor, Copilot, Windsurf, Antigravity, Gemini and `AGENTS.md` surfaces from one canonical source.
 - **Honest generated gates**: a gate whose command cannot run here is written non-blocking with the reason, never silently enabled.
-- **Standalone binaries, container image, npm launcher, Claude Code plugin, and GitHub Action** so adopters do not manage the CLI runtime.
+- **An npm launcher, a Claude Code plugin, a PyPI package, standalone binaries, a GitHub Action, and a Dockerfile** so adopters do not manage the CLI runtime.
 
 ## A concrete example
 

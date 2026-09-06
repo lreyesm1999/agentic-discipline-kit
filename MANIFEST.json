@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-06T16:28:04.667296+00:00",
+  "generated_at_utc": "2026-09-06T20:05:57.084886+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -270,8 +270,8 @@
     },
     {
       "path": "docs/adoption.md",
-      "sha256": "1a39c64388535f7ce956d7a5ac989daef0dca90c9e2fbd97e5332cef19eeb4a0",
-      "bytes": 2162
+      "sha256": "d83a591704573a1bdd3272817cf5ac0df2a9c6789e718049142c218cffdd4ec6",
+      "bytes": 2254
     },
     {
       "path": "docs/architecture.md",
@@ -295,8 +295,8 @@
     },
     {
       "path": "docs/install.md",
-      "sha256": "ccbd10dde2b262fdb1b8b6bf0c076e41d91f89ace8a883d3ed7da0f3872e258a",
-      "bytes": 5137
+      "sha256": "38797f1f0de5bc0e63307fe0618cb4cd7c814cddcb6944f6a6c6f051f4dbde31",
+      "bytes": 5157
     },
     {
       "path": "docs/payload-migration.md",
@@ -555,8 +555,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "a663ea689293011ada79ba3c02f6aa009a130fdc99549d12b77f6524731ddc25",
-      "bytes": 13942
+      "sha256": "e3d2d553078d95e1b12f4579b834dff1bd2ad743744c4825308977ebbf2b074a",
+      "bytes": 14256
     },
     {
       "path": "ROADMAP.md",
