@@ -11,11 +11,21 @@ import json
 import tomllib
 from pathlib import Path
 
+import pytest
+
 from agentic_discipline import __version__
 from agentic_discipline.adapters import sync_adapters
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN = ROOT / "packaging" / "claude-plugin"
+
+# These assert about the repository layout itself, so they are meaningless in a
+# partial copy. Mutmut runs the suite from a `mutants/` tree holding only the
+# mutated sources and the tests, where `packaging/` does not exist.
+pytestmark = pytest.mark.skipif(
+    not (ROOT / "packaging" / "agentic-discipline.spec").is_file(),
+    reason="repository layout unavailable in a partial checkout",
+)
 
 
 def _data_files() -> dict[str, list[str]]:
