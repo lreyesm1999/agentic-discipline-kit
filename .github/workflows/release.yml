@@ -76,15 +76,21 @@ jobs:
     permissions:
       id-token: write
     steps:
+      # The artifact stores `dist/*` alongside `sbom.json`, so its internal root
+      # is the workspace: downloading into `dist` would nest it as `dist/dist`
+      # and twine would refuse the directory as a distribution.
       - uses: actions/download-artifact@v8
         with:
           name: python-distribution
-          path: dist
-      - name: Drop the SBOM before upload
-        run: rm -f dist/sbom.json
+          path: .
+      - name: Confirm the distribution is where twine expects it
+        run: ls -1 dist/*.whl dist/*.tar.gz
       # Trusted publishing: configure this repository, workflow and the `pypi`
       # environment as a publisher on PyPI. No API token is stored here.
+      # `skip-existing` keeps a re-run of a partially failed release green.
       - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
 
   npm:
     name: Publish npm launcher
@@ -107,9 +113,18 @@ jobs:
             echo "packaging/npm/package.json is ${version}, tag is ${GITHUB_REF_NAME}" >&2
             exit 1
           }
+      # Re-running a release whose other job failed must not fail here on a
+      # version the registry already has.
       - name: Publish
         working-directory: packaging/npm
-        run: npm publish --provenance --access public
+        run: |
+          name="$(node -p "require('./package.json').name")"
+          version="$(node -p "require('./package.json').version")"
+          if npm view "${name}@${version}" version >/dev/null 2>&1; then
+            echo "${name}@${version} is already published; nothing to do"
+            exit 0
+          fi
+          npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
