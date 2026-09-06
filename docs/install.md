@@ -97,9 +97,9 @@ pipx install agentic-discipline-kit
 ```
 
 Alternatives: a standalone executable from
-[Releases](https://github.com/lreyesm1999/agentic-discipline-kit/releases),
-the container image, or the repository's composite action, which installs the
-CLI on the runner for you:
+[Releases](https://github.com/lreyesm1999/agentic-discipline-kit/releases), a
+container built from the repository's `Dockerfile`, or the composite action,
+which installs the CLI on the runner for you:
 
 ```yaml
 - uses: lreyesm1999/agentic-discipline-kit@v1
