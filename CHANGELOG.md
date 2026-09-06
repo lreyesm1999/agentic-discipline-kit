@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 The format is inspired by Keep a Changelog and versions follow Semantic Versioning.
 
+## [Unreleased]
+
+### Changed
+- The npm launcher publishes over OIDC trusted publishing instead of a stored `NPM_TOKEN`. Requires a
+  trusted publisher registered on the npm package (GitHub Actions, this repository, `release.yml`,
+  environment `npm`), which npm only allows once the package exists - so the first release still had
+  to publish with a token. Node moves to 22 and npm to 11.5.1 or later, the versions that understand
+  OIDC; `--provenance` is dropped because trusted publishing attests provenance on its own.
+
 ## [1.1.0] - 2026-09-06
 
 ### Migration required for existing installations

@@ -96,15 +96,20 @@ jobs:
     name: Publish npm launcher
     needs: [standalone]
     runs-on: ubuntu-latest
+    # Must match the Environment name registered on the package's trusted
+    # publisher, and trusted publishing only runs on GitHub-hosted runners.
     environment: npm
     permissions:
       id-token: write
     steps:
       - uses: actions/checkout@v7
+      # `registry-url` is deliberately omitted: it writes an .npmrc expecting
+      # NODE_AUTH_TOKEN, and trusted publishing authenticates over OIDC instead.
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+          node-version: "22"
+      # Node 22 still ships npm 10, below the floor that understands OIDC.
+      - run: npm install -g npm@^11.5.1
       - name: Verify the launcher version matches the tag
         working-directory: packaging/npm
         run: |
@@ -113,8 +118,10 @@ jobs:
             echo "packaging/npm/package.json is ${version}, tag is ${GITHUB_REF_NAME}" >&2
             exit 1
           }
-      # Re-running a release whose other job failed must not fail here on a
-      # version the registry already has.
+      # No token: npm detects the OIDC environment and authenticates with a
+      # short-lived credential. Provenance is attested automatically, so
+      # `--provenance` is not passed. Re-running a release whose other job
+      # failed must not fail here on a version the registry already has.
       - name: Publish
         working-directory: packaging/npm
         run: |
@@ -124,9 +131,7 @@ jobs:
             echo "${name}@${version} is already published; nothing to do"
             exit 0
           fi
-          npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm publish --access public
 
   publish:
     needs: [build, standalone]
