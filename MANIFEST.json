@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-06T20:05:57.084886+00:00",
+  "generated_at_utc": "2026-09-12T08:24:07.378295+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -39,11 +39,6 @@
       "bytes": 157
     },
     {
-      "path": ".github/dependabot.yml",
-      "sha256": "733845f00afb6100d70b04799f8e693c6e61774bb0f4a10bf2a8eb54cf4a87ff",
-      "bytes": 383
-    },
-    {
       "path": ".github/ISSUE_TEMPLATE/bug.yml",
       "sha256": "e6fda095c96ea230fdc39264ee5cc0dc98af8e23dfcdf884c8a6a48223b699b2",
       "bytes": 1216
@@ -57,6 +52,11 @@
       "path": ".github/ISSUE_TEMPLATE/feature.yml",
       "sha256": "6921fb1a43253b570c7bf431d121c9acd326fdac1d824a989d201f51823f483f",
       "bytes": 673
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "sha256": "733845f00afb6100d70b04799f8e693c6e61774bb0f4a10bf2a8eb54cf4a87ff",
+      "bytes": 383
     },
     {
       "path": ".github/pull_request_template.md",
@@ -94,6 +94,81 @@
       "bytes": 475
     },
     {
+      "path": "AGENTS.md",
+      "sha256": "1734b5de486ee28c6e42b0847406c17efe461d85f425d68c2f7c1c83acf8405c",
+      "bytes": 3449
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "881241d86d5cf739a76b9cee9848767dce00374037fb6dc802882605b28538da",
+      "bytes": 5785
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "75ade0f605cfb4f96c2cfe1519048caf8b1c9b576dbd81185208c6cb1a09d1e3",
+      "bytes": 868
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "2fbf0302a61771e10abcfbed7949ac721dbb0a6c35b5dad5d91c4eb1dab1bc6c",
+      "bytes": 1227
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "b375a100aa0fb97ec987da6f335877336bc3121e5fb92ab3132f943fccac7ad9",
+      "bytes": 354
+    },
+    {
+      "path": "GITHUB_SETUP.md",
+      "sha256": "7f1a8259135ae959a64e0833f4488e8a3460b0884547e65e7ddffcab185f1bf5",
+      "bytes": 2041
+    },
+    {
+      "path": "GOVERNANCE.md",
+      "sha256": "e6dbdb4ea2e0d2a6a687382cd73a4c9c31e78e90e41a81aff6cf16ea0502a19b",
+      "bytes": 667
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "d733d2483f5ec6f02aaf978d2514b13f9aba7850ad3da0a2e886f2a427d8eb4a",
+      "bytes": 1092
+    },
+    {
+      "path": "MASTER_PROMPT.md",
+      "sha256": "3c892fecc5cd54d8b95533c1cbf68a11bf261c8484131ed90ec0f71d7949d912",
+      "bytes": 2473
+    },
+    {
+      "path": "Makefile",
+      "sha256": "d3e1aa03450346d999d6c35d68bcff9e58c187a338c760e3e8379cc3379f77ad",
+      "bytes": 782
+    },
+    {
+      "path": "README.md",
+      "sha256": "3c2b70caba9ae85b8d005e3e99d8fc01060db18caf9c8b91d4803045bfa4f774",
+      "bytes": 16012
+    },
+    {
+      "path": "ROADMAP.md",
+      "sha256": "8213b75bca17b373263a84f629667266610c101d1f9f95089bba84727d0407c5",
+      "bytes": 473
+    },
+    {
+      "path": "SECURITY.md",
+      "sha256": "11bfee31e3ff715d0c0f25dbdba6581e89815b4a5a19681be896a94ad46e03f0",
+      "bytes": 826
+    },
+    {
+      "path": "SUPPORT.md",
+      "sha256": "2398b6c0bf75d18382815a2d5c4ce3342019dcd275bef01a7905b5b2b6bcad54",
+      "bytes": 259
+    },
+    {
+      "path": "VERSION",
+      "sha256": "1575e1af4a95f12f70b4ee6a6adce8160953d93ea17dc2611b90883ccc3ad3b8",
+      "bytes": 6
+    },
+    {
       "path": "acceptance/production-hardening.feature",
       "sha256": "69f112f7e4fa15917b8b1145368656646007e7cf21092a3cb5b6e1ea8ca40f38",
       "bytes": 1580
@@ -129,11 +204,6 @@
       "bytes": 1288
     },
     {
-      "path": "AGENTS.md",
-      "sha256": "1734b5de486ee28c6e42b0847406c17efe461d85f425d68c2f7c1c83acf8405c",
-      "bytes": 3449
-    },
-    {
       "path": "architecture/production-trust-boundaries.md",
       "sha256": "8bd379b42cd04484ea0ade88e5079627ee06b1cbe65c3f8bb116154f08d8d742",
       "bytes": 1132
@@ -142,16 +212,6 @@
       "path": "artifacts/.gitkeep",
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0
-    },
-    {
-      "path": "CHANGELOG.md",
-      "sha256": "f09f9c2561c0cb0e0c5f206ebd26e2588c490482eb5e2578a1170a4ca258880d",
-      "bytes": 5258
-    },
-    {
-      "path": "CODE_OF_CONDUCT.md",
-      "sha256": "75ade0f605cfb4f96c2cfe1519048caf8b1c9b576dbd81185208c6cb1a09d1e3",
-      "bytes": 868
     },
     {
       "path": "config/examples/dotnet.json",
@@ -202,11 +262,6 @@
       "path": "config/self-quality.json",
       "sha256": "472e58e67cb227f2b597839e8b8737bdc44e88ac55b28a99265781043de9ac8d",
       "bytes": 1895
-    },
-    {
-      "path": "CONTRIBUTING.md",
-      "sha256": "2fbf0302a61771e10abcfbed7949ac721dbb0a6c35b5dad5d91c4eb1dab1bc6c",
-      "bytes": 1227
     },
     {
       "path": "disciplines/01-source/SKILL.md",
@@ -264,9 +319,9 @@
       "bytes": 629
     },
     {
-      "path": "Dockerfile",
-      "sha256": "b375a100aa0fb97ec987da6f335877336bc3121e5fb92ab3132f943fccac7ad9",
-      "bytes": 354
+      "path": "disciplines/12-autonomous-project-execution/SKILL.md",
+      "sha256": "121496d743676519fb6429f7c7a582462141a4dde932d53fa0e6437f28caeb5f",
+      "bytes": 9505
     },
     {
       "path": "docs/adoption.md",
@@ -335,8 +390,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "641756b842403984411663e3c7094facdde1f81503922ee1c8acc2b17944eb9a",
-      "bytes": 1733
+      "sha256": "56c841dde8f22260a1ba86434876edbff952d5c0ac355fa5355da2b17a436042",
+      "bytes": 2860
     },
     {
       "path": "examples/order-checkout/acceptance/checkout.feature",
@@ -354,31 +409,6 @@
       "bytes": 191
     },
     {
-      "path": "GITHUB_SETUP.md",
-      "sha256": "7f1a8259135ae959a64e0833f4488e8a3460b0884547e65e7ddffcab185f1bf5",
-      "bytes": 2041
-    },
-    {
-      "path": "GOVERNANCE.md",
-      "sha256": "e6dbdb4ea2e0d2a6a687382cd73a4c9c31e78e90e41a81aff6cf16ea0502a19b",
-      "bytes": 667
-    },
-    {
-      "path": "LICENSE",
-      "sha256": "d733d2483f5ec6f02aaf978d2514b13f9aba7850ad3da0a2e886f2a427d8eb4a",
-      "bytes": 1092
-    },
-    {
-      "path": "Makefile",
-      "sha256": "d3e1aa03450346d999d6c35d68bcff9e58c187a338c760e3e8379cc3379f77ad",
-      "bytes": 782
-    },
-    {
-      "path": "MASTER_PROMPT.md",
-      "sha256": "3c892fecc5cd54d8b95533c1cbf68a11bf261c8484131ed90ec0f71d7949d912",
-      "bytes": 2473
-    },
-    {
       "path": "packaging/agentic-discipline.spec",
       "sha256": "6cc1f375152efe8eb29d1e3bad35109244b77bed7dff46d9940e34c7bde3c6ea",
       "bytes": 1088
@@ -392,6 +422,11 @@
       "path": "packaging/claude-plugin/commands/build.md",
       "sha256": "b392669e5778dbaa7fa25e2643135b9f41e8ecc2ed64fb074fa815d7a7602258",
       "bytes": 1174
+    },
+    {
+      "path": "packaging/claude-plugin/commands/execute.md",
+      "sha256": "58ae3f0b17ccd033e87b8e5954edf1053ee068570a2188d8df474394cdd67686",
+      "bytes": 1368
     },
     {
       "path": "packaging/claude-plugin/commands/harden.md",
@@ -449,6 +484,11 @@
       "bytes": 1681
     },
     {
+      "path": "packaging/claude-plugin/skills/agentic-autonomous-project-execution/SKILL.md",
+      "sha256": "97208df73991787da85f2eaf8decdd53b789097f806e18659390ccfb68f8dc94",
+      "bytes": 10712
+    },
+    {
       "path": "packaging/claude-plugin/skills/agentic-cleaning/SKILL.md",
       "sha256": "9286b97dfafc4aa1fa3d2bb49f0c066897800556dcfc80f41c2e290337afa837",
       "bytes": 1521
@@ -499,6 +539,11 @@
       "bytes": 79
     },
     {
+      "path": "packaging/npm/README.md",
+      "sha256": "f5a8e1f25e2f67846529a3bd0f0d7a26c82f0988c90baa40540548b87c303d60",
+      "bytes": 1794
+    },
+    {
       "path": "packaging/npm/bin/agentic-discipline.js",
       "sha256": "3e12d8b8b3dc12e0f1349805ce64f349e9ff074ee763a6d5bc9f4e9329638f90",
       "bytes": 3829
@@ -507,11 +552,6 @@
       "path": "packaging/npm/package.json",
       "sha256": "071698e7f08c5db6ffc3edcdab296da42a7642f7fc6efd17fae0218f13de34b5",
       "bytes": 782
-    },
-    {
-      "path": "packaging/npm/README.md",
-      "sha256": "f5a8e1f25e2f67846529a3bd0f0d7a26c82f0988c90baa40540548b87c303d60",
-      "bytes": 1794
     },
     {
       "path": "policies/architecture.md",
@@ -550,18 +590,8 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "126cb4818a6e099e40b9a3351dc81b438176b839721a153b9402b9842afe5904",
-      "bytes": 5680
-    },
-    {
-      "path": "README.md",
-      "sha256": "e3d2d553078d95e1b12f4579b834dff1bd2ad743744c4825308977ebbf2b074a",
-      "bytes": 14256
-    },
-    {
-      "path": "ROADMAP.md",
-      "sha256": "8213b75bca17b373263a84f629667266610c101d1f9f95089bba84727d0407c5",
-      "bytes": 473
+      "sha256": "e03d6b671ba367bac6fcafa2f81495c5ad73c32c0207f84e5c8aef64cee300a0",
+      "bytes": 5810
     },
     {
       "path": "schemas/acceptance-ir.schema.json",
@@ -672,11 +702,6 @@
       "path": "scripts/risk_score.py",
       "sha256": "a86bc6b3d051fd928cd26fbdcadb9a87a51a0dd84ea48a2771712517832adb2d",
       "bytes": 212
-    },
-    {
-      "path": "SECURITY.md",
-      "sha256": "11bfee31e3ff715d0c0f25dbdba6581e89815b4a5a19681be896a94ad46e03f0",
-      "bytes": 826
     },
     {
       "path": "skills/01-requirements-intake/SKILL.md",
@@ -800,8 +825,8 @@
     },
     {
       "path": "src/agentic_discipline/adapters.py",
-      "sha256": "bc6609b0acd6793ffdb8a17bb04491546857a3be6fb4b2ae40fd5b22e0177fcd",
-      "bytes": 17186
+      "sha256": "68d0c1c644a21259d2d4952fd3fc30c08a84105209d2beccc38a461ab673555e",
+      "bytes": 17390
     },
     {
       "path": "src/agentic_discipline/bootstrap.py",
@@ -909,11 +934,6 @@
       "bytes": 854
     },
     {
-      "path": "SUPPORT.md",
-      "sha256": "2398b6c0bf75d18382815a2d5c4ce3342019dcd275bef01a7905b5b2b6bcad54",
-      "bytes": 259
-    },
-    {
       "path": "templates/acceptance-template.feature",
       "sha256": "36fac5c02e65ab6c113f11828b8a0a0a7e8c124565a174028bc930d92ecddc97",
       "bytes": 311
@@ -935,12 +955,12 @@
     },
     {
       "path": "tests/test_adapters.py",
-      "sha256": "bd863b16f355a9d0b4e74c7c327623a5e6dc76da2c45989d49decd8288f47bd5",
-      "bytes": 11182
+      "sha256": "010167805b5d5d0e2ea80e1453075b2baf6bc73bfe9910d99316f400afdfd6f8",
+      "bytes": 12947
     },
     {
       "path": "tests/test_bootstrap.py",
-      "sha256": "e6677c086038be4620a58582c6d04c95e8af6aa1d49ff3be902320a1ae433f3d",
+      "sha256": "5a0de75f207856509e76ef7bcaec6144bd3e85dea8863f9876c42d248b9c8955",
       "bytes": 2903
     },
     {
@@ -965,7 +985,7 @@
     },
     {
       "path": "tests/test_install_surfaces.py",
-      "sha256": "00c51d1c19d45ef73113110fd9d5896aeec60ce9c33b1a41da118f8a528d9247",
+      "sha256": "aa407ea8224034a68832af55e1d10e059ed01f16a3fbdbd9815bb30aa3cc8d53",
       "bytes": 7179
     },
     {
@@ -975,8 +995,8 @@
     },
     {
       "path": "tests/test_packaging.py",
-      "sha256": "8df7290ab1496bc8aa035a9d166a104655f004f7081b3661b7e9c24154fbbc7c",
-      "bytes": 6103
+      "sha256": "5334012978b3f4c78204f159a3cdcdce3b93f3b2e67852beec45b0c90051e60e",
+      "bytes": 6762
     },
     {
       "path": "tests/test_profiles.py",
@@ -1022,11 +1042,6 @@
       "path": "tests/test_verifier.py",
       "sha256": "f0d820a552f573857f12f7f77f9c4118930e4d668d6b81563725bcff9a7e289a",
       "bytes": 2338
-    },
-    {
-      "path": "VERSION",
-      "sha256": "1575e1af4a95f12f70b4ee6a6adce8160953d93ea17dc2611b90883ccc3ad3b8",
-      "bytes": 6
     }
   ]
 }

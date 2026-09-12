@@ -96,12 +96,26 @@ def test_plugin_skills_carry_the_trigger_in_its_own_field() -> None:
     from agentic_discipline.skills import parse_frontmatter
 
     skills = sorted((PLUGIN / "skills").glob("*/SKILL.md"))
-    assert len(skills) == 11
+    assert len(skills) == 12
     for path in skills:
         metadata, _body = parse_frontmatter(path.read_text(encoding="utf-8"), str(path))
         assert metadata["name"] == path.parent.name
         assert metadata["description"]
         assert metadata["when_to_use"]
+
+
+def test_execute_command_resolves_to_the_shipped_orchestrator() -> None:
+    from agentic_discipline.adapters import COMMANDS
+    from agentic_discipline.skills import load_disciplines
+
+    by_id = {item.id: item for item in load_disciplines(ROOT)}
+    execute = next(command for command in COMMANDS if command[0] == "execute")
+    assert execute[3] == ("autonomous-project-execution",)
+    command = (PLUGIN / "commands" / "execute.md").read_text(encoding="utf-8")
+    for identifier in execute[3]:
+        discipline = by_id[identifier]
+        assert discipline.name in command
+        assert (PLUGIN / "skills" / discipline.name / "SKILL.md").is_file()
 
 
 def test_documented_plugin_install_names_its_marketplace() -> None:

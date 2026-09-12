@@ -15,7 +15,7 @@ from agentic_discipline.bootstrap import find_contract_root, initialize_project
 from agentic_discipline.common import AgenticError
 from agentic_discipline.skills import load_disciplines, parse_frontmatter, render_frontmatter
 
-EXPECTED_DISCIPLINES = 11
+EXPECTED_DISCIPLINES = 12
 
 
 def _frontmatter(path: Path) -> dict[str, str]:
@@ -154,6 +154,44 @@ def test_chatgpt_export_is_a_single_pasteable_bundle(tmp_path: Path) -> None:
     text = bundle.read_text(encoding="utf-8")
     for discipline in load_disciplines(find_contract_root()):
         assert discipline.title in text
+
+
+@pytest.mark.parametrize(
+    ("adapter", "relative"),
+    [
+        ("generic", "AGENTS.md"),
+        ("gemini", "GEMINI.md"),
+        ("claude", ".claude/skills/agentic-autonomous-project-execution/SKILL.md"),
+        ("antigravity", ".agents/skills/agentic-autonomous-project-execution/SKILL.md"),
+        ("cursor", ".cursor/rules/agentic-autonomous-project-execution.mdc"),
+        ("windsurf", ".windsurf/rules/agentic-autonomous-project-execution.md"),
+        ("copilot", ".github/instructions/agentic-autonomous-project-execution.instructions.md"),
+        ("chatgpt", ".agentic/export/chatgpt/agentic-discipline.md"),
+        ("claude-plugin", "skills/agentic-autonomous-project-execution/SKILL.md"),
+    ],
+)
+def test_autonomous_execution_is_discoverable_and_complete_on_every_adapter(
+    tmp_path: Path, adapter: str, relative: str
+) -> None:
+    discipline = next(
+        item
+        for item in load_disciplines(find_contract_root())
+        if item.id == "autonomous-project-execution"
+    )
+    result = sync_adapters(tmp_path, [adapter])
+    assert discipline.name in result["disciplines"]
+    surface = (tmp_path / relative).read_text(encoding="utf-8")
+    assert discipline.description in surface
+    if adapter in {"generic", "gemini"}:
+        assert discipline.name in surface
+        surface = (tmp_path / ".agentic" / "skills" / discipline.slug / "SKILL.md").read_text(
+            encoding="utf-8"
+        )
+    # A discoverable name alone is insufficient: the executable instructions
+    # must reach the installed surface, including generic adapters' payload.
+    assert discipline.body.strip() in surface
+    second = sync_adapters(tmp_path, [adapter])
+    assert all(str(action).startswith("SKIP") for action in second["actions"])
 
 
 def test_init_installs_into_agentic_and_keeps_the_root_clean(tmp_path: Path) -> None:

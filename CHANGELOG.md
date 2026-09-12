@@ -6,6 +6,15 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 
 ## [Unreleased]
 
+### Added
+- `agentic-autonomous-project-execution`, a twelfth canonical discipline for continuous
+  execution of authorized software plans, task-level blocker isolation, bounded repair
+  attempts, resumable status, and evidence-backed completion. All agent adapters and
+  Python distributions include it from the same source.
+- `/execute` in the generated Claude Code plugin and short English/Spanish project
+  prompts. Autonomous execution preserves protected contracts, risk gates, and the
+  user's scope and authorization.
+
 ### Changed
 - The npm launcher publishes over OIDC trusted publishing instead of a stored `NPM_TOKEN`. Requires a
   trusted publisher registered on the npm package (GitHub Actions, this repository, `release.yml`,

@@ -44,7 +44,7 @@ def test_init_prints_a_readable_summary(tmp_path: Path, capsys: pytest.CaptureFi
 
     out = capsys.readouterr().out
     assert "Detected stack   TypeScript / JavaScript" in out
-    assert "Disciplines      11 installed" in out
+    assert "Disciplines      12 installed" in out
     assert "AGENTS.md, agentic.config.json" in out
     # A relaxed gate is named with its reason, not hidden.
     assert "typescript/lint" in out
