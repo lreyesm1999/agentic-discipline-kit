@@ -99,9 +99,11 @@ jobs:
       - run: mutmut run
       - name: Export mutation evidence
         if: always()
-        run: mutmut export-cicd-stats > mutation-stats.json
+        run: mutmut export-cicd-stats
+      - name: Enforce mutation outcome
+        run: python scripts/mutation_gate.py --report mutants/mutmut-cicd-stats.json
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: mutation-stats
-          path: mutation-stats.json
+          path: mutants/mutmut-cicd-stats.json

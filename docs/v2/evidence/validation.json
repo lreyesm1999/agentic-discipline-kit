@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-09-13T18:28:29.634981+00:00",
+  "timestamp": "2026-09-13T18:36:30.314759+00:00",
   "release_ready": false,
-  "tests_passed": 195,
+  "tests_passed": 197,
   "line_coverage": 95.01,
   "branch_coverage": 87.06,
   "checks": [
@@ -9,9 +9,9 @@
       "tool": "make",
       "command": "make check",
       "exit_code": 0,
-      "timestamp": "2026-09-13T18:28:29.634885+00:00",
+      "timestamp": "2026-09-13T18:36:30.314515+00:00",
       "output_artifact": "checks.log",
-      "sha256": "6b9bb6a6575d0b05401e242ba29368974c6a10848439d7e65e04070b053e0d80"
+      "sha256": "e22d8891bb7d2b820fd3e5ffba8fc5064b618a0d20cada597f33f35d8095f45c"
     },
     {
       "tool": "python",
@@ -23,19 +23,20 @@
     },
     {
       "tool": "agentic-discipline",
-      "command": "agentic-discipline protected --base-ref origin/feat/autonomous-project-execution",
-      "exit_code": 0,
-      "timestamp": "2026-09-13T12:57:35.283117+00:00",
-      "output_artifact": "protected.log",
-      "sha256": "c0e0db2718ec7fa23b5239171613e82e06b06cd6cac35b92451413024eeedd73"
-    },
-    {
-      "tool": "agentic-discipline",
       "command": "agentic-discipline integrity --base-ref origin/feat/autonomous-project-execution",
       "exit_code": 1,
       "timestamp": "2026-09-13T12:57:35.567112+00:00",
       "output_artifact": "integrity.log",
       "sha256": "b8a1a3efab896f4a38eee5e7d5f97620683776fb43583147b8b9d600d56b1333"
+    },
+    {
+      "tool": "agentic-discipline",
+      "command": "agentic-discipline protected --base-ref origin/feat/autonomous-project-execution",
+      "exit_code": 1,
+      "timestamp": "2026-09-13T18:36:03.768895+00:00",
+      "output_artifact": "protected-workflow-review.json",
+      "status": "FAIL_EXPECTED_PENDING_AUTHORIZED_REVIEW",
+      "sha256": "92d049fe247fea79b461f43f4cc45840468433800147a3560ea66dddc7d971a7"
     }
   ],
   "source_sha256": {
@@ -58,6 +59,7 @@
     "benchmark.json",
     "dogfood.json",
     "independent-review.json",
+    "mutation-gate-review.json",
     "mutation.json",
     "performance-review-equivalence.log",
     "wheel-smoke.json"
@@ -67,7 +69,8 @@
     "Integrity findings disposition",
     "Human release acceptance",
     "GitHub Dependency Graph must be enabled for dependency-review",
-    "Disposition of 5,326 CI survivors and 7 timeouts; no release claim"
+    "Resolve 5,326 survivors and 7 timeouts; strengthened workflow now fails until disposition",
+    "Contract-authorized review for protected .github/workflows/ci.yml mutation gate change"
   ],
   "remote_mutation": {
     "revision": "a19c2c196843739507234a93c2581db476b2b0b2",

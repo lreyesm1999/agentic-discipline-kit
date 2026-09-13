@@ -8,7 +8,7 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 
 | Check | Current result |
 |---|---|
-| Full Python suite | 195 passed in the final local run |
+| Full Python suite | 197 passed in the final local run |
 | Coverage gate | PASS: 95.01% lines, 87.06% branches; thresholds remain 90/85 |
 | Lint and type checking | PASS |
 | Security SAST | PASS: no high-severity Bandit findings |
@@ -16,7 +16,7 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 | Isolated installed wheel | PASS: legacy init, Git setup, new adoption and composed doctor |
 | Own-repository task execution | PASS: actual subprocess ran 55 control tests, checkpoint/evidence/task completion persisted |
 | 1,000-file performance fixture | PASS after scoped discovery optimization: status 264.851 ms, claim 167.950 ms; all four targets met |
-| Protected-contract diff | PASS against the prerequisite autonomy branch |
+| Protected-contract diff | FAIL: the required mutation outcome fix modifies `.github/workflows/ci.yml`, a protected path; authorized review is pending |
 | Diff integrity heuristic | FAIL: review required for new coverage-related documentation, counters, HTML and artifact hashes |
 | Differential mutation | FAIL: full CI run killed 9,601, with 5,326 survivors and 7 timeouts. See evidence/mutation.json |
 | Independent review | Focused final review: no remaining HIGH/CRITICAL in reviewed scope; evidence/independent-review.json |
@@ -69,3 +69,7 @@ Remote checks for commit 0f40dfebc75e3dffbb297b950876de8e18aa2dea: all six Linux
 CI full differential mutation on optimization commit a19c2c196843739507234a93c2581db476b2b0b2 executed 14,934 variants: 9,601 killed, 5,326 survived, 7 timed out (GitHub run 34759274115; process exit 0). The workflow result is green because it does not enforce survivor disposition. This release gate remains failed. Four additional mutation-driven regression tests now pass locally.
 
 A separate local selected-module retest was interrupted with its metadata truncated. No complete local mutation count is inferred from that run; the partial diagnostics are recorded in evidence/mutation.json.
+
+CI mutation reporting has been corrected: mutmut export-cicd-stats writes mutants/mutmut-cicd-stats.json on disk; stdout is only a notice. The new mutation outcome step reads that structured file and fails on survivors, timeouts, skipped/no-test variants, interruption, suspicious or invalid data, while upload-artifact retains the report even on failure. Against the prior full CI counts, the gate exits 1. It does not make the survivor debt disappear.
+
+The mutation outcome wiring touches a protected workflow. `agentic-discipline protected --base-ref origin/feat/autonomous-project-execution` returns 1 and names `.github/workflows/ci.yml`. The change is reviewable in this draft PR, but its protected-path authorization must be granted through the repository process before merge. The checker and protected policies have not been weakened.

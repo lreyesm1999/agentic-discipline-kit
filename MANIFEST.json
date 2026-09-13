@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-13T18:28:29.700138+00:00",
+  "generated_at_utc": "2026-09-13T18:36:30.380959+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "b5e63cdf71e8732106ffe65700ce3f234b8f0f08b810431d70291241c77c9e11",
-      "bytes": 2986
+      "sha256": "29b32aa07911230991fc9670f1404a2f70f32dea320c0f5f5c3944e8428ddbe6",
+      "bytes": 3099
     },
     {
       "path": ".github/workflows/release.yml",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "0295087f602cec6dba32c38241fe2c88204b31b45db08b85d7c054a07a218132",
-      "bytes": 4633
+      "sha256": "a514af59723863ea1a914672552a708d783542b104143bade90d55603a75f8e4",
+      "bytes": 4785
     },
     {
       "path": "docs/adoption.md",
@@ -410,8 +410,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "2e593a2b632eb2b996cb5d6c221c45566f27926c26e24fce3e2a9fb84ca4ad47",
-      "bytes": 5068
+      "sha256": "8ccf6ad1b8bca0a33319bbff86ddc7b3ec70d1ece3b702eb82d4f4016be495fa",
+      "bytes": 5991
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -430,8 +430,8 @@
     },
     {
       "path": "docs/v2/evidence/checks.log",
-      "sha256": "6b9bb6a6575d0b05401e242ba29368974c6a10848439d7e65e04070b053e0d80",
-      "bytes": 7889
+      "sha256": "e22d8891bb7d2b820fd3e5ffba8fc5064b618a0d20cada597f33f35d8095f45c",
+      "bytes": 7969
     },
     {
       "path": "docs/v2/evidence/dogfood.json",
@@ -449,6 +449,11 @@
       "bytes": 1630
     },
     {
+      "path": "docs/v2/evidence/mutation-gate-review.json",
+      "sha256": "4b86ba280af59e3edda93580a80bdc6ce433d2a129a434711ce6dc6d726982b4",
+      "bytes": 714
+    },
+    {
       "path": "docs/v2/evidence/mutation.json",
       "sha256": "60e71ffcde3e444f7b2eae04544d3335c9f3eca5baf89410d7ac1797a9acbdc3",
       "bytes": 76949
@@ -464,14 +469,19 @@
       "bytes": 99
     },
     {
+      "path": "docs/v2/evidence/protected-workflow-review.json",
+      "sha256": "92d049fe247fea79b461f43f4cc45840468433800147a3560ea66dddc7d971a7",
+      "bytes": 230
+    },
+    {
       "path": "docs/v2/evidence/protected.log",
       "sha256": "c0e0db2718ec7fa23b5239171613e82e06b06cd6cac35b92451413024eeedd73",
       "bytes": 40
     },
     {
       "path": "docs/v2/evidence/validation.json",
-      "sha256": "7ff52aa0841b4b33e17fc969203b84d1762ef152dc1f8f28f7ce26c328b15d8c",
-      "bytes": 3986
+      "sha256": "a45182672a64051dd32604b484fd454d7cff60ca5a57ea355980c69f1a9dc378",
+      "bytes": 4212
     },
     {
       "path": "docs/v2/evidence/wheel-smoke.json",
@@ -984,6 +994,11 @@
       "bytes": 217
     },
     {
+      "path": "scripts/mutation_gate.py",
+      "sha256": "9c8b0d0c98652fc57675447c42a5cfbdb27941171cf8bf14a2641261fa7b8627",
+      "bytes": 1887
+    },
+    {
       "path": "scripts/protected_paths.py",
       "sha256": "c1645118b8bc23706f405796fb77e416ea01f3dc53c1bbce4f782ee42c1996da",
       "bytes": 217
@@ -1407,6 +1422,11 @@
       "path": "tests/test_integrity.py",
       "sha256": "f34b6015565af7ea7090e0c069f1bada5dd54747d0dd6eb3af9f66fd9c1db884",
       "bytes": 996
+    },
+    {
+      "path": "tests/test_mutation_gate.py",
+      "sha256": "64a67cae33cbdb7230d16cc705490d02c03e1c90789977998684747b7e4dce73",
+      "bytes": 1850
     },
     {
       "path": "tests/test_packaging.py",
