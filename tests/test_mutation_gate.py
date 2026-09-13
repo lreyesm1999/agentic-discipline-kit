@@ -8,7 +8,12 @@ from pathlib import Path
 
 import pytest
 
-gate = runpy.run_path("scripts/mutation_gate.py")["gate"]
+GATE_SCRIPT = next(
+    parent / "scripts" / "mutation_gate.py"
+    for parent in Path(__file__).resolve().parents
+    if (parent / "scripts" / "mutation_gate.py").is_file()
+)
+gate = runpy.run_path(str(GATE_SCRIPT))["gate"]
 
 
 @pytest.fixture
@@ -45,7 +50,7 @@ def test_command_exits_nonzero_for_actual_survivors(tmp_path: Path, complete_rep
     path = tmp_path / "mutation-stats.json"
     path.write_text(json.dumps({**complete_report, "killed": 9, "survived": 1}))
     failed = subprocess.run(
-        [sys.executable, "scripts/mutation_gate.py", "--report", str(path)],
+        [sys.executable, str(GATE_SCRIPT), "--report", str(path)],
         capture_output=True,
         text=True,
     )
@@ -53,7 +58,7 @@ def test_command_exits_nonzero_for_actual_survivors(tmp_path: Path, complete_rep
     assert json.loads(failed.stdout)["unresolved"] == {"survived": 1}
     path.write_text(json.dumps(complete_report))
     passed = subprocess.run(
-        [sys.executable, "scripts/mutation_gate.py", "--report", str(path)],
+        [sys.executable, str(GATE_SCRIPT), "--report", str(path)],
         capture_output=True,
         text=True,
     )

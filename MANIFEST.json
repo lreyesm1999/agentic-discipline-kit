@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-13T18:36:30.380959+00:00",
+  "generated_at_utc": "2026-09-13T18:44:27.784711+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1425,8 +1425,8 @@
     },
     {
       "path": "tests/test_mutation_gate.py",
-      "sha256": "64a67cae33cbdb7230d16cc705490d02c03e1c90789977998684747b7e4dce73",
-      "bytes": 1850
+      "sha256": "f6b1f8e2e146838b65e67e4f442497e3bf8d7aa7042c10869372c6dd8b98f25f",
+      "bytes": 1996
     },
     {
       "path": "tests/test_packaging.py",
