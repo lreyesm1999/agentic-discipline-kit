@@ -1,0 +1,2904 @@
+{
+  "timestamp": "2026-09-13T12:57:21.590138+00:00",
+  "status": "UNRESOLVED",
+  "scope": "agentic_discipline.control.verification.*",
+  "revision": "fc6c1da84111d53931032152d9ec6610f3761696",
+  "command": "mutmut run --max-children 4 'agentic_discipline.control.verification.*'",
+  "exit_code": 0,
+  "exit_code_is_not_gate_pass": true,
+  "counts_by_mutant_exit_code": {
+    "0": 288,
+    "1": 899
+  },
+  "killed": 899,
+  "survived": 288,
+  "note": "Historical pre-hardening run. Later regression tests target retry budgets, changed-line boundaries and post-merge completion; the full selected mutation run has not been repeated. Survivors are not certified equivalent. Full critical-module mutation scope remains pending.",
+  "log_sha256": "6608ca10bb3c05d96b1f9bc4cc84268291598a525a39711b9de02bf5e4a39433",
+  "survivors": [
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_22",
+      "changes": [
+        [
+          ".body[3].value.keys[0].value",
+          "'files'",
+          "'XXfilesXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_23",
+      "changes": [
+        [
+          ".body[3].value.keys[0].value",
+          "'files'",
+          "'FILES'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_28",
+      "changes": [
+        [
+          ".body[3].value.keys[1].value",
+          "'requirements'",
+          "'XXrequirementsXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_29",
+      "changes": [
+        [
+          ".body[3].value.keys[1].value",
+          "'requirements'",
+          "'REQUIREMENTS'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_31",
+      "changes": [
+        [
+          ".body[3].value.values[1].value.value.args[1].value",
+          "entity",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_33",
+      "changes": [
+        [
+          ".body[3].value.values[1].value.value.args",
+          "['i', \"'entity'\"]",
+          "['i']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_40",
+      "changes": [
+        [
+          ".body[3].value.keys[2].value",
+          "'canonical_constraints'",
+          "'XXcanonical_constraintsXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_41",
+      "changes": [
+        [
+          ".body[3].value.keys[2].value",
+          "'canonical_constraints'",
+          "'CANONICAL_CONSTRAINTS'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_61",
+      "changes": [
+        [
+          ".body[3].value.values[2].generators[0].ifs[0].values[1].comparators[0].elts[1].value",
+          "'contract'",
+          "'XXcontractXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_62",
+      "changes": [
+        [
+          ".body[3].value.values[2].generators[0].ifs[0].values[1].comparators[0].elts[1].value",
+          "'contract'",
+          "'CONTRACT'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_68",
+      "changes": [
+        [
+          ".body[3].value.keys[3].value",
+          "'protected_files'",
+          "'XXprotected_filesXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_69",
+      "changes": [
+        [
+          ".body[3].value.keys[3].value",
+          "'protected_files'",
+          "'PROTECTED_FILES'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_76",
+      "changes": [
+        [
+          ".body[3].value.keys[4].value",
+          "'dependencies'",
+          "'XXdependenciesXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_77",
+      "changes": [
+        [
+          ".body[3].value.keys[4].value",
+          "'dependencies'",
+          "'DEPENDENCIES'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_78",
+      "changes": [
+        [
+          ".body[3].value.values[4].value.args[0].value",
+          "proof",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_79",
+      "changes": [
+        [
+          ".body[3].value.values[4].value.args[1]",
+          "[]",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_81",
+      "changes": [
+        [
+          ".body[3].value.values[4].value.args",
+          "[\"'proof'\", '[]']",
+          "[\"'proof'\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_83",
+      "changes": [
+        [
+          ".body[3].value.values[4].value.func.value.args[1].value",
+          "task",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_85",
+      "changes": [
+        [
+          ".body[3].value.values[4].value.func.value.args",
+          "['i', \"'task'\"]",
+          "['i']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_88",
+      "changes": [
+        [
+          ".body[3].value.values[4].value.args[0].value",
+          "'proof'",
+          "'XXproofXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_89",
+      "changes": [
+        [
+          ".body[3].value.values[4].value.args[0].value",
+          "'proof'",
+          "'PROOF'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_92",
+      "changes": [
+        [
+          ".body[3].value.keys[5].value",
+          "'verification'",
+          "'XXverificationXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_93",
+      "changes": [
+        [
+          ".body[3].value.keys[5].value",
+          "'verification'",
+          "'VERIFICATION'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_94",
+      "changes": [
+        [
+          ".body[3].value.values[5].args[0]",
+          "task['verification']",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_97",
+      "changes": [
+        [
+          ".body[3].value.keys[6].value",
+          "'acceptance'",
+          "'XXacceptanceXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_98",
+      "changes": [
+        [
+          ".body[3].value.keys[6].value",
+          "'acceptance'",
+          "'ACCEPTANCE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_99",
+      "changes": [
+        [
+          ".body[3].value.values[6].args[0]",
+          "task['acceptance']",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_102",
+      "changes": [
+        [
+          ".body[3].value.keys[7].value",
+          "'policy'",
+          "'XXpolicyXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_103",
+      "changes": [
+        [
+          ".body[3].value.keys[7].value",
+          "'policy'",
+          "'POLICY'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_binding__mutmut_104",
+      "changes": [
+        [
+          ".body[3].value.values[7].args[0]",
+          "plane.policy()",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_6",
+      "changes": [
+        [
+          ".body[1].value.args[1]",
+          "all_files",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_8",
+      "changes": [
+        [
+          ".body[1].value.args",
+          "[\"'initial_files'\", 'all_files']",
+          "[\"'initial_files'\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_19",
+      "changes": [
+        [
+          ".body[3].value.args[1].value",
+          "BUDGET_EXCEEDED",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_20",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "Changed-file budget exceeded",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_24",
+      "changes": [
+        [
+          ".body[3].value.args[0].ops[0]",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_29",
+      "changes": [
+        [
+          ".body[3].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'XXBUDGET_EXCEEDEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_30",
+      "changes": [
+        [
+          ".body[3].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'budget_exceeded'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_31",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "'Changed-file budget exceeded'",
+          "'XXChanged-file budget exceededXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_32",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "'Changed-file budget exceeded'",
+          "'changed-file budget exceeded'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_33",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "'Changed-file budget exceeded'",
+          "'CHANGED-FILE BUDGET EXCEEDED'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_35",
+      "changes": [
+        [
+          ".body[4].value.args[1].value",
+          "SCOPE_EXCEEDED",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_49",
+      "changes": [
+        [
+          ".body[4].value.args[0].args[0].elt.args[0].elt.values[2].args[0].left.args[0].value",
+          "/",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_50",
+      "changes": [
+        [
+          ".body[4].value.args[0].args[0].elt.args[0].elt.values[2].args[0].left.func.attr",
+          "'rstrip'",
+          "'lstrip'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_51",
+      "changes": [
+        [
+          ".body[4].value.args[0].args[0].elt.args[0].elt.values[2].args[0].left.args[0].value",
+          "'/'",
+          "'XX/XX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_52",
+      "changes": [
+        [
+          ".body[4].value.args[0].args[0].elt.args[0].elt.values[2].args[0].right.value",
+          "'/'",
+          "'XX/XX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_55",
+      "changes": [
+        [
+          ".body[4].value.args[1].value",
+          "'SCOPE_EXCEEDED'",
+          "'XXSCOPE_EXCEEDEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_56",
+      "changes": [
+        [
+          ".body[4].value.args[1].value",
+          "'SCOPE_EXCEEDED'",
+          "'scope_exceeded'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_57",
+      "changes": [
+        [
+          ".body[4].value.args[2].value",
+          "'Changes outside task scope'",
+          "'XXChanges outside task scopeXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_58",
+      "changes": [
+        [
+          ".body[4].value.args[2].value",
+          "'Changes outside task scope'",
+          "'changes outside task scope'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_61",
+      "changes": [
+        [
+          ".body[5].value.args[1].value",
+          "PROTECTED_CHANGE",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_73",
+      "changes": [
+        [
+          ".body[5].value.args[0].operand.args[0].elt.args[0].elt.values[1].args[0].right.value",
+          "'/'",
+          "'XX/XX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_76",
+      "changes": [
+        [
+          ".body[5].value.args[1].value",
+          "'PROTECTED_CHANGE'",
+          "'XXPROTECTED_CHANGEXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_77",
+      "changes": [
+        [
+          ".body[5].value.args[1].value",
+          "'PROTECTED_CHANGE'",
+          "'protected_change'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_78",
+      "changes": [
+        [
+          ".body[5].value.args[2].value",
+          "'Protected changes require review'",
+          "'XXProtected changes require reviewXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_90",
+      "changes": [
+        [
+          ".body[7].value.args[0].elt.args[0].args[1].value",
+          "0",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_92",
+      "changes": [
+        [
+          ".body[7].value.args[0].elt.args[0].args",
+          "['p', '0']",
+          "['p']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_94",
+      "changes": [
+        [
+          ".body[7].value.args[0].elt.args[0].func.value.args[1]",
+          "{}",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_96",
+      "changes": [
+        [
+          ".body[7].value.args[0].elt.args[0].func.value.args",
+          "[\"'initial_line_counts'\", '{}']",
+          "[\"'initial_line_counts'\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_99",
+      "changes": [
+        [
+          ".body[7].value.args[0].elt.args[0].args[1].value",
+          "0",
+          "1"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_100",
+      "changes": [
+        [
+          ".body[7].value.args[0].elt.args[1].test",
+          "(workspace / p).is_file()",
+          "(workspace / p).is_file() and False"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_103",
+      "changes": [
+        [
+          ".body[7].value.args[0].elt.args[1].orelse.value",
+          "0",
+          "1"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_105",
+      "changes": [
+        [
+          ".body[8].value.args[1].value",
+          "BUDGET_EXCEEDED",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_110",
+      "changes": [
+        [
+          ".body[8].value.args[0].ops[0]",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_115",
+      "changes": [
+        [
+          ".body[8].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'XXBUDGET_EXCEEDEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_116",
+      "changes": [
+        [
+          ".body[8].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'budget_exceeded'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_117",
+      "changes": [
+        [
+          ".body[8].value.args[2].value",
+          "'Conservative changed-file line budget exceeded'",
+          "'XXConservative changed-file line budget exceededXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_check_changes__mutmut_118",
+      "changes": [
+        [
+          ".body[8].value.args[2].value",
+          "'Conservative changed-file line budget exceeded'",
+          "'conservative changed-file line budget exceeded'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_7",
+      "changes": [
+        [
+          ".body[1].value.args[1].value",
+          "INVALID_TRANSITION",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_8",
+      "changes": [
+        [
+          ".body[1].value.args[2].value",
+          "Task cannot be verified in this state",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_23",
+      "changes": [
+        [
+          ".body[1].value.args[1].value",
+          "'INVALID_TRANSITION'",
+          "'XXINVALID_TRANSITIONXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_24",
+      "changes": [
+        [
+          ".body[1].value.args[1].value",
+          "'INVALID_TRANSITION'",
+          "'invalid_transition'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_25",
+      "changes": [
+        [
+          ".body[1].value.args[2].value",
+          "'Task cannot be verified in this state'",
+          "'XXTask cannot be verified in this stateXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_26",
+      "changes": [
+        [
+          ".body[1].value.args[2].value",
+          "'Task cannot be verified in this state'",
+          "'task cannot be verified in this state'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_27",
+      "changes": [
+        [
+          ".body[1].value.args[2].value",
+          "'Task cannot be verified in this state'",
+          "'TASK CANNOT BE VERIFIED IN THIS STATE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_29",
+      "changes": [
+        [
+          ".body[2].value.args[1].value",
+          "NOT_READY",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_30",
+      "changes": [
+        [
+          ".body[2].value.args[2].value",
+          "Readiness blockers prevent verification",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_38",
+      "changes": [
+        [
+          ".body[2].value.args[0].comparators[0].value",
+          "'BLOCKED'",
+          "'XXBLOCKEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_39",
+      "changes": [
+        [
+          ".body[2].value.args[0].comparators[0].value",
+          "'BLOCKED'",
+          "'blocked'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_40",
+      "changes": [
+        [
+          ".body[2].value.args[1].value",
+          "'NOT_READY'",
+          "'XXNOT_READYXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_41",
+      "changes": [
+        [
+          ".body[2].value.args[1].value",
+          "'NOT_READY'",
+          "'not_ready'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_42",
+      "changes": [
+        [
+          ".body[2].value.args[2].value",
+          "'Readiness blockers prevent verification'",
+          "'XXReadiness blockers prevent verificationXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_43",
+      "changes": [
+        [
+          ".body[2].value.args[2].value",
+          "'Readiness blockers prevent verification'",
+          "'readiness blockers prevent verification'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_44",
+      "changes": [
+        [
+          ".body[2].value.args[2].value",
+          "'Readiness blockers prevent verification'",
+          "'READINESS BLOCKERS PREVENT VERIFICATION'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_46",
+      "changes": [
+        [
+          ".body[3].value.args[1].value",
+          "BUDGET_EXCEEDED",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_47",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "Retry budget exhausted; checkpoint and review",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_58",
+      "changes": [
+        [
+          ".body[3].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'XXBUDGET_EXCEEDEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_59",
+      "changes": [
+        [
+          ".body[3].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'budget_exceeded'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_60",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "'Retry budget exhausted; checkpoint and review'",
+          "'XXRetry budget exhausted; checkpoint and reviewXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_61",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "'Retry budget exhausted; checkpoint and review'",
+          "'retry budget exhausted; checkpoint and review'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_62",
+      "changes": [
+        [
+          ".body[3].value.args[2].value",
+          "'Retry budget exhausted; checkpoint and review'",
+          "'RETRY BUDGET EXHAUSTED; CHECKPOINT AND REVIEW'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_64",
+      "changes": [
+        [
+          ".body[4].value.args[1].value",
+          "VERIFICATION_BUSY",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_70",
+      "changes": [
+        [
+          ".body[4].value.args[0].operand.args[0].value",
+          "active_run",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_71",
+      "changes": [
+        [
+          ".body[4].value.args[0].operand.args[0].value",
+          "'active_run'",
+          "'XXactive_runXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_72",
+      "changes": [
+        [
+          ".body[4].value.args[0].operand.args[0].value",
+          "'active_run'",
+          "'ACTIVE_RUN'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_73",
+      "changes": [
+        [
+          ".body[4].value.args[1].value",
+          "'VERIFICATION_BUSY'",
+          "'XXVERIFICATION_BUSYXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_74",
+      "changes": [
+        [
+          ".body[4].value.args[1].value",
+          "'VERIFICATION_BUSY'",
+          "'verification_busy'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_75",
+      "changes": [
+        [
+          ".body[4].value.args[2].value",
+          "'A verifier is already running'",
+          "'XXA verifier is already runningXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_76",
+      "changes": [
+        [
+          ".body[4].value.args[2].value",
+          "'A verifier is already running'",
+          "'a verifier is already running'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_79",
+      "changes": [
+        [
+          ".body[5].value.args[1].value",
+          "INVALID_PATH",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_86",
+      "changes": [
+        [
+          ".body[5].value.args[0].operand.func.value.right.value",
+          "'evidence'",
+          "'XXevidenceXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_87",
+      "changes": [
+        [
+          ".body[5].value.args[0].operand.func.value.right.value",
+          "'evidence'",
+          "'EVIDENCE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_88",
+      "changes": [
+        [
+          ".body[5].value.args[1].value",
+          "'INVALID_PATH'",
+          "'XXINVALID_PATHXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_89",
+      "changes": [
+        [
+          ".body[5].value.args[1].value",
+          "'INVALID_PATH'",
+          "'invalid_path'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_90",
+      "changes": [
+        [
+          ".body[5].value.args[2].value",
+          "'Evidence directory must not be a symlink'",
+          "'XXEvidence directory must not be a symlinkXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_91",
+      "changes": [
+        [
+          ".body[5].value.args[2].value",
+          "'Evidence directory must not be a symlink'",
+          "'evidence directory must not be a symlink'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_105",
+      "changes": [
+        [
+          ".body[9].value.args[0].value",
+          "RUN",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_106",
+      "changes": [
+        [
+          ".body[9].value.args[0].value",
+          "'RUN'",
+          "'XXRUNXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_107",
+      "changes": [
+        [
+          ".body[9].value.args[0].value",
+          "'RUN'",
+          "'run'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_115",
+      "changes": [
+        [
+          ".body[10].body[1].value.left.op",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_122",
+      "changes": [
+        [
+          ".body[10].body[1].value.left.right.args[0].args[0].value",
+          "runtime_used",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_126",
+      "changes": [
+        [
+          ".body[10].body[1].value.left.right.args[0].args[0].value",
+          "'runtime_used'",
+          "'XXruntime_usedXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_127",
+      "changes": [
+        [
+          ".body[10].body[1].value.left.right.args[0].args[0].value",
+          "'runtime_used'",
+          "'RUNTIME_USED'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_128",
+      "changes": [
+        [
+          ".body[10].body[1].value.left.right.args[0].args[1].value",
+          "0",
+          "1"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_129",
+      "changes": [
+        [
+          ".body[10].body[1].value.right.value",
+          "30",
+          "31"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_138",
+      "changes": [
+        [
+          ".body[10].body[2].value.args[1].keys[1].value",
+          "'expires_at'",
+          "'XXexpires_atXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_139",
+      "changes": [
+        [
+          ".body[10].body[2].value.args[1].keys[1].value",
+          "'expires_at'",
+          "'EXPIRES_AT'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_149",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[1].value",
+          "VERIFICATION_BUSY",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_150",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[2].value",
+          "A verifier is already running",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_155",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[0].operand.args[0].value",
+          "active_run",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_156",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[0].operand.args[0].value",
+          "'active_run'",
+          "'XXactive_runXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_157",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[0].operand.args[0].value",
+          "'active_run'",
+          "'ACTIVE_RUN'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_158",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[1].value",
+          "'VERIFICATION_BUSY'",
+          "'XXVERIFICATION_BUSYXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_159",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[1].value",
+          "'VERIFICATION_BUSY'",
+          "'verification_busy'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_160",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[2].value",
+          "'A verifier is already running'",
+          "'XXA verifier is already runningXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_161",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[2].value",
+          "'A verifier is already running'",
+          "'a verifier is already running'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_162",
+      "changes": [
+        [
+          ".body[10].body[3].value.args[2].value",
+          "'A verifier is already running'",
+          "'A VERIFIER IS ALREADY RUNNING'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_170",
+      "changes": [
+        [
+          ".body[10].body[4].value.keywords",
+          "[\"expected=current['version']\", \"actor=lease['agent_id']\"]",
+          "[\"expected=current['version']\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_181",
+      "changes": [
+        [
+          ".body[10].body[4].value.args[1].keys[4].value",
+          "'attempts'",
+          "'XXattemptsXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_182",
+      "changes": [
+        [
+          ".body[10].body[4].value.args[1].keys[4].value",
+          "'attempts'",
+          "'ATTEMPTS'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_183",
+      "changes": [
+        [
+          ".body[10].body[4].value.args[1].values[4].op",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_194",
+      "changes": [
+        [
+          ".body[12].value.args[0].args[0].value",
+          "runtime_used",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_198",
+      "changes": [
+        [
+          ".body[12].value.args[0].args[0].value",
+          "'runtime_used'",
+          "'XXruntime_usedXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_199",
+      "changes": [
+        [
+          ".body[12].value.args[0].args[0].value",
+          "'runtime_used'",
+          "'RUNTIME_USED'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_200",
+      "changes": [
+        [
+          ".body[12].value.args[0].args[1].value",
+          "0",
+          "1"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_201",
+      "changes": [
+        [
+          ".body[13].value.value",
+          "False",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_206",
+      "changes": [
+        [
+          ".body[14].body[0].body[0].value.op",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_212",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[1].value",
+          "BUDGET_EXCEEDED",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_213",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[2].value",
+          "Runtime budget exhausted",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_217",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[0].ops[0]",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_218",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[0].comparators[0].value",
+          "0",
+          "1"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_219",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'XXBUDGET_EXCEEDEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_220",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[1].value",
+          "'BUDGET_EXCEEDED'",
+          "'budget_exceeded'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_221",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[2].value",
+          "'Runtime budget exhausted'",
+          "'XXRuntime budget exhaustedXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_222",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[2].value",
+          "'Runtime budget exhausted'",
+          "'runtime budget exhausted'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_223",
+      "changes": [
+        [
+          ".body[14].body[0].body[1].value.args[2].value",
+          "'Runtime budget exhausted'",
+          "'RUNTIME BUDGET EXHAUSTED'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_224",
+      "changes": [
+        [
+          ".body[14].body[0].body[2].value",
+          "time.time()",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_238",
+      "changes": [
+        [
+          ".body[14].body[0].body[3].value.args[0].keys[2].value",
+          "'timeout_seconds'",
+          "'XXtimeout_secondsXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_239",
+      "changes": [
+        [
+          ".body[14].body[0].body[3].value.args[0].keys[2].value",
+          "'timeout_seconds'",
+          "'TIMEOUT_SECONDS'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_240",
+      "changes": [
+        [
+          ".body[14].body[0].body[4]",
+          "runtime += result.duration_seconds",
+          "runtime = result.duration_seconds"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_241",
+      "changes": [
+        [
+          ".body[14].body[0].body[4].op",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_243",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[0].value",
+          "'tool'",
+          "'XXtoolXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_244",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[0].value",
+          "'tool'",
+          "'TOOL'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_248",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[1].value",
+          "'command'",
+          "'XXcommandXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_249",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[1].value",
+          "'command'",
+          "'COMMAND'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_252",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[2].value",
+          "'exit_code'",
+          "'XXexit_codeXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_253",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[2].value",
+          "'exit_code'",
+          "'EXIT_CODE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_254",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[3].value",
+          "'result'",
+          "'XXresultXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_255",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[3].value",
+          "'result'",
+          "'RESULT'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_256",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[4].value",
+          "'started_at'",
+          "'XXstarted_atXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_257",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[4].value",
+          "'started_at'",
+          "'STARTED_AT'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_260",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[6].value",
+          "'stdout'",
+          "'XXstdoutXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_261",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[6].value",
+          "'stdout'",
+          "'STDOUT'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_266",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[8].value",
+          "'error'",
+          "'XXerrorXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_267",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.keys[8].value",
+          "'error'",
+          "'ERROR'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_270",
+      "changes": [
+        [
+          ".body[14].body[0].body[5].value.values[8].args[0].values[1].value",
+          "''",
+          "'XXXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_272",
+      "changes": [
+        [
+          ".body[14].body[0].body[6].value.args[0].value",
+          "EVD",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_273",
+      "changes": [
+        [
+          ".body[14].body[0].body[6].value.args[0].value",
+          "'EVD'",
+          "'XXEVDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_274",
+      "changes": [
+        [
+          ".body[14].body[0].body[6].value.args[0].value",
+          "'EVD'",
+          "'evd'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_284",
+      "changes": [
+        [
+          ".body[14].body[0].body[8].value.args[1].value",
+          "INVALID_PATH",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_285",
+      "changes": [
+        [
+          ".body[14].body[0].body[8].value.args[2].value",
+          "Evidence directory must not be a symlink",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_290",
+      "changes": [
+        [
+          ".body[14].body[0].body[8].value.args[1].value",
+          "'INVALID_PATH'",
+          "'XXINVALID_PATHXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_291",
+      "changes": [
+        [
+          ".body[14].body[0].body[8].value.args[1].value",
+          "'INVALID_PATH'",
+          "'invalid_path'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_292",
+      "changes": [
+        [
+          ".body[14].body[0].body[8].value.args[2].value",
+          "'Evidence directory must not be a symlink'",
+          "'XXEvidence directory must not be a symlinkXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_293",
+      "changes": [
+        [
+          ".body[14].body[0].body[8].value.args[2].value",
+          "'Evidence directory must not be a symlink'",
+          "'evidence directory must not be a symlink'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_294",
+      "changes": [
+        [
+          ".body[14].body[0].body[8].value.args[2].value",
+          "'Evidence directory must not be a symlink'",
+          "'EVIDENCE DIRECTORY MUST NOT BE A SYMLINK'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_298",
+      "changes": [
+        [
+          ".body[14].body[0].body[9].value.keywords",
+          "['exist_ok=True', 'mode=448']",
+          "['exist_ok=True']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_300",
+      "changes": [
+        [
+          ".body[14].body[0].body[9].value.keywords[1].value.value",
+          "448",
+          "449"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_302",
+      "changes": [
+        [
+          ".body[14].body[0].body[10].value.keywords[0].value.value",
+          "utf-8",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_304",
+      "changes": [
+        [
+          ".body[14].body[0].body[10].value.keywords",
+          "[\"encoding='utf-8'\"]",
+          "[]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_307",
+      "changes": [
+        [
+          ".body[14].body[0].body[10].value.keywords[0].value.value",
+          "'utf-8'",
+          "'UTF-8'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_309",
+      "changes": [
+        [
+          ".body[14].body[0].body[11].value.args[0].value",
+          "384",
+          "385"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_317",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[0].value.args[1].value",
+          "lease",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_319",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[0].value.args",
+          "[\"lease['id']\", \"'lease'\"]",
+          "[\"lease['id']\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_333",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[1].value.values[1].ops[0]",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_340",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.keywords",
+          "[\"actor=lease['agent_id']\"]",
+          "[]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_347",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[2].value",
+          "'kind'",
+          "'XXkindXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_348",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[2].value",
+          "'kind'",
+          "'KIND'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_358",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[5].value",
+          "'run_id'",
+          "'XXrun_idXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_359",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[5].value",
+          "'run_id'",
+          "'RUN_ID'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_371",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[7].value",
+          "'exit_code'",
+          "'XXexit_codeXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_372",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[7].value",
+          "'exit_code'",
+          "'EXIT_CODE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_373",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[8].value",
+          "'command'",
+          "'XXcommandXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_374",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[8].value",
+          "'command'",
+          "'COMMAND'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_379",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[10].value",
+          "'knowledge_version'",
+          "'XXknowledge_versionXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_380",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[10].value",
+          "'knowledge_version'",
+          "'KNOWLEDGE_VERSION'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_384",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[12].value",
+          "'artifact_ref'",
+          "'XXartifact_refXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_385",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[12].value",
+          "'artifact_ref'",
+          "'ARTIFACT_REF'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_386",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[13].value",
+          "'started_at'",
+          "'XXstarted_atXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_387",
+      "changes": [
+        [
+          ".body[14].body[0].body[13].body[2].value.args[1].keys[13].value",
+          "'started_at'",
+          "'STARTED_AT'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_417",
+      "changes": [
+        [
+          ".body[14].finalbody[0].body[0].value.args[1].value",
+          "task",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_419",
+      "changes": [
+        [
+          ".body[14].finalbody[0].body[0].value.args",
+          "['task_id', \"'task'\"]",
+          "['task_id']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_433",
+      "changes": [
+        [
+          ".body[14].finalbody[0].body[1].body[0].value.keywords",
+          "[\"expected=current['version']\", \"actor=lease['agent_id']\"]",
+          "[\"expected=current['version']\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_446",
+      "changes": [
+        [
+          ".body[14].finalbody[0].body[1].body[0].value.args[1].keys[3].value",
+          "'runtime_used'",
+          "'XXruntime_usedXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_447",
+      "changes": [
+        [
+          ".body[14].finalbody[0].body[1].body[0].value.args[1].keys[3].value",
+          "'runtime_used'",
+          "'RUNTIME_USED'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_452",
+      "changes": [
+        [
+          ".body[15].value.keys[0].value",
+          "'task_id'",
+          "'XXtask_idXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_verify__mutmut_453",
+      "changes": [
+        [
+          ".body[15].value.keys[0].value",
+          "'task_id'",
+          "'TASK_ID'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_2",
+      "changes": [
+        [
+          ".body[0].value.args[1].value",
+          "NOT_READY",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_3",
+      "changes": [
+        [
+          ".body[0].value.args[2].value",
+          "Dependencies, knowledge, permissions or decisions are blocked",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_13",
+      "changes": [
+        [
+          ".body[0].value.args[0].comparators[0].value",
+          "'BLOCKED'",
+          "'XXBLOCKEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_14",
+      "changes": [
+        [
+          ".body[0].value.args[0].comparators[0].value",
+          "'BLOCKED'",
+          "'blocked'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_15",
+      "changes": [
+        [
+          ".body[0].value.args[1].value",
+          "'NOT_READY'",
+          "'XXNOT_READYXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_16",
+      "changes": [
+        [
+          ".body[0].value.args[1].value",
+          "'NOT_READY'",
+          "'not_ready'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_17",
+      "changes": [
+        [
+          ".body[0].value.args[2].value",
+          "'Dependencies, knowledge, permissions or decisions are blocked'",
+          "'XXDependencies, knowledge, permissions or decisions are blockedXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_18",
+      "changes": [
+        [
+          ".body[0].value.args[2].value",
+          "'Dependencies, knowledge, permissions or decisions are blocked'",
+          "'dependencies, knowledge, permissions or decisions are blocked'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_19",
+      "changes": [
+        [
+          ".body[0].value.args[2].value",
+          "'Dependencies, knowledge, permissions or decisions are blocked'",
+          "'DEPENDENCIES, KNOWLEDGE, PERMISSIONS OR DECISIONS ARE BLOCKED'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_43",
+      "changes": [
+        [
+          ".body[4].body[1].value.args[1].value",
+          "MISSING_EVIDENCE",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_44",
+      "changes": [
+        [
+          ".body[4].body[1].value.args[2].value",
+          "Required verifier has no execution",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_48",
+      "changes": [
+        [
+          ".body[4].body[1].value.args[1].value",
+          "'MISSING_EVIDENCE'",
+          "'XXMISSING_EVIDENCEXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_49",
+      "changes": [
+        [
+          ".body[4].body[1].value.args[1].value",
+          "'MISSING_EVIDENCE'",
+          "'missing_evidence'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_50",
+      "changes": [
+        [
+          ".body[4].body[1].value.args[2].value",
+          "'Required verifier has no execution'",
+          "'XXRequired verifier has no executionXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_51",
+      "changes": [
+        [
+          ".body[4].body[1].value.args[2].value",
+          "'Required verifier has no execution'",
+          "'required verifier has no execution'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_52",
+      "changes": [
+        [
+          ".body[4].body[1].value.args[2].value",
+          "'Required verifier has no execution'",
+          "'REQUIRED VERIFIER HAS NO EXECUTION'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_62",
+      "changes": [
+        [
+          ".body[4].body[3].value.args[1].value",
+          "STALE_OR_FAILED_EVIDENCE",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_83",
+      "changes": [
+        [
+          ".body[4].body[3].value.args[1].value",
+          "'STALE_OR_FAILED_EVIDENCE'",
+          "'XXSTALE_OR_FAILED_EVIDENCEXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_84",
+      "changes": [
+        [
+          ".body[4].body[3].value.args[1].value",
+          "'STALE_OR_FAILED_EVIDENCE'",
+          "'stale_or_failed_evidence'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_85",
+      "changes": [
+        [
+          ".body[4].body[3].value.args[2].value",
+          "'Latest required proof is stale, failed or tampered'",
+          "'XXLatest required proof is stale, failed or tamperedXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_completion_proof__mutmut_86",
+      "changes": [
+        [
+          ".body[4].body[3].value.args[2].value",
+          "'Latest required proof is stale, failed or tampered'",
+          "'latest required proof is stale, failed or tampered'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_7",
+      "changes": [
+        [
+          ".body[0].body[1].value.args[1].value",
+          "INVALID_TRANSITION",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_8",
+      "changes": [
+        [
+          ".body[0].body[1].value.args[2].value",
+          "Only a verified task can complete",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_17",
+      "changes": [
+        [
+          ".body[0].body[1].value.args[1].value",
+          "'INVALID_TRANSITION'",
+          "'XXINVALID_TRANSITIONXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_18",
+      "changes": [
+        [
+          ".body[0].body[1].value.args[1].value",
+          "'INVALID_TRANSITION'",
+          "'invalid_transition'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_19",
+      "changes": [
+        [
+          ".body[0].body[1].value.args[2].value",
+          "'Only a verified task can complete'",
+          "'XXOnly a verified task can completeXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_20",
+      "changes": [
+        [
+          ".body[0].body[1].value.args[2].value",
+          "'Only a verified task can complete'",
+          "'only a verified task can complete'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_21",
+      "changes": [
+        [
+          ".body[0].body[1].value.args[2].value",
+          "'Only a verified task can complete'",
+          "'ONLY A VERIFIED TASK CAN COMPLETE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_35",
+      "changes": [
+        [
+          ".body[0].body[4].value.args[1].value",
+          "CHECKPOINT_REQUIRED",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_36",
+      "changes": [
+        [
+          ".body[0].body[4].value.args[2].value",
+          "Checkpoint before completion",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_40",
+      "changes": [
+        [
+          ".body[0].body[4].value.args[1].value",
+          "'CHECKPOINT_REQUIRED'",
+          "'XXCHECKPOINT_REQUIREDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_41",
+      "changes": [
+        [
+          ".body[0].body[4].value.args[1].value",
+          "'CHECKPOINT_REQUIRED'",
+          "'checkpoint_required'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_42",
+      "changes": [
+        [
+          ".body[0].body[4].value.args[2].value",
+          "'Checkpoint before completion'",
+          "'XXCheckpoint before completionXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_43",
+      "changes": [
+        [
+          ".body[0].body[4].value.args[2].value",
+          "'Checkpoint before completion'",
+          "'checkpoint before completion'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_44",
+      "changes": [
+        [
+          ".body[0].body[4].value.args[2].value",
+          "'Checkpoint before completion'",
+          "'CHECKPOINT BEFORE COMPLETION'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_47",
+      "changes": [
+        [
+          ".body[0].body[5].value.keywords[0].value",
+          "lambda c: c['payload']['timestamp']",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_49",
+      "changes": [
+        [
+          ".body[0].body[5].value.keywords",
+          "[\"key=lambda c: c['payload']['timestamp']\"]",
+          "[]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_50",
+      "changes": [
+        [
+          ".body[0].body[5].value.keywords[0].value.body",
+          "c['payload']['timestamp']",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_56",
+      "changes": [
+        [
+          ".body[0].body[6].value.args[1].value",
+          "CHECKPOINT_CORRUPT",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_67",
+      "changes": [
+        [
+          ".body[0].body[6].value.args[1].value",
+          "'CHECKPOINT_CORRUPT'",
+          "'XXCHECKPOINT_CORRUPTXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_68",
+      "changes": [
+        [
+          ".body[0].body[6].value.args[1].value",
+          "'CHECKPOINT_CORRUPT'",
+          "'checkpoint_corrupt'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_69",
+      "changes": [
+        [
+          ".body[0].body[6].value.args[2].value",
+          "'Checkpoint content does not match its hash'",
+          "'XXCheckpoint content does not match its hashXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_70",
+      "changes": [
+        [
+          ".body[0].body[6].value.args[2].value",
+          "'Checkpoint content does not match its hash'",
+          "'checkpoint content does not match its hash'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_76",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[1].value",
+          "INTEGRATION_REQUIRED",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_77",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[2].value",
+          "Workspace changes need a current integration gate",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_82",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[0].op",
+          "",
+          ""
+        ],
+        [
+          ".body[0].body[7].body[0].value.args[0].values",
+          "[\"task.get('integration')\", \"task['integration']['status'] == 'PASS'\", \"task['integration'].get('merge_performed')\", \"task['integration'].get('merged_files') ==",
+          "[\"task.get('integration') and task['integration']['status'] == 'PASS' and task['integration'].get('merge_performed')\", \"task['integration'].get('merged_files') "
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_117",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[1].value",
+          "'INTEGRATION_REQUIRED'",
+          "'XXINTEGRATION_REQUIREDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_118",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[1].value",
+          "'INTEGRATION_REQUIRED'",
+          "'integration_required'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_119",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[2].value",
+          "'Workspace changes need a current integration gate'",
+          "'XXWorkspace changes need a current integration gateXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_120",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[2].value",
+          "'Workspace changes need a current integration gate'",
+          "'workspace changes need a current integration gate'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_121",
+      "changes": [
+        [
+          ".body[0].body[7].body[0].value.args[2].value",
+          "'Workspace changes need a current integration gate'",
+          "'WORKSPACE CHANGES NEED A CURRENT INTEGRATION GATE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_132",
+      "changes": [
+        [
+          ".body[0].body[8].value.args[1].values[1].value",
+          "'RELEASED'",
+          "'XXRELEASEDXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_133",
+      "changes": [
+        [
+          ".body[0].body[8].value.args[1].values[1].value",
+          "'RELEASED'",
+          "'released'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_143",
+      "changes": [
+        [
+          ".body[0].body[9].value.keywords",
+          "[\"expected=task['version']\", \"actor=lease['agent_id']\"]",
+          "[\"expected=task['version']\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_150",
+      "changes": [
+        [
+          ".body[0].body[9].value.args[1].keys[2].value",
+          "'completed_at'",
+          "'XXcompleted_atXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_complete__mutmut_151",
+      "changes": [
+        [
+          ".body[0].body[9].value.args[1].keys[2].value",
+          "'completed_at'",
+          "'COMPLETED_AT'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_4",
+      "changes": [
+        [
+          ".body[2].test.op",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_13",
+      "changes": [
+        [
+          ".body[3].value.args[0]",
+          "task['id']",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_23",
+      "changes": [
+        [
+          ".body[4].body[1].value.elt.args[1].value",
+          "evidence",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_25",
+      "changes": [
+        [
+          ".body[4].body[1].value.elt.args",
+          "['i', \"'evidence'\"]",
+          "['i']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_29",
+      "changes": [
+        [
+          ".body[4].body[1].value.generators[0].iter.args[1]",
+          "[]",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_31",
+      "changes": [
+        [
+          ".body[4].body[1].value.generators[0].iter.args",
+          "[\"'proof'\", '[]']",
+          "[\"'proof'\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_62",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.op",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_64",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.values[0].left.value.args[1].value",
+          "entity",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_66",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.values[0].left.value.args",
+          "['i', \"'entity'\"]",
+          "['i']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_75",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.values[1].operand.args[0].value",
+          "stale",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_77",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.values[1].operand.func.value.args[1].value",
+          "entity",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_79",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.values[1].operand.func.value.args",
+          "['i', \"'entity'\"]",
+          "['i']"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_82",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.values[1].operand.args[0].value",
+          "'stale'",
+          "'XXstaleXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_proof_current__mutmut_83",
+      "changes": [
+        [
+          ".body[4].body[2].value.args[0].values[2].args[0].elt.values[1].operand.args[0].value",
+          "'stale'",
+          "'STALE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_52",
+      "changes": [
+        [
+          ".body[3].body[2].body[0].body[0].body[1].value.args[0]",
+          "evidence['id']",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_90",
+      "changes": [
+        [
+          ".body[4].body[0].body[1].value.args[1].value",
+          "entity",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_92",
+      "changes": [
+        [
+          ".body[4].body[0].body[1].value.args",
+          "[\"claim['subject']\", \"'entity'\"]",
+          "[\"claim['subject']\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_99",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values",
+          "[\"subject['lifecycle'] != 'ACTIVE'\", \"subject.get('stale')\", \"any((plane.store.get(i, 'evidence')['stale'] for i in claim.get('evidence_refs', [])))\"]",
+          "[\"subject['lifecycle'] != 'ACTIVE' and subject.get('stale')\", \"any((plane.store.get(i, 'evidence')['stale'] for i in claim.get('evidence_refs', [])))\"]"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_102",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[0].ops[0]",
+          "",
+          ""
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_103",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[0].comparators[0].value",
+          "'ACTIVE'",
+          "'XXACTIVEXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_104",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[0].comparators[0].value",
+          "'ACTIVE'",
+          "'active'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_105",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[1].args[0].value",
+          "stale",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_106",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[1].args[0].value",
+          "'stale'",
+          "'XXstaleXX'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_107",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[1].args[0].value",
+          "'stale'",
+          "'STALE'"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_110",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[2].args[0].elt.value.args[1].value",
+          "evidence",
+          "None"
+        ]
+      ]
+    },
+    {
+      "mutant": "agentic_discipline.control.verification.x_invalidate__mutmut_112",
+      "changes": [
+        [
+          ".body[4].body[0].body[2].value.values[2].args[0].elt.value.args",
+          "['i', \"'evidence'\"]",
+          "['i']"
+        ]
+      ]
+    }
+  ]
+}

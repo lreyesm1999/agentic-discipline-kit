@@ -1,0 +1,186 @@
+{
+  "name": "Agentic Discipline 2.0 Hyperdetailed Plan",
+  "generatedAt": "2026-09-12T16:11:28.705988+00:00",
+  "principles": [
+    "autonomy",
+    "evidence-driven completion",
+    "persistent state",
+    "multiple specialized graphs",
+    "graph-first source-confirmed discovery",
+    "minimum sufficient context",
+    "model-agnostic coordination",
+    "continuous reconciliation",
+    "no silent information loss",
+    "no silent legacy resurrection"
+  ],
+  "phases": [
+    {
+      "id": "P00",
+      "title": "Current System Audit",
+      "objective": "Map exactly what current Agentic Discipline already solves; avoid rebuilding working capabilities.",
+      "status": "planned"
+    },
+    {
+      "id": "P01",
+      "title": "Domain Kernel",
+      "objective": "Define stable entities, IDs, lifecycle, provenance, confidence, authority, versions, and typed edges.",
+      "status": "planned"
+    },
+    {
+      "id": "P02",
+      "title": "Persistence Layer",
+      "objective": "Implement local transactional persistence with migrations and optimistic concurrency.",
+      "status": "planned"
+    },
+    {
+      "id": "P03",
+      "title": "Knowledge Query Layer",
+      "objective": "Provide current/historical graph traversal and traceability queries.",
+      "status": "planned"
+    },
+    {
+      "id": "P04",
+      "title": "Discovery Coverage Engine",
+      "objective": "Measure repository understanding and prevent false claims of full inspection.",
+      "status": "planned"
+    },
+    {
+      "id": "P05",
+      "title": "Project Adoption Engine",
+      "objective": "Safely bootstrap Agentic Discipline 2.0 into an existing project.",
+      "status": "planned"
+    },
+    {
+      "id": "P06",
+      "title": "Claim Reconciliation",
+      "objective": "Convert raw evidence into claims and canonical knowledge without silent conflict loss.",
+      "status": "planned"
+    },
+    {
+      "id": "P07",
+      "title": "Plan Intelligence",
+      "objective": "Audit plans and project state for completeness, consistency, testability, and autonomy readiness.",
+      "status": "planned"
+    },
+    {
+      "id": "P08",
+      "title": "Readiness Gate",
+      "objective": "Return READY, READY_WITH_MANAGED_UNCERTAINTY, or BLOCKED with reasons.",
+      "status": "planned"
+    },
+    {
+      "id": "P09",
+      "title": "Task Contracts",
+      "objective": "Turn approved work into transferable, independently verifiable task contracts.",
+      "status": "planned"
+    },
+    {
+      "id": "P10",
+      "title": "Execution Graph",
+      "objective": "Model dependencies, blockers, states, and revalidation.",
+      "status": "planned"
+    },
+    {
+      "id": "P11",
+      "title": "Context Engine",
+      "objective": "Assemble minimum sufficient context with explicit budgets.",
+      "status": "planned"
+    },
+    {
+      "id": "P12",
+      "title": "Continuity Engine",
+      "objective": "Persist checkpoints and resume state independently from chat history.",
+      "status": "planned"
+    },
+    {
+      "id": "P13",
+      "title": "Evidence Freshness",
+      "objective": "Bind evidence to code and knowledge versions and invalidate stale proof.",
+      "status": "planned"
+    },
+    {
+      "id": "P14",
+      "title": "Agent Registry",
+      "objective": "Track workers, capabilities, sessions, and identity.",
+      "status": "planned"
+    },
+    {
+      "id": "P15",
+      "title": "Leases",
+      "objective": "Coordinate task ownership with expiry and recovery.",
+      "status": "planned"
+    },
+    {
+      "id": "P16",
+      "title": "Workspace Isolation",
+      "objective": "Provision worktrees/branches/sandboxes for parallel workers.",
+      "status": "planned"
+    },
+    {
+      "id": "P17",
+      "title": "Parallel Safety",
+      "objective": "Detect semantic overlap before concurrent execution.",
+      "status": "planned"
+    },
+    {
+      "id": "P18",
+      "title": "Integration Gate",
+      "objective": "Revalidate parallel work before merge into baseline.",
+      "status": "planned"
+    },
+    {
+      "id": "P19",
+      "title": "Continuous Reconciliation",
+      "objective": "Detect external/manual changes and update affected knowledge.",
+      "status": "planned"
+    },
+    {
+      "id": "P20",
+      "title": "Evolution Hygiene",
+      "objective": "Manage deprecations, temporary artifacts, replacements, and semantic garbage collection.",
+      "status": "planned"
+    },
+    {
+      "id": "P21",
+      "title": "Governance and Budgets",
+      "objective": "Apply permissions, protected actions, secret boundaries, and bounded autonomy.",
+      "status": "planned"
+    },
+    {
+      "id": "P22",
+      "title": "Observability",
+      "objective": "Provide reconstructable timelines for tasks, agents, evidence, and knowledge mutations.",
+      "status": "planned"
+    },
+    {
+      "id": "P23",
+      "title": "MCP Interface",
+      "objective": "Expose model-agnostic coordination operations.",
+      "status": "planned"
+    },
+    {
+      "id": "P24",
+      "title": "Project Console",
+      "objective": "Provide human-readable status and decision UX.",
+      "status": "planned"
+    },
+    {
+      "id": "P25",
+      "title": "Self-Verification",
+      "objective": "Stress the platform with synthetic projects and fault injection.",
+      "status": "planned"
+    },
+    {
+      "id": "P26",
+      "title": "Dogfooding",
+      "objective": "Use AD2 to manage AD2 itself.",
+      "status": "planned"
+    },
+    {
+      "id": "P27",
+      "title": "Release Hardening",
+      "objective": "Finalize migration, compatibility, docs, performance, and stable release evidence.",
+      "status": "planned"
+    }
+  ]
+}

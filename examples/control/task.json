@@ -1,0 +1,16 @@
+{
+  "objective": "Verify the documented local application behavior",
+  "scope": ["src", "tests"],
+  "out_of_scope": ["deployment", "production data"],
+  "requirements": [],
+  "acceptance": ["The existing application unit tests pass"],
+  "dependencies": [],
+  "boundaries": ["local application"],
+  "context": [],
+  "verification": [{"kind": "unit", "command": ["python", "-B", "-m", "unittest", "discover", "-s", "tests"], "acceptance": [0], "inputs": ["."]}],
+  "required_evidence": ["unit"],
+  "rollback": "Revert only the task-owned patch from its recorded baseline",
+  "definition_of_done": "Acceptance has current executable proof and a resumable checkpoint; project release gates apply separately",
+  "risk": "LOW",
+  "budget": {"max_runtime": 120, "max_retries": 2, "max_files": 10, "max_lines": 1000, "max_external_calls": 0, "max_cost": 0}
+}

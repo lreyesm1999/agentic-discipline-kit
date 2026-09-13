@@ -1,0 +1,53 @@
+{
+  "timestamp": "2026-09-13T12:56:33.138602+00:00",
+  "fixture": "synthetic Python source repository; actual process execution, no mocked services",
+  "files": 1000,
+  "entities": 2000,
+  "measurements": {
+    "adoption": {
+      "median_ms": 1013.7,
+      "max_ms": 1013.7
+    },
+    "status": {
+      "median_ms": 365.777,
+      "max_ms": 567.373
+    },
+    "claim": {
+      "median_ms": 217.239,
+      "max_ms": 217.239
+    },
+    "checkpoint": {
+      "median_ms": 71.731,
+      "max_ms": 85.321
+    },
+    "knowledge_query": {
+      "median_ms": 22.352,
+      "max_ms": 40.6
+    }
+  },
+  "targets_ms": {
+    "status": 300,
+    "claim": 200,
+    "checkpoint": 300,
+    "knowledge_query": 500
+  },
+  "targets_met": {
+    "status": false,
+    "claim": false,
+    "checkpoint": true,
+    "knowledge_query": true
+  },
+  "verification": {
+    "status": "PASS",
+    "exit_codes": [
+      0
+    ]
+  },
+  "task_state": "COMPLETED",
+  "context_bytes": 3570,
+  "audit": {
+    "records": 2021,
+    "head_hash": "d7ef38be8c418ce8c6b99b4c1455c090f6ffa5fee8fe638f2af28e48732f976f",
+    "status": "PASS"
+  }
+}

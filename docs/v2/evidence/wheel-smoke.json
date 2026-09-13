@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-09-13T12:57:14.190514+00:00",
+  "installed_from": "dist/agentic_discipline_kit-1.1.0-py3-none-any.whl",
+  "wheel_sha256": "745f6160ed0a68b8c52b7b67d0c3b5f64be1e62483c02d99aec7d44329cf1612",
+  "status": "PASS",
+  "commands": [
+    {
+      "command": [
+        "/tmp/agentic-wheel-yay1cnpp/env/bin/python",
+        "-m",
+        "agentic_discipline",
+        "init",
+        "--target",
+        "/tmp/agentic-wheel-yay1cnpp/project"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-09-13T12:57:13.725417+00:00",
+      "stdout": "Agentic Discipline -> /tmp/agentic-wheel-yay1cnpp/project\n\n  Detected stack   Generic command-based project (.)\n  Disciplines      12 installed\n  Agent surfaces   1\n                   - AGENTS.md (Codex, Zed, Cline, Aider, Jules)\n  Quality gates    1 generated, 0 relaxed\n  Files            6 copy, 1 ready, 1 update, 17 write\n\nVisible in your repository root: AGENTS.md, agentic.config.json\nEverything else lives in .agentic/\n\nNext:  agentic-discipline doctor --check-tools\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "git",
+        "init"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-09-13T12:57:13.730438+00:00",
+      "stdout": "Initialized empty Git repository in /tmp/agentic-wheel-yay1cnpp/project/.git/\n",
+      "stderr": "hint: Using 'master' as the name for the initial branch. This default branch name\nhint: is subject to change. To configure the initial branch name to use in all\nhint: of your new repositories, which will suppress this warning, call:\nhint:\nhint: \tgit config --global init.defaultBranch <name>\nhint:\nhint: Names commonly chosen instead of 'master' are 'main', 'trunk' and\nhint: 'development'. The just-created branch can be renamed via this command:\nhint:\nhint: \tgit branch -m <name>\nhint:\nhint: Disable this message with \"git config set advice.defaultBranchName false\"\n"
+    },
+    {
+      "command": [
+        "/tmp/agentic-wheel-yay1cnpp/env/bin/agentic",
+        "adopt",
+        "/tmp/agentic-wheel-yay1cnpp/project",
+        "--json"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-09-13T12:57:13.919310+00:00",
+      "stdout": "{\"api_version\":\"2\",\"data\":{\"adopted\":true,\"coverage\":{\"agent_instructions\":{\"inspected\":13,\"meaning\":\"bounded static inspection, not verified runtime understanding\",\"status\":\"EXHAUSTIVE\",\"total\":13,\"unknown\":0},\"ci\":{\"inspected\":0,\"meaning\":\"bounded static inspection, not verified runtime understanding\",\"status\":\"NOT_APPLICABLE\",\"total\":0,\"unknown\":0},\"config\":{\"inspected\":13,\"meaning\":\"bounded static inspection, not verified runtime understanding\",\"status\":\"EXHAUSTIVE\",\"total\":13,\"unknown\":0},\"docs\":{\"inspected\":29,\"meaning\":\"bounded static inspection, not verified runtime understanding\",\"status\":\"EXHAUSTIVE\",\"total\":29,\"unknown\":0},\"persistence\":{\"inspected\":0,\"meaning\":\"bounded static inspection, not verified runtime understanding\",\"status\":\"NOT_APPLICABLE\",\"total\":0,\"unknown\":0},\"runtime\":{\"inspected\":0,\"status\":\"NOT_STARTED\",\"total\":null,\"unknown\":null},\"source\":{\"inspected\":3,\"meaning\":\"bounded static inspection, not verified runtime understanding\",\"status\":\"EXHAUSTIVE\",\"total\":3,\"unknown\":0},\"tests\":{\"inspected\":2,\"meaning\":\"bounded static inspection, not verified runtime understanding\",\"status\":\"EXHAUSTIVE\",\"total\":2,\"unknown\":0}},\"files\":60,\"runtime\":\"UNKNOWN\",\"stacks\":[],\"writes\":[\".agentic/control/state.db\"]}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/tmp/agentic-wheel-yay1cnpp/env/bin/agentic",
+        "--root",
+        "/tmp/agentic-wheel-yay1cnpp/project",
+        "doctor",
+        "--json"
+      ],
+      "exit_code": 0,
+      "timestamp": "2026-09-13T12:57:14.190479+00:00",
+      "stdout": "{\"api_version\":\"2\",\"data\":{\"control_audit\":{\"head_hash\":\"66ddbf3c60ad58f787184ff7ab622a931bbd27cb55a1a45de0bf524368eb264d\",\"records\":64,\"status\":\"PASS\"},\"installation\":{\"agents_md\":true,\"config\":true,\"config_error\":null,\"config_path\":\"/tmp/agentic-wheel-yay1cnpp/project/agentic.config.json\",\"config_schema\":true,\"config_valid\":true,\"git\":true,\"git_worktree\":true,\"master_prompt\":true,\"package_version\":\"1.1.0\",\"python\":\"3.12.14\",\"skills\":12,\"status\":\"PASS\",\"tools\":{}},\"status\":\"PASS\"},\"operation\":\"doctor\"}\n",
+      "stderr": ""
+    }
+  ]
+}
