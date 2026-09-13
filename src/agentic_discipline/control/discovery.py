@@ -59,11 +59,11 @@ def git(root: Path, args: list[str]) -> str:
     return result.stdout.strip() if result.returncode == 0 else ""
 
 
-def files(root: Path, include_ignored: bool = False) -> list[Path]:
+def files(root: Path, include_ignored: bool = False, scope: list[str] | None = None) -> list[Path]:
     result: list[Path] = []
     # Git honours nested ignore rules, while the fallback permits non-Git adoption.
-    output = git(root, ["ls-files", "--cached", "--others", "--exclude-standard", "-z"])
     if not include_ignored and git(root, ["rev-parse", "--is-inside-work-tree"]) == "true":
+        output = git(root, ["ls-files", "--cached", "--others", "--exclude-standard", "-z"])
         candidates = [Path(p) for p in output.split("\x00") if p]
     else:
         candidates = []
@@ -76,6 +76,13 @@ def files(root: Path, include_ignored: bool = False) -> list[Path]:
             ]
             candidates.extend(Path(folder).relative_to(root) / n for n in names)
     for relative in sorted(set(candidates)):
+        if scope is not None and not any(
+            s == "."
+            or relative.as_posix() == s
+            or relative.as_posix().startswith(s.rstrip("/") + "/")
+            for s in scope
+        ):
+            continue
         path = root / relative
         if (
             allowed(relative)
@@ -91,12 +98,8 @@ def files(root: Path, include_ignored: bool = False) -> list[Path]:
 
 def fingerprint(root: Path, scope: list[str] | None = None) -> dict[str, str]:
     result = {}
-    for relative in files(root, include_ignored=True):
+    for relative in files(root, include_ignored=True, scope=scope):
         name = relative.as_posix()
-        if scope is not None and not any(
-            s == "." or name == s or name.startswith(s.rstrip("/") + "/") for s in scope
-        ):
-            continue
         path = root / relative
         with path.open("rb") as source:
             result[name] = hashlib.file_digest(source, "sha256").hexdigest()
@@ -149,14 +152,14 @@ def validate_inputs(root: Path, scope: list[str]) -> None:
     for folder, dirs, names in os.walk(root, followlinks=False):
         for name in dirs + names:
             relative = (Path(folder) / name).relative_to(root)
-            if allowed(relative) and (root / relative).is_symlink():
+            if allowed(relative) and any(
+                s == "."
+                or relative.as_posix() == s
+                or relative.as_posix().startswith(s.rstrip("/") + "/")
+                for s in scope
+            ):
                 require(
-                    not any(
-                        s == "."
-                        or relative.as_posix() == s
-                        or relative.as_posix().startswith(s.rstrip("/") + "/")
-                        for s in scope
-                    ),
+                    not (root / relative).is_symlink(),
                     "UNTRACKED_INPUT",
                     "Symlink in verifier inputs; use contained, measured files",
                 )

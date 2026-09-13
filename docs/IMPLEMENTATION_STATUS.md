@@ -22,8 +22,9 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## In Progress
 
-- Mutation survivor disposition and performance work: status/claim exceed fixture targets.
-- Final focused independent review is closed; full local suite has 190 passing tests.
+- Current-code mutation execution and survivor disposition.
+- Performance fixture now meets all targets after independently reviewed discovery optimization.
+- Final focused independent review is closed; full local suite has 191 passing tests.
 - GitHub review branch and CI verification.
 
 ## Pending
@@ -33,7 +34,8 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## Blockers
 
-- Current performance fixture misses status/claim targets; mutation survivors remain unresolved.
+- Mutation survivors remain unresolved.
+- GitHub Dependency Graph is unavailable/disabled, blocking dependency-review.
 - Existing integrity heuristics flag new documentation, hashes and coverage counters
   as possible threshold changes. Findings are retained for review; no quality gate
   or protected contract is weakened to dismiss them.

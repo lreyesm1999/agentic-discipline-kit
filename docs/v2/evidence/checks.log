@@ -9,22 +9,22 @@ rootdir: /workspace/scratch/62192adc7f50/agentic-discipline-kit
 configfile: pyproject.toml
 testpaths: tests
 plugins: cov-7.1.0, hypothesis-6.168.0
-collected 190 items
+collected 191 items
 
 tests/control/test_execution.py ......                                   [  3%]
 tests/control/test_governance.py .......                                 [  6%]
 tests/control/test_interfaces.py .....                                   [  9%]
 tests/control/test_kernel.py ..                                          [ 10%]
 tests/control/test_resilience.py ............                            [ 16%]
-tests/control/test_review_regressions.py ..............                  [ 24%]
-tests/control/test_workspaces.py .....                                   [ 26%]
-tests/test_acceptance.py ....                                            [ 28%]
+tests/control/test_review_regressions.py ...............                 [ 24%]
+tests/control/test_workspaces.py .....                                   [ 27%]
+tests/test_acceptance.py ....                                            [ 29%]
 tests/test_adapters.py ...........................                       [ 43%]
-tests/test_bootstrap.py .....                                            [ 45%]
+tests/test_bootstrap.py .....                                            [ 46%]
 tests/test_cli.py ............                                           [ 52%]
 tests/test_common.py ...                                                 [ 53%]
 tests/test_crap.py ...                                                   [ 55%]
-tests/test_evidence.py .......                                           [ 58%]
+tests/test_evidence.py .......                                           [ 59%]
 tests/test_install_surfaces.py ..........                                [ 64%]
 tests/test_integrity.py ....                                             [ 66%]
 tests/test_packaging.py ..........                                       [ 71%]
@@ -51,7 +51,7 @@ src/agentic_discipline/cli.py                      394     24     64     15    9
 src/agentic_discipline/control/api.py              101     16     76      7    81%   170, 186, 204, 206, 209->215, 217, 220-233
 src/agentic_discipline/control/cli.py              174     18     70     12    88%   117, 120-123, 125-130, 132-133, 135, 137, 143, 180, 234, 244->exit, 258, 278
 src/agentic_discipline/control/console.py           45      3      6      0    94%   40-42
-src/agentic_discipline/control/discovery.py        128     10     56      6    91%   67, 174, 178, 180, 230, 235-237, 243-244
+src/agentic_discipline/control/discovery.py        128     11     56      6    91%   66-67, 177, 181, 183, 233, 238-240, 246-247
 src/agentic_discipline/control/knowledge.py        123      3     36      3    96%   99, 127, 194
 src/agentic_discipline/control/mcp.py               71      0     32      2    98%   35->37, 132->117
 src/agentic_discipline/control/plane.py            319     10     96      9    95%   95-97, 274->276, 367, 499, 512->502, 689, 721-725, 734->733, 741, 791->783
@@ -75,17 +75,17 @@ src/agentic_discipline/verifier/result.py           17      1      6      1    9
 src/agentic_discipline/verifier/schema.py           26      1     12      1    95%   34
 src/agentic_discipline/verifier/sensitivity.py      17      1      8      1    92%   15
 --------------------------------------------------------------------------------------------
-TOTAL                                             3328    165   1082    124    93%
+TOTAL                                             3328    166   1082    124    93%
 
 8 files skipped due to complete coverage.
 Coverage XML written to file coverage.xml
 Coverage JSON written to file coverage.json
-Required test coverage of 85.0% reached. Total coverage: 93.08%
-============================= 190 passed in 11.57s =============================
+Required test coverage of 85.0% reached. Total coverage: 93.06%
+============================= 191 passed in 11.05s =============================
 python scripts/coverage_gate.py --report coverage.json --min-line 90 --min-branch 85
 {
   "status": "PASS",
-  "line_coverage": 95.04,
+  "line_coverage": 95.01,
   "branch_coverage": 87.06,
   "threshold_failures": []
 }

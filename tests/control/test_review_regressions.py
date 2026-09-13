@@ -371,3 +371,25 @@ def test_primary_protected_symlink_prevents_integration(tmp_path):
         with pytest.raises(ControlError):
             merge_workspace(plane, task, session)
         assert not plane.store.get(task).get("integration")
+
+
+def test_scoped_fingerprint_matches_full_measurement_after_external_edits(tmp_path):
+    from agentic_discipline.control.discovery import fingerprint
+
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src" / "app.py").write_text("value = 1\n")
+    (tmp_path / "src_extra").mkdir()
+    (tmp_path / "src_extra" / "outside.py").write_text("outside = True\n")
+    (tmp_path / "build").mkdir()
+    (tmp_path / "build" / "generated.py").write_text("generated = 1\n")
+    (tmp_path / "src" / ".env").write_text("SECRET=excluded\n")
+    (tmp_path / "src" / "linked.py").symlink_to(tmp_path / "src_extra" / "outside.py")
+    scope = ["src", "build/generated.py", "missing.py"]
+    before = fingerprint(tmp_path, scope)
+    assert set(before) == {"src/app.py", "build/generated.py"}
+    for value in (2, 3):
+        (tmp_path / "src" / "app.py").write_text(f"value = {value}\n")
+        full = fingerprint(tmp_path)
+        scoped = fingerprint(tmp_path, scope)
+        assert scoped == {name: full[name] for name in before}
+        assert scoped["src/app.py"] != before["src/app.py"]

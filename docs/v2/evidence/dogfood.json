@@ -1,20 +1,20 @@
 {
-  "timestamp": "2026-09-13T12:57:21.349765+00:00",
+  "timestamp": "2026-09-13T13:11:42.015790+00:00",
   "project": "agentic-discipline-kit",
-  "task_id": "TASK-b0ef938a1d69438ba22d2dc7747005b6",
+  "task_id": "TASK-a49c99a4e88d4805abb932e543107ce6",
   "state": "COMPLETED",
   "verification": {
-    "task_id": "TASK-b0ef938a1d69438ba22d2dc7747005b6",
+    "task_id": "TASK-a49c99a4e88d4805abb932e543107ce6",
     "status": "PASS",
     "evidence": [
       {
-        "task_id": "TASK-b0ef938a1d69438ba22d2dc7747005b6",
+        "task_id": "TASK-a49c99a4e88d4805abb932e543107ce6",
         "kind": "unit",
         "verifier": "2f4dc1ffbd99ffa5ce584ef1579655dbd358899ddc80fd50ea8d44850ee5d7a5",
         "acceptance": [
           0
         ],
-        "run_id": "RUN-9b17545303234e17bb55a7d58df5b4bb",
+        "run_id": "RUN-162b4c62f25b402a9b037add30ced68e",
         "result": "PASS",
         "exit_code": 0,
         "command": [
@@ -52,7 +52,7 @@
             "src/agentic_discipline/control/console.py": "65dd93b9b6d888a846bc4e47db054d8a8839b3be9406c8a707b72d3649a6534a",
             "src/agentic_discipline/control/contracts.py": "f6340b2c5c256482c5f49a16e439be8f807083dbed2bd0fced3f7091f8c3e744",
             "src/agentic_discipline/control/diagnostics.py": "8ee561f3ca427c91722b4b334ccbce68940dcf5c73b76589e727a46b82016bd9",
-            "src/agentic_discipline/control/discovery.py": "8828b598a38eb224de18eae14359979c40e3b9313d8697cebdb6f3d1db1ff81c",
+            "src/agentic_discipline/control/discovery.py": "df481502f3e5e567bf2bebcdf72d460a9c73be9bab965c4e6946f53fa8c90ddb",
             "src/agentic_discipline/control/knowledge.py": "57d0e3436d7bd80ffc78a429275d758d9581aeb0466429f30c1224f4b8831cfb",
             "src/agentic_discipline/control/mcp.py": "5feb9f099b6a352756558a25e47bdc2ba391708450b927dbd876fe0da56009d2",
             "src/agentic_discipline/control/migration.py": "2bb44bb33539bcefb60f377087d7c0f81df4d2ff97994ec9a2018fd06ca0800d",
@@ -84,7 +84,7 @@
             "tests/control/test_interfaces.py": "b1719305a2bd8d7d95076befe1d37af2b0833fee7f91b5f0e622d32864127954",
             "tests/control/test_kernel.py": "9a87c2c682646db24136bd5bb24fea2c0e68f5a9d60656577aa8f4b06d89b285",
             "tests/control/test_resilience.py": "f701ec69d31f2067aefed8178c49cfd09b5d1448a336235cd3e3c09bd3c011e6",
-            "tests/control/test_review_regressions.py": "51db04db7adf6fed958675b11afb9dabdec7f845ac29184da23ac467813093b3",
+            "tests/control/test_review_regressions.py": "46569e8887ce20f0a3c77b6a4670344bb61aa080b6fac895f902994220be6fba",
             "tests/control/test_workspaces.py": "0a6219d3b699f06c669c5defba129f1228855d3c57fd4c1b75df0f8bf58be285",
             "tests/test_acceptance.py": "61e2f45aae19d7abe221f0ebd9104352602791a25434b03e410a0ebbd6f36136",
             "tests/test_adapters.py": "010167805b5d5d0e2ea80e1453075b2baf6bc73bfe9910d99316f400afdfd6f8",
@@ -171,22 +171,22 @@
           "dependencies": {},
           "verification": "59a23deabcdb4cd53733af33ef075825f7c19b08d6f6056bad44b5f7fe1fe749",
           "acceptance": "e6f74c1f94bd4b2177e83d87738a0244d8768f5c6d6ab490b5c21bd855b80766",
-          "policy": "80e66b4fd8146e7aa5e23509fd478948a37b8ef695d87b96771c0df2f05ccdfa"
+          "policy": "0bc37f95167d0b1f1aba525336ec083dc2d629711432774b05e9268373146b38"
         },
         "knowledge_version": 2,
-        "artifact_hash": "ce409ee7cf63dc4f6cf672fc7068ce05a00f39b77716046a48a7f96aac055ea3",
-        "artifact_ref": ".agentic/control/evidence/EVD-a41ab9e395ae42118676e5dea47e2f1d.json",
-        "started_at": 1789304234.9514825,
-        "finished_at": 1789304240.9541466,
+        "artifact_hash": "8a0bf66715691ad3f4844f89e44681c0fe37d54012380b38115715bafbde0574",
+        "artifact_ref": ".agentic/control/evidence/EVD-1e5639db0cc74d5180991ff375cccfa8.json",
+        "started_at": 1789305096.581058,
+        "finished_at": 1789305101.667805,
         "stale": false,
-        "id": "EVD-a41ab9e395ae42118676e5dea47e2f1d",
+        "id": "EVD-1e5639db0cc74d5180991ff375cccfa8",
         "version": 1
       }
     ]
   },
   "audit": {
-    "records": 780,
-    "head_hash": "1cb62eebc3b5d893660b29b8d7ea6f1bf94aacfaca9292b01ac64e447d1398c2",
+    "records": 795,
+    "head_hash": "c9eb59ea86c5c51c361d29d4aca125120bf5c55379b6089568c91f964b66984d",
     "status": "PASS"
   }
 }

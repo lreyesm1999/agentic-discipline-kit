@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-13T12:58:03.368151+00:00",
+  "generated_at_utc": "2026-09-13T13:12:45.611987+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "4fd852a51a6bbb1626cbfe648cafd5a686ce05866af7df3eb5b150a910bc8daf",
-      "bytes": 4387
+      "sha256": "e2e8276bddd71d8e091ba11552d10d4b20c7efd96b66562f85dffcb295736e2e",
+      "bytes": 4475
     },
     {
       "path": "docs/adoption.md",
@@ -410,28 +410,33 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "315f12d4aedcf2e974fb7b17dd0baf96aedf41cb179a4c9d424ce65501a18519",
-      "bytes": 3800
+      "sha256": "4c52f9ded6b64cd566fb2daa7101cc38f690cf2842fca2343ae6dba90961210f",
+      "bytes": 4400
     },
     {
-      "path": "docs/v2/evidence/benchmark.json",
+      "path": "docs/v2/evidence/benchmark-before-optimization.json",
       "sha256": "25c0220ccb500200659c9f17337148c7a497e3a8b3671222e6ae51a4d0c02d91",
       "bytes": 1100
     },
     {
+      "path": "docs/v2/evidence/benchmark.json",
+      "sha256": "b65732c5dc7e7d6687b8f3f6e52571c063e4e955944331bd4da1307d8c1d3d1b",
+      "bytes": 1095
+    },
+    {
       "path": "docs/v2/evidence/build.log",
-      "sha256": "66da22f2bddf662e2c21f16b144a3ba596eab809eba34fac902017c97199948c",
+      "sha256": "5a9ff846759a12d83d166b81e2aea363a41311b4c7047b6b834bf06ab1d651d9",
       "bytes": 50160
     },
     {
       "path": "docs/v2/evidence/checks.log",
-      "sha256": "a9dba57ab0ca305d76c725e3ef5a920dc2a84fb6bfdad1a004e1ffae19d83615",
-      "bytes": 7806
+      "sha256": "574184ba423d0f4ac5ac414c518458e715deaf3d1f6a411f2ad1b5e53ebf2843",
+      "bytes": 7809
     },
     {
       "path": "docs/v2/evidence/dogfood.json",
-      "sha256": "b8044f992be8411b3e3e2821e9c99903ca2ef7f6df9aeb6686187e0c028f10dd",
-      "bytes": 17553
+      "sha256": "cc7f29c498ec9ff434c6aa6cb16228a87c3d2c0d9579a36d536df01523e011bb",
+      "bytes": 17551
     },
     {
       "path": "docs/v2/evidence/independent-review.json",
@@ -449,18 +454,28 @@
       "bytes": 76080
     },
     {
+      "path": "docs/v2/evidence/performance-review-equivalence.log",
+      "sha256": "6567d38b94ab347187072a5424d9769479dfaee7808d09fc351bb131f7b21be2",
+      "bytes": 179
+    },
+    {
+      "path": "docs/v2/evidence/performance-review-tests.log",
+      "sha256": "c6d0d836c49a545eb3d375aaae003f1c554d92a7d00b4ed83d77b072814359d0",
+      "bytes": 99
+    },
+    {
       "path": "docs/v2/evidence/protected.log",
       "sha256": "c0e0db2718ec7fa23b5239171613e82e06b06cd6cac35b92451413024eeedd73",
       "bytes": 40
     },
     {
       "path": "docs/v2/evidence/validation.json",
-      "sha256": "5001c4d2661f5c606bdbee6881002471d8150874f2dac6b4d20f8b09eca74595",
-      "bytes": 3490
+      "sha256": "7e7ff46c1bf6c9127d077326ddf9b630849e23d9d5d7dd8b4367ca0460d72417",
+      "bytes": 3515
     },
     {
       "path": "docs/v2/evidence/wheel-smoke.json",
-      "sha256": "787803c0c5fc4893e0d772db97a5903dad0987f3d88948373a7569cc20fca0fc",
+      "sha256": "8103495bf3554c8dde230c334fa0b0884f6a63eceb7e93457e0a0b3ba7f53224",
       "bytes": 4496
     },
     {
@@ -1160,8 +1175,8 @@
     },
     {
       "path": "src/agentic_discipline/control/discovery.py",
-      "sha256": "8828b598a38eb224de18eae14359979c40e3b9313d8697cebdb6f3d1db1ff81c",
-      "bytes": 9758
+      "sha256": "df481502f3e5e567bf2bebcdf72d460a9c73be9bab965c4e6946f53fa8c90ddb",
+      "bytes": 9833
     },
     {
       "path": "src/agentic_discipline/control/knowledge.py",
@@ -1335,8 +1350,8 @@
     },
     {
       "path": "tests/control/test_review_regressions.py",
-      "sha256": "51db04db7adf6fed958675b11afb9dabdec7f845ac29184da23ac467813093b3",
-      "bytes": 14666
+      "sha256": "46569e8887ce20f0a3c77b6a4670344bb61aa080b6fac895f902994220be6fba",
+      "bytes": 15741
     },
     {
       "path": "tests/control/test_workspaces.py",

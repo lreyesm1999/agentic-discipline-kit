@@ -1,25 +1,25 @@
 {
-  "timestamp": "2026-09-13T12:58:03.226087+00:00",
+  "timestamp": "2026-09-13T13:12:10.202422+00:00",
   "release_ready": false,
-  "tests_passed": 190,
-  "line_coverage": 95.04,
+  "tests_passed": 191,
+  "line_coverage": 95.01,
   "branch_coverage": 87.06,
   "checks": [
     {
       "tool": "make",
       "command": "make check",
       "exit_code": 0,
-      "timestamp": "2026-09-13T12:57:21.595148+00:00",
+      "timestamp": "2026-09-13T13:12:10.201992+00:00",
       "output_artifact": "checks.log",
-      "sha256": "a9dba57ab0ca305d76c725e3ef5a920dc2a84fb6bfdad1a004e1ffae19d83615"
+      "sha256": "574184ba423d0f4ac5ac414c518458e715deaf3d1f6a411f2ad1b5e53ebf2843"
     },
     {
       "tool": "python",
       "command": "python -m build",
       "exit_code": 0,
-      "timestamp": "2026-09-13T12:57:21.595198+00:00",
+      "timestamp": "2026-09-13T13:12:10.202078+00:00",
       "output_artifact": "build.log",
-      "sha256": "66da22f2bddf662e2c21f16b144a3ba596eab809eba34fac902017c97199948c"
+      "sha256": "5a9ff846759a12d83d166b81e2aea363a41311b4c7047b6b834bf06ab1d651d9"
     },
     {
       "tool": "agentic-discipline",
@@ -45,7 +45,7 @@
     "src/agentic_discipline/control/console.py": "65dd93b9b6d888a846bc4e47db054d8a8839b3be9406c8a707b72d3649a6534a",
     "src/agentic_discipline/control/contracts.py": "f6340b2c5c256482c5f49a16e439be8f807083dbed2bd0fced3f7091f8c3e744",
     "src/agentic_discipline/control/diagnostics.py": "8ee561f3ca427c91722b4b334ccbce68940dcf5c73b76589e727a46b82016bd9",
-    "src/agentic_discipline/control/discovery.py": "8828b598a38eb224de18eae14359979c40e3b9313d8697cebdb6f3d1db1ff81c",
+    "src/agentic_discipline/control/discovery.py": "df481502f3e5e567bf2bebcdf72d460a9c73be9bab965c4e6946f53fa8c90ddb",
     "src/agentic_discipline/control/knowledge.py": "57d0e3436d7bd80ffc78a429275d758d9581aeb0466429f30c1224f4b8831cfb",
     "src/agentic_discipline/control/mcp.py": "5feb9f099b6a352756558a25e47bdc2ba391708450b927dbd876fe0da56009d2",
     "src/agentic_discipline/control/migration.py": "2bb44bb33539bcefb60f377087d7c0f81df4d2ff97994ec9a2018fd06ca0800d",
@@ -62,10 +62,10 @@
     "independent-review.json"
   ],
   "pending": [
-    "Performance status and claim targets",
     "Current-code differential and full critical-scope mutation; survivor disposition",
     "Remote supported-platform CI",
     "Integrity findings disposition",
-    "Human release acceptance"
+    "Human release acceptance",
+    "GitHub Dependency Graph must be enabled for dependency-review"
   ]
 }
