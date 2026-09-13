@@ -34,3 +34,12 @@ def test_integrity_detects_removed_assertion_and_disabled_workflow() -> None:
     patterns = {finding.pattern for finding in audit_diff(diff)}
     assert "assertion_removed" in patterns
     assert "workflow_disable" in patterns
+
+
+def test_integrity_ignores_threshold_words_in_runtime_and_generated_evidence() -> None:
+    diff = """+++ b/src/demo.py
++coverage[category]["total"] += 1
++++ b/docs/v2/evidence/checks.log
++Required test coverage of 85.0% reached.
+"""
+    assert audit_diff(diff) == []

@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-13T18:44:27.784711+00:00",
+  "generated_at_utc": "2026-09-13T23:32:28.888549+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,7 +70,7 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "29b32aa07911230991fc9670f1404a2f70f32dea320c0f5f5c3944e8428ddbe6",
+      "sha256": "e695855783aac1e660ab53b1f01a15a9fbe2951c5c48c06a92fadf0138cf3c45",
       "bytes": 3099
     },
     {
@@ -1245,8 +1245,8 @@
     },
     {
       "path": "src/agentic_discipline/integrity.py",
-      "sha256": "8a118bfae56dbbd49d1dfb81b25ce91b6e3545e04e56e3a1570a9a6a0c91d9e1",
-      "bytes": 2062
+      "sha256": "66668b6971a4c54f8f195699ec518d3d8fb60ea6f7ef2ac0cc3062edbb6e7323",
+      "bytes": 3562
     },
     {
       "path": "src/agentic_discipline/migration.py",
@@ -1420,8 +1420,8 @@
     },
     {
       "path": "tests/test_integrity.py",
-      "sha256": "f34b6015565af7ea7090e0c069f1bada5dd54747d0dd6eb3af9f66fd9c1db884",
-      "bytes": 996
+      "sha256": "bc2eb05bde31efd82d2d07cf8c47aee14bd0426d1a76ea46a743bdf512bc48f7",
+      "bytes": 1266
     },
     {
       "path": "tests/test_mutation_gate.py",
