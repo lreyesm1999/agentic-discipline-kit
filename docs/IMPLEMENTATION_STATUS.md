@@ -22,9 +22,9 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## In Progress
 
-- Current-code mutation execution and survivor disposition.
+- Mutation survivor disposition based on the complete CI campaign; selected local retest was interrupted and is marked partial.
 - Performance fixture now meets all targets after independently reviewed discovery optimization.
-- Final focused independent review is closed; full local suite has 191 passing tests.
+- Final focused independent review is closed; full local suite has 195 passing tests.
 - GitHub review branch and CI verification.
 
 ## Pending
@@ -34,7 +34,7 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## Blockers
 
-- Mutation survivors remain unresolved.
+- Full CI mutation run has 5,326 unresolved survivors and 7 timeouts despite a green process status; this fails the release gate.
 - GitHub Dependency Graph is unavailable/disabled, blocking dependency-review.
 - Existing integrity heuristics flag new documentation, hashes and coverage counters
   as possible threshold changes. Findings are retained for review; no quality gate

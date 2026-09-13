@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-13T13:12:45.611987+00:00",
+  "generated_at_utc": "2026-09-13T18:28:29.700138+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "e2e8276bddd71d8e091ba11552d10d4b20c7efd96b66562f85dffcb295736e2e",
-      "bytes": 4475
+      "sha256": "0295087f602cec6dba32c38241fe2c88204b31b45db08b85d7c054a07a218132",
+      "bytes": 4633
     },
     {
       "path": "docs/adoption.md",
@@ -410,8 +410,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "4c52f9ded6b64cd566fb2daa7101cc38f690cf2842fca2343ae6dba90961210f",
-      "bytes": 4400
+      "sha256": "2e593a2b632eb2b996cb5d6c221c45566f27926c26e24fce3e2a9fb84ca4ad47",
+      "bytes": 5068
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -430,8 +430,8 @@
     },
     {
       "path": "docs/v2/evidence/checks.log",
-      "sha256": "574184ba423d0f4ac5ac414c518458e715deaf3d1f6a411f2ad1b5e53ebf2843",
-      "bytes": 7809
+      "sha256": "6b9bb6a6575d0b05401e242ba29368974c6a10848439d7e65e04070b053e0d80",
+      "bytes": 7889
     },
     {
       "path": "docs/v2/evidence/dogfood.json",
@@ -450,8 +450,8 @@
     },
     {
       "path": "docs/v2/evidence/mutation.json",
-      "sha256": "b0414b09f0cba7068e90f6ea9dba8ad66ab565ef5085483ff076dece68dd0c52",
-      "bytes": 76080
+      "sha256": "60e71ffcde3e444f7b2eae04544d3335c9f3eca5baf89410d7ac1797a9acbdc3",
+      "bytes": 76949
     },
     {
       "path": "docs/v2/evidence/performance-review-equivalence.log",
@@ -470,8 +470,8 @@
     },
     {
       "path": "docs/v2/evidence/validation.json",
-      "sha256": "7e7ff46c1bf6c9127d077326ddf9b630849e23d9d5d7dd8b4367ca0460d72417",
-      "bytes": 3515
+      "sha256": "7ff52aa0841b4b33e17fc969203b84d1762ef152dc1f8f28f7ce26c328b15d8c",
+      "bytes": 3986
     },
     {
       "path": "docs/v2/evidence/wheel-smoke.json",
@@ -1342,6 +1342,11 @@
       "path": "tests/control/test_kernel.py",
       "sha256": "9a87c2c682646db24136bd5bb24fea2c0e68f5a9d60656577aa8f4b06d89b285",
       "bytes": 2791
+    },
+    {
+      "path": "tests/control/test_mutation_regressions.py",
+      "sha256": "22c97b1c9d952f2980b8b6d9a27f5b769bf978a5b5cbe0e405754ea814787609",
+      "bytes": 3516
     },
     {
       "path": "tests/control/test_resilience.py",

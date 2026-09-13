@@ -8,27 +8,28 @@ platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
 rootdir: /workspace/scratch/62192adc7f50/agentic-discipline-kit
 configfile: pyproject.toml
 testpaths: tests
-plugins: cov-7.1.0, hypothesis-6.168.0
-collected 191 items
+plugins: hypothesis-6.168.0, cov-7.1.0
+collected 195 items
 
 tests/control/test_execution.py ......                                   [  3%]
 tests/control/test_governance.py .......                                 [  6%]
 tests/control/test_interfaces.py .....                                   [  9%]
 tests/control/test_kernel.py ..                                          [ 10%]
-tests/control/test_resilience.py ............                            [ 16%]
-tests/control/test_review_regressions.py ...............                 [ 24%]
-tests/control/test_workspaces.py .....                                   [ 27%]
-tests/test_acceptance.py ....                                            [ 29%]
-tests/test_adapters.py ...........................                       [ 43%]
-tests/test_bootstrap.py .....                                            [ 46%]
-tests/test_cli.py ............                                           [ 52%]
-tests/test_common.py ...                                                 [ 53%]
-tests/test_crap.py ...                                                   [ 55%]
-tests/test_evidence.py .......                                           [ 59%]
-tests/test_install_surfaces.py ..........                                [ 64%]
-tests/test_integrity.py ....                                             [ 66%]
-tests/test_packaging.py ..........                                       [ 71%]
-tests/test_profiles.py ..........                                        [ 76%]
+tests/control/test_mutation_regressions.py ....                          [ 12%]
+tests/control/test_resilience.py ............                            [ 18%]
+tests/control/test_review_regressions.py ...............                 [ 26%]
+tests/control/test_workspaces.py .....                                   [ 28%]
+tests/test_acceptance.py ....                                            [ 30%]
+tests/test_adapters.py ...........................                       [ 44%]
+tests/test_bootstrap.py .....                                            [ 47%]
+tests/test_cli.py ............                                           [ 53%]
+tests/test_common.py ...                                                 [ 54%]
+tests/test_crap.py ...                                                   [ 56%]
+tests/test_evidence.py .......                                           [ 60%]
+tests/test_install_surfaces.py ..........                                [ 65%]
+tests/test_integrity.py ....                                             [ 67%]
+tests/test_packaging.py ..........                                       [ 72%]
+tests/test_profiles.py ..........                                        [ 77%]
 tests/test_quality.py ...                                                [ 78%]
 tests/test_quality_extended.py .........                                 [ 83%]
 tests/test_requirements.py ......                                        [ 86%]
@@ -81,7 +82,7 @@ TOTAL                                             3328    166   1082    124    9
 Coverage XML written to file coverage.xml
 Coverage JSON written to file coverage.json
 Required test coverage of 85.0% reached. Total coverage: 93.06%
-============================= 191 passed in 11.05s =============================
+============================= 195 passed in 7.32s ==============================
 python scripts/coverage_gate.py --report coverage.json --min-line 90 --min-branch 85
 {
   "status": "PASS",

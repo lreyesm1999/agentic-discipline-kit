@@ -12,7 +12,7 @@
   },
   "killed": 899,
   "survived": 288,
-  "note": "Historical pre-hardening run. Later regression tests target retry budgets, changed-line boundaries and post-merge completion; the full selected mutation run has not been repeated. Survivors are not certified equivalent. Full critical-module mutation scope remains pending.",
+  "note": "Current local regression suite includes four additional focused mutation cases. CI process status does not imply zero survivors.",
   "log_sha256": "6608ca10bb3c05d96b1f9bc4cc84268291598a525a39711b9de02bf5e4a39433",
   "survivors": [
     {
@@ -2900,5 +2900,29 @@
         ]
       ]
     }
-  ]
+  ],
+  "current_run": {
+    "status": "INTERRUPTED",
+    "selection": "agentic_discipline.control.verification.*",
+    "command": "mutmut run --max-children 8 'agentic_discipline.control.verification.*'",
+    "revision": "8283ba5",
+    "tests_at_start": 194,
+    "last_verified_partial_counts": {
+      "killed": 950,
+      "survived": 267,
+      "not_yet_checked": 24
+    },
+    "note": "Process was interrupted during metadata write; the JSON is truncated. These partial counts are NOT a complete score and are retained solely as diagnostics. The complete CI run below is the authoritative result."
+  },
+  "ci_full_run": {
+    "workflow": "https://github.com/lreyesm1999/agentic-discipline-kit/actions/runs/34759274115",
+    "revision": "a19c2c196843739507234a93c2581db476b2b0b2",
+    "mutants": 14934,
+    "killed": 9601,
+    "survived": 5326,
+    "timed_out": 7,
+    "exit_code": 0,
+    "gate": "FAILED_BY_SURVIVORS"
+  },
+  "current_log_sha256": "d3859b895af94ec09541ee1d0f016aca6da88ce053b22547abb7cee8d73488f9"
 }

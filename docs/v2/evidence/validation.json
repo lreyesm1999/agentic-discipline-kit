@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-09-13T13:12:10.202422+00:00",
+  "timestamp": "2026-09-13T18:28:29.634981+00:00",
   "release_ready": false,
-  "tests_passed": 191,
+  "tests_passed": 195,
   "line_coverage": 95.01,
   "branch_coverage": 87.06,
   "checks": [
@@ -9,9 +9,9 @@
       "tool": "make",
       "command": "make check",
       "exit_code": 0,
-      "timestamp": "2026-09-13T13:12:10.201992+00:00",
+      "timestamp": "2026-09-13T18:28:29.634885+00:00",
       "output_artifact": "checks.log",
-      "sha256": "574184ba423d0f4ac5ac414c518458e715deaf3d1f6a411f2ad1b5e53ebf2843"
+      "sha256": "6b9bb6a6575d0b05401e242ba29368974c6a10848439d7e65e04070b053e0d80"
     },
     {
       "tool": "python",
@@ -55,17 +55,32 @@
     "src/agentic_discipline/control/workspaces.py": "d768701c4d62d391d27f9bbb9f4084cb6660c84f8fad80c6329d3433279164ae"
   },
   "additional_artifacts": [
-    "wheel-smoke.json",
-    "dogfood.json",
     "benchmark.json",
+    "dogfood.json",
+    "independent-review.json",
     "mutation.json",
-    "independent-review.json"
+    "performance-review-equivalence.log",
+    "wheel-smoke.json"
   ],
   "pending": [
-    "Current-code differential and full critical-scope mutation; survivor disposition",
     "Remote supported-platform CI",
     "Integrity findings disposition",
     "Human release acceptance",
-    "GitHub Dependency Graph must be enabled for dependency-review"
-  ]
+    "GitHub Dependency Graph must be enabled for dependency-review",
+    "Disposition of 5,326 CI survivors and 7 timeouts; no release claim"
+  ],
+  "remote_mutation": {
+    "revision": "a19c2c196843739507234a93c2581db476b2b0b2",
+    "workflow_run": "34759274115",
+    "job_id": 103727284125,
+    "tool": "mutmut",
+    "command": "mutmut run",
+    "exit_code": 0,
+    "count": 14934,
+    "killed": 9601,
+    "survived": 5326,
+    "timed_out": 7,
+    "status": "FAIL_UNRESOLVED_SURVIVORS",
+    "note": "GitHub job success is a process exit; it does not enforce a zero-survivor policy."
+  }
 }
