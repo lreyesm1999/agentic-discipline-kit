@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-14T03:06:07.772010+00:00",
+  "generated_at_utc": "2026-09-14T07:05:46.276971+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1414,6 +1414,11 @@
       "bytes": 5250
     },
     {
+      "path": "tests/test_evidence_contract.py",
+      "sha256": "a1cb94a326f78ddc9a654c3c7a961b632faa23d20b4d3cf76fdafe290b7a1f3f",
+      "bytes": 2348
+    },
+    {
       "path": "tests/test_install_surfaces.py",
       "sha256": "aa407ea8224034a68832af55e1d10e059ed01f16a3fbdbd9815bb30aa3cc8d53",
       "bytes": 7179
@@ -1422,6 +1427,11 @@
       "path": "tests/test_integrity.py",
       "sha256": "835b4bc9a38810f72b4c5ecd644bebea2ee917042557621242e5de90b30a56b9",
       "bytes": 1450
+    },
+    {
+      "path": "tests/test_integrity_rules.py",
+      "sha256": "e5aa2a994895eca66b375a6ab5cffa87efdfc0765f5b8a28b5069940a7fdf62b",
+      "bytes": 2507
     },
     {
       "path": "tests/test_mutation_gate.py",
@@ -1447,6 +1457,11 @@
       "path": "tests/test_quality_extended.py",
       "sha256": "c996773b6a42a413d32c22dc1304e77027805244ecc60322a1057a042921c92f",
       "bytes": 5291
+    },
+    {
+      "path": "tests/test_requirement_traceability_rules.py",
+      "sha256": "69aeba80feefcacf70dd2edc9551b6a3a144007ffcb2645ea997bb9e51955953",
+      "bytes": 4657
     },
     {
       "path": "tests/test_requirements.py",
@@ -1477,6 +1492,11 @@
       "path": "tests/test_verifier.py",
       "sha256": "f0d820a552f573857f12f7f77f9c4118930e4d668d6b81563725bcff9a7e289a",
       "bytes": 2338
+    },
+    {
+      "path": "tests/test_verifier_contract_rules.py",
+      "sha256": "d6bb2e3a6d17f8c8985f08b25fa4306e5dabcdefe3d1812e4cc5f283f556a33e",
+      "bytes": 10027
     }
   ]
 }
