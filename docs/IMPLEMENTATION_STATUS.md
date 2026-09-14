@@ -24,8 +24,8 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 - Mutation survivor disposition based on the complete CI campaign; selected local retest was interrupted and is marked partial.
 - Performance fixture now meets all targets after independently reviewed discovery optimization.
-- Final focused independent review is closed; full local suite has 197 passing tests.
-- GitHub review branch and CI verification.
+- Final focused independent review is closed; the integrated local suite has 199 passing tests.
+- GitHub CI verification of the integration commit is pending.
 
 ## Pending
 
@@ -35,11 +35,7 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 ## Blockers
 
 - Full CI mutation run has 5,326 unresolved survivors and 7 timeouts ; the strengthened CI outcome gate now fails explicitly until they are resolved.
-- GitHub Dependency Graph is unavailable/disabled, blocking dependency-review.
 - The mutation CI enforcement patch changes a protected workflow; the protected diff gate fails pending contract-authorized review.
-- Existing integrity heuristics flag new documentation, hashes and coverage counters
-  as possible threshold changes. Findings are retained for review; no quality gate
-  or protected contract is weakened to dismiss them.
 - Final human review is required by the repository's trust-boundary/release policies.
 
 ## Technical Debt
@@ -62,5 +58,5 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## Next Tasks
 
-Finish the recorded hardening/review gates, merge the prerequisite autonomy discipline
-and this preview in dependency order, then run the repository's release process.
+Finish the recorded hardening/review gates, wait for CI on the integration commit,
+then run the repository's release process.
