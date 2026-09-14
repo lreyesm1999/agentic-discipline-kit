@@ -22,6 +22,11 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   to publish with a token. Node moves to 22 and npm to 11.5.1 or later, the versions that understand
   OIDC; `--provenance` is dropped because trusted publishing attests provenance on its own.
 
+### Fixed
+- The evidence ledger lock no longer fails with `PermissionError` on Windows when a writer
+  releases the lock at the moment another acquires it; a vanished lock is retried a bounded
+  number of times while genuine permission failures still surface.
+
 ## [1.1.0] - 2026-09-06
 
 ### Migration required for existing installations

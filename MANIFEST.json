@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-14T02:33:28.282445+00:00",
+  "generated_at_utc": "2026-09-14T06:32:38.120481+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "881241d86d5cf739a76b9cee9848767dce00374037fb6dc802882605b28538da",
-      "bytes": 5785
+      "sha256": "2d1dfe0dc5186f7392a3b0ac1eedb834ca988b560a67b66a5ce7017898109f5e",
+      "bytes": 6046
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -850,8 +850,8 @@
     },
     {
       "path": "src/agentic_discipline/evidence.py",
-      "sha256": "b8404599a5e3bfa46a71ab7b29964f60281b1cc1dfcb0fcf73dc85ece7606e54",
-      "bytes": 5941
+      "sha256": "5fd22fc0b9b0d5ceedc8b2655ccc6eefe1b7df0ddb495dea676a1b2c52df12b4",
+      "bytes": 6235
     },
     {
       "path": "src/agentic_discipline/evolution.py",

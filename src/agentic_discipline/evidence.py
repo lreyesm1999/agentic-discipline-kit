@@ -26,10 +26,13 @@ def _record_hash(record: dict[str, Any]) -> str:
 
 
 @contextmanager
-def _ledger_lock(ledger: Path, timeout_seconds: float = 10.0) -> Any:
+def _ledger_lock(
+    ledger: Path, timeout_seconds: float = 10.0, vanished_lock_retries: int = 20
+) -> Any:
     lock = ledger.with_suffix(ledger.suffix + ".lock")
     deadline = time.monotonic() + timeout_seconds
     descriptor: int | None = None
+    vanished = 0
     while descriptor is None:
         try:
             descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
@@ -38,11 +41,15 @@ def _ledger_lock(ledger: Path, timeout_seconds: float = 10.0) -> Any:
                 raise AgenticError(f"timed out waiting for evidence ledger lock: {lock}") from None
             time.sleep(0.05)
         except PermissionError as exc:
-            # Windows can report an existing, exclusively held file as EACCES
-            # instead of EEXIST. Only treat it as contention when the lock is
-            # visible; preserve genuine directory/file permission failures.
+            # Windows reports EACCES instead of EEXIST both for a held lock and
+            # for one whose deletion by the previous holder is still pending;
+            # in the second case the file is already gone by the time we look.
+            # Retry a vanished lock a bounded number of times so genuine
+            # directory/file permission failures still surface promptly.
             if not lock.exists():
-                raise
+                vanished += 1
+                if vanished > vanished_lock_retries:
+                    raise
             if time.monotonic() >= deadline:
                 raise AgenticError(f"timed out waiting for evidence ledger lock: {lock}") from exc
             time.sleep(0.05)
