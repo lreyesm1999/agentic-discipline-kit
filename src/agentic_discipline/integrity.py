@@ -61,6 +61,21 @@ def is_test_file(path: str | None) -> bool:
 def audit_diff(diff_text: str) -> list[IntegrityFinding]:
     findings: list[IntegrityFinding] = []
     current_file: str | None = None
+    updated_test_assertions: set[str] = set()
+
+    for line in diff_text.splitlines():
+        if line.startswith("+++ b/"):
+            current_file = line[6:]
+        elif (
+            line.startswith("+")
+            and not line.startswith("+++")
+            and is_test_file(current_file)
+            and re.search(DELETION_PATTERNS["assertion_removed"], line[1:])
+        ):
+            if current_file is not None:
+                updated_test_assertions.add(current_file)
+
+    current_file = None
 
     for line in diff_text.splitlines():
         if line.startswith("+++ b/"):
@@ -90,6 +105,8 @@ def audit_diff(diff_text: str) -> list[IntegrityFinding]:
             else:
                 deletion_patterns = {}
             for name, pattern in deletion_patterns.items():
+                if name == "assertion_removed" and current_file in updated_test_assertions:
+                    continue
                 if re.search(pattern, removed, re.IGNORECASE):
                     findings.append(IntegrityFinding(current_file, name, removed[:500]))
 

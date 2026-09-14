@@ -38,8 +38,16 @@ def test_integrity_detects_removed_assertion_and_disabled_workflow() -> None:
 
 def test_integrity_ignores_threshold_words_in_runtime_and_generated_evidence() -> None:
     diff = """+++ b/src/demo.py
-+coverage[category]["total"] += 1
++coverage[category][\"total\"] += 1
 +++ b/docs/v2/evidence/checks.log
 +Required test coverage of 85.0% reached.
+"""
+    assert audit_diff(diff) == []
+
+
+def test_integrity_allows_an_updated_test_assertion() -> None:
+    diff = """+++ b/tests/test_demo.py
+-assert count == 11
++assert count == 12
 """
     assert audit_diff(diff) == []
