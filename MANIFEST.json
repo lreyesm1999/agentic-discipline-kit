@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-14T14:54:24.303061+00:00",
+  "generated_at_utc": "2026-09-14T15:18:56.329366+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "20e91698e039a7982482f6dd95045064035586bda63f24a3c0f962dd55ca2790",
+      "sha256": "439017602cbcb109b7441711139099ac0ff4b61f1742116bc7e866180e2c989d",
       "bytes": 4340
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "55eae01a682cb3248b403dfb4c83080fc8d3612f8ccc11df034ceba2015d6d2a",
+      "sha256": "7489cb2ea83767dc6f02ed836cc2822e91e66f32bcc435f77b05115165387c24",
       "bytes": 5798
     },
     {
@@ -1334,6 +1334,11 @@
       "bytes": 437
     },
     {
+      "path": "tests/cli_surface.json",
+      "sha256": "b895ebb7d00a7c68e588cf111b11878e682bd125525d55964e3d0a92f6aa70af",
+      "bytes": 64650
+    },
+    {
       "path": "tests/control/conftest.py",
       "sha256": "2fcfa108da0e924822114489206989e86aa85c7b49e8fa27af440b177f76d808",
       "bytes": 1604
@@ -1407,6 +1412,11 @@
       "path": "tests/test_cli.py",
       "sha256": "b452f7d6db161aae838067e5e24fe16b2cef73800bb158ada5e90f396b272351",
       "bytes": 6024
+    },
+    {
+      "path": "tests/test_cli_surface.py",
+      "sha256": "162ced43da78e70435a6062bd430ebeea597821d774bbe1e73eabfd3ab3c3bd1",
+      "bytes": 3455
     },
     {
       "path": "tests/test_common.py",
