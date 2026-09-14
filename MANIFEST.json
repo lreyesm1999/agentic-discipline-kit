@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-14T14:27:28.829500+00:00",
+  "generated_at_utc": "2026-09-14T14:31:20.073448+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "3d2674ee46126159d1d5cb9bfdb27baec1b4850c82f5010083a26bc67506d728",
-      "bytes": 6213
+      "sha256": "8cc0cf2f5f58b9a8ab5884da2ba4f7e71cbec4d6ba29100f706e9bdbcd4db4fd",
+      "bytes": 6483
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "7eb7fa0e28ac07a652dd28b45b64cd919e457dd1dd5197df8b9ae74977f81d0d",
+      "sha256": "dd0e0f140a9943849383564320d6c547c5650cc164f9184ced68737ecf5cbab8",
       "bytes": 4340
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "99a8ad1ee0c65ab2c2ca4b51cc25e795cb25f18c5a411631a6ef53bfff6634dc",
+      "sha256": "8bf919bab5223cfdf4fb4213331e686ca968a4829723a1e94ba4bdefb267c3db",
       "bytes": 5798
     },
     {
@@ -1180,8 +1180,8 @@
     },
     {
       "path": "src/agentic_discipline/control/contracts.py",
-      "sha256": "f6340b2c5c256482c5f49a16e439be8f807083dbed2bd0fced3f7091f8c3e744",
-      "bytes": 10196
+      "sha256": "c435398eece534fb0ed07669be8631f1c8066672292f8459a1545604a75b56f1",
+      "bytes": 10351
     },
     {
       "path": "src/agentic_discipline/control/diagnostics.py",
@@ -1340,8 +1340,8 @@
     },
     {
       "path": "tests/control/test_contract_rules.py",
-      "sha256": "cbb17f115b3b448a455c4a7139d89e68ede268e9f3cbfef592a838d72b7f33c6",
-      "bytes": 12415
+      "sha256": "d318e736b2d4f4cb56b2a73a135877acbfc31b6aebe87d2c5162372ee4b790ff",
+      "bytes": 12617
     },
     {
       "path": "tests/control/test_execution.py",
