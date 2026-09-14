@@ -28,6 +28,9 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   validated on Windows accepted `/tmp/x`; each leaves the project on the other platform. Paths
   with a drive such as `C:x` and root-relative Windows paths such as `\x`, which both platforms
   accepted, are now rejected as well.
+- Task contract scope and verifier input paths are parsed as POSIX paths on every platform. On
+  Windows `/etc/x` was not considered absolute and was accepted; such a task could not change
+  anything outside the repository, but its contract is now rejected as on Linux.
 
 ## [1.1.0] - 2026-09-06
 

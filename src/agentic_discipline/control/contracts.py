@@ -7,7 +7,7 @@ import json
 import math
 import re
 import uuid
-from pathlib import Path
+from pathlib import PurePosixPath
 from typing import Any
 
 from ..common import AgenticError
@@ -118,7 +118,9 @@ def relative_path(value: str) -> str:
         "INVALID_PATH",
         "Use a relative POSIX path",
     )
-    p = Path(value)
+    # Backslashes are rejected above, so parse as POSIX everywhere: on Windows a
+    # native Path would not treat "/etc/x" as absolute.
+    p = PurePosixPath(value)
     require(
         not p.is_absolute() and ".." not in p.parts and ":" not in value,
         "INVALID_PATH",

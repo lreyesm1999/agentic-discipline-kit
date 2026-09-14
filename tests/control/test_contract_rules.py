@@ -109,7 +109,11 @@ def test_non_posix_path_text_is_rejected(value: Any) -> None:
     _rejects(relative_path, value, "INVALID_PATH", "Use a relative POSIX path")
 
 
-@pytest.mark.parametrize("value", ["../outside", "src/../../outside", "C:outside"])
+# Contracts are validated on one platform and executed on another, so a rooted
+# POSIX path must be rejected on Windows too, where it resolves to the drive root.
+@pytest.mark.parametrize(
+    "value", ["../outside", "src/../../outside", "C:outside", "/etc/outside", "//server/share"]
+)
 def test_paths_leaving_the_repository_are_rejected(value: str) -> None:
     _rejects(relative_path, value, "INVALID_PATH", "Path escapes repository")
 
