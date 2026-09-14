@@ -18,6 +18,25 @@ class ValidationError(AgenticError):
     """Raised when an Agentic Discipline document is structurally invalid."""
 
 
+def escapes_project_root(relative: str) -> bool:
+    """Whether a declared project-relative path could leave the project on any platform.
+
+    A contract is validated on one operating system and may run on another, so the
+    path is judged by POSIX and Windows rules together: absolute in either form,
+    carrying a drive (``C:x`` resolves against that drive's current directory), or
+    containing a ``..`` segment.
+    """
+    posix_path = PurePosixPath(relative)
+    windows_path = PureWindowsPath(relative)
+    return (
+        posix_path.is_absolute()
+        or windows_path.is_absolute()
+        or bool(windows_path.drive)
+        or ".." in posix_path.parts
+        or ".." in windows_path.parts
+    )
+
+
 def _schema_candidates(name: str) -> list[Path]:
     candidates = [Path.cwd() / "schemas" / name]
     # Mutation runners and source checkouts may relocate this module below the
@@ -88,16 +107,8 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
             required_count += 1
 
         working_directory = gate.get("working_directory")
-        if isinstance(working_directory, str):
-            posix_path = PurePosixPath(working_directory)
-            windows_path = PureWindowsPath(working_directory)
-            if (
-                posix_path.is_absolute()
-                or windows_path.is_absolute()
-                or ".." in posix_path.parts
-                or ".." in windows_path.parts
-            ):
-                errors.append(f"gates.{index}.working_directory: must stay inside the project root")
+        if isinstance(working_directory, str) and escapes_project_root(working_directory):
+            errors.append(f"gates.{index}.working_directory: must stay inside the project root")
 
         parser = gate.get("parser")
         thresholds = gate.get("thresholds", {})

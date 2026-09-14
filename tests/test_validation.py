@@ -72,7 +72,17 @@ def test_quality_config_rejects_invalid_regex() -> None:
     assert any("invalid regex" in error for error in errors)
 
 
-@pytest.mark.parametrize("working_directory", ["../outside", "/tmp/outside", "C:\\outside"])
+@pytest.mark.parametrize(
+    "working_directory",
+    [
+        "../outside",
+        "/tmp/outside",
+        "C:\\outside",
+        "C:outside",
+        "..\\outside",
+        "\\\\server\\share\\outside",
+    ],
+)
 def test_quality_config_rejects_working_directory_escape(working_directory: str) -> None:
     errors = validate_quality_config(
         {

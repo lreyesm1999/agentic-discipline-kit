@@ -78,8 +78,24 @@ def test_schema_valid_contract_has_no_errors() -> None:
     assert validate_verifier(_contract()) == []
 
 
-@pytest.mark.parametrize("escape", ["../escape", "nested/../../escape"])
-def test_working_directory_with_parent_segments_is_rejected(escape: str) -> None:
+# A contract validated on one platform may run on another, so every form that
+# leaves the project on either POSIX or Windows is rejected everywhere.
+@pytest.mark.parametrize(
+    "escape",
+    [
+        "../escape",
+        "nested/../../escape",
+        "..\\escape",
+        "nested\\..\\..\\escape",
+        "/tmp/escape",
+        "C:\\escape",
+        "C:escape",
+        "\\\\server\\share\\escape",
+    ],
+)
+def test_working_directory_that_leaves_the_project_on_any_platform_is_rejected(
+    escape: str,
+) -> None:
     assert ESCAPE in validate_verifier(_contract(working_directory=escape))
 
 
@@ -87,8 +103,9 @@ def test_absolute_working_directory_is_rejected(tmp_path: Path) -> None:
     assert ESCAPE in validate_verifier(_contract(working_directory=str(tmp_path)))
 
 
-def test_project_relative_working_directory_is_accepted() -> None:
-    assert validate_verifier(_contract(working_directory="tools/verify")) == []
+@pytest.mark.parametrize("inside", ["tools/verify", "tools\\verify", "./tools"])
+def test_project_relative_working_directory_is_accepted(inside: str) -> None:
+    assert validate_verifier(_contract(working_directory=inside)) == []
 
 
 def test_proven_sensitivity_requires_evidence() -> None:

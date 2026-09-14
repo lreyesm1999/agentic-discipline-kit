@@ -4,16 +4,14 @@ from pathlib import Path
 from typing import Any
 
 from ..common import AgenticError
-from ..validation import load_json, validate_schema
+from ..validation import escapes_project_root, load_json, validate_schema
 
 
 def validate_verifier(metadata: dict[str, Any]) -> list[str]:
     errors = validate_schema(metadata, "verifier.schema.json")
     working_directory = metadata.get("working_directory")
-    if isinstance(working_directory, str):
-        path = Path(working_directory)
-        if path.is_absolute() or ".." in path.parts:
-            errors.append("working_directory: must stay inside the project root")
+    if isinstance(working_directory, str) and escapes_project_root(working_directory):
+        errors.append("working_directory: must stay inside the project root")
     sensitivity = metadata.get("sensitivity")
     if isinstance(sensitivity, dict) and sensitivity.get("status") == "PROVEN":
         evidence = sensitivity.get("evidence")
