@@ -88,6 +88,7 @@ def test_schema_valid_contract_has_no_errors() -> None:
         "..\\escape",
         "nested\\..\\..\\escape",
         "/tmp/escape",
+        "\\escape",
         "C:\\escape",
         "C:escape",
         "\\\\server\\share\\escape",

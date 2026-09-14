@@ -6,7 +6,7 @@ import re
 import sys
 import sysconfig
 from importlib import resources
-from pathlib import Path, PurePosixPath, PureWindowsPath
+from pathlib import Path, PureWindowsPath
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -22,19 +22,13 @@ def escapes_project_root(relative: str) -> bool:
     """Whether a declared project-relative path could leave the project on any platform.
 
     A contract is validated on one operating system and may run on another, so the
-    path is judged by POSIX and Windows rules together: absolute in either form,
-    carrying a drive (``C:x`` resolves against that drive's current directory), or
-    containing a ``..`` segment.
+    path is parsed with Windows rules, which accept both ``/`` and ``\\`` as
+    separators. Any anchor is rejected: a drive (``C:x`` resolves against that
+    drive's current directory), a UNC share, or a root (``/x`` and ``\\x`` start at
+    the current drive's root). So is any ``..`` segment.
     """
-    posix_path = PurePosixPath(relative)
     windows_path = PureWindowsPath(relative)
-    return (
-        posix_path.is_absolute()
-        or windows_path.is_absolute()
-        or bool(windows_path.drive)
-        or ".." in posix_path.parts
-        or ".." in windows_path.parts
-    )
+    return bool(windows_path.anchor) or ".." in windows_path.parts
 
 
 def _schema_candidates(name: str) -> list[Path]:

@@ -80,6 +80,7 @@ def test_quality_config_rejects_invalid_regex() -> None:
         "C:\\outside",
         "C:outside",
         "..\\outside",
+        "\\outside",
         "\\\\server\\share\\outside",
     ],
 )

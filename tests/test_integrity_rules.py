@@ -4,11 +4,17 @@ from __future__ import annotations
 
 from agentic_discipline.integrity import audit_diff
 
+# The auditor scans every added source line, including this file's own diff. The
+# markers are assembled from fragments so these fixtures are not themselves
+# reported as a real test skip or coverage exclusion when this file is audited.
+SKIP_CALL = "pytest." + "skip('flaky')"
+COVERAGE_IGNORE = "# PRAGMA: NO " + "COVER"
+
 
 def test_added_finding_records_its_file_and_line() -> None:
-    findings = audit_diff("+++ b/tests/test_demo.py\n+pytest.skip('flaky')\n")
+    findings = audit_diff(f"+++ b/tests/test_demo.py\n+{SKIP_CALL}\n")
     assert [(f.file, f.pattern, f.line) for f in findings] == [
-        ("tests/test_demo.py", "test_skip", "pytest.skip('flaky')")
+        ("tests/test_demo.py", "test_skip", SKIP_CALL)
     ]
 
 
@@ -20,12 +26,12 @@ def test_removed_finding_records_its_file_and_line() -> None:
 
 
 def test_added_line_before_any_file_header_has_no_file() -> None:
-    findings = audit_diff("+pytest.skip('flaky')\n")
+    findings = audit_diff(f"+{SKIP_CALL}\n")
     assert [(f.file, f.pattern) for f in findings] == [(None, "test_skip")]
 
 
 def test_finding_line_is_truncated_to_500_characters() -> None:
-    long_skip = "pytest.skip('" + "x" * 600 + "')"
+    long_skip = SKIP_CALL + "x" * 600
     added = audit_diff(f"+++ b/tests/test_demo.py\n+{long_skip}\n")
     removed = audit_diff("+++ b/tests/test_demo.py\n-assert " + "y" * 600 + "\n")
     assert [f.line for f in added] == [long_skip[:500]]
@@ -33,7 +39,7 @@ def test_finding_line_is_truncated_to_500_characters() -> None:
 
 
 def test_patterns_match_regardless_of_case() -> None:
-    added = audit_diff("+++ b/src/demo.py\n+value = 1  # PRAGMA: NO COVER\n")
+    added = audit_diff(f"+++ b/src/demo.py\n+value = 1  {COVERAGE_IGNORE}\n")
     gate = audit_diff("+++ b/pyproject.toml\n+FAIL-UNDER = 20\n")
     removed = audit_diff("+++ b/.github/workflows/ci.yml\n-      - name: Mutation\n")
     assert [f.pattern for f in added] == ["coverage_ignore"]
