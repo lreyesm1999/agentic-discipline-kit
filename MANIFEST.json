@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-14T07:20:43.639393+00:00",
+  "generated_at_utc": "2026-09-14T13:01:25.280801+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "498584c4b42e84b0ccd43ecefe00d7df42ce002b477c681b9c9b67fd607acebd",
+      "sha256": "64b9f9342dafbc8e2326f787c7d6cc0fce5d4634c65d6b3718706af2cd39b597",
       "bytes": 4340
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "4d7a8b8b931fa648969e699cb5f7fef2558f801f0a84ba34021da3dc20466ec7",
+      "sha256": "5c21fcb9c82cb708880a11737d9c75464884c2fb523225a6f60f677650e86548",
       "bytes": 5798
     },
     {
@@ -1497,6 +1497,11 @@
       "path": "tests/test_verifier_contract_rules.py",
       "sha256": "24d2d7365c2857c733e971b966ae4c17135c82890e7fdb6ec2874f2de3dd6ee4",
       "bytes": 10499
+    },
+    {
+      "path": "tests/test_verifier_result_contract.py",
+      "sha256": "3fe5a8b72f6112dbfc64497fe1e8613e0f26061b9699fbd00ef3896b372a11dd",
+      "bytes": 9036
     }
   ]
 }
