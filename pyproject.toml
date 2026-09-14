@@ -101,6 +101,7 @@ where = ["src"]
 "share/agentic-discipline/disciplines/09-qa" = ["disciplines/09-qa/SKILL.md"]
 "share/agentic-discipline/disciplines/10-evidence" = ["disciplines/10-evidence/SKILL.md"]
 "share/agentic-discipline/disciplines/11-evolution" = ["disciplines/11-evolution/SKILL.md"]
+"share/agentic-discipline/disciplines/12-autonomous-project-execution" = ["disciplines/12-autonomous-project-execution/SKILL.md"]
 
 [tool.pytest.ini_options]
 addopts = "-ra --strict-markers --strict-config"

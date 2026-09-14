@@ -143,7 +143,7 @@ Each surface is emitted in the format that tool actually loads, not the same
 file under a different extension, so selective activation works: the coding
 discipline loads when code changes, hardening when tests do.
 
-## The 11 disciplines
+## The 12 disciplines
 
 A discipline is a focused playbook that says **when it applies, what it consumes,
 what it must produce, what it must never do, and what evidence is required**.
@@ -155,7 +155,7 @@ These are what get installed into your agent tools:
 03 Acceptance        09 QA
 04 Verification      10 Evidence
 05 Coding            11 Evolution
-06 Cleaning
+06 Cleaning          12 Autonomous Project Execution
 ```
 
 Each one carries the activation metadata its host tool needs, so it loads when
@@ -176,6 +176,43 @@ CRAP analysis, differential mutation, integrity audit, independent review and
 the rest. `init` installs them to `.agentic/playbooks/` as reference material
 the disciplines cite; they are not separate skills competing for the agent's
 attention.
+
+### Execute a plan with minimal supervision
+
+`agentic-autonomous-project-execution` coordinates the lifecycle across tasks. It
+inspects existing work, follows the documented dependency order, implements and
+verifies each slice, updates the project tracker, and continues while authorized
+work remains. A blocked integration does not stop independent local work.
+
+After installing the kit, a project prompt can be as short as:
+
+```text
+Read the specification, use agentic-autonomous-project-execution, and execute
+the plan in its documented order.
+```
+
+En español:
+
+```text
+Lee la especificación, usa agentic-autonomous-project-execution y ejecuta el
+plan siguiendo el orden documentado.
+```
+
+The name retains the kit's `agentic-` prefix. In the Claude Code plugin, use
+`/agentic-discipline:execute <plan path or scope>`; other tools load the discipline
+through their generated rules or `AGENTS.md` index. This is an instruction skill,
+not a background worker: it operates during the agent's available execution and
+records a checkpoint when an objective limit prevents continuing.
+
+The skill asks for human input only after finishing independent work, with the
+exact missing decision or access. It preserves existing authorization, protected
+contracts, and required verification. It does not turn planning-only requests into
+implementation, invent product behavior, or treat unverified work as complete.
+
+Existing projects receive it after updating the kit and running
+`agentic-discipline adapters sync --project-root <project>` (add `--adapter <tool>`
+for an explicitly selected tool). The installable artifacts gain this addition in
+the next release; the repository source contains it immediately after merge.
 
 Together they solve a common failure mode of AI coding: a fast implementation
 that quietly drops a requirement, weakens a test, bypasses a gate, or ships

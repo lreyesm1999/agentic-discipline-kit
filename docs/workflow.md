@@ -1,5 +1,25 @@
 # Engineering Workflow
 
+## Autonomous execution across phases
+
+For a request to execute or resume an approved plan, apply
+`agentic-autonomous-project-execution`. The Claude Code plugin exposes it through
+`/agentic-discipline:execute <plan path or scope>`; other adapters expose the same
+canonical instructions in their native format.
+
+Repeat the lifecycle below for the next eligible slice until the requested scope
+is complete or every remaining task is blocked. Reuse the existing project tracker
+or create `docs/IMPLEMENTATION_STATUS.md`, recording task dependencies, actual
+verification evidence, blockers, significant decisions, and the next executable task.
+
+A finished phase is not a request for permission to continue. Isolate blocked work
+and complete independent tasks before asking a precise human question. Missing
+credentials or a failed external check cannot become fabricated success. Respect
+the documented risk gates and protected contracts throughout; the execution loop
+does not add authority to change them or perform unauthorized external actions.
+
+Analysis-only and planning-only requests do not enter this implementation loop.
+
 ## 1. Intake
 
 Capture the original human request without silently simplifying it. Normalize into stable IDs such as

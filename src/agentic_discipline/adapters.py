@@ -288,6 +288,12 @@ def _emit_chatgpt(emission: Emission, root: Path, disciplines: list[Discipline],
 # element is the argument hint the host shows while the user is typing.
 COMMANDS: tuple[tuple[str, str, str, tuple[str, ...]], ...] = (
     (
+        "execute",
+        "Execute an authorized plan across tasks until completion or a real blocker.",
+        "[plan path or requested scope]",
+        ("autonomous-project-execution",),
+    ),
+    (
         "spec",
         "Turn a request into observable behavior and acceptance criteria.",
         "[request or requirement id]",
