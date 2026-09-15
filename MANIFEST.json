@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T08:12:07.829280+00:00",
+  "generated_at_utc": "2026-09-15T08:22:33.371861+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "cfc62b733fb36044db38335e044162ebe56fae6db2acee834a9f494b7bb7a173",
+      "sha256": "a1e1bc4f1589dbd3fbc0a3571e606db6abd6740d7304c4f61cf46e49333811a1",
       "bytes": 4409
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "463f867471a33454555259223e980b85ca7f0c212f77a1271231f83876f68e6c",
+      "sha256": "af44c34053952c739e959d87b50af04a4edff614ced77882aa88e3e182ea5eca",
       "bytes": 6515
     },
     {
@@ -1459,9 +1459,19 @@
       "bytes": 14334
     },
     {
+      "path": "tests/control/test_task_records.py",
+      "sha256": "c29f870f0f4a285327324c1c3ef9995d32c5fee2bfc4e12745473d8436dddb30",
+      "bytes": 7089
+    },
+    {
       "path": "tests/control/test_verification_workspace_rules.py",
       "sha256": "c8092471d10c246cecbb971a333790207cdce7c295e735c906b80aeb42775ce4",
       "bytes": 15049
+    },
+    {
+      "path": "tests/control/test_verifier_inputs.py",
+      "sha256": "91409658a16730c390147b3f760ed0eacf7729b186e7919242d1f94fc2bef145",
+      "bytes": 4381
     },
     {
       "path": "tests/control/test_workspace_records.py",
@@ -1507,6 +1517,11 @@
       "path": "tests/test_crap.py",
       "sha256": "977671d600b485afeab39f611612e9427e4bf11a97de9014e59754c350557f1e",
       "bytes": 322
+    },
+    {
+      "path": "tests/test_discipline_loading.py",
+      "sha256": "c98d81fffeb5a757ba44dc25f264159186bb97203d2c837a47a52aa0dcb5a777",
+      "bytes": 8780
     },
     {
       "path": "tests/test_doctor_report.py",
@@ -1607,6 +1622,11 @@
       "path": "tests/test_risk.py",
       "sha256": "921618ec627697e13d897d165bbafbdc92f0fdec0565127e5e402ccf82ebf49c",
       "bytes": 1851
+    },
+    {
+      "path": "tests/test_risk_command.py",
+      "sha256": "1178d9554a509553ad206aeeb99ad5a7fab9bb78674a5ec05254d0be769243fc",
+      "bytes": 4829
     },
     {
       "path": "tests/test_validation.py",
