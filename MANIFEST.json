@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T08:22:33.371861+00:00",
+  "generated_at_utc": "2026-09-15T08:27:33.269870+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "a1e1bc4f1589dbd3fbc0a3571e606db6abd6740d7304c4f61cf46e49333811a1",
+      "sha256": "40a9ec8e020e72a76548715403eb2606852c29ea850a6db7b02c632d2d07d0e4",
       "bytes": 4409
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "af44c34053952c739e959d87b50af04a4edff614ced77882aa88e3e182ea5eca",
+      "sha256": "912009e0470a0854fcdd9873bc42dc0fca3f138ad38e691dbe235e61bd139a45",
       "bytes": 6515
     },
     {
@@ -1537,6 +1537,21 @@
       "path": "tests/test_evidence_contract.py",
       "sha256": "a1cb94a326f78ddc9a654c3c7a961b632faa23d20b4d3cf76fdafe290b7a1f3f",
       "bytes": 2348
+    },
+    {
+      "path": "tests/test_feature_parsing.py",
+      "sha256": "fe7d3bc6d614c99c31067f095e6ec00815802b0f936ce86a7df036d8a77d4f21",
+      "bytes": 6472
+    },
+    {
+      "path": "tests/test_gate_availability_reason.py",
+      "sha256": "6144f4ee5e8a2dd0d9aaa67d9149bb27e36710adfda85dffe92ec77c03612d93",
+      "bytes": 4774
+    },
+    {
+      "path": "tests/test_gate_commands.py",
+      "sha256": "5408b2376810d41d2b8fc0c641d67833e4165152630d27fde2e50e6495ca6362",
+      "bytes": 9320
     },
     {
       "path": "tests/test_gate_result.py",
