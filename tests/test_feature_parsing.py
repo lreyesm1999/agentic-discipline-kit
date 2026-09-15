@@ -21,6 +21,7 @@ from agentic_discipline.acceptance import (
     validate_acceptance_ir,
 )
 from agentic_discipline.common import AgenticError
+from agentic_discipline.validation import validate_schema
 
 FEATURE = """\
 Feature: Checkout
@@ -143,6 +144,15 @@ def test_an_empty_feature_has_no_scenarios() -> None:
     assert message == _invalid([])
     empty = validate_acceptance_ir({"feature_id": "demo", "scenarios": []})
     assert empty[-1] == "scenarios: at least one scenario is required"
+
+
+def test_an_ir_without_a_scenarios_key_is_reported_not_raised() -> None:
+    # The key is missing entirely, not empty: validation reports it instead of crashing.
+    document: dict[str, Any] = {"feature_id": "demo"}
+    assert validate_acceptance_ir(document) == [
+        *validate_schema(document, "acceptance-ir.schema.json"),
+        "scenarios: at least one scenario is required",
+    ]
 
 
 def test_unsupported_gherkin_is_refused_by_line() -> None:
