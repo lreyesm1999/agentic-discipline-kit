@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T04:22:27.415657+00:00",
+  "generated_at_utc": "2026-09-15T04:36:26.387118+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "299d4a9a0661390665cacd06db6cc5a3c9209923857a1aa1ec627b4728388589",
+      "sha256": "f04f633d9595bc4ad947681d155fdd9c23c7ccadde0eedbe0a443bd2a8f10259",
       "bytes": 4340
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "8a25f6f63bbf65bdf0912e6d32579eaf3dc490d9c75ebd04f054bd584e3351db",
+      "sha256": "f530d2c3c9f27ef778fad4e5dc3a30836c0e5909805a01e153d280f58de04788",
       "bytes": 6072
     },
     {
@@ -1344,6 +1344,11 @@
       "bytes": 1604
     },
     {
+      "path": "tests/control/test_context_document.py",
+      "sha256": "76aabf3ce61e8e59f9be558ca8be156a89dfbea14b29727bb0c6bbef81324ead",
+      "bytes": 11331
+    },
+    {
       "path": "tests/control/test_contract_rules.py",
       "sha256": "d318e736b2d4f4cb56b2a73a135877acbfc31b6aebe87d2c5162372ee4b790ff",
       "bytes": 12617
@@ -1369,6 +1374,11 @@
       "bytes": 2791
     },
     {
+      "path": "tests/control/test_mcp_responses.py",
+      "sha256": "f83274877367266191b7ea2fbb944a73812c2661aa131d3046b6f12a4410e819",
+      "bytes": 8149
+    },
+    {
       "path": "tests/control/test_mutation_regressions.py",
       "sha256": "22c97b1c9d952f2980b8b6d9a27f5b769bf978a5b5cbe0e405754ea814787609",
       "bytes": 3516
@@ -1379,6 +1389,11 @@
       "bytes": 22975
     },
     {
+      "path": "tests/control/test_readiness_document.py",
+      "sha256": "85408fd7a561a53c452b5daa3babb2c2cd8a90761fd558e0f19958a4388333c6",
+      "bytes": 3856
+    },
+    {
       "path": "tests/control/test_resilience.py",
       "sha256": "f701ec69d31f2067aefed8178c49cfd09b5d1448a336235cd3e3c09bd3c011e6",
       "bytes": 8748
@@ -1387,6 +1402,11 @@
       "path": "tests/control/test_review_regressions.py",
       "sha256": "46569e8887ce20f0a3c77b6a4670344bb61aa080b6fac895f902994220be6fba",
       "bytes": 15741
+    },
+    {
+      "path": "tests/control/test_scan_report.py",
+      "sha256": "629ccbdf13339740f1074883790dd56805d842e289bfbca2f99f11c86367d34e",
+      "bytes": 8097
     },
     {
       "path": "tests/control/test_status_document.py",
@@ -1437,6 +1457,11 @@
       "path": "tests/test_crap.py",
       "sha256": "977671d600b485afeab39f611612e9427e4bf11a97de9014e59754c350557f1e",
       "bytes": 322
+    },
+    {
+      "path": "tests/test_doctor_report.py",
+      "sha256": "255c8eab5fe98ea9d591d49fe59ab2fe3d0fd9f03fa511784efc3b668f11968c",
+      "bytes": 8721
     },
     {
       "path": "tests/test_evidence.py",
