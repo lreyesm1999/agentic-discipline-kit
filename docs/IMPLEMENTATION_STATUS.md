@@ -24,7 +24,7 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 - Mutation survivor disposition based on the complete CI campaign; selected local retest was interrupted and is marked partial.
 - Performance fixture now meets all targets after independently reviewed discovery optimization.
-- Final focused independent review is closed; the integrated local suite has 904 passing tests.
+- Final focused independent review is closed; the integrated local suite has 932 passing tests.
 - GitHub CI verification of the integration commit is pending.
 
 ## Pending
