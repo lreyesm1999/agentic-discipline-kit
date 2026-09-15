@@ -265,9 +265,12 @@ def test_whole_repository_scope_offers_every_code_source(project: Any) -> None:
 def test_budget_equal_to_the_mandatory_part_is_allowed(project: Any) -> None:
     project.approve_command(contract()["verification"][0]["command"])
     # Pad the objective until the mandatory part is a multiple of four bytes, where
-    # rounding the token estimate up and down give different answers.
-    for padding in range(8):
-        task = project.create_task({**contract(), "objective": "Verify value" + "!" * padding})
+    # rounding the token estimate up and down give different answers. Padding one
+    # task keeps its ids and timestamps, so each step adds exactly one byte and four
+    # steps always reach a multiple of four; separate tasks vary in timestamp length.
+    task = project.create_task(contract())
+    for padding in range(4):
+        task = _force(project, "task", task["id"], objective="Verify value" + "!" * padding)
         mandatory = project.context(task["id"])["audit"]["mandatory_bytes"]
         if mandatory % 4 == 0:
             break
