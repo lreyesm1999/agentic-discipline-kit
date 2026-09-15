@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T04:36:26.387118+00:00",
+  "generated_at_utc": "2026-09-15T05:11:16.162725+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "f04f633d9595bc4ad947681d155fdd9c23c7ccadde0eedbe0a443bd2a8f10259",
+      "sha256": "9a7b8381e5d29d93bc13f39352ea32e9dca8d32b9fefcdf4e8d6fac44d86665e",
       "bytes": 4340
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "f530d2c3c9f27ef778fad4e5dc3a30836c0e5909805a01e153d280f58de04788",
+      "sha256": "f6f88ea15eb7eaff4e9c6cb537d1b50136217a5e270c250685e303adc93c4a7a",
       "bytes": 6072
     },
     {
@@ -1364,6 +1364,11 @@
       "bytes": 8292
     },
     {
+      "path": "tests/control/test_index_and_evidence_records.py",
+      "sha256": "b827febdf68629568d8705228a09faa8ffebc81aff7e348101d8e1291515fe31",
+      "bytes": 19814
+    },
+    {
       "path": "tests/control/test_interfaces.py",
       "sha256": "b1719305a2bd8d7d95076befe1d37af2b0833fee7f91b5f0e622d32864127954",
       "bytes": 8838
@@ -1372,6 +1377,11 @@
       "path": "tests/control/test_kernel.py",
       "sha256": "9a87c2c682646db24136bd5bb24fea2c0e68f5a9d60656577aa8f4b06d89b285",
       "bytes": 2791
+    },
+    {
+      "path": "tests/control/test_knowledge_records.py",
+      "sha256": "f0eeed8cd9f7370b750dfc432bdd26b36cf732a0cefd18a7cecf9741a41c8abe",
+      "bytes": 15716
     },
     {
       "path": "tests/control/test_mcp_responses.py",
