@@ -334,7 +334,7 @@ def test_operation_makes_its_exact_call_and_wraps_the_result(
     data: Any,
 ) -> None:
     plane, log = recorded
-    assert call(plane, operation, arguments, local=True) == {  # type: ignore[arg-type]
+    assert call(plane, operation, arguments, local=True) == {
         "api_version": "2",
         "operation": operation,
         "data": data,
@@ -345,7 +345,7 @@ def test_operation_makes_its_exact_call_and_wraps_the_result(
 def test_unknown_operations_are_refused(recorded: tuple[Recorder, list[Any]]) -> None:
     plane, log = recorded
     with pytest.raises(ControlError) as caught:
-        call(plane, "drop_database", {}, local=True)  # type: ignore[arg-type]
+        call(plane, "drop_database", {}, local=True)
     assert (caught.value.code, str(caught.value)) == (
         "UNKNOWN_OPERATION",
         "Unknown operation: drop_database",
@@ -359,7 +359,7 @@ def test_a_declared_operation_without_a_handler_is_refused(
     plane, log = recorded
     monkeypatch.setitem(SCHEMAS, "future_operation", schema({}))
     with pytest.raises(ControlError) as caught:
-        call(plane, "future_operation", {}, local=True)  # type: ignore[arg-type]
+        call(plane, "future_operation", {}, local=True)
     assert (caught.value.code, str(caught.value)) == ("UNKNOWN_OPERATION", "future_operation")
     assert log == []
 
@@ -386,13 +386,13 @@ def test_owner_operations_are_listed_and_refused_to_workers(
     arguments = {operation: args for operation, args, *_ in DISPATCH}
     for operation in sorted(LOCAL_ONLY):
         with pytest.raises(ControlError) as caught:
-            call(plane, operation, arguments[operation])  # type: ignore[arg-type]
+            call(plane, operation, arguments[operation])
         assert (caught.value.code, str(caught.value)) == (
             "PERMISSION_DENIED",
             "Operation requires the local project owner",
         )
     assert log == []
-    assert call(plane, "status", {})["data"] == {"tasks": ["TASK-A"]}  # type: ignore[arg-type]
+    assert call(plane, "status", {})["data"] == {"tasks": ["TASK-A"]}
 
 
 def test_read_only_operations_are_listed() -> None:
@@ -432,7 +432,7 @@ def test_invalid_input_reports_every_schema_error(
     assert messages
 
     with pytest.raises(ControlError) as caught:
-        call(plane, operation, arguments, local=True)  # type: ignore[arg-type]
+        call(plane, operation, arguments, local=True)
 
     assert (caught.value.code, str(caught.value)) == ("INVALID_INPUT", "; ".join(messages))
     assert log == []
@@ -463,14 +463,14 @@ def test_workers_may_only_record_inferred_discoveries(
 ) -> None:
     plane, log = recorded
     if allowed:
-        assert call(plane, "record_discovery", {"data": data})["data"] == (  # type: ignore[arg-type]
+        assert call(plane, "record_discovery", {"data": data})["data"] == (
             "result",
             "plane.knowledge.claim",
         )
         assert log == [("plane.knowledge.claim", (data,), {})]
         return
     with pytest.raises(ControlError) as caught:
-        call(plane, "record_discovery", {"data": data})  # type: ignore[arg-type]
+        call(plane, "record_discovery", {"data": data})
     assert (caught.value.code, str(caught.value)) == (
         "PERMISSION_DENIED",
         "Workers submit inferred claims; promotion requires owner review",
