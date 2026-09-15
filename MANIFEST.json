@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T11:50:11.194001+00:00",
+  "generated_at_utc": "2026-09-15T12:42:02.493110+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "8b7573f90854412f19848fa754abe46a19d8f6394c36a86e942b5b5897ee9284",
+      "sha256": "7c921b8c6207b5f6986fd849ab0bccb6f2bd54af2ebab49890ac5066ffc1e527",
       "bytes": 4410
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "bc7425fefd8cf71962da77e4a7e0e2b8b41968815ef2e55f3e174f1d4f95a410",
+      "sha256": "a44d124af20086c368ff05c34a10ddf22be662ff97c27b610e34f5ebd16ce426",
       "bytes": 6556
     },
     {
@@ -1290,8 +1290,8 @@
     },
     {
       "path": "src/agentic_discipline/verifier/executor.py",
-      "sha256": "98c93c8edda67a3e426e4af8ad0bccfe3908786f2b212ee5c04ba176e17a0296",
-      "bytes": 5811
+      "sha256": "0650d81cd311c8eebe49b8fe344ea3be6cb683292af08312e9489dac9c09bf91",
+      "bytes": 6085
     },
     {
       "path": "src/agentic_discipline/verifier/protection.py",
@@ -1770,8 +1770,8 @@
     },
     {
       "path": "tests/test_verifier_execution_paths.py",
-      "sha256": "76e67d4feae07dd85b50d6bb2b836bc17ca32e169fd479299de609de4ad2f65f",
-      "bytes": 7186
+      "sha256": "16d12bf5cad9787cbdf5766347059c3fe981ddfa638e6b7e267ffd27435179c7",
+      "bytes": 8212
     },
     {
       "path": "tests/test_verifier_registration.py",
