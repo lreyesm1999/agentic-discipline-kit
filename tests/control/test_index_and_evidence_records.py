@@ -523,3 +523,27 @@ def test_evidence_is_blocked_when_the_lease_is_revoked_during_the_run(
     monkeypatch.setattr(verification, "run_gate", revoke_after_run)
     (record,) = verify(project, task, session)["evidence"]
     assert record["result"] == "BLOCKED"
+
+
+def _actors(project: Any, action: str) -> list[str]:
+    rows = project.store.db.execute(
+        "SELECT actor FROM events WHERE action = ? ORDER BY seq", (action,)
+    )
+    return [row["actor"] for row in rows]
+
+
+def test_verification_writes_are_attributed_to_the_owning_agent(project: Any) -> None:
+    data = contract()
+    project.approve_command(data["verification"][0]["command"])
+    task = project.create_task(data)["id"]
+    project.ready(task)
+    agent = project.join("worker", ["code", "terminal"])
+    project.claim(task, agent["session"])
+    project.checkpoint(task, agent["session"], checkpoint())
+    before_tasks = len(_actors(project, "task.write"))
+
+    verify(project, task, agent["session"])
+
+    # The RUNNING write, the evidence and the final state all carry the lease owner.
+    assert _actors(project, "task.write")[before_tasks:] == [agent["id"], agent["id"]]
+    assert _actors(project, "evidence.write") == [agent["id"]]

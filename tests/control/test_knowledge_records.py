@@ -371,3 +371,34 @@ def test_checkpoints_reject_credentials(project: Any) -> None:
         "SECRET_REJECTED",
         "Possible credential in persistent input",
     )
+
+
+def _seed_claim(project: Any, identifier: str, subject: str, **changes: Any) -> dict[str, Any]:
+    """Insert a claim with a chosen id, so conflict order is deterministic."""
+    with project.store.transaction():
+        return project.store.put(
+            "claim",
+            {**_claim(subject, **changes), "id": identifier, "conflicts": []},
+        )
+
+
+def test_every_weaker_conflict_is_updated_even_after_a_stronger_one(project: Any) -> None:
+    (subject,) = _nodes(project, entity("Orders"))
+    stronger = _seed_claim(
+        project, "CLAI-1", subject["id"], value=30, authority="human", disposition="CANONICAL"
+    )
+    weaker = _seed_claim(
+        project,
+        "CLAI-2",
+        subject["id"],
+        value=45,
+        authority="documentation",
+        disposition="CANDIDATE",
+    )
+
+    newcomer = project.knowledge.claim(_claim(subject["id"], value=60, authority="code"))
+
+    # The stronger claim is left untouched; the weaker one, listed after it, is not skipped.
+    assert project.store.get(stronger["id"], "claim") == stronger
+    updated = project.store.get(weaker["id"], "claim")
+    assert (updated["disposition"], updated["conflicts"]) == ("CONFLICTING", [newcomer["id"]])
