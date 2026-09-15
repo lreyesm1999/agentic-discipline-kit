@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T11:15:54.724004+00:00",
+  "generated_at_utc": "2026-09-15T11:19:17.993997+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "e8b61701fff2484083bcd6a3d1696ca69c8ea96ff1f68b66e6a92fb6b3cedd30",
+      "sha256": "ac8a6808cc21a5451a932d215195a79281902f3c51112d7638f87a5c4caadb20",
       "bytes": 4410
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "609aaca09cef1b905eb7c78220a238294b6411ffbee4683cae105df394e421a4",
+      "sha256": "95967c6ae6caa27b3963ffbf3e8e2c9c9ab2230990514f938ddf7e89f6fb41fb",
       "bytes": 6556
     },
     {
@@ -1347,6 +1347,11 @@
       "path": "tests/control/test_api_dispatch.py",
       "sha256": "f55806954d9cb6d196020d86d6952e35cb417c461086a274e31e7536da672f57",
       "bytes": 15260
+    },
+    {
+      "path": "tests/control/test_blocker_and_workspace_root.py",
+      "sha256": "0aa7846413c4d609a729ac5778763d287c585cedbbeaebae84acbdbecf46de68",
+      "bytes": 7845
     },
     {
       "path": "tests/control/test_changeset_records.py",
