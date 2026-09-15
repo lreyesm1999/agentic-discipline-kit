@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T11:32:33.284612+00:00",
+  "generated_at_utc": "2026-09-15T11:37:39.094609+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "13e0cf034fc8b78464591111d1a8556827c3a23639e1af8e001cc2d3da1ed25c",
+      "sha256": "81af94367f1e42eceab379dd28af0c0e0b9eb05fadf7ce444982f05946527a56",
       "bytes": 4410
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "2d972bdc7eca7d74247d8d8ead7bb9c493dc9a107ce79a17f16c6ceeab6b2e67",
+      "sha256": "a88a2cf71bf33dc779d9da6fd02aef02bcd10b363ddeb8f59dcac925d8acf2b5",
       "bytes": 6556
     },
     {
@@ -1659,6 +1659,11 @@
       "bytes": 1450
     },
     {
+      "path": "tests/test_integrity_audit.py",
+      "sha256": "9d9b4635e8f84c1b77e6681dcc468027ebbff49091599e63004354a055bef2bc",
+      "bytes": 6587
+    },
+    {
       "path": "tests/test_integrity_rules.py",
       "sha256": "61eae0d3523f54712f7b7ffdb117811bc0c1b27d3664b1278a6ed5fab4ff1245",
       "bytes": 2787
@@ -1757,6 +1762,11 @@
       "path": "tests/test_verifier_contract_rules.py",
       "sha256": "24d2d7365c2857c733e971b966ae4c17135c82890e7fdb6ec2874f2de3dd6ee4",
       "bytes": 10499
+    },
+    {
+      "path": "tests/test_verifier_registration.py",
+      "sha256": "7297f65e710fbb5c6f96756937e03f4716dc0945d4816706cd2b6eec20f43d3e",
+      "bytes": 7531
     },
     {
       "path": "tests/test_verifier_result_contract.py",
