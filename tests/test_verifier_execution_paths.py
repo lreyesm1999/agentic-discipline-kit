@@ -152,9 +152,9 @@ def test_timeouts_keep_partial_output(tmp_path: Path) -> None:
     result = execute_verifier(project, VERIFIER_ID)
     assert result["status"] == "BLOCKED"
     assert result["error"] == "verifier timed out after 1 seconds"
-    # Partial output is recorded as text; its exact form differs by platform.
-    assert set(result["observations"]) == {"stdout", "stderr"}
-    assert all(isinstance(value, str) for value in result["observations"].values())
+    # Whether output flushed before the kill is captured depends on the platform.
+    assert result["observations"]["stdout"] in {"", "started"}
+    assert result["observations"]["stderr"] in {"", "warming"}
 
 
 def test_package_artifacts_are_recorded_relative_to_the_project_once(tmp_path: Path) -> None:
@@ -181,3 +181,36 @@ def test_package_artifacts_are_recorded_relative_to_the_project_once(tmp_path: P
             "sha256": hash_file(package_report),
         },
     ]
+
+
+@pytest.mark.parametrize(
+    ("stdout", "stderr", "expected"),
+    [
+        (b"\xffstarted", "warming", {"stdout": "�started", "stderr": "warming"}),
+        (None, None, {"stdout": "", "stderr": ""}),
+        (b"x" * 20005, "y" * 20003, {"stdout": "x" * 20000, "stderr": "y" * 20000}),
+    ],
+    ids=["bytes-and-text", "nothing", "trimmed"],
+)
+def test_timeout_output_is_decoded_and_trimmed(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    stdout: Any,
+    stderr: Any,
+    expected: dict[str, str],
+) -> None:
+    import subprocess
+
+    project = _project(tmp_path, _contract(timeout_seconds=5), "pass\n")
+
+    def expire(command: Any, **options: Any) -> Any:
+        raise subprocess.TimeoutExpired(command, 5, output=stdout, stderr=stderr)
+
+    monkeypatch.setattr(executor.subprocess, "run", expire)
+    result = execute_verifier(project, VERIFIER_ID)
+
+    assert (result["status"], result["error"], result["observations"]) == (
+        "BLOCKED",
+        "verifier timed out after 5 seconds",
+        expected,
+    )
