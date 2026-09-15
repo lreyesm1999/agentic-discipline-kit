@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T08:34:14.390478+00:00",
+  "generated_at_utc": "2026-09-15T11:12:20.449639+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "43d01aded82b34a1757ccd40a2b87cb0014b3a64545ac24f86d26fcebfc2c70c",
+      "sha256": "0a4cea474c15a26720d385cf52a68c5857202bcad6d96d0b34cd28472e44c6bc",
       "bytes": 4409
     },
     {
@@ -410,8 +410,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "983e4ecc53c522eacef04edd0c0754c18ced058a15188d927d6e3f40b0910b0d",
-      "bytes": 6515
+      "sha256": "57de2dce642f012ec0ca947d14bfc0e8c610ec21898925c37935182eaadbd5d7",
+      "bytes": 6555
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -1210,8 +1210,8 @@
     },
     {
       "path": "src/agentic_discipline/control/plane.py",
-      "sha256": "d3178f695b24a0bd2044618afdb08e1adfe7b3bffd993e5f0a24e358a3182a0d",
-      "bytes": 34678
+      "sha256": "753fa1d4ad435c8bc00c65dc19bf0ce2714b2b66d180fccd0d12a663130f20b5",
+      "bytes": 34921
     },
     {
       "path": "src/agentic_discipline/control/store.py",
@@ -1240,8 +1240,8 @@
     },
     {
       "path": "src/agentic_discipline/evolution.py",
-      "sha256": "705f7f03a99825790743e88f415efd72a3c00f87023fc6a3a2418199ec86c345",
-      "bytes": 3272
+      "sha256": "f0a3a6ee36a6fd5217203553de4d6428d347451b1830feab605f7769ab60b1de",
+      "bytes": 3830
     },
     {
       "path": "src/agentic_discipline/integrity.py",
@@ -1480,8 +1480,8 @@
     },
     {
       "path": "tests/control/test_task_records.py",
-      "sha256": "c29f870f0f4a285327324c1c3ef9995d32c5fee2bfc4e12745473d8436dddb30",
-      "bytes": 7089
+      "sha256": "07ea30b47ce74bde0b64d69dd13a253e9aab1485affffeb1649f82dbefff3f33",
+      "bytes": 7160
     },
     {
       "path": "tests/control/test_verification_workspace_rules.py",
@@ -1585,8 +1585,8 @@
     },
     {
       "path": "tests/test_hygiene_report.py",
-      "sha256": "bb63cc1b7246101bbf1dae0e90ebc67672deb07560d3504fdcbcbc99456338c9",
-      "bytes": 4826
+      "sha256": "cbdc7fc7febcefb57a0d9afb94311e60f4ac263a2f5d5f20b2deb1edef361b6f",
+      "bytes": 7025
     },
     {
       "path": "tests/test_init_report.py",
