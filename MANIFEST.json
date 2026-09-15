@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T05:30:27.337545+00:00",
+  "generated_at_utc": "2026-09-15T07:54:52.375357+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "78a34efbade362aaf395210f247b96a8f635acf37a3316db56caba63db3c5535",
-      "bytes": 4340
+      "sha256": "ee0ef7acccce883d0e231b32a29a1a4e153a6a927973d5ad31d45f867afa0bcc",
+      "bytes": 4409
     },
     {
       "path": "docs/adoption.md",
@@ -410,8 +410,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "fba9f1b03bcf0e6e7686a0cbec1d73481add9b265c05e440eafc8a8a6649e040",
-      "bytes": 6072
+      "sha256": "7507333b98888f3dd6870c6edbb7cb0e06d2340027aafbc595e63bf3337154d8",
+      "bytes": 6515
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -1344,6 +1344,16 @@
       "bytes": 1604
     },
     {
+      "path": "tests/control/test_claim_records.py",
+      "sha256": "f7f30f7cae819743774d4ae677a93e050446ecd5898b0e88b453a1941cf7f854",
+      "bytes": 9498
+    },
+    {
+      "path": "tests/control/test_cli_dispatch.py",
+      "sha256": "4006f923835b0dc2dfe155f2c41f6808890febba2d358e79f13833f416a393b5",
+      "bytes": 13702
+    },
+    {
       "path": "tests/control/test_context_document.py",
       "sha256": "8ea5319e2c74a5d2439833914e03d107ff62ca0e64dbbba37ae2b240caead3f8",
       "bytes": 11554
@@ -1437,6 +1447,11 @@
       "path": "tests/control/test_verification_workspace_rules.py",
       "sha256": "c8092471d10c246cecbb971a333790207cdce7c295e735c906b80aeb42775ce4",
       "bytes": 15049
+    },
+    {
+      "path": "tests/control/test_workspace_records.py",
+      "sha256": "7a1dc5335af457c541a4a787fc6ec3e03370abd3fdef4ecfa4e6c488cc71413d",
+      "bytes": 19312
     },
     {
       "path": "tests/control/test_workspaces.py",
