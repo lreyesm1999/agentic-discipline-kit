@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T08:31:48.552612+00:00",
+  "generated_at_utc": "2026-09-15T08:34:14.390478+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "a405e587626c7dfaa063126dd2b2949e3cd57edbf33122a49f37673f0e126f01",
+      "sha256": "43d01aded82b34a1757ccd40a2b87cb0014b3a64545ac24f86d26fcebfc2c70c",
       "bytes": 4409
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "51b9c7692c5c5ce919aed1d3c150f9bb226eed0396cf2d79fd4279927b86ab42",
+      "sha256": "983e4ecc53c522eacef04edd0c0754c18ced058a15188d927d6e3f40b0910b0d",
       "bytes": 6515
     },
     {
@@ -1347,6 +1347,11 @@
       "path": "tests/control/test_api_dispatch.py",
       "sha256": "f55806954d9cb6d196020d86d6952e35cb417c461086a274e31e7536da672f57",
       "bytes": 15260
+    },
+    {
+      "path": "tests/control/test_changeset_records.py",
+      "sha256": "db5602dfa4defbb4a512aeed2b8c2c3148a4c7d75bf74db649f54833d87e8763",
+      "bytes": 6150
     },
     {
       "path": "tests/control/test_claim_records.py",
