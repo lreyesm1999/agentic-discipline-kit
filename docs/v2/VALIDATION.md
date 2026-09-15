@@ -8,7 +8,7 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 
 | Check | Current result |
 |---|---|
-| Full Python suite | 1075 passed in the integrated local run |
+| Full Python suite | 1091 passed in the integrated local run |
 | Coverage gate | PASS: 95.01% lines, 87.06% branches; thresholds remain 90/85 |
 | Lint and type checking | PASS |
 | Security SAST | PASS: no high-severity Bandit findings |
