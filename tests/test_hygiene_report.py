@@ -141,3 +141,56 @@ def test_an_unknown_base_ref_reports_no_changes(tmp_path: Path) -> None:
     root = _repository(tmp_path / "project")
     _commit(root, "debug_probe.py")
     assert hygiene(root, "no-such-ref") == EMPTY
+
+
+def _commit_file(root: Path, relative: str, text: str) -> None:
+    (root / relative).write_text(text, encoding="utf-8")
+    run_git(["add", relative], cwd=root)
+    run_git(["commit", "-q", "-m", f"edit {relative}"], cwd=root)
+
+
+@pytest.mark.parametrize("handler", ["return None", "use_cached_value()", "fallback_to_disk()"])
+def test_fallbacks_added_since_the_base_ref_fail(tmp_path: Path, handler: str) -> None:
+    root = _repository(tmp_path / "project")
+    base = run_git(["rev-parse", "HEAD"], cwd=root).strip()
+    _commit_file(root, "app.py", f"try:\n    value = 1\nexcept ValueError:\n    {handler}\n")
+
+    assert hygiene(root, base) == {
+        **EMPTY,
+        "status": "FAIL",
+        "unauthorized_fallbacks": ["except ValueError:"],
+    }
+
+
+def test_every_fallback_in_added_code_is_reported_in_order(tmp_path: Path) -> None:
+    root = _repository(tmp_path / "project")
+    base = run_git(["rev-parse", "HEAD"], cwd=root).strip()
+    _commit_file(
+        root,
+        "extra.py",
+        "try:\n    a()\nexcept KeyError:\n    return 1\n"
+        "try:\n    b()\nexcept (OSError, ValueError) as exc:\n    fallback()\n",
+    )
+    _commit_file(root, "other.py", "try:\n    c()\nexcept RuntimeError:\n    use_default()\n")
+
+    assert hygiene(root, base)["unauthorized_fallbacks"] == [
+        "except KeyError:",
+        "except (OSError, ValueError) as exc:",
+        "except RuntimeError:",
+    ]
+
+
+def test_reraised_and_removed_fallbacks_do_not_fail(tmp_path: Path) -> None:
+    root = _repository(tmp_path / "project")
+    _commit_file(root, "app.py", "try:\n    value = 1\nexcept ValueError:\n    return None\n")
+    base = run_git(["rev-parse", "HEAD"], cwd=root).strip()
+    _commit_file(root, "app.py", "try:\n    value = 1\nexcept ValueError:\n    raise\n")
+
+    assert hygiene(root, base) == EMPTY
+
+
+def test_a_fallback_after_a_blank_added_line_reports_the_except_line(tmp_path: Path) -> None:
+    root = _repository(tmp_path / "project")
+    base = run_git(["rev-parse", "HEAD"], cwd=root).strip()
+    _commit_file(root, "extra.py", "\ntry:\n    a()\nexcept KeyError:\n    return 1\n")
+    assert hygiene(root, base)["unauthorized_fallbacks"] == ["except KeyError:"]

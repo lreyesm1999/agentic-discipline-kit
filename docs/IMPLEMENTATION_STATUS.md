@@ -24,7 +24,7 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 - Mutation survivor disposition based on the complete CI campaign; selected local retest was interrupted and is marked partial.
 - Performance fixture now meets all targets after independently reviewed discovery optimization.
-- Final focused independent review is closed; the integrated local suite has 970 passing tests.
+- Final focused independent review is closed; the integrated local suite has 976 passing tests.
 - GitHub CI verification of the integration commit is pending.
 
 ## Pending
@@ -34,7 +34,7 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## Blockers
 
-- Latest full CI mutation run (34933040010, d1bacf1) has 2,246 unresolved survivors and 7 timeouts (down from 5,326 on the first measured run); the strengthened CI outcome gate fails explicitly until they are resolved.
+- Latest full CI mutation run (34947709223, 732899d) has 1,169 unresolved survivors and 7 timeouts (down from 5,326 on the first measured run); the strengthened CI outcome gate fails explicitly until they are resolved.
 - Final human review is required by the repository's trust-boundary/release policies.
 
 ## Technical Debt

@@ -311,8 +311,12 @@ class Plane:
             )
 
     def audit_plan(self, plan: dict[str, Any]) -> dict[str, Any]:
+        # The contract allows these lists to be empty, so stating one covers it.
+        may_be_empty = {"out_of_scope", "dependencies", "boundaries", "context"}
         dimensions = {
-            k: "COVERED" if plan.get(k) else "MISSING"
+            k: "COVERED"
+            if plan.get(k) or (k in may_be_empty and isinstance(plan.get(k), list))
+            else "MISSING"
             for k in (
                 "objective",
                 "scope",

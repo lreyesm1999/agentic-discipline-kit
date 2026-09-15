@@ -161,13 +161,10 @@ def test_complete_plan_is_ready_to_become_a_task(project: Any) -> None:
     }
 
 
-def test_empty_optional_lists_read_as_missing_but_do_not_block(project: Any) -> None:
-    report = project.audit_plan(contract())
-    assert report["dimensions"] == {
-        **dict.fromkeys(DIMENSIONS, "COVERED"),
-        "dependencies": "MISSING",
-        "context": "MISSING",
-    }
+def test_lists_the_contract_allows_empty_are_covered_once_stated(project: Any) -> None:
+    plan = _full_plan(out_of_scope=[], dependencies=[], boundaries=[], context=[])
+    report = project.audit_plan(plan)
+    assert report["dimensions"] == dict.fromkeys(DIMENSIONS, "COVERED")
     assert (report["issues"], report["status"], report["next_action"]) == (
         [],
         "READY",
@@ -191,13 +188,14 @@ def test_empty_plan_reports_every_missing_dimension_and_the_contract_issue(proje
     }
 
 
-def test_empty_values_count_as_missing_dimensions(project: Any) -> None:
-    plan = _full_plan(out_of_scope=[], rollback="")
+def test_blank_values_required_lists_and_absent_keys_are_missing(project: Any) -> None:
+    plan = {k: v for k, v in _full_plan(rollback="", scope=[]).items() if k != "context"}
     report = project.audit_plan(plan)
     assert report["dimensions"] == {
         **dict.fromkeys(DIMENSIONS, "COVERED"),
-        "out_of_scope": "MISSING",
         "rollback": "MISSING",
+        "scope": "MISSING",
+        "context": "MISSING",
     }
     assert report["issues"] == [_contract_issue(plan)]
     assert (report["status"], report["next_action"]) == (

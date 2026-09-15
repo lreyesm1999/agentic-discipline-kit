@@ -8,7 +8,7 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 
 | Check | Current result |
 |---|---|
-| Full Python suite | 970 passed in the integrated local run |
+| Full Python suite | 976 passed in the integrated local run |
 | Coverage gate | PASS: 95.01% lines, 87.06% branches; thresholds remain 90/85 |
 | Lint and type checking | PASS |
 | Security SAST | PASS: no high-severity Bandit findings |
@@ -18,7 +18,7 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 | 1,000-file performance fixture | PASS after scoped discovery optimization: status 264.851 ms, claim 167.950 ms; all four targets met |
 | Protected-contract diff | FAIL by design: the mutation outcome fix modifies `.github/workflows/ci.yml`, a protected path. Authorized by the code owner (@lreyesm1999) on 2026-09-14; the check is not bypassed |
 | Diff integrity audit | PASS: gate configuration and test assertions are checked without treating generated evidence or runtime counters as gate changes |
-| Differential mutation | FAIL: latest full CI run (34933040010, d1bacf1) killed 12,853 of 15,106, with 2,246 survivors and 7 timeouts. The first run is in evidence/mutation.json |
+| Differential mutation | FAIL: latest full CI run (34947709223, 732899d) killed 14,159 of 15,335, with 1,169 survivors and 7 timeouts. The first run is in evidence/mutation.json |
 | Independent review | Focused final review: no remaining HIGH/CRITICAL in reviewed scope; evidence/independent-review.json |
 | Remote platform matrix / release approval | CI for the integrated commit is pending. Stable release is not claimed. |
 
@@ -67,7 +67,7 @@ Remote checks for commit 0f40dfebc75e3dffbb297b950876de8e18aa2dea: all six Linux
 
 CI full differential mutation on optimization commit a19c2c196843739507234a93c2581db476b2b0b2 executed 14,934 variants: 9,601 killed, 5,326 survived, 7 timed out (GitHub run 34759274115; process exit 0). The workflow result is green because it does not enforce survivor disposition. This release gate remains failed. Four additional mutation-driven regression tests now pass locally.
 
-Later CI full differential mutation runs on this branch, after record-level tests closed survivors, report per-mutant outcomes and enforce the gate: 6036a30 left 2,827 survivors, fcbb405 2,488, 18541ea 2,291, a734a8a 2,287 and d1bacf1 2,246 (GitHub run 34933040010: 15,106 variants, 12,853 killed, 7 timed out). The gate remains failed until every survivor is killed or dispositioned.
+Later CI full differential mutation runs on this branch, after record-level tests closed survivors, report per-mutant outcomes and enforce the gate: 6036a30 left 2,827 survivors, fcbb405 2,488, 18541ea 2,291, a734a8a 2,287, d1bacf1 2,246 (GitHub run 34933040010) and 732899d 1,169 (GitHub run 34947709223: 15,335 variants, 14,159 killed, 7 timed out). The gate remains failed until every survivor is killed or dispositioned.
 
 A separate local selected-module retest was interrupted with its metadata truncated. No complete local mutation count is inferred from that run; the partial diagnostics are recorded in evidence/mutation.json.
 
