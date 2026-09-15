@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-15T07:54:52.375357+00:00",
+  "generated_at_utc": "2026-09-15T08:12:07.829280+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "ee0ef7acccce883d0e231b32a29a1a4e153a6a927973d5ad31d45f867afa0bcc",
+      "sha256": "cfc62b733fb36044db38335e044162ebe56fae6db2acee834a9f494b7bb7a173",
       "bytes": 4409
     },
     {
@@ -410,7 +410,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "7507333b98888f3dd6870c6edbb7cb0e06d2340027aafbc595e63bf3337154d8",
+      "sha256": "463f867471a33454555259223e980b85ca7f0c212f77a1271231f83876f68e6c",
       "bytes": 6515
     },
     {
@@ -1344,6 +1344,11 @@
       "bytes": 1604
     },
     {
+      "path": "tests/control/test_api_dispatch.py",
+      "sha256": "f55806954d9cb6d196020d86d6952e35cb417c461086a274e31e7536da672f57",
+      "bytes": 15260
+    },
+    {
       "path": "tests/control/test_claim_records.py",
       "sha256": "f7f30f7cae819743774d4ae677a93e050446ecd5898b0e88b453a1941cf7f854",
       "bytes": 9498
@@ -1352,6 +1357,11 @@
       "path": "tests/control/test_cli_dispatch.py",
       "sha256": "4006f923835b0dc2dfe155f2c41f6808890febba2d358e79f13833f416a393b5",
       "bytes": 13702
+    },
+    {
+      "path": "tests/control/test_console_responses.py",
+      "sha256": "5a4c742d7151ad4ae5501565d80cdfe636fbbb980cab1979ae18e2494adc7c66",
+      "bytes": 5620
     },
     {
       "path": "tests/control/test_context_document.py",
@@ -1444,6 +1454,11 @@
       "bytes": 5710
     },
     {
+      "path": "tests/control/test_store_records.py",
+      "sha256": "2530a640648493adda54e9e5911d78d990afaaee2d50d07fbb349658c459cde7",
+      "bytes": 14334
+    },
+    {
       "path": "tests/control/test_verification_workspace_rules.py",
       "sha256": "c8092471d10c246cecbb971a333790207cdce7c295e735c906b80aeb42775ce4",
       "bytes": 15049
@@ -1517,6 +1532,21 @@
       "path": "tests/test_generated_documents.py",
       "sha256": "52c0f99d862957ca3deda2623321c4fe607f64606fc5aec75a0b94264be5bd52",
       "bytes": 4732
+    },
+    {
+      "path": "tests/test_hygiene_report.py",
+      "sha256": "bb63cc1b7246101bbf1dae0e90ebc67672deb07560d3504fdcbcbc99456338c9",
+      "bytes": 4826
+    },
+    {
+      "path": "tests/test_init_report.py",
+      "sha256": "23b76e166c904805f235fee4a8b0fe9ff2fa4d9d5d716cb829fb8e6793873509",
+      "bytes": 4176
+    },
+    {
+      "path": "tests/test_initialize_result.py",
+      "sha256": "7b9bf0dc6009bb96ab7d6efe9cdd73c08cd20f44d973a7e49c04297c2effe604",
+      "bytes": 6312
     },
     {
       "path": "tests/test_install_surfaces.py",
