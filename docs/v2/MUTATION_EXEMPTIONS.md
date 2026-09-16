@@ -124,6 +124,45 @@ non-ASCII content. The explicit `encoding="utf-8"` in the source is what prevent
 that, and the Windows jobs in the platform matrix are what exercise it. Keep the
 argument; do not treat these survivors as a reason to remove it.
 
+## Equivalent by the language: three families
+
+Each rule below is a property of Python itself, checked by running it, so it holds
+for every site of that shape rather than needing an argument per mutant.
+
+**`typing.cast` type argument.** `cast(T, value)` returns `value` unchanged at
+runtime and never inspects `T`. Mutating the type argument, including to `None`,
+cannot change what the call returns. Checked: `cast(None, value) is value` and
+`cast(list[int], value) is value` are both true.
+
+**Codec name case.** `"utf-8"`, `"UTF-8"` and `"Utf-8"` resolve to the same codec
+through `codecs.lookup`, so flipping the case of an explicit encoding name cannot
+change a single byte read or written. This is distinct from dropping the argument,
+recorded above, which is only equivalent where the platform default is UTF-8.
+
+**Pattern case under `re.IGNORECASE`.** When a pattern is matched with
+`re.IGNORECASE`, changing the case of its literal characters cannot change what it
+matches or what its groups capture. Checked on the Gherkin patterns with lines in
+upper, lower and mixed case, plus a line that must not match: every pair matched
+identically and captured identical groups. A mutant that *removes* the flag is not
+in this family; it changes behaviour and stays on the kill list.
+
+## Equivalent by SQLite: case in keywords and identifiers
+
+```python
+self.store.db.execute("select * from edges where source=? and target=? and relation=?", ...)
+```
+
+SQLite treats SQL keywords and unquoted identifiers — table and column names —
+without regard to case, so `select * from edges` and `SELECT * FROM EDGES` are the
+same statement. Checked by running four case variants of one query against a real
+table: every variant returned the same rows.
+
+The rule has a boundary, and it was checked mutant by mutant: SQLite does **not**
+ignore case in *values*. `WHERE kind='TASK'` does not match a row whose kind is
+`task`. So a mutant belongs in this family only if every single-quoted literal in
+the statement is unchanged. All catalogued SQL survivors were compared on exactly
+that: none changes a quoted value; each changes only keywords or identifiers.
+
 ## Known survivors, not exempt: `Plane._expire` boundaries
 
 ```python
