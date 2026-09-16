@@ -163,6 +163,52 @@ ignore case in *values*. `WHERE kind='TASK'` does not match a row whose kind is
 the statement is unchanged. All catalogued SQL survivors were compared on exactly
 that: none changes a quoted value; each changes only keywords or identifiers.
 
+## `Store.get` type guards: which are equivalent, and which only a corrupt store reaches
+
+`Store.get(identifier, kind)` refuses a record of another kind. Where the caller
+supplies the identifier, that refusal is behaviour, and those guards are killed
+by `tests/control/test_record_kinds.py`: task entry points, `transition`, both
+ends of `Knowledge.link`, a claim's subject and evidence, the identity a
+changeset updates, and the changeset a rollback names.
+
+The remaining guards fall into three groups, told apart by where the identifier
+comes from.
+
+**Equivalent: the same identifier was already read with the same kind earlier in
+the call.** The second guard cannot fail when the first passed.
+`create_workspace` and `refresh_workspace` re-read the task inside the transaction
+that updates it; `verify` re-reads it in its `finally` after `owned` read it as a
+task; `Plane._expire` reads a lease's task twice; `Knowledge.claim` reads its
+subject a second time before writing.
+
+The last one needed care, and the order matters. It is the *second* read that is
+redundant, not the first: a declared claim with a subject of the wrong kind is
+refused identically by either read, so dropping the kind at the first read goes
+unseen on that path. The first read is observable only when evidence is checked
+between the two, which is the path the test takes.
+
+**Equivalent: the identifier is the record's own id, taken from a listing of that
+kind.** `verify` re-reads its lease by the id of a record that `owned` found
+through `store.list("lease")`, which only returns leases.
+
+**Not equivalent, and declared rather than killed: an identifier stored inside
+another record.** `task["workspace_id"]` (`cleanup`, `integration_gate`,
+`merge_workspace`, `refresh_workspace`, `workspace_root`), a lease's `task_id` and
+`agent_id` (`_expire`, `claim`, `heartbeat`), a task's `requirements` and
+`dependencies` (`binding`, `proof_current`, `context`, `readiness`), a claim's
+`subject` and `evidence_refs` and an evidence record's `task_id` (`invalidate`,
+`resolve_claim`, `claim`), and a changeset's entities and the `edges` table
+(`rollback_changeset`, `apply`).
+
+Each of these identifiers is validated when the record holding it is written, so
+the guard only acts on a store edited outside the plane. They are reachable — by
+forging a record into a state the plane never writes — and one of them is killed
+that way (`proof_current` reading proof of another kind), because a proof list is
+the input that decides whether work counts as done. The rest are left as
+survivors: what the plane does with a corrupt store is defence in depth, not a
+contract a caller relies on, and pinning it guard by guard would fix behaviour
+nobody has specified. They are the candidates for a later cycle, not equivalents.
+
 ## Known survivors, not exempt: `Plane._expire` boundaries
 
 ```python
