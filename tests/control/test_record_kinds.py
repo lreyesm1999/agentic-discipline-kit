@@ -32,6 +32,7 @@ TASK_ENTRIES: list[tuple[str, Entry]] = [
     ("create_workspace", lambda project, wrong: create_workspace(project, wrong)),
     ("cleanup", lambda project, wrong: cleanup(project, wrong)),
     ("refresh_workspace", lambda project, wrong: refresh_workspace(project, wrong)),
+    ("transition", lambda project, wrong: project.transition(wrong, "CANCELLED", "why")),
 ]
 
 ENTITY_ENTRIES: list[tuple[str, Entry]] = [
@@ -39,7 +40,48 @@ ENTITY_ENTRIES: list[tuple[str, Entry]] = [
     ("lifecycle", lambda project, wrong: project.knowledge.lifecycle(wrong, "DEPRECATED", "why")),
     ("resolve_claim", lambda project, wrong: project.knowledge.resolve_claim(wrong, "why")),
     ("rollback_changeset", lambda project, wrong: rollback_changeset(project, wrong, "why")),
+    (
+        "link_source",
+        lambda project, wrong: project.knowledge.link(wrong, _entity_id(project), "depends_on"),
+    ),
+    (
+        "link_target",
+        lambda project, wrong: project.knowledge.link(_entity_id(project), wrong, "depends_on"),
+    ),
+    (
+        # A declared claim re-reads its subject later and would fail the same way, so the
+        # first read is only observable on the path that checks evidence in between.
+        "claim_subject",
+        lambda project, wrong: project.knowledge.claim(
+            _claim_data(wrong, observation="VERIFIED", evidence_refs=["EVID-absent"])
+        ),
+    ),
+    (
+        "claim_evidence",
+        lambda project, wrong: project.knowledge.claim(
+            _claim_data(_entity_id(project), observation="VERIFIED", evidence_refs=[wrong])
+        ),
+    ),
+    (
+        "apply_identity",
+        lambda project, wrong: project.knowledge.apply(
+            [{**entity("Orders"), "id": wrong}], project.store.knowledge_version, "why"
+        ),
+    ),
 ]
+
+
+def _claim_data(subject: str, **changes: Any) -> dict[str, Any]:
+    return {
+        "subject": subject,
+        "predicate": "retention_days",
+        "value": 30,
+        "source_ref": "brief.md",
+        "authority": "human",
+        "confidence": 1,
+        "observation": "DECLARED",
+        **changes,
+    }
 
 
 def _session(project: Any) -> str:
