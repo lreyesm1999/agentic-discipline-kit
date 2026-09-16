@@ -44,6 +44,21 @@ def register_lifecycle(project_root: Path, item: dict[str, Any]) -> dict[str, An
     return item
 
 
+def _added_blocks(diff: str) -> list[list[str]]:
+    """Group consecutive added lines, so a fallback spanning several lines is seen whole."""
+    blocks: list[list[str]] = []
+    current: list[str] = []
+    for line in diff.splitlines():
+        if line.startswith("+") and not line.startswith("+++"):
+            current.append(line[1:])
+        elif current:
+            blocks.append(current)
+            current = []
+    if current:
+        blocks.append(current)
+    return blocks
+
+
 def hygiene(project_root: Path, base_ref: str | None = None) -> dict[str, Any]:
     root = project_root.resolve()
     added: list[str] = []
@@ -61,11 +76,11 @@ def hygiene(project_root: Path, base_ref: str | None = None) -> dict[str, Any]:
             Path(relative).name.lower().startswith(prefix) for prefix in TEMPORARY_PATTERNS
         ):
             added.append(relative)
-    fallbacks = [
-        line.strip()
-        for line in diff.splitlines()
-        if line.startswith("+") and FALLBACK_PATTERN.search(line[1:])
-    ]
+    fallbacks = []
+    for block in _added_blocks(diff):
+        text = "\n".join(block)
+        for match in FALLBACK_PATTERN.finditer(text):
+            fallbacks.append(block[text.count("\n", 0, match.start())].strip())
     lifecycle = load_lifecycle(root)
     temporary = [item for item in lifecycle["artifacts"] if item["state"] == "TEMPORARY"]
     deprecated = [

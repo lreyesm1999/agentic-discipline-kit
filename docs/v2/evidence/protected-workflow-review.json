@@ -1,0 +1,9 @@
+{
+  "status": "FAIL",
+  "changed": [
+    ".github/workflows/ci.yml"
+  ],
+  "purpose": "Enforce exported mutation outcome and retain structured artifact",
+  "authorization": "PENDING_REPOSITORY_REVIEW",
+  "policy_changed": false
+}

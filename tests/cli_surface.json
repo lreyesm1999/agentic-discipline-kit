@@ -1,0 +1,2286 @@
+{
+  "agentic-discipline": {
+    "prog": "agentic-discipline",
+    "description": null,
+    "defaults": {},
+    "arguments": [
+      {
+        "action": "_VersionAction",
+        "options": [
+          "--version"
+        ],
+        "dest": "version",
+        "nargs": 0,
+        "const": null,
+        "default": "==SUPPRESS==",
+        "type": null,
+        "choices": null,
+        "required": false,
+        "help": "show program's version number and exit",
+        "metavar": null,
+        "version": "1.1.0"
+      }
+    ],
+    "subcommands": {
+      "dest": "command",
+      "required": true,
+      "commands": {
+        "doctor": {
+          "help": "Validate repository installation",
+          "description": null,
+          "defaults": {
+            "func": "command_doctor"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--config"
+              ],
+              "dest": "config",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--check-tools"
+              ],
+              "dest": "check_tools",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "crap": {
+          "help": "Calculate CRAP score",
+          "description": null,
+          "defaults": {
+            "func": "command_crap"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--complexity"
+              ],
+              "dest": "complexity",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "float",
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--coverage"
+              ],
+              "dest": "coverage",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "float",
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--max"
+              ],
+              "dest": "max",
+              "nargs": null,
+              "const": null,
+              "default": 8.0,
+              "type": "float",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "compile-acceptance": {
+          "help": "Compile Gherkin-like acceptance into IR",
+          "description": null,
+          "defaults": {
+            "func": "command_acceptance"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--input"
+              ],
+              "dest": "input",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--output"
+              ],
+              "dest": "output",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "graph-check": {
+          "help": "Check requirement graph for orphan requirements",
+          "description": null,
+          "defaults": {
+            "func": "command_graph"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--graph"
+              ],
+              "dest": "graph",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--check-paths"
+              ],
+              "dest": "check_paths",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--complete"
+              ],
+              "dest": "complete",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "risk": {
+          "help": "Classify current git diff",
+          "description": null,
+          "defaults": {
+            "func": "command_risk"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--base-ref"
+              ],
+              "dest": "base_ref",
+              "nargs": null,
+              "const": null,
+              "default": "HEAD~1",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--weights"
+              ],
+              "dest": "weights",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--fail-at"
+              ],
+              "dest": "fail_at",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "LOW",
+                "STANDARD",
+                "HIGH",
+                "CRITICAL"
+              ],
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "integrity": {
+          "help": "Scan current git diff for quality-gate bypasses",
+          "description": null,
+          "defaults": {
+            "func": "command_integrity"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--base-ref"
+              ],
+              "dest": "base_ref",
+              "nargs": null,
+              "const": null,
+              "default": "HEAD~1",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "protected": {
+          "help": "Check protected contract paths",
+          "description": null,
+          "defaults": {
+            "func": "command_protected"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--base-ref"
+              ],
+              "dest": "base_ref",
+              "nargs": null,
+              "const": null,
+              "default": "HEAD~1",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "quality": {
+          "help": "Run configured deterministic quality gates",
+          "description": null,
+          "defaults": {
+            "func": "command_quality"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--config"
+              ],
+              "dest": "config",
+              "nargs": null,
+              "const": null,
+              "default": "agentic.config.json",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--artifacts"
+              ],
+              "dest": "artifacts",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "evidence": {
+          "help": "Append an artifact hash to the evidence ledger",
+          "description": null,
+          "defaults": {
+            "func": "command_evidence"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--artifact"
+              ],
+              "dest": "artifact",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--ledger"
+              ],
+              "dest": "ledger",
+              "nargs": null,
+              "const": null,
+              "default": "artifacts/evidence-ledger.jsonl",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--tool"
+              ],
+              "dest": "tool",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--executed-command"
+              ],
+              "dest": "executed_command",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--exit-code"
+              ],
+              "dest": "exit_code",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "int",
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "evidence-verify": {
+          "help": "Verify the evidence hash chain",
+          "description": null,
+          "defaults": {
+            "func": "command_evidence_verify"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--ledger"
+              ],
+              "dest": "ledger",
+              "nargs": null,
+              "const": null,
+              "default": "artifacts/evidence-ledger.jsonl",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--check-artifacts"
+              ],
+              "dest": "check_artifacts",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "init": {
+          "help": "Detect the project and install contracts plus quality configuration",
+          "description": null,
+          "defaults": {
+            "func": "command_init"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--target"
+              ],
+              "dest": "target",
+              "nargs": null,
+              "const": null,
+              "default": ".",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_AppendAction",
+              "options": [
+                "--profile"
+              ],
+              "dest": "profile",
+              "nargs": null,
+              "const": null,
+              "default": [],
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Override detection with a profile id; repeat for multi-stack projects",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_AppendAction",
+              "options": [
+                "--profile-file"
+              ],
+              "dest": "profile_file",
+              "nargs": null,
+              "const": null,
+              "default": [],
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Load an additional data-driven profile descriptor",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--max-depth"
+              ],
+              "dest": "max_depth",
+              "nargs": null,
+              "const": null,
+              "default": 4,
+              "type": "int",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--force"
+              ],
+              "dest": "force",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_AppendAction",
+              "options": [
+                "--adapter"
+              ],
+              "dest": "adapter",
+              "nargs": null,
+              "const": null,
+              "default": [],
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Emit only these agent surfaces; repeat the option. Defaults to auto-detection",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--dry-run"
+              ],
+              "dest": "dry_run",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Report what would change without writing",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Emit machine-readable output",
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "verify": {
+          "help": "Execute registered deterministic verifiers",
+          "description": null,
+          "defaults": {
+            "func": "command_verify"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "verifier_id",
+              "nargs": "?",
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--project-root"
+              ],
+              "dest": "project_root",
+              "nargs": null,
+              "const": null,
+              "default": ".",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "verifier": {
+          "help": "Manage verifier contracts and registry",
+          "description": null,
+          "defaults": {},
+          "arguments": [],
+          "subcommands": {
+            "dest": "verifier_command",
+            "required": true,
+            "commands": {
+              "list": {
+                "help": "List registered verifiers",
+                "description": null,
+                "defaults": {
+                  "func": "command_verifier_list"
+                },
+                "arguments": [
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--project-root"
+                    ],
+                    "dest": "project_root",
+                    "nargs": null,
+                    "const": null,
+                    "default": ".",
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  }
+                ],
+                "subcommands": null
+              },
+              "inspect": {
+                "help": "Inspect a verifier contract",
+                "description": null,
+                "defaults": {
+                  "func": "command_verifier_inspect"
+                },
+                "arguments": [
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--project-root"
+                    ],
+                    "dest": "project_root",
+                    "nargs": null,
+                    "const": null,
+                    "default": ".",
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_StoreAction",
+                    "options": [],
+                    "dest": "verifier_id",
+                    "nargs": null,
+                    "const": null,
+                    "default": null,
+                    "type": null,
+                    "choices": null,
+                    "required": true,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  }
+                ],
+                "subcommands": null
+              },
+              "validate": {
+                "help": "Validate verifier metadata",
+                "description": null,
+                "defaults": {
+                  "func": "command_verifier_validate"
+                },
+                "arguments": [
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--project-root"
+                    ],
+                    "dest": "project_root",
+                    "nargs": null,
+                    "const": null,
+                    "default": ".",
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_StoreAction",
+                    "options": [],
+                    "dest": "verifier_id",
+                    "nargs": "?",
+                    "const": null,
+                    "default": null,
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--path"
+                    ],
+                    "dest": "path",
+                    "nargs": null,
+                    "const": null,
+                    "default": null,
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  }
+                ],
+                "subcommands": null
+              },
+              "register": {
+                "help": "Register a verifier package",
+                "description": null,
+                "defaults": {
+                  "func": "command_verifier_register"
+                },
+                "arguments": [
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--project-root"
+                    ],
+                    "dest": "project_root",
+                    "nargs": null,
+                    "const": null,
+                    "default": ".",
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_StoreAction",
+                    "options": [],
+                    "dest": "path",
+                    "nargs": null,
+                    "const": null,
+                    "default": null,
+                    "type": null,
+                    "choices": null,
+                    "required": true,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  }
+                ],
+                "subcommands": null
+              },
+              "protect": {
+                "help": "Protect a validated verifier",
+                "description": null,
+                "defaults": {
+                  "func": "command_verifier_protect"
+                },
+                "arguments": [
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--project-root"
+                    ],
+                    "dest": "project_root",
+                    "nargs": null,
+                    "const": null,
+                    "default": ".",
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_StoreAction",
+                    "options": [],
+                    "dest": "verifier_id",
+                    "nargs": null,
+                    "const": null,
+                    "default": null,
+                    "type": null,
+                    "choices": null,
+                    "required": true,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  }
+                ],
+                "subcommands": null
+              }
+            }
+          }
+        },
+        "adapters": {
+          "help": "Generate portable vendor adapters",
+          "description": null,
+          "defaults": {},
+          "arguments": [],
+          "subcommands": {
+            "dest": "adapters_command",
+            "required": true,
+            "commands": {
+              "sync": {
+                "help": "Synchronize adapters idempotently",
+                "description": null,
+                "defaults": {
+                  "func": "command_adapters_sync"
+                },
+                "arguments": [
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--project-root"
+                    ],
+                    "dest": "project_root",
+                    "nargs": null,
+                    "const": null,
+                    "default": ".",
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_AppendAction",
+                    "options": [
+                      "--adapter"
+                    ],
+                    "dest": "adapter",
+                    "nargs": null,
+                    "const": null,
+                    "default": [],
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_StoreTrueAction",
+                    "options": [
+                      "--dry-run"
+                    ],
+                    "dest": "dry_run",
+                    "nargs": 0,
+                    "const": true,
+                    "default": false,
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": "Report what would change without writing",
+                    "metavar": null,
+                    "version": null
+                  },
+                  {
+                    "action": "_StoreTrueAction",
+                    "options": [
+                      "--json"
+                    ],
+                    "dest": "json",
+                    "nargs": 0,
+                    "const": true,
+                    "default": false,
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": "Emit machine-readable output",
+                    "metavar": null,
+                    "version": null
+                  }
+                ],
+                "subcommands": null
+              },
+              "list": {
+                "help": "List supported agent tools and their outputs",
+                "description": null,
+                "defaults": {
+                  "func": "command_adapters_list"
+                },
+                "arguments": [
+                  {
+                    "action": "_StoreAction",
+                    "options": [
+                      "--project-root"
+                    ],
+                    "dest": "project_root",
+                    "nargs": null,
+                    "const": null,
+                    "default": ".",
+                    "type": null,
+                    "choices": null,
+                    "required": false,
+                    "help": null,
+                    "metavar": null,
+                    "version": null
+                  }
+                ],
+                "subcommands": null
+              }
+            }
+          }
+        },
+        "migrate": {
+          "help": "Migrate an earlier installation to the current payload",
+          "description": null,
+          "defaults": {
+            "func": "command_migrate"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--to"
+              ],
+              "dest": "to",
+              "nargs": null,
+              "const": null,
+              "default": "3.0",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--project-root"
+              ],
+              "dest": "project_root",
+              "nargs": null,
+              "const": null,
+              "default": ".",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--force"
+              ],
+              "dest": "force",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--prune"
+              ],
+              "dest": "prune",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Delete the legacy root payload once it has been reinstalled under .agentic/",
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "hygiene": {
+          "help": "Check evolution lifecycle and repository hygiene",
+          "description": null,
+          "defaults": {
+            "func": "command_hygiene"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--project-root"
+              ],
+              "dest": "project_root",
+              "nargs": null,
+              "const": null,
+              "default": ".",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--base-ref"
+              ],
+              "dest": "base_ref",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "bootstrap": {
+          "help": "Compatibility alias for init",
+          "description": null,
+          "defaults": {
+            "func": "command_bootstrap"
+          },
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--target"
+              ],
+              "dest": "target",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--stack"
+              ],
+              "dest": "stack",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Optional compatibility profile override",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--force"
+              ],
+              "dest": "force",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        }
+      }
+    }
+  },
+  "agentic": {
+    "prog": "agentic",
+    "description": "Agentic Discipline 2 local control plane",
+    "defaults": {},
+    "arguments": [
+      {
+        "action": "_StoreAction",
+        "options": [
+          "--root"
+        ],
+        "dest": "root",
+        "nargs": null,
+        "const": null,
+        "default": "<cwd>",
+        "type": "Path",
+        "choices": null,
+        "required": false,
+        "help": null,
+        "metavar": null,
+        "version": null
+      }
+    ],
+    "subcommands": {
+      "dest": "group",
+      "required": true,
+      "commands": {
+        "adopt": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "path",
+              "nargs": "?",
+              "const": null,
+              "default": "<cwd>",
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--dry-run"
+              ],
+              "dest": "dry_run",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "status": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "doctor": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "reconcile": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "api": {
+          "help": "Call a versioned operation using a JSON input file",
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "operation",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "agent_join",
+                "approve_command",
+                "checkpoint_task",
+                "claim_task",
+                "complete_task",
+                "discover_project",
+                "doctor",
+                "get_context",
+                "get_ready_tasks",
+                "heartbeat",
+                "impact_analysis",
+                "integration_gate",
+                "knowledge_apply",
+                "knowledge_health",
+                "knowledge_history",
+                "knowledge_link",
+                "knowledge_show",
+                "lifecycle",
+                "parallel_safety",
+                "plan_audit",
+                "query_knowledge",
+                "readiness",
+                "reconcile",
+                "record_discovery",
+                "record_evidence",
+                "release_task",
+                "resolve_blocker",
+                "resolve_claim",
+                "resume_task",
+                "status",
+                "task_create",
+                "task_list",
+                "task_ready",
+                "task_transition",
+                "timeline",
+                "workspace_cleanup",
+                "workspace_create",
+                "workspace_merge",
+                "workspace_refresh"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--input"
+              ],
+              "dest": "input",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--session-file"
+              ],
+              "dest": "session_file",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "task": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "list",
+                "ready",
+                "create",
+                "claim",
+                "context",
+                "checkpoint",
+                "resume",
+                "release",
+                "block",
+                "verify",
+                "complete",
+                "heartbeat"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "identifier",
+              "nargs": "?",
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--input"
+              ],
+              "dest": "input",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--session-file"
+              ],
+              "dest": "session_file",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--reason"
+              ],
+              "dest": "reason",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--budget"
+              ],
+              "dest": "budget",
+              "nargs": null,
+              "const": null,
+              "default": 16000,
+              "type": "int",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "agent": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "join",
+                "status",
+                "heartbeat"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--name"
+              ],
+              "dest": "name",
+              "nargs": null,
+              "const": null,
+              "default": "worker",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--capabilities"
+              ],
+              "dest": "capabilities",
+              "nargs": null,
+              "const": null,
+              "default": "code,terminal",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--session-file"
+              ],
+              "dest": "session_file",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--task"
+              ],
+              "dest": "task",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "knowledge": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "query",
+                "show",
+                "history",
+                "impact"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "value",
+              "nargs": "?",
+              "const": null,
+              "default": "",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--graph"
+              ],
+              "dest": "graph",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--historical"
+              ],
+              "dest": "historical",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "discovery": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": "?",
+              "const": null,
+              "default": "status",
+              "type": null,
+              "choices": [
+                "status",
+                "list"
+              ],
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "evidence": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": "?",
+              "const": null,
+              "default": "status",
+              "type": null,
+              "choices": [
+                "status",
+                "list"
+              ],
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "evolution": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": "?",
+              "const": null,
+              "default": "status",
+              "type": null,
+              "choices": [
+                "status",
+                "list"
+              ],
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "plan": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "audit"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--input"
+              ],
+              "dest": "input",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "readiness": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "identifier",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "context": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "audit"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "identifier",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--budget"
+              ],
+              "dest": "budget",
+              "nargs": null,
+              "const": null,
+              "default": 16000,
+              "type": "int",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "mcp": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "console": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--port"
+              ],
+              "dest": "port",
+              "nargs": null,
+              "const": null,
+              "default": 8765,
+              "type": "int",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "migrate": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--input"
+              ],
+              "dest": "input",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--dry-run"
+              ],
+              "dest": "dry_run",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "backup": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "path",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "rollback": {
+          "help": null,
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "identifier",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--reason"
+              ],
+              "dest": "reason",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        }
+      }
+    }
+  }
+}

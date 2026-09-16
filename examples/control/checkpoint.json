@@ -1,0 +1,13 @@
+{
+  "completed_work": [],
+  "modified_files": [],
+  "commands_run": [],
+  "tests_run": [],
+  "test_results": [],
+  "failures": [],
+  "discoveries": [],
+  "assumptions": [],
+  "pending_issues": [],
+  "current_hypothesis": "Replace with the actual current hypothesis",
+  "next_action": "Replace with the exact next executable action"
+}

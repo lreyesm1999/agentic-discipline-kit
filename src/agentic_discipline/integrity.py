@@ -16,7 +16,12 @@ PATTERNS: dict[str, str] = {
     ),
 }
 
-GATE_CONFIGURATION_FILES = {"pyproject.toml", "pytest.ini", "tox.ini", ".coveragerc"}
+GATE_CONFIGURATION_FILES = {
+    "pyproject.toml",
+    "pytest.ini",
+    "tox.ini",
+    ".coveragerc",
+}
 GATE_CONFIGURATION_PREFIXES = (".github/workflows/", ".agentic/")
 GENERATED_EVIDENCE_PREFIXES = ("docs/v2/evidence/",)
 

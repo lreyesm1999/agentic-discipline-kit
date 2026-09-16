@@ -1,0 +1,35 @@
+{
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "docs/v2/evidence/dogfood.json",
+      "pattern": "threshold_change",
+      "line": "            \"skills/13-differential-mutation/SKILL.md\": \"5047aa3bd274e61105f2b3457851bd1c0a650be5c92e9d29e5755720bca144ec\","
+    },
+    {
+      "file": "docs/v2/plan/07_DISCOVERY_COVERAGE_AND_GRAPH_FIRST.md",
+      "pattern": "threshold_change",
+      "line": "The Context Engine should request the coverage needed by the task, not a universal 100%."
+    },
+    {
+      "file": "docs/v2/plan/28_CLI_EXPERIENCE.md",
+      "pattern": "threshold_change",
+      "line": "Understanding coverage: 87%"
+    },
+    {
+      "file": "docs/v2/plan/28_CLI_EXPERIENCE.md",
+      "pattern": "threshold_change",
+      "line": "Verification coverage: 81%"
+    },
+    {
+      "file": "src/agentic_discipline/control/console.py",
+      "pattern": "threshold_change",
+      "line": "HTML = \"\"\"<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>Agentic Discipline \u00b7 Project Console</title><link rel=\"stylesheet\" href=\"/app.css\"></head><body><header><div><small>AGENTIC DISCIPLINE</small><h1 id=\"project\">Project console</h1></div><button id=\"refresh\">Refresh</button></header><main><p id=\"error\" role=\"alert\"></p><div id=\"metrics\" class=\"metrics\"></div><nav><a href=\"#tasks\">Execution</a><a href=\"#agen"
+    },
+    {
+      "file": "src/agentic_discipline/control/discovery.py",
+      "pattern": "threshold_change",
+      "line": "        coverage[category][\"total\"] += 1"
+    }
+  ]
+}

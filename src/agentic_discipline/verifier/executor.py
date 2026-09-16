@@ -105,8 +105,8 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
             result["status"] = "BLOCKED"
             result["error"] = f"verifier timed out after {metadata['timeout_seconds']} seconds"
             result["observations"] = {
-                "stdout": str(exc.stdout or ""),
-                "stderr": str(exc.stderr or ""),
+                "stdout": _partial_output(exc.stdout),
+                "stderr": _partial_output(exc.stderr),
             }
     result["duration_seconds"] = round(time.monotonic() - start_clock, 6)
     result["finished_at"] = datetime.now(timezone.utc).isoformat()
@@ -139,6 +139,13 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
             exit_code=0 if result["status"] == "PASS" else 1,
         )
     return result
+
+
+def _partial_output(output: str | bytes | None) -> str:
+    """Output captured before a timeout arrives as bytes on POSIX even in text mode."""
+
+    text = output.decode(errors="replace") if isinstance(output, bytes) else output or ""
+    return text[-20000:]
 
 
 def _file_hash(path: Path) -> str:

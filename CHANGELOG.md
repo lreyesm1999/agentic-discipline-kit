@@ -22,6 +22,16 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   to publish with a token. Node moves to 22 and npm to 11.5.1 or later, the versions that understand
   OIDC; `--provenance` is dropped because trusted publishing attests provenance on its own.
 
+### Fixed
+- Verifier contracts and quality gates judge `working_directory` by POSIX and Windows rules
+  together. A verifier validated on Linux accepted `C:\x`, `\\server\share` and `..\x`, and one
+  validated on Windows accepted `/tmp/x`; each leaves the project on the other platform. Paths
+  with a drive such as `C:x` and root-relative Windows paths such as `\x`, which both platforms
+  accepted, are now rejected as well.
+- Task contract scope and verifier input paths are parsed as POSIX paths on every platform. On
+  Windows `/etc/x` was not considered absolute and was accepted; such a task could not change
+  anything outside the repository, but its contract is now rejected as on Linux.
+
 ## [1.1.0] - 2026-09-06
 
 ### Migration required for existing installations
