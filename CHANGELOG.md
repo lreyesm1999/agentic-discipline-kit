@@ -7,6 +7,24 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- Agentic Discipline 2 preview: a persistent local project control plane (Python and SQLite)
+  exposed as the `agentic` command, alongside the unchanged `agentic-discipline` command.
+  - Project knowledge with provenance, history, retirement and conflicting-claim detection.
+  - Task contracts, expiring leases and checkpoints another agent can resume from.
+  - Verification evidence bound to the exact inputs it checked, which goes stale when they
+    change, so completion cannot rest on a run of older files.
+  - Isolated Git worktrees for parallel work, fast-forward integration, and recovery from a
+    merge that succeeded in Git but not in the database.
+  - A command line, a versioned API, a stdio MCP server and a read-first local console.
+  - Explicit import from a v1 installation, with dry run, backup and rollback.
+
+  The control plane ships in the Python distribution only: the standalone executables and the
+  npm launcher still start the v1 command. It is a preview, not a stable 2.0 release; its trust
+  boundary and limits are in `docs/v2/LIMITATIONS.md`.
+- Mutation testing in CI, with an outcome gate that fails while any mutant is unresolved.
+  `docs/v2/MUTATION_EXEMPTIONS.md` records the survivors proven to change nothing observable,
+  each with the check that proves it, and the survivors deliberately left unkilled; the gate
+  does not read that file.
 - `agentic-autonomous-project-execution`, a twelfth canonical discipline for continuous
   execution of authorized software plans, task-level blocker isolation, bounded repair
   attempts, resumable status, and evidence-backed completion. All agent adapters and
@@ -31,6 +49,15 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 - Task contract scope and verifier input paths are parsed as POSIX paths on every platform. On
   Windows `/etc/x` was not considered absolute and was accepted; such a task could not change
   anything outside the repository, but its contract is now rejected as on Linux.
+- A verifier that timed out on Linux or macOS recorded its partial output as a Python bytes
+  literal such as `b'started'`, untrimmed, because that output arrives as bytes there even when
+  text was requested. It is now decoded and trimmed like any other output.
+- `hygiene` missed a fallback written across several added lines, because each added line was
+  searched on its own. Consecutive added lines are now searched together.
+- Plan audit reported fields the task contract allows to be empty (`out_of_scope`,
+  `dependencies`, `boundaries`, `context`) as missing when a plan stated them as empty lists.
+- The integrity audit no longer reports generated evidence or runtime counters as changes to a
+  quality gate.
 
 ## [1.1.0] - 2026-09-06
 
