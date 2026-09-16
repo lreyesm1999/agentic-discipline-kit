@@ -73,6 +73,25 @@ either key from a registered package and running the verifier is refused with
 default is read. The mutants that change those defaults (to `None`, to a removed
 argument, or to another value) therefore change unreachable code.
 
+## Known survivors, not exempt: `Plane._expire` boundaries
+
+```python
+if lease["state"] == "ACTIVE" and lease["expires_at"] <= time.time():
+    ...
+    and running.get("active_run_deadline", 0) > time.time()
+```
+
+Three mutants here are not killed by `tests/control/test_lease_lifecycle.py`, and
+none of them is listed as equivalent. Turning `<=` into `<` matters only for a
+lease expiring at exactly the current instant; raising the deadline default from
+`0` to `1` matters only when the key is missing *and* the deadline is `1`; turning
+`>` into `>=` matters only at the same single instant. Each is reachable in
+principle by forcing a timestamp, and unreachable in any run a reader would
+recognise. They stay on the kill list, unkilled.
+
+The rest of the sweep is covered: skipping a lease held by a running verifier
+without ending the sweep, and expiring every lease that ran out.
+
 ## Known survivor, not exempt: `Plane.context` evidence default
 
 ```python

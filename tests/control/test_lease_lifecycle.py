@@ -82,6 +82,47 @@ def test_every_lease_that_ran_out_is_swept_not_only_the_first(project: Any) -> N
         assert project.store.get(lease["task_id"], "task")["state"] == "READY"
 
 
+def _seed_lease(project: Any, identifier: str, task_id: str, agent_id: str) -> dict[str, Any]:
+    """Insert a lease that has run out, under a chosen id so sweep order is fixed."""
+    with project.store.transaction():
+        return project.store.put(
+            "lease",
+            {
+                "id": identifier,
+                "task_id": task_id,
+                "agent_id": agent_id,
+                "acquired_at": time.time(),
+                "heartbeat_at": time.time(),
+                "expires_at": time.time() - 1,
+                "state": "ACTIVE",
+            },
+        )
+
+
+def test_a_lease_kept_by_a_running_verifier_does_not_end_the_sweep(project: Any) -> None:
+    # The protected lease is swept first; the one behind it must still be expired.
+    protected_task, plain_task = _ready(project), _ready(project)
+    agent = project.join("worker", CAPABILITIES)
+    _force(
+        project,
+        "task",
+        protected_task,
+        state="CLAIMED",
+        active_run="RUN-1",
+        active_run_deadline=time.time() + 60,
+    )
+    _force(project, "task", plain_task, state="CLAIMED")
+    protected = _seed_lease(project, "LEAS-a-protected", protected_task, agent["id"])
+    plain = _seed_lease(project, "LEAS-b-plain", plain_task, agent["id"])
+
+    project.status()
+
+    assert project.store.get(protected["id"], "lease") == protected
+    assert project.store.get(plain["id"], "lease")["state"] == "EXPIRED"
+    assert project.store.get(protected_task, "task")["state"] == "CLAIMED"
+    assert project.store.get(plain_task, "task")["state"] == "READY"
+
+
 def test_cancelling_revokes_the_leases_of_that_task_and_no_others(project: Any) -> None:
     cancelled = _ready(project)
     owner = project.claim(cancelled, project.join("owner", CAPABILITIES)["session"])
