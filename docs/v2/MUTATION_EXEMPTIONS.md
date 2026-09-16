@@ -37,6 +37,60 @@ can distinguish the two, so nothing observable changes.
 The second guard is not equivalent: mutating its key, code or message is caught
 by `tests/control/test_verification_busy.py`.
 
+## `control.plane.Plane.create_task` — the server-owned field guard
+
+```python
+task_contract(contract)
+require(
+    not ({"state", "version", "id", "workspace_id", "integration"} & contract.keys()),
+    "INVALID_TASK",
+    "Execution state is server-owned",
+)
+```
+
+`task_contract` runs first and already refuses any key outside the contract
+(`data.keys() <= required | {"assumptions", "capabilities", "priority"}`), with a
+different message: `Execution state is server-owned; only contract fields are
+accepted`. Calling `create_task` with each of the five fields returns that longer
+message, so the guard below it never runs. Every mutant on it — the five renamed
+set members, their upper-case variants, and the code and message swaps — changes
+a line no caller can reach.
+
+The rule itself is covered: `tests/control/test_contract_rules.py` asserts the
+`task_contract` refusal by exact code and message.
+
+## `verifier.executor.execute_verifier` — the `working_directory` and `expected_exit_code` defaults
+
+```python
+working_directory = str(metadata.get("working_directory", "."))
+expected = int(metadata.get("expected_exit_code", 0))
+```
+
+Both keys are `required` in `schemas/verifier.schema.json`, and `load_verifier`
+validates the contract on every call through `load_and_validate_verifier`. Removing
+either key from a registered package and running the verifier is refused with
+`invalid verifier contract: $: '<key>' is a required property`, before either
+default is read. The mutants that change those defaults (to `None`, to a removed
+argument, or to another value) therefore change unreachable code.
+
+## Known survivor, not exempt: `Plane.context` evidence default
+
+```python
+if evidence["task_id"] == task_id and evidence["finished_at"] > latest_evidence.get(
+    evidence["verifier"], {}
+).get("finished_at", 0):
+```
+
+The mutant raising that `0` to `1` is not listed above, because it is not proven
+equivalent. The default applies only to the first record seen for a verifier, so
+the two values differ only for a record whose `finished_at` is exactly `1` — one
+second after the epoch. A forced record would distinguish them, so a test could
+exist; it would assert nothing a reader would recognise as behaviour. It stays on
+the kill list, unkilled, rather than being written off.
+
+The neighbouring mutants are killed by `tests/control/test_context_evidence.py`:
+reading another key, or stopping the scan at the first passing verifier.
+
 ## Method
 
 Apply the mutation to the source, clear `__pycache__` and run with `-B`
