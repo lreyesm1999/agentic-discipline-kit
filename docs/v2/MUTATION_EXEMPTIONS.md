@@ -104,6 +104,26 @@ kills thirteen). And 5 of 1255 tests failed under instrumentation, so the
 rewritten tree is not perfectly faithful; the mapping results were unaffected but
 the tool is not clean.
 
+## Equivalent where the measurement runs: the dropped `encoding` argument
+
+```python
+path.write_text(content, encoding="utf-8")
+path.read_text(encoding="utf-8")
+```
+
+Mutants that drop the argument or set it to `None` fall back to the platform's
+preferred encoding. On the Linux environment the mutation campaign runs in,
+`locale.getpreferredencoding(False)` is `UTF-8`, so the mutated call reads and
+writes exactly the same bytes and no test can separate them. Roughly thirty
+catalogued survivors are this shape.
+
+This is an equivalence of the measuring environment, not of the code: on a
+machine whose preferred encoding is not UTF-8 — a Windows console default of
+cp1252, or a container with a POSIX locale — the same mutation would corrupt
+non-ASCII content. The explicit `encoding="utf-8"` in the source is what prevents
+that, and the Windows jobs in the platform matrix are what exercise it. Keep the
+argument; do not treat these survivors as a reason to remove it.
+
 ## Known survivors, not exempt: `Plane._expire` boundaries
 
 ```python
