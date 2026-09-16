@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-16T13:57:17.945047+00:00",
+  "generated_at_utc": "2026-09-16T20:21:28.313133+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "0965b1a594ea2b325c4e71f3f78f07f36e698e43629b2a80050393e90918bee3",
+      "sha256": "434385286eb86529953cc12b3401ef0d97cdc7ae3747a9f80388cb9a34ec4e42",
       "bytes": 4573
     },
     {
@@ -400,8 +400,8 @@
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
-      "sha256": "909ed8a1ceb8464168aed21e384973f32482e113795791a417949123dce6cbd0",
-      "bytes": 10190
+      "sha256": "14318b863c9ee656e3b11b7f8c402bc4a5d4fc3c2fe70ae681c159f955f71907",
+      "bytes": 12980
     },
     {
       "path": "docs/v2/OPERATIONS.md",
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "c4b7a22fb1e37f15ec5d03cda4d47c6e073139ebae0f96e8871ddaf14a151953",
-      "bytes": 7490
+      "sha256": "eb555009e78a6259d15fea7371be4dc3e29dd14e0ea21d91a0ad10d6c186c4ec",
+      "bytes": 8843
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -1470,8 +1470,8 @@
     },
     {
       "path": "tests/control/test_mcp_serve.py",
-      "sha256": "08f6896772a097dc1b07797fee636f7df0830f09c4bf95e86865fc331d893847",
-      "bytes": 3878
+      "sha256": "c2662f93523a607d77bfea9165f914e285ab7569baa0ee1816079d0cac18c7da",
+      "bytes": 4738
     },
     {
       "path": "tests/control/test_mutation_regressions.py",
@@ -1500,8 +1500,8 @@
     },
     {
       "path": "tests/control/test_record_kinds.py",
-      "sha256": "1b311d3f87b18fcd9492543d7014ce50407bf00e8c59aa1b2e898575495be7fe",
-      "bytes": 3969
+      "sha256": "0ec4707a82599e92a4eb806738a93c3e50d1468d77cd9dbcf691dc5231cbb6ee",
+      "bytes": 5400
     },
     {
       "path": "tests/control/test_resilience.py",
