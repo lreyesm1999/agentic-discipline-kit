@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-16T00:10:25.635695+00:00",
+  "generated_at_utc": "2026-09-16T03:52:40.844966+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "6c5186a0a00d835d4cea2e70834c07b04fe7988785c13340afa036fe5a4d98e0",
-      "bytes": 4410
+      "sha256": "2313c05be366430797bcd97e769369723cba3a8a83fce2c8f1a523c8e8a99a9b",
+      "bytes": 4573
     },
     {
       "path": "docs/adoption.md",
@@ -400,8 +400,8 @@
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
-      "sha256": "0a97193a17fa8bae6817f37f87d05386018f7c93a70a18e6ddcc657dcfb48031",
-      "bytes": 2149
+      "sha256": "13ffedba62ad4349da7b19f34ab75f5f896607f1951c80b975fbec8d90b45557",
+      "bytes": 5486
     },
     {
       "path": "docs/v2/OPERATIONS.md",
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "28f6b2ee8831606ebb370d3d2ebf4dc8b502ff829fe416a58b824d72e2668391",
-      "bytes": 6556
+      "sha256": "0b1dd7ae977fde033008347d363d3b062881f9f34357edf6989c01bd29f2f2ec",
+      "bytes": 7277
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -1349,6 +1349,11 @@
       "bytes": 1604
     },
     {
+      "path": "tests/control/test_agent_records.py",
+      "sha256": "e97a4d5bb702e14c0c8db37b98a285b291adcfa0fd0c3c1bca509c096873368d",
+      "bytes": 2216
+    },
+    {
       "path": "tests/control/test_api_dispatch.py",
       "sha256": "f55806954d9cb6d196020d86d6952e35cb417c461086a274e31e7536da672f57",
       "bytes": 15260
@@ -1392,6 +1397,11 @@
       "path": "tests/control/test_context_document.py",
       "sha256": "8ea5319e2c74a5d2439833914e03d107ff62ca0e64dbbba37ae2b240caead3f8",
       "bytes": 11554
+    },
+    {
+      "path": "tests/control/test_context_evidence.py",
+      "sha256": "ba2d275aab0833c6833c1028c31c7e7b1e4a7a7984e1d15fc139b5ab385b2938",
+      "bytes": 3452
     },
     {
       "path": "tests/control/test_contract_rules.py",
@@ -1442,6 +1452,11 @@
       "path": "tests/control/test_knowledge_records.py",
       "sha256": "2a052d887325462d0bdd732040abfd6670cdac67abec0616db35ffd5f92256a5",
       "bytes": 16925
+    },
+    {
+      "path": "tests/control/test_lease_lifecycle.py",
+      "sha256": "f61c86a41e5b2a029c188f8d5d27dc02037be9c07389bc6a3dd1683cd008478b",
+      "bytes": 5820
     },
     {
       "path": "tests/control/test_legacy_import_records.py",
@@ -1530,8 +1545,8 @@
     },
     {
       "path": "tests/control/test_verification_workspace_rules.py",
-      "sha256": "c8092471d10c246cecbb971a333790207cdce7c295e735c906b80aeb42775ce4",
-      "bytes": 15049
+      "sha256": "77a2f21151be1f12c8f80998306a7add19faced422fe4e6f3a7d97ae55cbdcb8",
+      "bytes": 16327
     },
     {
       "path": "tests/control/test_verifier_inputs.py",
