@@ -16,6 +16,7 @@ from conftest import checkpoint, contract
 from test_workspaces import repository
 
 from agentic_discipline.common import run_git
+from agentic_discipline.control import workspaces
 from agentic_discipline.control.contracts import ControlError
 from agentic_discipline.control.plane import Plane
 from agentic_discipline.control.verification import complete, verify
@@ -420,3 +421,38 @@ def test_merge_requires_committed_verified_changes(repo: Any) -> None:
     run_git(["commit", "-m", "verified task"], cwd=path)
     assert merge_workspace(repo, task, session)["merge_performed"]
     assert complete(repo, task, session)["state"] == "COMPLETED"
+
+
+def _verified_workspace(plane: Any) -> tuple[str, str, Path]:
+    task, session, path = _claimed_workspace(plane)
+    (path / "app.py").write_text("value = 1\n# reviewed change\n")
+    plane.checkpoint(task, session, checkpoint())
+    assert verify(plane, task, session)["status"] == "PASS"
+    run_git(["add", "app.py"], cwd=path)
+    run_git(["commit", "-m", "verified task"], cwd=path)
+    return task, session, path
+
+
+def test_a_primary_changed_after_the_gate_stops_the_merge(
+    repo: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The gate passes, then the primary changes before the merge reads it again.
+    task, session, path = _verified_workspace(repo)
+    passed = workspaces.integration_gate
+
+    def change_primary(plane: Any, task_id: str, token: str) -> Any:
+        result = passed(plane, task_id, token)
+        (plane.root / "notes.txt").write_text("changed after the gate\n")
+        return result
+
+    monkeypatch.setattr(workspaces, "integration_gate", change_primary)
+
+    _rejects(
+        "BASELINE_CHANGED",
+        "Refresh the integration baseline",
+        merge_workspace,
+        repo,
+        task,
+        session,
+    )
+    assert repo.store.get(task, "task")["state"] != "COMPLETED"
