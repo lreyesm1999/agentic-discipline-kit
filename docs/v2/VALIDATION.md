@@ -8,7 +8,7 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 
 | Check | Current result |
 |---|---|
-| Full Python suite | 1284 passed in the integrated local run |
+| Full Python suite | 1286 passed in the integrated local run |
 | Coverage gate | PASS: 95.01% lines, 87.06% branches; thresholds remain 90/85 |
 | Lint and type checking | PASS |
 | Security SAST | PASS: no high-severity Bandit findings |
@@ -18,7 +18,7 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 | 1,000-file performance fixture | PASS after scoped discovery optimization: status 264.851 ms, claim 167.950 ms; all four targets met |
 | Protected-contract diff | FAIL by design: the mutation outcome fix modifies `.github/workflows/ci.yml`, a protected path. Authorized by the code owner (@lreyesm1999) on 2026-09-14; the check is not bypassed |
 | Diff integrity audit | PASS: gate configuration and test assertions are checked without treating generated evidence or runtime counters as gate changes |
-| Differential mutation | FAIL: latest full CI run (35038903844, a767274) killed 14,653 of 15,453, with 792 survivors and 8 timeouts. The first run is in evidence/mutation.json |
+| Differential mutation | FAIL: latest full CI run (35058666946, 074996d) killed 14,796 of 15,476, with 672 survivors and 8 timeouts. The first run is in evidence/mutation.json |
 | Independent review | Focused final review: no remaining HIGH/CRITICAL in reviewed scope; evidence/independent-review.json |
 | Remote platform matrix / release approval | CI for the integrated commit is pending. Stable release is not claimed. |
 
@@ -67,7 +67,7 @@ Remote checks for commit 0f40dfebc75e3dffbb297b950876de8e18aa2dea: all six Linux
 
 CI full differential mutation on optimization commit a19c2c196843739507234a93c2581db476b2b0b2 executed 14,934 variants: 9,601 killed, 5,326 survived, 7 timed out (GitHub run 34759274115; process exit 0). The workflow result is green because it does not enforce survivor disposition. This release gate remains failed. Four additional mutation-driven regression tests now pass locally.
 
-Later CI full differential mutation runs on this branch, after record-level tests closed survivors, report per-mutant outcomes and enforce the gate: 6036a30 left 2,827 survivors, fcbb405 2,488, 18541ea 2,291, a734a8a 2,287, d1bacf1 2,246 (GitHub run 34933040010), 732899d 1,169 (GitHub run 34947709223: 15,335 variants, 14,159 killed, 7 timed out), 942c725 833 (GitHub run 34970429525: 15,453 variants, 14,612 killed, 8 timed out) and a767274 792 (GitHub run 35038903844: 15,453 variants, 14,653 killed, 8 timed out). The gate remains failed until every survivor is killed or dispositioned.
+Later CI full differential mutation runs on this branch, after record-level tests closed survivors, report per-mutant outcomes and enforce the gate: 6036a30 left 2,827 survivors, fcbb405 2,488, 18541ea 2,291, a734a8a 2,287, d1bacf1 2,246 (GitHub run 34933040010), 732899d 1,169 (GitHub run 34947709223: 15,335 variants, 14,159 killed, 7 timed out), 942c725 833 (GitHub run 34970429525: 15,453 variants, 14,612 killed, 8 timed out) a767274 792 (GitHub run 35038903844: 15,453 variants, 14,653 killed, 8 timed out) and 074996d 672 (GitHub run 35058666946: 15,476 variants, 14,796 killed, 8 timed out). The gate remains failed until every survivor is killed or dispositioned. Two intermediate runs (98d9469, 9651d5e) were superseded by later pushes and cancelled before completing, so they report no count.
 
 Survivor triage is recorded in docs/v2/MUTATION_EXEMPTIONS.md: mutants proven to change nothing any caller can observe, each with the argument and the executed check behind it, and separately the survivors that are left unkilled rather than written off. `scripts/mutation_gate.py` does not read that file and fails on every survivor, exempt or not; the file documents the debt, it does not reduce it. Each proof was re-run with bytecode caching disabled, because these mutations are length preserving and a cached `.pyc` silently reports a false survivor.
 
