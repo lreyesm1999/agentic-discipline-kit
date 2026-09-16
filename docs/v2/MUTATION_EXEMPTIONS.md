@@ -73,6 +73,37 @@ either key from a registered package and running the verifier is refused with
 default is read. The mutants that change those defaults (to `None`, to a removed
 argument, or to another value) therefore change unreachable code.
 
+## `acceptance.parse_feature_text` — the pending scenario id sentinel
+
+```python
+pending_id: str | None = None
+...
+"id": pending_id or f"AC-{len(scenarios) + 1:03d}",
+```
+
+The mutants make that sentinel `""` instead of `None`. The value is only ever
+tested for truthiness, and both are falsy, so a scenario without a declared id
+still gets the generated one. `pending_id` is never compared with `is None` or
+with a string, so no caller can distinguish the two.
+
+## Measured, not argued: defaults the suite never falls back to
+
+A `.get(key, default)` mutant can only be observed when the key is missing. Rather
+than arguing case by case, every two-argument `.get` call in the package was
+rewritten to record when it actually used its default, and the whole suite was run
+against the instrumented tree. Of 73 real mapping defaults, 53 were used at least
+once and **20 were never reached in 1250 tests**; those sites carry 39 catalogued
+survivors. The recording is evidence, not proof: it shows the current suite cannot
+reach them, which is exactly what makes those mutants survive.
+
+Two cautions came out of that run, and both matter for anyone repeating it:
+`Store.get(identifier, kind)` is a method, not a mapping, so its two-argument
+calls are not defaults at all and must be excluded — 78 catalogued survivors are
+that type guard, and they are killable (`tests/control/test_record_kinds.py`
+kills thirteen). And 5 of 1255 tests failed under instrumentation, so the
+rewritten tree is not perfectly faithful; the mapping results were unaffected but
+the tool is not clean.
+
 ## Known survivors, not exempt: `Plane._expire` boundaries
 
 ```python
