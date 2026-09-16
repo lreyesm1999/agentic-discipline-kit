@@ -21,11 +21,29 @@ from agentic_discipline.control.mcp import MAX_MESSAGE, serve
 
 
 class _Sink(io.StringIO):
+    """Record what serve writes and flushes, refusing to grow past anything a case produces.
+
+    A loop that no longer ends on empty input answers it with an error forever. Each flush
+    keeps a copy of everything written so far, so that runaway grows quadratically and fills
+    a machine's memory long before a mutation run's timeout stops it. Failing past a limit
+    no case approaches turns it into an ordinary failure instead.
+    """
+
+    MAX_CHARACTERS = 64 * 1024
+    MAX_FLUSHES = 1000
+
     def __init__(self) -> None:
         super().__init__()
         self.flushes: list[str] = []
 
+    def write(self, text: str) -> int:
+        if self.tell() + len(text) > self.MAX_CHARACTERS:
+            raise AssertionError(f"serve wrote more than {self.MAX_CHARACTERS} characters")
+        return super().write(text)
+
     def flush(self) -> None:
+        if len(self.flushes) >= self.MAX_FLUSHES:
+            raise AssertionError(f"serve flushed more than {self.MAX_FLUSHES} times")
         self.flushes.append(self.getvalue())
         super().flush()
 
