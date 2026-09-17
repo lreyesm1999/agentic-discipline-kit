@@ -61,7 +61,6 @@ def git(root: Path, args: list[str]) -> str:
         encoding="utf-8",
         errors="replace",
         capture_output=True,
-        check=False,
         timeout=30,
     )
     return result.stdout.strip() if result.returncode == 0 else ""

@@ -15,7 +15,7 @@ from pathlib import Path
 import pytest
 
 from agentic_discipline.common import run_git
-from agentic_discipline.control.discovery import area, files
+from agentic_discipline.control.discovery import area, files, git
 
 posix_only = pytest.mark.skipif(os.name != "posix", reason="POSIX symlinks")
 
@@ -86,6 +86,25 @@ def test_git_listing_keeps_non_ascii_paths(tmp_path: Path) -> None:
     _write(tmp_path, "café/módulo.py", "中文/说明.md")
 
     assert _names(files(tmp_path)) == ["café/módulo.py", "中文/说明.md"]
+
+
+@posix_only
+def test_git_listing_skips_a_path_that_is_not_valid_utf8(tmp_path: Path) -> None:
+    run_git(["init", "-q"], cwd=tmp_path)
+    _write(tmp_path, "good.py")
+    (tmp_path / os.fsdecode(b"bad\xff.py")).write_bytes(b"x\n")
+
+    # Git prints the raw bytes; they cannot name a file once decoded, so only the
+    # readable path is listed, and the listing does not fail.
+    assert _names(files(tmp_path)) == ["good.py"]
+
+
+def test_a_failing_git_command_answers_with_nothing(tmp_path: Path) -> None:
+    run_git(["init", "-q"], cwd=tmp_path)
+
+    # Without a commit, `rev-parse HEAD` prints `HEAD` and fails.
+    assert git(tmp_path, ["rev-parse", "HEAD"]) == ""
+    assert git(tmp_path, ["rev-parse", "--is-inside-work-tree"]) == "true"
 
 
 def test_git_listing_honours_ignore_rules_and_skips_deleted_files(tmp_path: Path) -> None:
