@@ -290,8 +290,11 @@ def _defined_in_repository(name: str) -> bool:
     """Whether any tracked file still defines ``name``; unknown counts as defined."""
 
     pattern = rf"(^|[^A-Za-z0-9_])(def|class|function)[[:space:]]+{name}([^A-Za-z0-9_]|$)"
+    # Multi-threaded `git grep` intermittently crashes on some git builds (2.34 under WSL
+    # segfaulted on 5 of 40 runs); a crash only makes the audit stricter, but a single
+    # thread answers every time.
     process = subprocess.run(
-        ["git", "grep", "--quiet", "-E", pattern, "--", ":/"],
+        ["git", "grep", "--threads=1", "--quiet", "-E", pattern, "--", ":/"],
         capture_output=True,
     )
     return process.returncode != 1
