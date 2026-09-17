@@ -3,38 +3,38 @@ from pathlib import Path
 
 import pytest
 
-from agentic_discipline.bootstrap import bootstrap_project, initialize_project
+from agentic_discipline.bootstrap import initialize_project
 from agentic_discipline.common import AgenticError
 
 
 def test_bootstrap_creates_complete_target(tmp_path: Path) -> None:
     target = tmp_path / "target"
-    actions = bootstrap_project(target, "python")
+    actions = initialize_project(target, profile_ids=["python"])["actions"]
     assert (target / "AGENTS.md").is_file()
     assert (target / "agentic.config.json").is_file()
     assert (target / ".agentic" / "config" / "risk-weights.json").is_file()
     assert len(list((target / ".agentic" / "skills").glob("*/SKILL.md"))) == 12
     assert len(list((target / ".agentic" / "playbooks").glob("*/SKILL.md"))) == 20
     assert any(action.startswith("READY") for action in actions)
-    repeated = bootstrap_project(target, "python")
+    repeated = initialize_project(target, profile_ids=["python"])["actions"]
     assert any(action.startswith("SKIP") for action in repeated)
 
     (target / "AGENTS.md").write_text("old", encoding="utf-8")
-    bootstrap_project(target, "python", force=True)
+    initialize_project(target, profile_ids=["python"], force=True)
     assert (target / "AGENTS.md").read_text(encoding="utf-8") != "old"
 
 
 def test_bootstrap_refuses_filesystem_root() -> None:
     root = Path(Path.cwd().anchor)
     with pytest.raises(AgenticError, match="filesystem root"):
-        bootstrap_project(root, "python")
+        initialize_project(root, profile_ids=["python"])
 
 
 def test_bootstrap_refuses_unknown_stack_and_kit_root() -> None:
     with pytest.raises(AgenticError, match="profile not found"):
-        bootstrap_project(Path.cwd() / "target", "rust")
+        initialize_project(Path.cwd() / "target", profile_ids=["rust"])
     with pytest.raises(AgenticError, match="into itself"):
-        bootstrap_project(Path.cwd(), "python")
+        initialize_project(Path.cwd(), profile_ids=["python"])
 
 
 def test_init_autodetects_multiple_project_ecosystems(tmp_path: Path) -> None:

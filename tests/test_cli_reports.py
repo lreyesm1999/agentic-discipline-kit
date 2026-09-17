@@ -93,26 +93,6 @@ def test_quality_artifacts_option_overrides_the_config(
     assert not (tmp_path / "ignored").exists()
 
 
-# --- bootstrap ------------------------------------------------------------------------------
-
-
-def test_bootstrap_passes_target_stack_and_force(
-    monkeypatch: pytest.MonkeyPatch, printed: list[Any], tmp_path: Path
-) -> None:
-    calls: list[Any] = []
-    monkeypatch.setattr(
-        cli,
-        "bootstrap_project",
-        lambda target, stack, force: calls.append((target, stack, force)) or ["WRITE a"],
-    )
-
-    assert cli.command_bootstrap(_args(target=str(tmp_path), stack="python", force=True)) == 0
-    assert cli.command_bootstrap(_args(target=str(tmp_path), force=False)) == 0
-
-    assert calls == [(tmp_path, "python", True), (tmp_path, None, False)]
-    assert printed == [{"status": "PASS", "actions": ["WRITE a"]}] * 2
-
-
 # --- verifier validate ----------------------------------------------------------------------
 
 

@@ -1133,64 +1133,6 @@
             }
           ],
           "subcommands": null
-        },
-        "bootstrap": {
-          "help": "Compatibility alias for init",
-          "description": null,
-          "defaults": {
-            "func": "command_bootstrap"
-          },
-          "arguments": [
-            {
-              "action": "_StoreAction",
-              "options": [
-                "--target"
-              ],
-              "dest": "target",
-              "nargs": null,
-              "const": null,
-              "default": null,
-              "type": null,
-              "choices": null,
-              "required": true,
-              "help": null,
-              "metavar": null,
-              "version": null
-            },
-            {
-              "action": "_StoreAction",
-              "options": [
-                "--stack"
-              ],
-              "dest": "stack",
-              "nargs": null,
-              "const": null,
-              "default": null,
-              "type": null,
-              "choices": null,
-              "required": false,
-              "help": "Optional compatibility profile override",
-              "metavar": null,
-              "version": null
-            },
-            {
-              "action": "_StoreTrueAction",
-              "options": [
-                "--force"
-              ],
-              "dest": "force",
-              "nargs": 0,
-              "const": true,
-              "default": false,
-              "type": null,
-              "choices": null,
-              "required": false,
-              "help": null,
-              "metavar": null,
-              "version": null
-            }
-          ],
-          "subcommands": null
         }
       }
     }

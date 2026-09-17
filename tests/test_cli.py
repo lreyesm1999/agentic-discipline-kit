@@ -57,12 +57,6 @@ def test_init_command_reports_detected_profile(tmp_path: Path) -> None:
     )
 
 
-def test_bootstrap_command_remains_usable_without_stack(tmp_path: Path) -> None:
-    target = tmp_path / "project"
-
-    assert cli.command_bootstrap(ns(target=str(target), stack=None, force=False)) == 0
-
-
 def test_graph_command_pass_and_fail(tmp_path: Path) -> None:
     good = tmp_path / "good.json"
     good.write_text(

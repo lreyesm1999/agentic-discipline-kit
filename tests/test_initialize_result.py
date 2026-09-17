@@ -16,7 +16,7 @@ from typing import Any
 import pytest
 
 from agentic_discipline import adapters, bootstrap
-from agentic_discipline.bootstrap import bootstrap_project, find_contract_root, initialize_project
+from agentic_discipline.bootstrap import find_contract_root, initialize_project
 from agentic_discipline.profiles import load_profiles, requested_projects
 
 GATES = [
@@ -148,21 +148,3 @@ def test_existing_configuration_is_kept_unless_forced(tmp_path: Path, recorded: 
     forced = initialize_project(root, profile_ids=["python"], adapters=["generic"], force=True)
     assert json.loads(config.read_text(encoding="utf-8"))["gates"] == GATES
     assert f"WRITE {config.resolve()}" in forced["actions"]
-
-
-def test_bootstrap_wrapper_selects_the_stack_and_returns_actions(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    calls: list[Any] = []
-
-    def fake(target: Path, **options: Any) -> dict[str, Any]:
-        calls.append((target, options))
-        return {"actions": ("WRITE a", "READY b")}
-
-    monkeypatch.setattr(bootstrap, "initialize_project", fake)
-    assert bootstrap_project(tmp_path, "python", force=True) == ["WRITE a", "READY b"]
-    assert bootstrap_project(tmp_path) == ["WRITE a", "READY b"]
-    assert calls == [
-        (tmp_path, {"profile_ids": ["python"], "force": True}),
-        (tmp_path, {"profile_ids": None, "force": False}),
-    ]
