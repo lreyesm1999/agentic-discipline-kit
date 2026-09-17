@@ -124,7 +124,13 @@ non-ASCII content. The explicit `encoding="utf-8"` in the source is what prevent
 that, and the Windows jobs in the platform matrix are what exercise it. Keep the
 argument; do not treat these survivors as a reason to remove it.
 
-## Equivalent by the language: three families
+The same holds for subprocess output read as text: `run_git`, the control plane's
+`discovery.git` and `execute_verifier` pass `encoding="utf-8"`, and a mutant that
+drops it or sets it to `None` decodes with the same UTF-8 locale on Linux. On
+Windows the locale default is a legacy code page, and `tests/test_output_encoding.py`
+and `test_git_listing_keeps_non_ascii_paths` fail on the mutated call there.
+
+## Equivalent by the language: four families
 
 Each rule below is a property of Python itself, checked by running it, so it holds
 for every site of that shape rather than needing an argument per mutant.
@@ -145,6 +151,28 @@ matches or what its groups capture. Checked on the Gherkin patterns with lines i
 upper, lower and mixed case, plus a line that must not match: every pair matched
 identically and captured identical groups. A mutant that *removes* the flag is not
 in this family; it changes behaviour and stays on the kill list.
+
+**`check=False` in `subprocess.run`.** `False` is the default, and the argument is
+only tested for truth, so setting it to `None` or dropping it cannot make the call
+raise. Checked: `subprocess.run(["false"], check=None)` and `check=False` both
+return exit status 1 without raising. Where the argument was only restating the
+default, it was removed instead (`discovery.git`, the audit's repository check).
+
+## `integrity._file_changes` — the previous-line sentinel
+
+```python
+previous = ""
+...
+elif line == "+++ /dev/null" and previous.startswith("--- a/"):
+```
+
+`previous` is only read to see whether it starts with `--- a/`, and it holds the
+starting value only while the first line is examined. Any starting string that does
+not start with `--- a/` therefore gives the same pairing, including the mutant's
+`"XXXX"`. Checked by executing `_file_changes` with the starting value replaced by
+`"XXXX"`, `"x"`, `"--- b/"` and `""` on a diff whose first line is `+++ /dev/null`, a
+deleted-file diff and an empty diff: every variant returned identical pairs. `None`
+is not in this family: it raises on that first line, and a test kills it.
 
 ## Equivalent by SQLite: case in keywords and identifiers
 

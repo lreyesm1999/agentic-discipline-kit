@@ -10,11 +10,13 @@ states the exact list or label.
 from __future__ import annotations
 
 import os
+import subprocess
 from pathlib import Path
 
 import pytest
 
 from agentic_discipline.common import run_git
+from agentic_discipline.control import discovery
 from agentic_discipline.control.discovery import area, files, git
 
 posix_only = pytest.mark.skipif(os.name != "posix", reason="POSIX symlinks")
@@ -97,6 +99,20 @@ def test_git_listing_skips_a_path_that_is_not_valid_utf8(tmp_path: Path) -> None
     # Git prints the raw bytes; they cannot name a file once decoded, so only the
     # readable path is listed, and the listing does not fail.
     assert _names(files(tmp_path)) == ["good.py"]
+
+
+def test_git_is_given_thirty_seconds(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    # A git that hangs, on a locked index or a network filesystem, must not hang discovery.
+    calls: list[dict[str, object]] = []
+
+    def run(command: list[str], **options: object) -> subprocess.CompletedProcess[str]:
+        calls.append(options)
+        return subprocess.CompletedProcess(command, 0, " out \n", "")
+
+    monkeypatch.setattr(discovery.subprocess, "run", run)
+
+    assert git(tmp_path, ["status"]) == "out"
+    assert [call["timeout"] for call in calls] == [30]
 
 
 def test_a_failing_git_command_answers_with_nothing(tmp_path: Path) -> None:
