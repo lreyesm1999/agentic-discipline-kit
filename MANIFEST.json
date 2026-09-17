@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-17T15:19:41.833583+00:00",
+  "generated_at_utc": "2026-09-17T17:12:02.831299+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "7ea8ffefe321e76972dfb55832c98582678425ac9f3a63e6de9ba0bff45c0a49",
-      "bytes": 4573
+      "sha256": "82a22754dba9d1698776441baccd72f4cb65e6d7d94c841bfca3b17411bf2cc5",
+      "bytes": 4574
     },
     {
       "path": "docs/adoption.md",
@@ -400,8 +400,8 @@
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
-      "sha256": "14318b863c9ee656e3b11b7f8c402bc4a5d4fc3c2fe70ae681c159f955f71907",
-      "bytes": 12980
+      "sha256": "42dc11d1508d62cbfa7dd47cbf606413eee56b99d0ab105c3112c90aab58f494",
+      "bytes": 14524
     },
     {
       "path": "docs/v2/OPERATIONS.md",
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "f8a39306e3844619d97ddf538e73b912af4dfc3c191d435e48fa01683c58b3b2",
-      "bytes": 9154
+      "sha256": "58c195e700c7c0782cf0e97e6d4548cef5fda0d07651bf90cb3ffdc249045789",
+      "bytes": 9462
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -1380,8 +1380,8 @@
     },
     {
       "path": "tests/control/test_discovery_files.py",
-      "sha256": "677d3471fdcadb1d16c549c305661dd4a3514c6477a570799ecb3f12400e72f0",
-      "bytes": 5678
+      "sha256": "b1ee8ada9230b438448ddd97ac072ea3c4311ddad688f4c367e2e99c055c841c",
+      "bytes": 6324
     },
     {
       "path": "tests/control/test_execution.py",
@@ -1590,8 +1590,8 @@
     },
     {
       "path": "tests/test_common.py",
-      "sha256": "9a31015fc14a6660551ed259a875ecf25c28b1a8087dd30c6516a535a80c677f",
-      "bytes": 988
+      "sha256": "703b5de6432cd61b9f885394c11cdf103dc2943c80d7d0d00423b4fdf77571b8",
+      "bytes": 1406
     },
     {
       "path": "tests/test_contract_root.py",
@@ -1700,8 +1700,8 @@
     },
     {
       "path": "tests/test_integrity_retired.py",
-      "sha256": "23eb335fa26ea0589ad86858dcbbf3b9ade14853854b46f301ebdeacd4af5d99",
-      "bytes": 14119
+      "sha256": "32bf19fc49d6637060ef1096d11ecb53b1713ef5c2deec5217e5ee6d069d990d",
+      "bytes": 15016
     },
     {
       "path": "tests/test_integrity_rules.py",
