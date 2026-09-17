@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-17T14:50:11.033453+00:00",
+  "generated_at_utc": "2026-09-17T15:19:19.968268+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -835,8 +835,8 @@
     },
     {
       "path": "src/agentic_discipline/cli.py",
-      "sha256": "609e6065ef92573bb351d007a389fe66837f8d2902384f0ef674475166044b79",
-      "bytes": 23767
+      "sha256": "39ee17ae8f52ad47afbf6b8e0d759719062e8f3d8721732ff2c032fa6f51c0b5",
+      "bytes": 23992
     },
     {
       "path": "src/agentic_discipline/common.py",
