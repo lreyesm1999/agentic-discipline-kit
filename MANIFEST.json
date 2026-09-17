@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-16T20:21:28.313133+00:00",
+  "generated_at_utc": "2026-09-17T01:57:17.003864+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "8cc0cf2f5f58b9a8ab5884da2ba4f7e71cbec4d6ba29100f706e9bdbcd4db4fd",
-      "bytes": 6483
+      "sha256": "3b948ba2c3fe31619791650300f00384dca85ce2c79bd3e2b68b20c2aabb9244",
+      "bytes": 8580
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "434385286eb86529953cc12b3401ef0d97cdc7ae3747a9f80388cb9a34ec4e42",
+      "sha256": "ff07f7f60587cab8fbb10366186f023ba2d238e4f87f4a865980e6811644aeb7",
       "bytes": 4573
     },
     {
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "eb555009e78a6259d15fea7371be4dc3e29dd14e0ea21d91a0ad10d6c186c4ec",
-      "bytes": 8843
+      "sha256": "ae44fb9ade91f998f4e828665c0b6dd16eaa6b5bfbbec495e792352752abb8ff",
+      "bytes": 8916
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -850,7 +850,7 @@
     },
     {
       "path": "packaging/npm/README.md",
-      "sha256": "f5a8e1f25e2f67846529a3bd0f0d7a26c82f0988c90baa40540548b87c303d60",
+      "sha256": "2027c5cc541d02f4595794ab4955aae41f60194dfb73ba6c002a682dba85d93b",
       "bytes": 1794
     },
     {
@@ -1080,8 +1080,8 @@
     },
     {
       "path": "skills/12-quality-gates/SKILL.md",
-      "sha256": "2c0e5ed0e0c5547ff892107e4c82c58fbc0f5b99a913d8202a31b370e4d35de3",
-      "bytes": 782
+      "sha256": "bc8fe1a6caa80510c60225ef3e5994f55261c0f58c3a212efcd7a05fd0c4ac87",
+      "bytes": 785
     },
     {
       "path": "skills/13-differential-mutation/SKILL.md",
@@ -1100,8 +1100,8 @@
     },
     {
       "path": "skills/16-integrity-audit/SKILL.md",
-      "sha256": "04c47f2f1bbb1b0a17dcd1b2d6795be4e37c40b53908d32f88a8cef574c7656f",
-      "bytes": 818
+      "sha256": "b297b156f8f60ad6450e8fdc5da62afb7c664d6bef241b6ff1bd78c6fd50940e",
+      "bytes": 822
     },
     {
       "path": "skills/17-independent-review/SKILL.md",
@@ -1145,8 +1145,8 @@
     },
     {
       "path": "src/agentic_discipline/adapters.py",
-      "sha256": "68d0c1c644a21259d2d4952fd3fc30c08a84105209d2beccc38a461ab673555e",
-      "bytes": 17390
+      "sha256": "f5545dfb35eedee00e55199fc4d8b72b484b05ba3fcc64d9627c1fd435c6f92c",
+      "bytes": 17441
     },
     {
       "path": "src/agentic_discipline/bootstrap.py",
@@ -1170,13 +1170,13 @@
     },
     {
       "path": "src/agentic_discipline/control/api.py",
-      "sha256": "671e5478175f70b02d7ce8b7b462a7198cf63d55682946a6ed4a2d215ac203d7",
-      "bytes": 8614
+      "sha256": "96f1667c3b7f9195c20e6ed8b22eb2ec4c8c1839932f9b87d6e7250e513c249f",
+      "bytes": 8648
     },
     {
       "path": "src/agentic_discipline/control/cli.py",
-      "sha256": "5240ba44803f6446b6671702757796f9dbd5a29b83f378e8c57fa62a30b67dc8",
-      "bytes": 11316
+      "sha256": "3ced7490418b104c9b6ccbff53879145931e297cb0b83580462da6def5e8bca0",
+      "bytes": 11358
     },
     {
       "path": "src/agentic_discipline/control/console.py",
@@ -1575,8 +1575,8 @@
     },
     {
       "path": "tests/test_adapter_layout.py",
-      "sha256": "8c3f4c3a9b0ae738037dcb3ee1304dcd99581e331371a647aa1516c50a4c812b",
-      "bytes": 5648
+      "sha256": "65bbfb625cfd86cd5c15c5f5365e6bd2501b3c038d1385045588844bfa789bb2",
+      "bytes": 6311
     },
     {
       "path": "tests/test_adapters.py",
@@ -1617,6 +1617,11 @@
       "path": "tests/test_cli_surface.py",
       "sha256": "162ced43da78e70435a6062bd430ebeea597821d774bbe1e73eabfd3ab3c3bd1",
       "bytes": 3455
+    },
+    {
+      "path": "tests/test_cli_verification_commands.py",
+      "sha256": "ac37554b1c37b63a9fb16b36d816626f77b8615c74564d92feabc764a435d19d",
+      "bytes": 4579
     },
     {
       "path": "tests/test_common.py",
