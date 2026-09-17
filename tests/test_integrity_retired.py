@@ -260,6 +260,81 @@ def test_the_command_fails_on_findings_and_still_lists_retired_tests(
     assert [finding["line"] for finding in printed["retired_tests"]] == [ALIAS_ASSERT]
 
 
+def _hunk(path: str, *lines: str) -> str:
+    """A file section whose lines already carry their `+`, `-` or context prefix."""
+
+    return "\n".join([f"--- a/{path}", f"+++ b/{path}", "@@ -1 +1 @@", *lines]) + "\n"
+
+
+def test_a_diff_that_starts_with_a_deleted_file_header_is_read() -> None:
+    assert audit_diff("\n".join(["+++ /dev/null", "-assert value"]) + "\n") == []
+
+
+def test_a_removed_test_ends_where_its_hunk_ends() -> None:
+    # The next hunk's removal is not part of the test, so it cannot stop it being retired.
+    diff = _removed_alias() + _hunk(
+        "tests/test_alias.py", f"-{TEST_DEF}", f"-{ALIAS_ASSERT}", "@@ -9 +8 @@", "-    unused = 1"
+    )
+
+    assert audit_changes(diff, still_defined=_gone) == IntegrityAudit(
+        findings=[], retired=[TEST_FINDING, ASSERT_FINDING]
+    )
+
+
+def test_removed_assertions_are_recognised_in_any_letter_case() -> None:
+    line = "    Expect(total).toBe(3)"
+
+    assert audit_diff(_file("tests/app.test.js", removed=(line,))) == [
+        IntegrityFinding("tests/app.test.js", "assertion_removed", line)
+    ]
+
+
+def test_file_headers_are_not_read_as_added_or_removed_lines() -> None:
+    # Each path would match a pattern if its header were audited as content.
+    diff = (
+        _file(".github/workflows/mutation-2.yml", added=("name: build",))
+        + _file("tests/test_a.py", added=("value = 1",))
+        + _file("tests/assert/test_b.py", added=("other = 2",))
+    )
+
+    assert audit_diff(diff) == []
+
+
+def test_a_removed_assertion_in_a_path_named_assert_is_still_reported() -> None:
+    diff = _file("tests/assert/test_b.py", removed=(ALIAS_ASSERT,))
+
+    assert audit_diff(diff) == [
+        IntegrityFinding("tests/assert/test_b.py", "assertion_removed", ALIAS_ASSERT)
+    ]
+
+
+def test_unchanged_context_lines_are_neither_removed_code_nor_removed_tests() -> None:
+    diff = _hunk("src/app.py", " def alias(value):", "-    old = 1") + _hunk(
+        "tests/test_alias.py", f" {TEST_DEF}", f" {ALIAS_ASSERT}", "-    unused = 1"
+    )
+
+    assert audit_changes(diff, still_defined=_gone) == IntegrityAudit(findings=[], retired=[])
+
+
+def test_generated_evidence_does_not_stop_the_audit_of_later_lines() -> None:
+    diff = _file("docs/v2/evidence/result.json", removed=("assert value",)) + _removed_test(
+        ALIAS_ASSERT
+    )
+
+    assert audit_diff(diff) == [TEST_FINDING, ASSERT_FINDING]
+
+
+def test_only_an_added_assertion_excuses_a_removed_one_in_the_same_file() -> None:
+    removed = "    assert total() == 3"
+    diff = _file("tests/test_a.py", removed=(removed,), added=("    total()",))
+
+    assert audit_diff(diff) == [IntegrityFinding("tests/test_a.py", "assertion_removed", removed)]
+
+
+def test_gate_words_removed_outside_gate_configuration_are_not_reported() -> None:
+    assert audit_diff(_file("src/app.py", removed=("    run(command)",))) == []
+
+
 def _git(root: Path, *arguments: str) -> None:
     subprocess.run(["git", *arguments], cwd=root, check=True, capture_output=True)
 
@@ -288,8 +363,10 @@ def test_the_repository_check_finds_definitions_in_tracked_files(
 
 
 def test_the_repository_check_assumes_defined_when_git_cannot_answer(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capfd: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.chdir(tmp_path)
 
     assert cli._defined_in_repository("anything")
+    # Git's complaint must not reach the terminal: the audit prints JSON other tools read.
+    assert capfd.readouterr() == ("", "")

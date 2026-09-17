@@ -292,7 +292,6 @@ def _defined_in_repository(name: str) -> bool:
     pattern = rf"(^|[^A-Za-z0-9_])(def|class|function)[[:space:]]+{name}([^A-Za-z0-9_]|$)"
     process = subprocess.run(
         ["git", "grep", "--quiet", "-E", pattern, "--", ":/"],
-        check=False,
         capture_output=True,
     )
     return process.returncode != 1
