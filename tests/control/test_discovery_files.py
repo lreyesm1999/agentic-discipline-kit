@@ -81,6 +81,13 @@ def test_scope_prefixes_keep_every_character_of_the_directory_name(tmp_path: Pat
     assert _names(files(tmp_path, scope=["LibX"])) == ["LibX/a.py"]
 
 
+def test_git_listing_keeps_non_ascii_paths(tmp_path: Path) -> None:
+    run_git(["init", "-q"], cwd=tmp_path)
+    _write(tmp_path, "café/módulo.py", "中文/说明.md")
+
+    assert _names(files(tmp_path)) == ["café/módulo.py", "中文/说明.md"]
+
+
 def test_git_listing_honours_ignore_rules_and_skips_deleted_files(tmp_path: Path) -> None:
     run_git(["init", "-q"], cwd=tmp_path)
     run_git(["config", "user.email", "test@example.invalid"], cwd=tmp_path)

@@ -53,8 +53,16 @@ def allowed(path: Path) -> bool:
 
 
 def git(root: Path, args: list[str]) -> str:
+    # Git writes UTF-8, and `ls-files -z` leaves non-ASCII paths unquoted; the locale
+    # default on Windows is a legacy code page that would misread them.
     result = subprocess.run(
-        ["git", *args], cwd=root, text=True, capture_output=True, check=False, timeout=30
+        ["git", *args],
+        cwd=root,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        check=False,
+        timeout=30,
     )
     return result.stdout.strip() if result.returncode == 0 else ""
 
