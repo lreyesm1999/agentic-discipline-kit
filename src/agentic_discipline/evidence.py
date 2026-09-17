@@ -13,11 +13,8 @@ from .common import AgenticError
 
 
 def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
     with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(65536), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+        return hashlib.file_digest(handle, hashlib.sha256).hexdigest()
 
 
 def _record_hash(record: dict[str, Any]) -> str:

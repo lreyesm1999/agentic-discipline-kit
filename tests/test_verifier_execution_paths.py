@@ -18,10 +18,10 @@ import pytest
 
 from agentic_discipline.bootstrap import initialize_project
 from agentic_discipline.common import AgenticError
+from agentic_discipline.evidence import sha256_file
 from agentic_discipline.verifier import executor
 from agentic_discipline.verifier.executor import _required_command, execute_verifier
 from agentic_discipline.verifier.registry import register_verifier
-from agentic_discipline.verifier.result import hash_file
 
 VERIFIER_ID = "VER-PATHS"
 
@@ -175,10 +175,10 @@ def test_package_artifacts_are_recorded_relative_to_the_project_once(tmp_path: P
 
     package_report = _package(project) / "package-report.txt"
     assert result["artifacts"] == [
-        {"path": "shared.txt", "sha256": hash_file(shared)},
+        {"path": "shared.txt", "sha256": sha256_file(shared)},
         {
             "path": f".agentic/verification/generated/{VERIFIER_ID}/package-report.txt",
-            "sha256": hash_file(package_report),
+            "sha256": sha256_file(package_report),
         },
     ]
 

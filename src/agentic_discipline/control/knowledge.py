@@ -92,9 +92,10 @@ class Knowledge:
                     "RETIRED_DEPENDENCY",
                     "Active knowledge cannot depend on retired knowledge",
                 )
+                # The list grows while it is walked, so the walk ends once no new node is
+                # reached; unlike popping, nothing can keep it from ever shrinking.
                 visited, pending = set(), [target]
-                while pending:
-                    current = pending.pop()
+                for current in pending:
                     if current in visited:
                         continue
                     visited.add(current)

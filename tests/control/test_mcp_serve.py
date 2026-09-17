@@ -48,6 +48,27 @@ class _Sink(io.StringIO):
         super().flush()
 
 
+class _Source(io.StringIO):
+    """Input for serve that refuses to be read more often than any case needs.
+
+    Reading past the end returns an empty string forever, so a loop that stops treating
+    that as the end keeps reading without writing anything, and only a mutation run's
+    timeout would stop it. Failing past a limit turns it into an ordinary failure.
+    """
+
+    MAX_READS = 1000
+
+    def __init__(self, text: str) -> None:
+        super().__init__(text)
+        self.reads = 0
+
+    def readline(self, size: int | None = -1) -> str:
+        self.reads += 1
+        if self.reads > self.MAX_READS:
+            raise AssertionError(f"serve read more than {self.MAX_READS} lines")
+        return super().readline(size)
+
+
 @pytest.fixture
 def received(monkeypatch: pytest.MonkeyPatch) -> list[Any]:
     seen: list[Any] = []
@@ -80,7 +101,7 @@ def test_each_message_gets_one_flushed_response_and_notifications_get_none(
     received: list[Any],
 ) -> None:
     plane = object()
-    source = io.StringIO('{"id": 1}\n{"id": 2, "notify": true}\n{"id": 3}')
+    source = _Source('{"id": 1}\n{"id": 2, "notify": true}\n{"id": 3}')
     sink = _Sink()
 
     serve(plane, source, sink)
@@ -97,7 +118,7 @@ def test_each_message_gets_one_flushed_response_and_notifications_get_none(
 )
 def test_malformed_json_is_answered_and_the_loop_continues(received: list[Any], line: str) -> None:
     sink = _Sink()
-    serve(object(), io.StringIO(line + '{"id": 9}\n'), sink)
+    serve(object(), _Source(line + '{"id": 9}\n'), sink)
     assert sink.getvalue() == _error(-32700, "Invalid JSON") + _ok(9)
     assert [message for _, message in received] == [{"id": 9}]
 
@@ -105,7 +126,7 @@ def test_malformed_json_is_answered_and_the_loop_continues(received: list[Any], 
 def test_oversized_messages_are_skipped_to_their_end_and_refused(received: list[Any]) -> None:
     oversized = "x" * (MAX_MESSAGE * 2 + 10) + "\n"
     sink = _Sink()
-    serve(object(), io.StringIO(oversized + '{"id": 5}\n'), sink)
+    serve(object(), _Source(oversized + '{"id": 5}\n'), sink)
     assert sink.getvalue() == _error(-32600, "Message exceeds size limit") + _ok(5)
     assert [message for _, message in received] == [{"id": 5}]
 
@@ -115,19 +136,19 @@ def test_a_message_of_exactly_the_limit_is_accepted(received: list[Any]) -> None
     line = prefix + "p" * (MAX_MESSAGE - len(prefix) - len(suffix)) + suffix
     assert len(line) == MAX_MESSAGE
     sink = _Sink()
-    serve(object(), io.StringIO(line), sink)
+    serve(object(), _Source(line), sink)
     assert sink.getvalue() == _ok(7)
     assert json.loads(line) == received[0][1]
 
 
 def test_an_oversized_final_message_without_newline_ends_the_loop(received: list[Any]) -> None:
     sink = _Sink()
-    serve(object(), io.StringIO("y" * (MAX_MESSAGE + 1)), sink)
+    serve(object(), _Source("y" * (MAX_MESSAGE + 1)), sink)
     assert sink.getvalue() == _error(-32600, "Message exceeds size limit")
     assert received == []
 
 
 def test_empty_input_ends_without_output(received: list[Any]) -> None:
     sink = _Sink()
-    serve(object(), io.StringIO(""), sink)
+    serve(object(), _Source(""), sink)
     assert (sink.getvalue(), sink.flushes, received) == ("", [], [])

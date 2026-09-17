@@ -23,10 +23,10 @@ import pytest
 
 from agentic_discipline.bootstrap import initialize_project
 from agentic_discipline.common import AgenticError
+from agentic_discipline.evidence import sha256_file
 from agentic_discipline.verifier import executor
 from agentic_discipline.verifier.executor import _command_parts, execute_verifier
 from agentic_discipline.verifier.registry import register_verifier
-from agentic_discipline.verifier.result import hash_file
 
 VERIFIER_ID = "VER-RESULT"
 STARTED = "2026-01-02T03:04:05+00:00"
@@ -131,7 +131,7 @@ def test_completed_run_records_every_result_field(tmp_path: Path, fixed_clock: N
         "exit_code": 3,
         "duration_seconds": 1.234568,
         "observations": {"stdout": "y" * 20000, "stderr": "q" * 20000},
-        "artifacts": [{"path": "report.txt", "sha256": hash_file(report)}],
+        "artifacts": [{"path": "report.txt", "sha256": sha256_file(report)}],
         "toolchain": {"python": sys.version.split()[0]},
         "environment": {"cwd": str(project.resolve())},
     }
@@ -231,4 +231,4 @@ def test_hash_file_covers_content_larger_than_one_read_chunk(tmp_path: Path) -> 
     payload = bytes(range(256)) * 600
     artifact = tmp_path / "large.bin"
     artifact.write_bytes(payload)
-    assert hash_file(artifact) == hashlib.sha256(payload).hexdigest()
+    assert sha256_file(artifact) == hashlib.sha256(payload).hexdigest()
