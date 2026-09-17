@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 
 PATTERNS: dict[str, str] = {
@@ -16,7 +17,12 @@ PATTERNS: dict[str, str] = {
     ),
 }
 
-GATE_CONFIGURATION_FILES = {"pyproject.toml", "pytest.ini", "tox.ini", ".coveragerc"}
+GATE_CONFIGURATION_FILES = {
+    "pyproject.toml",
+    "pytest.ini",
+    "tox.ini",
+    ".coveragerc",
+}
 GATE_CONFIGURATION_PREFIXES = (".github/workflows/", ".agentic/")
 GENERATED_EVIDENCE_PREFIXES = ("docs/v2/evidence/",)
 
@@ -53,30 +59,91 @@ def is_test_file(path: str | None) -> bool:
     return bool(path and (path.startswith("tests/") or "/tests/" in path))
 
 
-def audit_diff(diff_text: str) -> list[IntegrityFinding]:
-    findings: list[IntegrityFinding] = []
+# A removed test is only evidence of weakened verification while the code it exercised
+# still exists. When the same change deletes that code, the test cannot run any more
+# and is retired with it; the audit still lists it so a reviewer sees what went.
+DEFINITION = r"^\s*(?:export\s+)?(?:async\s+)?(?:def|class|function)\s+([A-Za-z_]\w*)"
+CALL = r"([A-Za-z_]\w*)\s*\("
+
+
+@dataclass(frozen=True)
+class IntegrityAudit:
+    findings: list[IntegrityFinding]
+    retired: list[IntegrityFinding]
+
+
+@dataclass
+class _Removal:
+    line: str
+    run: int
+
+
+def _file_changes(diff_text: str) -> list[tuple[str | None, str]]:
+    """Pair each line with the file it belongs to; a deleted file keeps its old path."""
+
+    paired: list[tuple[str | None, str]] = []
     current_file: str | None = None
+    previous = ""
+    for line in diff_text.splitlines():
+        if line.startswith("+++ b/"):
+            current_file = line[6:]
+        elif line == "+++ /dev/null" and previous.startswith("--- a/"):
+            current_file = previous[6:]
+        paired.append((current_file, line))
+        previous = line
+    return paired
+
+
+def audit_diff(diff_text: str) -> list[IntegrityFinding]:
+    """Audit a diff without looking at the repository, so no test counts as retired."""
+
+    return audit_changes(diff_text, still_defined=lambda name: True).findings
+
+
+def audit_changes(diff_text: str, still_defined: Callable[[str], bool]) -> IntegrityAudit:
+    findings: list[IntegrityFinding] = []
+    changes = _file_changes(diff_text)
     updated_test_assertions: set[str] = set()
+    added_definitions: set[str] = set()
+    removed_definitions: set[str] = set()
 
-    for line in diff_text.splitlines():
-        if line.startswith("+++ b/"):
-            current_file = line[6:]
-        elif (
-            line.startswith("+")
-            and not line.startswith("+++")
-            and is_test_file(current_file)
-            and re.search(DELETION_PATTERNS["assertion_removed"], line[1:])
-        ):
-            if current_file is not None:
-                updated_test_assertions.add(current_file)
-
-    current_file = None
-
-    for line in diff_text.splitlines():
-        if line.startswith("+++ b/"):
-            current_file = line[6:]
-            continue
+    for current_file, line in changes:
         if line.startswith("+") and not line.startswith("+++"):
+            definition = re.match(DEFINITION, line[1:])
+            if definition:
+                added_definitions.add(definition.group(1))
+            if is_test_file(current_file) and re.search(
+                DELETION_PATTERNS["assertion_removed"], line[1:]
+            ):
+                if current_file is not None:
+                    updated_test_assertions.add(current_file)
+        elif line.startswith("-") and not line.startswith("---"):
+            definition = re.match(DEFINITION, line[1:])
+            if definition and not is_test_file(current_file):
+                removed_definitions.add(definition.group(1))
+
+    gone: dict[str, bool] = {}
+
+    def retires(removed: str) -> bool:
+        for name in re.findall(CALL, removed):
+            if name not in removed_definitions or name in added_definitions:
+                continue
+            if name not in gone:
+                gone[name] = not still_defined(name)
+            if gone[name]:
+                return True
+        return False
+
+    candidates: list[tuple[IntegrityFinding, _Removal]] = []
+    test_removals: list[_Removal] = []
+    run = 0
+
+    for current_file, line in changes:
+        if line.startswith("+++"):
+            run += 1
+            continue
+        if line.startswith("+"):
+            run += 1
             added = line[1:]
             for name, pattern in PATTERNS.items():
                 if re.search(pattern, added, re.IGNORECASE):
@@ -95,14 +162,56 @@ def audit_diff(diff_text: str) -> list[IntegrityFinding]:
                     for name, pattern in DELETION_PATTERNS.items()
                     if name in {"assertion_removed", "test_removed"}
                 }
+                removal = _Removal(removed, run)
+                test_removals.append(removal)
             elif is_gate_configuration(current_file):
                 deletion_patterns = {"gate_removed": DELETION_PATTERNS["gate_removed"]}
+                removal = _Removal(removed, run)
             else:
-                deletion_patterns = {}
+                continue
             for name, pattern in deletion_patterns.items():
                 if name == "assertion_removed" and current_file in updated_test_assertions:
                     continue
                 if re.search(pattern, removed, re.IGNORECASE):
-                    findings.append(IntegrityFinding(current_file, name, removed[:500]))
+                    finding = IntegrityFinding(current_file, name, removed[:500])
+                    findings.append(finding)
+                    candidates.append((finding, removal))
+        else:
+            run += 1
 
-    return findings
+    retired: list[IntegrityFinding] = []
+    for finding, removal in candidates:
+        if finding.pattern == "assertion_removed":
+            is_retired = retires(removal.line)
+        else:
+            is_retired = finding.pattern == "test_removed" and _test_is_retired(
+                removal, test_removals, retires
+            )
+        if is_retired:
+            retired.append(finding)
+    retired_ids = {id(finding) for finding in retired}
+    return IntegrityAudit(
+        findings=[finding for finding in findings if id(finding) not in retired_ids],
+        retired=retired,
+    )
+
+
+def _test_is_retired(
+    start: _Removal, test_removals: list[_Removal], retires: Callable[[str], bool]
+) -> bool:
+    """A removed test is retired when every assertion it lost calls deleted code."""
+
+    index = next(i for i, removal in enumerate(test_removals) if removal is start)
+    body = [start]
+    for removal in test_removals[index + 1 :]:
+        if removal.run != start.run:
+            break
+        if re.search(DELETION_PATTERNS["test_removed"], removal.line, re.IGNORECASE):
+            break
+        body.append(removal)
+    assertions = [
+        removal.line
+        for removal in body
+        if re.search(DELETION_PATTERNS["assertion_removed"], removal.line, re.IGNORECASE)
+    ]
+    return bool(assertions) and all(retires(line) for line in assertions)
