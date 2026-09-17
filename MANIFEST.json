@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-17T02:57:56.406931+00:00",
+  "generated_at_utc": "2026-09-17T03:23:59.894786+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "d43dec613c99ee5746988e718bbee85b997b32605da354559453d7b1c5439896",
-      "bytes": 9809
+      "sha256": "da22a929b3eb90fa27ed7973ca8829405014a1d227f91451bc6a55fb75db7174",
+      "bytes": 10280
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -325,7 +325,7 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "f231c9faad8e7efd18eddf42c5f0b4bbacbacea5cb84a406e044ce3db8ae4921",
+      "sha256": "3be160529875f6eb9497cf5520565cd11f59ad7e07e215e82d7d5a20b3cc1391",
       "bytes": 4573
     },
     {
@@ -415,7 +415,7 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "4829d94496dd37ba42385d0a4540e071684265aafbebdbaf1fe17b6b05d10e83",
+      "sha256": "34f38c7e1b67ea8e1671947ed43770c0a121d013624157ba043baabae8020721",
       "bytes": 8916
     },
     {
@@ -1125,8 +1125,8 @@
     },
     {
       "path": "src/agentic_discipline/common.py",
-      "sha256": "299a4f34759e245cb2945aeb24edacbb1352dda93e9a070f6ae8e1a5d8a4690d",
-      "bytes": 744
+      "sha256": "4e5b1ff2fcdcb72442b8e98ec76c8c9f7c59a73090625d50b18f69244ab690ae",
+      "bytes": 952
     },
     {
       "path": "src/agentic_discipline/control/__init__.py",
@@ -1160,8 +1160,8 @@
     },
     {
       "path": "src/agentic_discipline/control/discovery.py",
-      "sha256": "df481502f3e5e567bf2bebcdf72d460a9c73be9bab965c4e6946f53fa8c90ddb",
-      "bytes": 9833
+      "sha256": "1e2f935d3bc7a056d9a7f18313fc7a60703f1421333256deb2a386971417d539",
+      "bytes": 10065
     },
     {
       "path": "src/agentic_discipline/control/knowledge.py",
@@ -1230,8 +1230,8 @@
     },
     {
       "path": "src/agentic_discipline/quality.py",
-      "sha256": "1a80dbc4e120cfb3bcc6293ffdc64ae65295958a81277ee0770815552a12c52f",
-      "bytes": 5834
+      "sha256": "f139907afd17a1cbfabcbea17fc712b781b889640f6a105e7a042422791865e4",
+      "bytes": 5962
     },
     {
       "path": "src/agentic_discipline/requirements.py",
@@ -1260,8 +1260,8 @@
     },
     {
       "path": "src/agentic_discipline/verifier/executor.py",
-      "sha256": "0650d81cd311c8eebe49b8fe344ea3be6cb683292af08312e9489dac9c09bf91",
-      "bytes": 6085
+      "sha256": "f277661765c3791242a289d972b2d7f77c2af13453a8db1d82cee5e220e7214d",
+      "bytes": 6217
     },
     {
       "path": "src/agentic_discipline/verifier/protection.py",
@@ -1380,8 +1380,8 @@
     },
     {
       "path": "tests/control/test_discovery_files.py",
-      "sha256": "1b69fd52032ed5b4dc91099c1da0f0ea5bcc0e8b9952fbd297e38b9833aa12e3",
-      "bytes": 4674
+      "sha256": "7283c245f5f4acf4f76db2920573a1670b8d618ddecac0c4059e20e75d73cc99",
+      "bytes": 4927
     },
     {
       "path": "tests/control/test_execution.py",
@@ -1650,8 +1650,8 @@
     },
     {
       "path": "tests/test_gate_result.py",
-      "sha256": "fa1762975fa0c60426057eb5cd65cb19839e8b94a0ba2438db0ab30c00ee4b1e",
-      "bytes": 7804
+      "sha256": "5fd198dc699eba7ceb3a0977950fc9d47bc72859db4ccb0ef74b2db47de4f121",
+      "bytes": 7848
     },
     {
       "path": "tests/test_generated_config.py",
@@ -1700,8 +1700,8 @@
     },
     {
       "path": "tests/test_integrity_retired.py",
-      "sha256": "20aeed751436016b0c4d99931d07eb53ce5af57fd27068bd8c8b74a4d2e518be",
-      "bytes": 9356
+      "sha256": "75bf98b2f085cd013b2dfa80f5d77bd2330c811c993bb40c7018c11710cbb843",
+      "bytes": 11112
     },
     {
       "path": "tests/test_integrity_rules.py",
@@ -1717,6 +1717,11 @@
       "path": "tests/test_mutation_gate.py",
       "sha256": "f6b1f8e2e146838b65e67e4f442497e3bf8d7aa7042c10869372c6dd8b98f25f",
       "bytes": 1996
+    },
+    {
+      "path": "tests/test_output_encoding.py",
+      "sha256": "d7dc138a4defba09d4c5e17e725f8e2be14b882eefe82403a99838ef2f1d43af",
+      "bytes": 3007
     },
     {
       "path": "tests/test_packaging.py",
