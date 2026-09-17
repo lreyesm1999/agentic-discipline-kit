@@ -21,7 +21,7 @@ native format:
 | Codex, Zed, Cline, Aider, Jules | `AGENTS.md` |
 | ChatGPT | a paste-ready bundle |
 
-All eleven disciplines are compiled from one canonical source, so the surfaces
+All twelve disciplines are compiled from one canonical source, so the surfaces
 cannot drift apart, and each carries the activation metadata its host tool needs.
 
 Two files land in your repository root - `AGENTS.md` and `agentic.config.json`.

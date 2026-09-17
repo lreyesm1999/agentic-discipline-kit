@@ -6,6 +6,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from . import API_VERSION
 from .contracts import ControlError, require
 from .diagnostics import doctor
 from .plane import Plane
@@ -231,4 +232,4 @@ def call(plane: Plane, name: str, args: dict[str, Any], *, local: bool = False) 
         )
     else:
         raise ControlError("UNKNOWN_OPERATION", name)
-    return {"api_version": "2", "operation": name, "data": result}
+    return {"api_version": API_VERSION, "operation": name, "data": result}

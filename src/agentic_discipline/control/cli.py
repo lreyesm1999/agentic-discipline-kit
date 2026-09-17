@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 from typing import Any, cast
 
+from . import API_VERSION
 from .api import SCHEMAS, call
 from .contracts import ControlError, encode, require
 from .migration import import_legacy, rollback_changeset
@@ -114,7 +115,7 @@ def session(path: Path | None) -> str:
 
 def run(args: argparse.Namespace) -> dict[str, Any] | None:
     if args.group == "adopt":
-        return {"api_version": "2", "data": adopt(args.path, args.dry_run)}
+        return {"api_version": API_VERSION, "data": adopt(args.path, args.dry_run)}
     with Plane(args.root) as plane:
         if args.group == "mcp":
             from .mcp import serve
@@ -264,7 +265,7 @@ def main() -> None:
         print(
             encode(
                 {
-                    "api_version": "2",
+                    "api_version": API_VERSION,
                     "status": "ERROR",
                     "code": getattr(exc, "code", "OPERATION_FAILED"),
                     "message": str(exc),

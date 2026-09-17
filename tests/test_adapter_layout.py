@@ -15,7 +15,7 @@ from typing import Any
 
 import pytest
 
-from agentic_discipline.adapters import COMMANDS, EMITTERS, sync_adapters
+from agentic_discipline.adapters import ADAPTERS, COMMANDS, EMITTERS, sync_adapters
 from agentic_discipline.bootstrap import find_contract_root
 from agentic_discipline.skills import load_disciplines, parse_frontmatter
 
@@ -86,6 +86,25 @@ def test_each_adapter_writes_exactly_its_own_layout(tmp_path: Path, adapter: str
     if adapter != "claude-plugin":
         expected |= _canonical_paths()
     assert _written(project) == expected
+
+
+@pytest.mark.parametrize("adapter", sorted(EMITTERS), ids=sorted(EMITTERS))
+def test_the_output_adapters_list_reports_is_one_the_adapter_writes(
+    tmp_path: Path, adapter: str
+) -> None:
+    # `adapters list` reports ADAPTERS, a table kept apart from the emitters, so a
+    # moved emitter would leave the listing pointing at a path nothing writes.
+    project = tmp_path / adapter
+    project.mkdir()
+
+    sync_adapters(project, [adapter])
+
+    reported = ADAPTERS[adapter]
+    written = _written(project)
+    if reported.endswith("/"):
+        assert any(path.startswith(reported) for path in written)
+    else:
+        assert reported in written
 
 
 def test_the_canonical_payload_is_shared_by_every_project_surface(tmp_path: Path) -> None:
