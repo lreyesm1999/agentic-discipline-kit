@@ -55,6 +55,10 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ### Fixed
 - `integrity` charged the lines of a deleted file to the file listed before it, so deleting a
   whole test file after a source file removed its tests and assertions unreported.
+- Output of git, quality gates and verifiers is read as UTF-8, with undecodable bytes replaced.
+  It was read in the locale's encoding: on Windows, UTF-8 output came back garbled and a byte the
+  code page cannot map crashed the read, so `integrity` failed on such a diff instead of auditing
+  it; on any platform, a tool printing invalid UTF-8 crashed its gate or verifier the same way.
 - Three installed playbooks told agents to run `risk_score.py`, `scripts/quality_engine.py` and
   `scripts/integrity_audit.py`, which `init` never copies into a project. They now name
   `agentic-discipline risk`, `quality` and `integrity`.

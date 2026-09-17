@@ -155,7 +155,8 @@ def test_string_commands_are_split_and_run_without_a_shell(
             {
                 "cwd": tmp_path,
                 "shell": False,
-                "text": True,
+                "encoding": "utf-8",
+                "errors": "replace",
                 "capture_output": True,
                 "check": False,
                 "timeout": 900.0,

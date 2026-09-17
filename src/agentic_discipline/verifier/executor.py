@@ -90,7 +90,9 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
                 cwd=cwd,
                 env=env,
                 capture_output=True,
-                text=True,
+                # Recorded as observations only; an undecodable byte must not end the run.
+                encoding="utf-8",
+                errors="replace",
                 timeout=float(metadata["timeout_seconds"]),
                 check=False,
             )

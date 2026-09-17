@@ -14,7 +14,10 @@ def run_git(args: list[str], cwd: Path | None = None) -> str:
         cwd=cwd,
         check=False,
         capture_output=True,
-        text=True,
+        # Git writes UTF-8. The locale default is a legacy code page on Windows, where a
+        # diff containing a byte it cannot map would stop the gate reading it at all.
+        encoding="utf-8",
+        errors="replace",
     )
     if process.returncode != 0:
         raise AgenticError(process.stderr.strip() or "git command failed")

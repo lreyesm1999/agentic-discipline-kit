@@ -10,6 +10,8 @@ Each case pins where that exception applies and where it must not.
 
 from __future__ import annotations
 
+import argparse
+import json
 import subprocess
 from pathlib import Path
 
@@ -217,6 +219,45 @@ def test_a_dev_null_line_without_an_old_path_keeps_the_current_file() -> None:
     diff = _file("tests/test_a.py", removed=(ALIAS_ASSERT,)) + "+++ /dev/null\n-assert x\n"
 
     assert [finding.file for finding in audit_diff(diff)] == ["tests/test_a.py"] * 2
+
+
+def test_the_command_passes_and_lists_retired_tests(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    asked: list[str] = []
+    diff = _removed_alias() + _removed_test(ALIAS_ASSERT)
+    monkeypatch.setattr(cli, "run_git", lambda arguments: diff)
+    monkeypatch.setattr(cli, "check_protected_verifiers", lambda root: [])
+    monkeypatch.setattr(cli, "_defined_in_repository", lambda name: asked.append(name) or False)
+
+    assert cli.command_integrity(argparse.Namespace(base_ref="origin/main")) == 0
+
+    assert asked == ["alias"]
+    assert json.loads(capsys.readouterr().out) == {
+        "status": "PASS",
+        "findings": [],
+        "retired_tests": [
+            {"file": "tests/test_alias.py", "pattern": "test_removed", "line": TEST_DEF},
+            {"file": "tests/test_alias.py", "pattern": "assertion_removed", "line": ALIAS_ASSERT},
+        ],
+    }
+
+
+def test_the_command_fails_on_findings_and_still_lists_retired_tests(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    living = "    assert other(1) == 1"
+    diff = _removed_alias() + _removed_test(ALIAS_ASSERT, living)
+    monkeypatch.setattr(cli, "run_git", lambda arguments: diff)
+    monkeypatch.setattr(cli, "check_protected_verifiers", lambda root: [])
+    monkeypatch.setattr(cli, "_defined_in_repository", lambda name: False)
+
+    assert cli.command_integrity(argparse.Namespace(base_ref="origin/main")) == 1
+
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["status"] == "FAIL"
+    assert [finding["line"] for finding in printed["findings"]] == [TEST_DEF, living]
+    assert [finding["line"] for finding in printed["retired_tests"]] == [ALIAS_ASSERT]
 
 
 def _git(root: Path, *arguments: str) -> None:
