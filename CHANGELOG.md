@@ -39,6 +39,9 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   environment `npm`), which npm only allows once the package exists - so the first release still had
   to publish with a token. Node moves to 22 and npm to 11.5.1 or later, the versions that understand
   OIDC; `--provenance` is dropped because trusted publishing attests provenance on its own.
+- `integrity` no longer fails on a test or assertion removed together with the code it called,
+  when nothing in the repository defines that code any more; deleting a feature with its tests
+  could never pass the audit. Such tests are listed under `retired_tests` instead.
 
 ### Removed
 - The `bootstrap` command, the `bootstrap_project` function and `scripts/bootstrap_project.py`.
@@ -50,6 +53,8 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   `risk`.
 
 ### Fixed
+- `integrity` charged the lines of a deleted file to the file listed before it, so deleting a
+  whole test file after a source file removed its tests and assertions unreported.
 - Three installed playbooks told agents to run `risk_score.py`, `scripts/quality_engine.py` and
   `scripts/integrity_audit.py`, which `init` never copies into a project. They now name
   `agentic-discipline risk`, `quality` and `integrity`.

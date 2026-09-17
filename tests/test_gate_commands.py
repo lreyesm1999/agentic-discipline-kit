@@ -17,6 +17,7 @@ import pytest
 
 from agentic_discipline import cli
 from agentic_discipline.common import AgenticError
+from agentic_discipline.integrity import IntegrityAudit
 
 
 @pytest.fixture
@@ -92,7 +93,14 @@ def test_integrity_combines_diff_and_protected_verifier_findings(
     roots: list[Path] = []
     monkeypatch.setattr(cli, "run_git", lambda arguments: git_calls.append(arguments) or "DIFF")
     diff_finding = cli.IntegrityFinding("src/x.py", "sample_rule", "+value = 1")
-    monkeypatch.setattr(cli, "audit_diff", lambda diff: [diff_finding] if diff == "DIFF" else [])
+    retired = cli.IntegrityFinding("tests/test_x.py", "test_removed", "def test_x():")
+    audited: list[Any] = []
+
+    def audit(diff: str, still_defined: Any) -> IntegrityAudit:
+        audited.append((diff, still_defined))
+        return IntegrityAudit(findings=[diff_finding], retired=[retired])
+
+    monkeypatch.setattr(cli, "audit_changes", audit)
     monkeypatch.setattr(
         cli, "check_protected_verifiers", lambda root: roots.append(root) or ["VER-1 changed"]
     )
@@ -100,6 +108,7 @@ def test_integrity_combines_diff_and_protected_verifier_findings(
     assert cli.command_integrity(_args(base_ref="origin/main")) == 1
 
     assert git_calls == [["diff", "--unified=0", "origin/main", "--"]]
+    assert audited == [("DIFF", cli._defined_in_repository)]
     assert roots == [tmp_path]
     assert printed == [
         {
@@ -108,6 +117,7 @@ def test_integrity_combines_diff_and_protected_verifier_findings(
                 diff_finding,
                 cli.IntegrityFinding(None, "protected_verifier", "VER-1 changed"),
             ],
+            "retired_tests": [retired],
         }
     ]
 
@@ -116,10 +126,27 @@ def test_integrity_passes_without_findings(
     monkeypatch: pytest.MonkeyPatch, printed: list[Any]
 ) -> None:
     monkeypatch.setattr(cli, "run_git", lambda arguments: "")
-    monkeypatch.setattr(cli, "audit_diff", lambda diff: [])
+    monkeypatch.setattr(
+        cli, "audit_changes", lambda diff, still_defined: IntegrityAudit(findings=[], retired=[])
+    )
     monkeypatch.setattr(cli, "check_protected_verifiers", lambda root: [])
     assert cli.command_integrity(_args(base_ref="main")) == 0
-    assert printed == [{"status": "PASS", "findings": []}]
+    assert printed == [{"status": "PASS", "findings": [], "retired_tests": []}]
+
+
+def test_retired_tests_alone_do_not_fail_the_audit(
+    monkeypatch: pytest.MonkeyPatch, printed: list[Any]
+) -> None:
+    retired = cli.IntegrityFinding("tests/test_x.py", "test_removed", "def test_x():")
+    monkeypatch.setattr(cli, "run_git", lambda arguments: "")
+    monkeypatch.setattr(
+        cli,
+        "audit_changes",
+        lambda diff, still_defined: IntegrityAudit(findings=[], retired=[retired]),
+    )
+    monkeypatch.setattr(cli, "check_protected_verifiers", lambda root: [])
+    assert cli.command_integrity(_args(base_ref="main")) == 0
+    assert printed == [{"status": "PASS", "findings": [], "retired_tests": [retired]}]
 
 
 @pytest.mark.parametrize(

@@ -4,6 +4,7 @@ import argparse
 import json
 import shlex
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import cast
@@ -16,7 +17,7 @@ from .common import AgenticError, changed_files, run_git
 from .crap import crap_score
 from .evidence import append_evidence, verify_ledger
 from .evolution import hygiene
-from .integrity import IntegrityFinding, audit_diff
+from .integrity import IntegrityFinding, audit_changes
 from .migration import migrate_payload
 from .quality import run_quality
 from .requirements import orphan_requirements, validate_requirement_graph
@@ -269,13 +270,32 @@ def command_integrity(args: argparse.Namespace) -> int:
     except AgenticError as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    findings = audit_diff(diff)
+    audit = audit_changes(diff, still_defined=_defined_in_repository)
+    findings = list(audit.findings)
     findings.extend(
         IntegrityFinding(None, "protected_verifier", finding)
         for finding in check_protected_verifiers(Path.cwd())
     )
-    _json({"status": "FAIL" if findings else "PASS", "findings": findings})
+    _json(
+        {
+            "status": "FAIL" if findings else "PASS",
+            "findings": findings,
+            "retired_tests": audit.retired,
+        }
+    )
     return 1 if findings else 0
+
+
+def _defined_in_repository(name: str) -> bool:
+    """Whether any tracked file still defines ``name``; unknown counts as defined."""
+
+    pattern = rf"(^|[^A-Za-z0-9_])(def|class|function)[[:space:]]+{name}([^A-Za-z0-9_]|$)"
+    process = subprocess.run(
+        ["git", "grep", "--quiet", "-E", pattern, "--", ":/"],
+        check=False,
+        capture_output=True,
+    )
+    return process.returncode != 1
 
 
 def command_protected(args: argparse.Namespace) -> int:

@@ -51,7 +51,13 @@ agentic-discipline risk --base-ref origin/main --fail-at HIGH
 
 ## integrity
 
-Checks newly added lines for common quality-gate bypass patterns.
+Checks newly added lines for common quality-gate bypass patterns, and removed lines for deleted
+tests, deleted assertions and removed gate configuration.
+
+A removed test or assertion is not a finding when it called code that the same change deletes and
+that no tracked file defines any more: such a test can no longer run. It is listed under
+`retired_tests` so a reviewer still sees it, and does not fail the audit. A test that also lost an
+assertion on code that still exists stays a finding.
 
 ```bash
 agentic-discipline integrity --base-ref origin/main
