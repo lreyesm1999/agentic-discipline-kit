@@ -331,6 +331,32 @@ def test_only_an_added_assertion_excuses_a_removed_one_in_the_same_file() -> Non
     assert audit_diff(diff) == [IntegrityFinding("tests/test_a.py", "assertion_removed", removed)]
 
 
+def test_a_call_to_living_code_before_the_deleted_one_still_retires() -> None:
+    wrapped = "    assert str(alias(1)) == '1'"
+    diff = _removed_alias() + _removed_test(wrapped)
+
+    assert audit_changes(diff, still_defined=_gone).retired == [
+        TEST_FINDING,
+        IntegrityFinding("tests/test_alias.py", "assertion_removed", wrapped),
+    ]
+
+
+def test_a_removed_gate_line_is_judged_from_its_first_character() -> None:
+    line = "run: pytest"
+
+    assert audit_diff(_file(".github/workflows/ci.yml", removed=(line,))) == [
+        IntegrityFinding(".github/workflows/ci.yml", "gate_removed", line)
+    ]
+
+
+def test_a_removed_gate_line_is_reported_up_to_500_characters() -> None:
+    line = "      run: " + "x" * 600
+
+    assert audit_diff(_file(".github/workflows/ci.yml", removed=(line,))) == [
+        IntegrityFinding(".github/workflows/ci.yml", "gate_removed", line[:500])
+    ]
+
+
 def test_gate_words_removed_outside_gate_configuration_are_not_reported() -> None:
     assert audit_diff(_file("src/app.py", removed=("    run(command)",))) == []
 
