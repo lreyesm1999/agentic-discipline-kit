@@ -22,6 +22,12 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   to publish with a token. Node moves to 22 and npm to 11.5.1 or later, the versions that understand
   OIDC; `--provenance` is dropped because trusted publishing attests provenance on its own.
 
+### Fixed
+- Output of git, quality gates and verifiers is read as UTF-8, with undecodable bytes replaced.
+  It was read in the locale's encoding: on Windows, UTF-8 output came back garbled and a byte the
+  code page cannot map crashed the read, so `integrity` failed on such a diff instead of auditing
+  it; on any platform, a tool printing invalid UTF-8 crashed its gate or verifier the same way.
+
 ## [1.1.0] - 2026-09-06
 
 ### Migration required for existing installations
