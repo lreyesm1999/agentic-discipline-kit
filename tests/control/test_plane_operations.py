@@ -166,3 +166,30 @@ def test_resume_passes_its_budget_to_the_context(project: Any) -> None:
     resumed = project.resume(task, session, budget=16000)
     expected = project.context(task, 16000)
     assert {key: resumed[key] for key in expected} == expected
+
+
+# --- claim ----------------------------------------------------------------------------------
+
+
+def _claim(project: Any, subject: str, authority: str, value: int) -> dict[str, Any]:
+    return project.knowledge.claim(
+        {
+            "subject": subject,
+            "predicate": "retention_days",
+            "value": value,
+            "source_ref": "brief.md",
+            "authority": authority,
+            "confidence": 1,
+            "observation": "DECLARED",
+        }
+    )
+
+
+def test_a_claim_repeating_the_canonical_value_is_no_conflict(project: Any) -> None:
+    (orders,) = _apply(project, "Orders")
+    canonical = _claim(project, orders["id"], "human", 30)
+
+    repeated = _claim(project, orders["id"], "documentation", 30)
+
+    assert project.store.get(canonical["id"], "claim")["disposition"] == "CANONICAL"
+    assert repeated["disposition"] != "CONFLICTING"

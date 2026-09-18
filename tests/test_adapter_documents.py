@@ -113,3 +113,19 @@ def test_the_real_index_names_every_installed_discipline(tmp_path: Path) -> None
     agents = (project / "AGENTS.md").read_text(encoding="utf-8")
     for discipline in load_disciplines(find_contract_root()):
         assert f"- **{discipline.title}** (`{discipline.name}`) - {discipline.summary}" in agents
+
+
+def test_the_chatgpt_bundle_joins_every_discipline_under_its_heading(tmp_path: Path) -> None:
+    disciplines = load_disciplines(find_contract_root())
+    sync_adapters(tmp_path, ["chatgpt"])
+
+    bundle = (tmp_path / ".agentic" / "export" / "chatgpt" / "agentic-discipline.md").read_text(
+        encoding="utf-8"
+    )
+
+    assert bundle.startswith("# Agentic Discipline - ChatGPT bundle\n\n")
+    assert bundle.count("\n\n---\n\n") == len(disciplines) - 1
+    # Each section's body is trimmed at its end, so no blank run precedes a separator.
+    assert "\n\n\n---" not in bundle
+    for item in disciplines:
+        assert f"## {item.title}\n\n{item.summary}\n\n{item.body.rstrip()}" in bundle

@@ -547,3 +547,17 @@ def test_verification_writes_are_attributed_to_the_owning_agent(project: Any) ->
     # The RUNNING write, the evidence and the final state all carry the lease owner.
     assert _actors(project, "task.write")[before_tasks:] == [agent["id"], agent["id"]]
     assert _actors(project, "evidence.write") == [agent["id"]]
+
+
+def test_symbols_of_a_removed_file_become_history(tmp_path: Path) -> None:
+    root = _repository(tmp_path / "repo").resolve()
+    adopt(root)
+    (root / "app.py").unlink()
+
+    with Plane(root) as plane:
+        plane.reconcile()
+        (file_entity,) = _entities(plane, type="file", source_ref="app.py")
+        symbols = _entities(plane, type="symbol", file_id=file_entity["id"])
+
+    assert symbols
+    assert {s["lifecycle"] for s in symbols} == {"HISTORICAL"}
