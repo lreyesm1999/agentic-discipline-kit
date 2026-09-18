@@ -5,8 +5,15 @@ observe. Each entry states the proof, so the claim can be rechecked rather than
 trusted. A mutant belongs here only after the argument below has been confirmed
 against the running code; everything else stays on the kill list.
 
-This file records findings. It is not consumed by `scripts/mutation_gate.py`,
-which still fails on every survivor.
+This file records findings; `scripts/mutation_gate.py` does not read it. The gate
+proves four of the families below itself, mutant by mutant, from mutmut's `mutants/`
+tree: SQL keyword and identifier case (`sql-case`), codec name case (`codec-name`),
+the `typing.cast` type argument (`cast-type`) and pattern case under `re.IGNORECASE`
+(`ignorecase-pattern`). It accepts a survivor only when the original and the mutant
+differ in exactly one place and that place satisfies the rule, lists each accepted
+mutant with its rule, and fails on every other survivor, including those recorded
+here with a proof by hand. `tests/test_mutation_equivalence.py` pins what each rule
+must accept and what it must refuse.
 
 ## `bootstrap.initialize_project` — mutants 152, 154
 
