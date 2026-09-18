@@ -57,6 +57,9 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   `risk`.
 
 ### Fixed
+- The evidence ledger lock no longer fails with `PermissionError` on Windows when a writer
+  releases the lock at the moment another acquires it; a vanished lock is retried a bounded
+  number of times while genuine permission failures still surface.
 - `integrity` charged the lines of a deleted file to the file listed before it, so deleting a
   whole test file after a source file removed its tests and assertions unreported.
 - Output of git, quality gates and verifiers is read as UTF-8, with undecodable bytes replaced.
