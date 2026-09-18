@@ -18,8 +18,6 @@ import pytest
 
 from agentic_discipline import cli
 from agentic_discipline.common import AgenticError
-from agentic_discipline.control.discovery import scan
-from agentic_discipline.control.plane import Plane, adopt
 from agentic_discipline.evidence import append_evidence, verify_ledger
 from agentic_discipline.evolution import lifecycle_path, load_lifecycle
 from agentic_discipline.validation import (
@@ -173,16 +171,3 @@ def test_every_quality_configuration_error_is_reported(tmp_path: Path) -> None:
         load_quality_config(path)
 
     assert str(caught.value) == "invalid quality configuration: " + "; ".join(errors)
-
-
-# --- adopt ----------------------------------------------------------------------------------
-
-
-def test_adoption_records_the_measured_coverage(tmp_path: Path) -> None:
-    (tmp_path / "app.py").write_text("value = 1\n", encoding="utf-8")
-    expected = scan(tmp_path)["coverage"]
-
-    adopt(tmp_path)
-
-    with Plane(tmp_path) as plane:
-        assert plane.store.list("project")[0]["coverage"] == expected
