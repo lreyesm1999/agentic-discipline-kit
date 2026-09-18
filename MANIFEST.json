@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-18T13:59:47.111995+00:00",
+  "generated_at_utc": "2026-09-18T16:06:34.752096+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1380,8 +1380,8 @@
     },
     {
       "path": "tests/control/test_discovery_files.py",
-      "sha256": "b1ee8ada9230b438448ddd97ac072ea3c4311ddad688f4c367e2e99c055c841c",
-      "bytes": 6324
+      "sha256": "c86c80488a2cd7b13be9033c778d285708ba11964d4c2bf7f49542b545908339",
+      "bytes": 7076
     },
     {
       "path": "tests/control/test_execution.py",
@@ -1510,8 +1510,8 @@
     },
     {
       "path": "tests/control/test_verification_workspace_rules.py",
-      "sha256": "77a2f21151be1f12c8f80998306a7add19faced422fe4e6f3a7d97ae55cbdcb8",
-      "bytes": 16327
+      "sha256": "256ea53c9a42758439436e0abbf1190894f82cba588932bbfe1178bd2482c7d8",
+      "bytes": 20468
     },
     {
       "path": "tests/control/test_verifier_inputs.py",

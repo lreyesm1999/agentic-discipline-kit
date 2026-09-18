@@ -182,3 +182,25 @@ def test_symlinked_files_and_directories_are_never_listed(tmp_path: Path) -> Non
 )
 def test_area_labels_each_path_by_first_matching_rule(path: str, label: str) -> None:
     assert area(Path(path)) == label
+
+
+@pytest.mark.parametrize(
+    "path",
+    ["keys/id_rsa", "home/ID_RSA", "Credentials.json", "deploy/server.key", "certs/client.p12"],
+)
+def test_secrets_are_never_measured_whatever_their_letter_case(path: str) -> None:
+    assert discovery.allowed(Path(path)) is False
+
+
+@posix_only
+def test_a_link_that_points_somewhere_else_measures_differently(tmp_path: Path) -> None:
+    (tmp_path / "a.txt").write_text("a\n", encoding="utf-8")
+    (tmp_path / "b.txt").write_text("b\n", encoding="utf-8")
+    link = tmp_path / "current"
+    link.symlink_to("a.txt")
+    before = discovery.link_fingerprint(tmp_path)
+    link.unlink()
+    link.symlink_to("b.txt")
+
+    assert set(before) == {"current"}
+    assert discovery.link_fingerprint(tmp_path) != before
