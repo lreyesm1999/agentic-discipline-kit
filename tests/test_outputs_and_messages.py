@@ -39,9 +39,10 @@ from agentic_discipline.profiles import (
 from agentic_discipline.quality import extract_metrics
 from agentic_discipline.requirements import validate_requirement_graph
 from agentic_discipline.skills import load_disciplines, parse_frontmatter
+from agentic_discipline.validation import validate_quality_config, validate_schema
 from agentic_discipline.verifier.protection import protect_verifier
 from agentic_discipline.verifier.registry import register_verifier
-from agentic_discipline.verifier.schema import load_and_validate_verifier
+from agentic_discipline.verifier.schema import load_and_validate_verifier, validate_verifier
 from agentic_discipline.verifier.sensitivity import sensitivity_status
 
 
@@ -242,8 +243,10 @@ def test_metrics_after_a_missing_path_are_still_read() -> None:
 
 def test_a_graph_whose_edges_are_not_a_list_stops_at_the_schema(tmp_path: Path) -> None:
     graph: dict[str, Any] = {"feature_id": "F", "nodes": [], "edges": {"from": "x"}}
-    errors = validate_requirement_graph(graph)
-    assert errors and all(error.startswith("edges") for error in errors)
+
+    assert validate_requirement_graph(graph) == validate_schema(
+        graph, "requirement-graph.schema.json"
+    )
 
 
 def test_dependencies_do_not_count_as_traceability_to_evidence() -> None:
@@ -254,12 +257,22 @@ def test_dependencies_do_not_count_as_traceability_to_evidence() -> None:
             {"id": "FR-2", "type": "requirement"},
             {"id": "EV-1", "type": "evidence"},
         ],
-        "edges": [{"from": "FR-1", "to": "FR-2", "relation": "depends_on"}],
+        "edges": [
+            {"from": "FR-1", "to": "FR-2", "relation": "depends_on"},
+            {"from": "FR-2", "to": "EV-1", "relation": "evidenced_by"},
+        ],
     }
 
     errors = validate_requirement_graph(graph, complete=True)
 
+    # FR-2 is traced to evidence; depending on it does not trace FR-1.
     assert "requirements.FR-1: no traceability path reaches evidence" in errors
+    assert "requirements.FR-2: no traceability path reaches evidence" not in errors
+
+
+def test_a_configuration_with_no_required_gate_says_so() -> None:
+    config = {"project": "x", "gates": [{"name": "t", "command": ["t"], "required": False}]}
+    assert "gates: at least one gate must be required" in validate_quality_config(config)
 
 
 def test_python_symbols_keep_their_nesting_and_relative_imports() -> None:
@@ -329,9 +342,9 @@ def test_every_verifier_contract_error_is_reported(tmp_path: Path) -> None:
     with pytest.raises(AgenticError) as caught:
         load_and_validate_verifier(directory / "verifier.json")
 
-    message = str(caught.value)
-    assert message.startswith("invalid verifier contract: ")
-    assert message.count("; ") >= 1
+    errors = validate_verifier(json.loads((directory / "verifier.json").read_text("utf-8")))
+    assert len(errors) > 1
+    assert str(caught.value) == "invalid verifier contract: " + "; ".join(errors)
 
 
 def test_sensitivity_evidence_that_is_not_text_is_refused(tmp_path: Path) -> None:
