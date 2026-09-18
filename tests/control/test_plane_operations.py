@@ -58,6 +58,8 @@ def test_quotes_in_a_query_are_matched_literally(project: Any) -> None:
     (quoted,) = _apply(project, 'Say "hello" to orders')
 
     assert [e["id"] for e in project.knowledge.query('say "hello"')] == [quoted["id"]]
+    # An unpaired quote would end the phrase early and break the search syntax.
+    assert [e["id"] for e in project.knowledge.query('say "hello')] == [quoted["id"]]
 
 
 def test_a_query_matches_words_not_characters(project: Any) -> None:
