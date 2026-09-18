@@ -244,6 +244,70 @@ survivors: what the plane does with a corrupt store is defence in depth, not a
 contract a caller relies on, and pinning it guard by guard would fix behaviour
 nobody has specified. They are the candidates for a later cycle, not equivalents.
 
+## Examined one by one: equivalents found while killing survivors
+
+Three batches of tests (#20, #21, #22) examined about 380 survivors individually:
+each mutant was applied to the source and only the tests of its module were run,
+after a run of the same tests without the mutant. About half were behaviour
+without a test and are killed. The families below are the rest; every claim that
+depends on the language or a library was executed, not argued.
+
+**`sqlite3.Row` and HTTP header lookups ignore case.** `row["KIND"]` reads the
+same column as `row["kind"]`, and `self.headers.get("host")` the same header as
+`"Host"`. Checked: `row["ID"] == row["id"]` and `row["PAYLOAD"] == row["payload"]`
+on a real row, and `get("host") == get("HOST") == get("Host")` on an
+`http.client.HTTPMessage`. Sites: `Store.get`, `Store.list`, `Store.entities_at`,
+`Store.history`, `Store.timeline`, `Knowledge.impact`'s edge columns, and the
+console's `Host` check.
+
+**Values that behave the same in every place they are used.**
+- `None` for `False` where the value is only tested for truth: `check`, `nested`,
+  `Session.initialized` and `ready`, `getattr(..., None)`, `passed` in `verify`,
+  `json.dumps(allow_nan=None)` (checked: it refuses `nan` exactly as `False`).
+- `"SHA256"` for `"sha256"` in `hashlib.file_digest` (checked: same digest).
+- `split("?")` and `split("?", 2)` for `split("?", 1)` when only element 0 is read
+  (checked on a path with two `?`); `rsplit` is not in this family and is killed.
+- A token or staging name of another random length (`token_urlsafe`, `token_hex`).
+- A comparison's starting value that every real timestamp exceeds (`context`'s
+  latest evidence).
+
+**Initial values always overwritten before they are read.** `execute_verifier`
+sets `status` to `UNKNOWN` and `duration_seconds` to `0.0`, then every path that
+returns the result replaces both. `adopt` records `coverage` and then calls
+`_index`, which rewrites it from the same report.
+
+**Checks repeated by the code that follows.** `approve_command` and `checkpoint`
+call `safe_data`, and `store.put` calls it again on the same data. `proof_current`
+checks that each requirement is active and not stale, but the evidence binding
+records each requirement's version and `readiness` refuses to verify a task whose
+requirement is inactive or stale, so any later change already fails the binding.
+Its `visited` set only matters for a dependency cycle, and a task's dependencies
+must exist when it is created and cannot change afterwards. A second read of a
+claim's subject repeats the first.
+
+**Loop exits that cannot skip work.** `Knowledge.impact` walks a FIFO queue, so once
+an entry at the depth limit is dequeued every later entry is at that depth too:
+`break` there equals `continue`. `serve` reads the rest of an oversized line in
+chunks, and the chunk size does not change what is refused.
+
+**Directories whose grandparent always exists.** Every `mkdir(parents=True)` that
+survives creates a directory directly under the project root or under `.agentic/`,
+which `init` or `adopt` created before: `_copy_item`, `_install_payload`,
+`_write_json`, `adopt`, `migrate_payload` and both writes in `execute_verifier`.
+
+**Defaults no input reaches.** The key is required by the schema that validates
+the document first (`project` in a quality configuration, a verifier's
+`working_directory` and `expected_exit_code`), or the plane always writes it
+(`conflicts` on a claim, `occurrence` on a symbol). A default that an input can
+omit is not in this family: sixteen such sites are killed by documents that leave
+the key out.
+
+**Others.** `doctor` collects missing tools only to test the list for emptiness;
+the tools themselves are reported in `tools`. A requirement graph whose `edges` is
+an object is iterated by key and every key is skipped, so the early return adds
+nothing. `_prepare_target`'s `dry_run` and `resume`'s `budget` defaults are never
+used by a caller.
+
 ## Known survivors, not exempt: `Plane._expire` boundaries
 
 ```python
