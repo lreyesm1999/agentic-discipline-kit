@@ -204,3 +204,15 @@ def test_a_link_that_points_somewhere_else_measures_differently(tmp_path: Path) 
 
     assert set(before) == {"current"}
     assert discovery.link_fingerprint(tmp_path) != before
+
+
+def test_the_fingerprint_measures_files_git_ignores(tmp_path: Path) -> None:
+    run_git(["init", "-q"], cwd=tmp_path)
+    (tmp_path / ".gitignore").write_text("build/\n", encoding="utf-8")
+    _write(tmp_path, "app.py", "build/output.txt")
+    before = discovery.fingerprint(tmp_path)
+
+    (tmp_path / "build" / "output.txt").write_text("changed\n", encoding="utf-8")
+
+    assert "build/output.txt" in before
+    assert discovery.fingerprint(tmp_path) != before

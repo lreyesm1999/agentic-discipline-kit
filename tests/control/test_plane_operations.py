@@ -193,3 +193,52 @@ def test_a_claim_repeating_the_canonical_value_is_no_conflict(project: Any) -> N
 
     assert project.store.get(canonical["id"], "claim")["disposition"] == "CANONICAL"
     assert (repeated["disposition"], repeated["conflicts"]) == ("CANDIDATE", [])
+
+
+# --- lifecycle, context, invalidate ---------------------------------------------------------
+
+
+def test_retiring_knowledge_records_the_reason_and_what_it_affects(project: Any) -> None:
+    (orders,) = _apply(project, "Orders")
+
+    result = project.knowledge.lifecycle(orders["id"], "RETIRED", "replaced by billing")
+
+    assert project.store.get(orders["id"], "entity")["lifecycle_reason"] == "replaced by billing"
+    assert result["affected"] == []
+
+
+def test_a_directory_scope_with_a_trailing_slash_selects_its_code(project: Any) -> None:
+    (project.root / "LibX").mkdir()
+    (project.root / "LibX" / "a.py").write_text("value = 1\n", encoding="utf-8")
+    project.reconcile()
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task({**contract(), "scope": ["LibX/"]})["id"]
+
+    sources = project.context(task)["sources"]
+
+    assert [e["source_ref"] for e in sources if e["type"] == "file"] == ["LibX/a.py"]
+
+
+def _first(project: Any, kind: str, data: dict[str, Any]) -> None:
+    """Store a record whose id sorts before every generated one."""
+    prefix = kind.upper()[:4]
+    with project.store.transaction():
+        project.store.put(kind, {**data, "id": f"{prefix}-!"})
+
+
+def test_invalidation_reaches_tasks_and_claims_after_ones_it_skips(project: Any) -> None:
+    from agentic_discipline.control.verification import invalidate, verify
+
+    task, session = _claimed(project)
+    verify(project, task, session)
+    (orders,) = _apply(project, "Orders")
+    canonical = _claim(project, orders["id"], "human", 30)
+    _first(project, "task", {**project.store.get(task, "task")})
+    _first(project, "claim", {**canonical, "disposition": "CANDIDATE"})
+    (project.root / "app.py").write_text("value = 2\n", encoding="utf-8")
+    _force(project, "entity", orders["id"], stale=True)
+
+    result = invalidate(project)
+
+    assert result["invalidated"]
+    assert project.store.get(canonical["id"], "claim")["disposition"] == "STALE"
