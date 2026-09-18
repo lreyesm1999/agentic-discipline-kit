@@ -8,6 +8,7 @@ Workspace cases run against a real Git repository.
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 from pathlib import Path
@@ -243,6 +244,23 @@ def test_completion_rejects_a_tampered_checkpoint(project: Any) -> None:
         task,
         session,
     )
+
+
+def test_the_completed_task_is_recorded_as_written_by_its_worker(project: Any) -> None:
+    task, session = _verified(project)
+    worker = project.authenticate(session)["id"]
+
+    completed = complete(project, task, session)
+
+    rows = project.store.db.execute("SELECT actor, payload FROM events WHERE action = 'task.write'")
+    writers = [
+        row["actor"]
+        for row in rows
+        if json.loads(row["payload"])["id"] == task
+        and json.loads(row["payload"])["version"] == completed["version"]
+    ]
+    assert completed["state"] == "COMPLETED"
+    assert writers == [worker]
 
 
 # --- workspaces ---------------------------------------------------------------------------
