@@ -296,3 +296,22 @@ def test_a_symbol_retired_by_hand_stays_retired_when_its_file_changes(project: A
     project.reconcile()
 
     assert project.store.get(symbol["id"], "entity")["lifecycle"] == "RETIRED"
+
+
+def test_a_claim_about_something_that_is_not_knowledge_is_refused(project: Any) -> None:
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())["id"]
+
+    with pytest.raises(ControlError) as caught:
+        _claim(project, task, "human", 30)
+
+    assert caught.value.code == "NOT_FOUND"
+
+
+def test_context_reads_the_latest_evidence_of_the_task(project: Any) -> None:
+    from agentic_discipline.control.verification import verify
+
+    task, session = _claimed(project)
+    verify(project, task, session)
+
+    assert project.context(task)["mandatory"]["current_failures"] == []

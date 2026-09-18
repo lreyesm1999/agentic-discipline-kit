@@ -354,3 +354,53 @@ def test_sensitivity_evidence_that_is_not_text_is_refused(tmp_path: Path) -> Non
         sensitivity_status(metadata, tmp_path, tmp_path)
 
     assert str(caught.value) == "validated verifier is missing sensitivity evidence"
+
+
+# --- documents missing an optional key ------------------------------------------------------
+
+
+def test_a_scenario_without_steps_is_reported_not_crashed_on() -> None:
+    from agentic_discipline.acceptance import validate_acceptance_ir
+
+    ir = {"feature_id": "F", "scenarios": [{"id": "AC-001", "requirements": ["FR-1"]}]}
+
+    errors = validate_acceptance_ir(ir)
+
+    assert errors and any("steps" in error for error in errors)
+
+
+def test_a_profile_without_detectors_loads_with_none(tmp_path: Path) -> None:
+    from agentic_discipline.profiles import load_profile
+
+    root = find_contract_root() / "config" / "profiles"
+    descriptor = json.loads((root / "generic.json").read_text(encoding="utf-8"))
+    descriptor.pop("detectors", None)
+    descriptor["config"] = str(
+        root / json.loads((root / "generic.json").read_text("utf-8"))["config"]
+    )
+    path = tmp_path / "profile.json"
+    path.write_text(json.dumps(descriptor), encoding="utf-8")
+
+    assert load_profile(path).detectors == ()
+
+
+def test_a_parser_without_metrics_extracts_and_validates_to_nothing() -> None:
+    assert extract_metrics("lines 10", {"type": "regex"}) == {}
+    config = {
+        "project": "x",
+        "gates": [{"name": "t", "command": ["t"], "parser": {"type": "json"}}],
+    }
+    assert isinstance(validate_quality_config(config), list)
+
+
+def test_a_graph_without_edges_is_still_checked_for_traceability() -> None:
+    graph = {"feature_id": "F", "nodes": [{"id": "FR-1", "type": "requirement"}]}
+
+    errors = validate_requirement_graph(graph, complete=True)
+
+    assert "requirements.FR-1: no traceability path reaches evidence" in errors
+
+
+def test_a_verifier_contract_without_sensitivity_is_reported_not_crashed_on() -> None:
+    errors = validate_verifier({"id": "VER-X", "protected": True})
+    assert errors
