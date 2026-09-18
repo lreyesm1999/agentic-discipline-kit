@@ -16,7 +16,7 @@ Plan exists or a diff exists.
 - required gate profile
 
 ## Procedure
-1. Run deterministic risk_score.py when diff exists.
+1. Run `agentic-discipline risk` when a diff exists.
 2. Add semantic risk from plan when not yet coded.
 3. Escalate for money/auth/data/security/public-contract changes.
 4. Select minimum verification profile.

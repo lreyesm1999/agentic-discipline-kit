@@ -4,6 +4,7 @@ import argparse
 import json
 import shlex
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import cast
@@ -11,12 +12,12 @@ from typing import cast
 from . import __version__
 from .acceptance import compile_feature
 from .adapters import ADAPTERS, ALIASES, EMITTERS, LABELS, detect_adapters, sync_adapters
-from .bootstrap import bootstrap_project, initialize_project
+from .bootstrap import initialize_project
 from .common import AgenticError, changed_files, run_git
 from .crap import crap_score
 from .evidence import append_evidence, verify_ledger
 from .evolution import hygiene
-from .integrity import IntegrityFinding, audit_diff
+from .integrity import IntegrityFinding, audit_changes
 from .migration import migrate_payload
 from .quality import run_quality
 from .requirements import orphan_requirements, validate_requirement_graph
@@ -269,13 +270,34 @@ def command_integrity(args: argparse.Namespace) -> int:
     except AgenticError as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    findings = audit_diff(diff)
+    audit = audit_changes(diff, still_defined=_defined_in_repository)
+    findings = list(audit.findings)
     findings.extend(
         IntegrityFinding(None, "protected_verifier", finding)
         for finding in check_protected_verifiers(Path.cwd())
     )
-    _json({"status": "FAIL" if findings else "PASS", "findings": findings})
+    _json(
+        {
+            "status": "FAIL" if findings else "PASS",
+            "findings": findings,
+            "retired_tests": audit.retired,
+        }
+    )
     return 1 if findings else 0
+
+
+def _defined_in_repository(name: str) -> bool:
+    """Whether any tracked file still defines ``name``; unknown counts as defined."""
+
+    pattern = rf"(^|[^A-Za-z0-9_])(def|class|function)[[:space:]]+{name}([^A-Za-z0-9_]|$)"
+    # Multi-threaded `git grep` intermittently crashes on some git builds (2.34 under WSL
+    # segfaulted on 5 of 40 runs); a crash only makes the audit stricter, but a single
+    # thread answers every time.
+    process = subprocess.run(
+        ["git", "grep", "--threads=1", "--quiet", "-E", pattern, "--", ":/"],
+        capture_output=True,
+    )
+    return process.returncode != 1
 
 
 def command_protected(args: argparse.Namespace) -> int:
@@ -331,12 +353,6 @@ def command_evidence_verify(args: argparse.Namespace) -> int:
     result = verify_ledger(Path(args.ledger), check_artifacts=args.check_artifacts)
     _json(result)
     return 0 if result["status"] == "PASS" else 1
-
-
-def command_bootstrap(args: argparse.Namespace) -> int:
-    actions = bootstrap_project(Path(args.target), getattr(args, "stack", None), args.force)
-    _json({"status": "PASS", "actions": actions})
-    return 0
 
 
 def command_init(args: argparse.Namespace) -> int:
@@ -587,12 +603,6 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--project-root", default=".")
     p.add_argument("--base-ref")
     p.set_defaults(func=command_hygiene)
-
-    p = sub.add_parser("bootstrap", help="Compatibility alias for init")
-    p.add_argument("--target", required=True)
-    p.add_argument("--stack", help="Optional compatibility profile override")
-    p.add_argument("--force", action="store_true")
-    p.set_defaults(func=command_bootstrap)
 
     return parser
 

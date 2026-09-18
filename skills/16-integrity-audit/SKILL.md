@@ -15,7 +15,7 @@ Every implementation before release.
 - suspicious pattern list
 
 ## Procedure
-1. Run scripts/integrity_audit.py.
+1. Run `agentic-discipline integrity`.
 2. Inspect new skip/disable/exclusion patterns.
 3. Inspect lowered thresholds.
 4. Inspect removed assertions and disabled CI steps when detectable.

@@ -24,12 +24,11 @@ const VERSION = require("../package.json").version;
 const IS_WINDOWS = process.platform === "win32";
 const BINARY = IS_WINDOWS ? "agentic-discipline.exe" : "agentic-discipline";
 
+// Only the builds the release workflow produces. Anywhere else, the launcher
+// explains how to install the Python CLI instead of requesting a missing asset.
 const ASSETS = {
   "win32-x64": `agentic-discipline-Windows-X64.zip`,
-  "darwin-x64": `agentic-discipline-macOS-X64.tar.gz`,
-  "darwin-arm64": `agentic-discipline-macOS-ARM64.tar.gz`,
   "linux-x64": `agentic-discipline-Linux-X64.tar.gz`,
-  "linux-arm64": `agentic-discipline-Linux-ARM64.tar.gz`,
 };
 
 function cacheDirectory() {

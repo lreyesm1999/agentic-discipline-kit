@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections import defaultdict, deque
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -81,11 +81,12 @@ def validate_requirement_graph(
         for node_id, node in nodes.items():
             if node.get("type") != "requirement":
                 continue
+            # Breadth-first over a list that grows while it is walked: the walk ends once
+            # no new node is reached, whatever happens inside it.
             visited = {node_id}
-            queue = deque([node_id])
+            queue = [node_id]
             reaches_evidence = False
-            while queue:
-                current = queue.popleft()
+            for current in queue:
                 if current in evidence_nodes:
                     reaches_evidence = True
                     break

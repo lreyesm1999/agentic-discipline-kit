@@ -449,8 +449,8 @@ MARKERS = {
     "gemini": "GEMINI.md",
 }
 
-# Kept so existing callers and documentation that reference a single primary
-# path per tool continue to resolve.
+# One representative output per tool, as `adapters list` reports it. The emitters
+# decide what is written; a test keeps each entry pointing at a path they produce.
 ADAPTERS = {
     "generic": "AGENTS.md",
     "claude": ".claude/skills/",

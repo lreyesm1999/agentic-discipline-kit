@@ -54,6 +54,7 @@ dev = [
 
 [project.scripts]
 agentic-discipline = "agentic_discipline.cli:main"
+agentic = "agentic_discipline.control.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

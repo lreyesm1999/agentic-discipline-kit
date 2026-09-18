@@ -27,6 +27,19 @@ def test_run_git_failure(monkeypatch: pytest.MonkeyPatch) -> None:
         common.run_git(["status"])
 
 
+def test_run_git_failure_without_a_message_still_explains_itself(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        common.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(returncode=128, stdout="", stderr="  \n"),
+    )
+    with pytest.raises(AgenticError) as caught:
+        common.run_git(["status"])
+    assert str(caught.value) == "git command failed"
+
+
 def test_changed_files(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(common, "run_git", lambda _args, cwd=None: "a.py\n\nb.py\n")
     assert common.changed_files("main") == ["a.py", "b.py"]

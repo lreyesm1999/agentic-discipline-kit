@@ -353,6 +353,13 @@ This kit is a strong fit when:
 
 For a tiny throwaway script, the full lifecycle may be unnecessary. For a product that matters, the cost of one missed requirement is usually higher than the cost of discipline.
 
+## Agentic Discipline 2 preview
+
+The new `agentic` CLI adds persistent project knowledge, task contracts, cross-agent
+checkpoints, Git workspaces, current verification evidence, MCP and a local console.
+See the [preview guide](docs/v2/README.md) and [implementation status](docs/IMPLEMENTATION_STATUS.md).
+The published v1 command and adapters remain available; this branch does not publish a 2.0 release.
+
 ## Documentation
 
 - [Install guide](docs/install.md)

@@ -9,6 +9,7 @@ from agentic_discipline import cli
 from agentic_discipline.adapters import detect_adapters, sync_adapters
 from agentic_discipline.bootstrap import initialize_project
 from agentic_discipline.common import AgenticError
+from agentic_discipline.evidence import sha256_file
 from agentic_discipline.evolution import hygiene, load_lifecycle, register_lifecycle
 from agentic_discipline.verifier.executor import (
     _command_parts,
@@ -18,7 +19,7 @@ from agentic_discipline.verifier.executor import (
 )
 from agentic_discipline.verifier.protection import check_protected_verifiers, protect_verifier
 from agentic_discipline.verifier.registry import load_registry, load_verifier, register_verifier
-from agentic_discipline.verifier.result import artifact_hashes, hash_file
+from agentic_discipline.verifier.result import artifact_hashes
 from agentic_discipline.verifier.schema import validate_verifier
 from agentic_discipline.verifier.sensitivity import sensitivity_status
 
@@ -74,7 +75,7 @@ def test_executor_reports_fail_timeout_and_artifact_hash(tmp_path: Path) -> None
     )
     register_verifier(artifact, project)
     result = execute_verifier(project, "VER-ARTIFACT")
-    assert result["artifacts"][0]["sha256"] == hash_file(
+    assert result["artifacts"][0]["sha256"] == sha256_file(
         project / ".agentic/verification/generated/VER-ARTIFACT/artifact.txt"
     )
     assert artifact_hashes(project, ["missing.txt"]) == []
