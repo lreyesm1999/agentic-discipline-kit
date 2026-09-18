@@ -12,9 +12,9 @@ from pathlib import Path
 from typing import Any
 
 from ..common import AgenticError
-from ..evidence import append_evidence
+from ..evidence import append_evidence, sha256_file
 from .registry import load_verifier, verification_root
-from .result import artifact_hashes, hash_file
+from .result import artifact_hashes
 from .sensitivity import sensitivity_status
 
 
@@ -107,8 +107,8 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
             result["status"] = "BLOCKED"
             result["error"] = f"verifier timed out after {metadata['timeout_seconds']} seconds"
             result["observations"] = {
-                "stdout": str(exc.stdout or ""),
-                "stderr": str(exc.stderr or ""),
+                "stdout": _partial_output(exc.stdout),
+                "stderr": _partial_output(exc.stderr),
             }
     result["duration_seconds"] = round(time.monotonic() - start_clock, 6)
     result["finished_at"] = datetime.now(timezone.utc).isoformat()
@@ -124,7 +124,7 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
             result["artifacts"].append(
                 {
                     "path": package_path.relative_to(project_root).as_posix(),
-                    "sha256": hash_file(package_path),
+                    "sha256": sha256_file(package_path),
                 }
             )
     output = verification_root(project_root) / "artifacts" / f"{verifier_id}.json"
@@ -141,6 +141,13 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
             exit_code=0 if result["status"] == "PASS" else 1,
         )
     return result
+
+
+def _partial_output(output: str | bytes | None) -> str:
+    """Output captured before a timeout arrives as bytes on POSIX even in text mode."""
+
+    text = output.decode(errors="replace") if isinstance(output, bytes) else output or ""
+    return text[-20000:]
 
 
 def _file_hash(path: Path) -> str:

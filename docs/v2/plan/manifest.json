@@ -1,0 +1,150 @@
+{
+  "package": "agentic_discipline_2_hyperplan",
+  "fileCount": 36,
+  "files": [
+    {
+      "path": "00_README.md",
+      "bytes": 3624
+    },
+    {
+      "path": "01_PRODUCT_VISION_AND_NON_NEGOTIABLES.md",
+      "bytes": 2869
+    },
+    {
+      "path": "02_CURRENT_TO_TARGET_GAP_MODEL.md",
+      "bytes": 2344
+    },
+    {
+      "path": "03_TARGET_ARCHITECTURE.md",
+      "bytes": 4139
+    },
+    {
+      "path": "04_KNOWLEDGE_PLATFORM_MODEL.md",
+      "bytes": 1751
+    },
+    {
+      "path": "05_EVIDENCE_CLAIMS_CANONICAL_MODEL.md",
+      "bytes": 1567
+    },
+    {
+      "path": "06_PROJECT_DISCOVERY_AND_ADOPTION.md",
+      "bytes": 1919
+    },
+    {
+      "path": "07_DISCOVERY_COVERAGE_AND_GRAPH_FIRST.md",
+      "bytes": 1306
+    },
+    {
+      "path": "08_PLAN_INTELLIGENCE_AND_READINESS.md",
+      "bytes": 1498
+    },
+    {
+      "path": "09_TASK_CONTRACTS_AND_EXECUTION_GRAPH.md",
+      "bytes": 1281
+    },
+    {
+      "path": "10_CONTEXT_ENGINE_AND_CONTEXT_AUDIT.md",
+      "bytes": 1421
+    },
+    {
+      "path": "11_CONTINUITY_CHECKPOINTS_AND_HANDOFF.md",
+      "bytes": 1167
+    },
+    {
+      "path": "12_MULTI_AGENT_ORCHESTRATION.md",
+      "bytes": 1269
+    },
+    {
+      "path": "13_WORKSPACES_PARALLELISM_AND_INTEGRATION.md",
+      "bytes": 1203
+    },
+    {
+      "path": "14_VERIFICATION_AND_EVIDENCE_ENGINE.md",
+      "bytes": 1212
+    },
+    {
+      "path": "15_RECONCILIATION_AND_SEMANTIC_EVOLUTION.md",
+      "bytes": 1042
+    },
+    {
+      "path": "16_CHANGESETS_VERSIONING_AND_TRANSACTIONS.md",
+      "bytes": 1117
+    },
+    {
+      "path": "17_GOVERNANCE_SECURITY_AND_AUTONOMY_BUDGETS.md",
+      "bytes": 1338
+    },
+    {
+      "path": "18_INTERFACES_CLI_MCP_API.md",
+      "bytes": 1197
+    },
+    {
+      "path": "19_PROJECT_CONSOLE_AND_HUMAN_UX.md",
+      "bytes": 1253
+    },
+    {
+      "path": "20_IMPLEMENTATION_ROADMAP.md",
+      "bytes": 4208
+    },
+    {
+      "path": "21_PHASE_BY_PHASE_PLAN.md",
+      "bytes": 56330
+    },
+    {
+      "path": "22_TEST_STRATEGY.md",
+      "bytes": 1616
+    },
+    {
+      "path": "23_FAILURE_INJECTION_AND_RESILIENCE.md",
+      "bytes": 1394
+    },
+    {
+      "path": "24_MIGRATION_FROM_CURRENT_AGENTIC_DISCIPLINE.md",
+      "bytes": 1437
+    },
+    {
+      "path": "25_RESEARCH_INFLUENCE_LEDGER.md",
+      "bytes": 1216
+    },
+    {
+      "path": "26_DATA_MODEL_DRAFT.md",
+      "bytes": 2036
+    },
+    {
+      "path": "27_STATE_MACHINES.md",
+      "bytes": 847
+    },
+    {
+      "path": "28_CLI_EXPERIENCE.md",
+      "bytes": 1179
+    },
+    {
+      "path": "29_METRICS_AND_HEALTH_MODEL.md",
+      "bytes": 1128
+    },
+    {
+      "path": "30_SECURITY_THREAT_MODEL.md",
+      "bytes": 1421
+    },
+    {
+      "path": "31_PERFORMANCE_AND_SCALE_PLAN.md",
+      "bytes": 765
+    },
+    {
+      "path": "32_RELEASE_AND_MIGRATION_CRITERIA.md",
+      "bytes": 951
+    },
+    {
+      "path": "33_EXECUTION_CHECKLIST.md",
+      "bytes": 1068
+    },
+    {
+      "path": "34_MASTER_EXECUTION_PROMPT.md",
+      "bytes": 1869
+    },
+    {
+      "path": "roadmap.json",
+      "bytes": 5672
+    }
+  ]
+}

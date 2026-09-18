@@ -131,14 +131,6 @@ Verifies sequence, record hashes, hash-chain links and optionally current artifa
 agentic-discipline evidence-verify --check-artifacts
 ```
 
-## bootstrap
-
-Compatibility alias for `init`. `--stack` is an optional profile override; omitting it enables detection.
-
-```bash
-agentic-discipline bootstrap --target ../my-project
-```
-
 ## verify and verifier
 
 `init` installs the current `.agentic/` payload. A verifier package contains `verifier.json` and its

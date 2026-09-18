@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-09-13T18:36:03.768315+00:00",
+  "status": "NO_HIGH_REMAINING_IN_REVIEWED_SCOPE",
+  "scope": [
+    "scripts/mutation_gate.py",
+    ".github/workflows/ci.yml",
+    "tests/test_mutation_gate.py"
+  ],
+  "reviewer": "independent mutation_gate_review agent",
+  "tests": "pytest tests/test_mutation_gate.py -q",
+  "tests_exit_code": 0,
+  "tests_result": "2 passed",
+  "finding_and_fix": "total=100,killed=1 was falsely accepted because mutmut 3.8 export omits not_checked and caught_by_type_check. The gate now requires exact accounting; otherwise it fails closed.",
+  "limitation": "Mutation summary alone does not prove a specific source hash; clean checkout and complete CI job are required."
+}

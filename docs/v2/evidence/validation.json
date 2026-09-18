@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-09-13T18:36:30.314759+00:00",
+  "release_ready": false,
+  "tests_passed": 197,
+  "line_coverage": 95.01,
+  "branch_coverage": 87.06,
+  "checks": [
+    {
+      "tool": "make",
+      "command": "make check",
+      "exit_code": 0,
+      "timestamp": "2026-09-13T18:36:30.314515+00:00",
+      "output_artifact": "checks.log",
+      "sha256": "e22d8891bb7d2b820fd3e5ffba8fc5064b618a0d20cada597f33f35d8095f45c"
+    },
+    {
+      "tool": "python",
+      "command": "python -m build",
+      "exit_code": 0,
+      "timestamp": "2026-09-13T13:12:10.202078+00:00",
+      "output_artifact": "build.log",
+      "sha256": "5a9ff846759a12d83d166b81e2aea363a41311b4c7047b6b834bf06ab1d651d9"
+    },
+    {
+      "tool": "agentic-discipline",
+      "command": "agentic-discipline integrity --base-ref origin/feat/autonomous-project-execution",
+      "exit_code": 1,
+      "timestamp": "2026-09-13T12:57:35.567112+00:00",
+      "output_artifact": "integrity.log",
+      "sha256": "b8a1a3efab896f4a38eee5e7d5f97620683776fb43583147b8b9d600d56b1333"
+    },
+    {
+      "tool": "agentic-discipline",
+      "command": "agentic-discipline protected --base-ref origin/feat/autonomous-project-execution",
+      "exit_code": 1,
+      "timestamp": "2026-09-13T18:36:03.768895+00:00",
+      "output_artifact": "protected-workflow-review.json",
+      "status": "FAIL_EXPECTED_PENDING_AUTHORIZED_REVIEW",
+      "sha256": "92d049fe247fea79b461f43f4cc45840468433800147a3560ea66dddc7d971a7"
+    }
+  ],
+  "source_sha256": {
+    "src/agentic_discipline/control/__init__.py": "8babef8098cebe516972497af69dc5be6698c6152b13989aabf43a8e6018f7b7",
+    "src/agentic_discipline/control/api.py": "671e5478175f70b02d7ce8b7b462a7198cf63d55682946a6ed4a2d215ac203d7",
+    "src/agentic_discipline/control/cli.py": "5240ba44803f6446b6671702757796f9dbd5a29b83f378e8c57fa62a30b67dc8",
+    "src/agentic_discipline/control/console.py": "65dd93b9b6d888a846bc4e47db054d8a8839b3be9406c8a707b72d3649a6534a",
+    "src/agentic_discipline/control/contracts.py": "f6340b2c5c256482c5f49a16e439be8f807083dbed2bd0fced3f7091f8c3e744",
+    "src/agentic_discipline/control/diagnostics.py": "8ee561f3ca427c91722b4b334ccbce68940dcf5c73b76589e727a46b82016bd9",
+    "src/agentic_discipline/control/discovery.py": "df481502f3e5e567bf2bebcdf72d460a9c73be9bab965c4e6946f53fa8c90ddb",
+    "src/agentic_discipline/control/knowledge.py": "57d0e3436d7bd80ffc78a429275d758d9581aeb0466429f30c1224f4b8831cfb",
+    "src/agentic_discipline/control/mcp.py": "5feb9f099b6a352756558a25e47bdc2ba391708450b927dbd876fe0da56009d2",
+    "src/agentic_discipline/control/migration.py": "2bb44bb33539bcefb60f377087d7c0f81df4d2ff97994ec9a2018fd06ca0800d",
+    "src/agentic_discipline/control/plane.py": "d3178f695b24a0bd2044618afdb08e1adfe7b3bffd993e5f0a24e358a3182a0d",
+    "src/agentic_discipline/control/store.py": "b9bff14e78b111e01efe781363a67c3d5407ee6ee23c4a446d791572fdfabff2",
+    "src/agentic_discipline/control/verification.py": "37a0879bf4ad5b93513a1e9d3872809096abee67af95ece1a72385a18a9d33fd",
+    "src/agentic_discipline/control/workspaces.py": "d768701c4d62d391d27f9bbb9f4084cb6660c84f8fad80c6329d3433279164ae"
+  },
+  "additional_artifacts": [
+    "benchmark.json",
+    "dogfood.json",
+    "independent-review.json",
+    "mutation-gate-review.json",
+    "mutation.json",
+    "performance-review-equivalence.log",
+    "wheel-smoke.json"
+  ],
+  "pending": [
+    "Remote supported-platform CI",
+    "Integrity findings disposition",
+    "Human release acceptance",
+    "GitHub Dependency Graph must be enabled for dependency-review",
+    "Resolve 5,326 survivors and 7 timeouts; strengthened workflow now fails until disposition",
+    "Contract-authorized review for protected .github/workflows/ci.yml mutation gate change"
+  ],
+  "remote_mutation": {
+    "revision": "a19c2c196843739507234a93c2581db476b2b0b2",
+    "workflow_run": "34759274115",
+    "job_id": 103727284125,
+    "tool": "mutmut",
+    "command": "mutmut run",
+    "exit_code": 0,
+    "count": 14934,
+    "killed": 9601,
+    "survived": 5326,
+    "timed_out": 7,
+    "status": "FAIL_UNRESOLVED_SURVIVORS",
+    "note": "GitHub job success is a process exit; it does not enforce a zero-survivor policy."
+  }
+}

@@ -16,7 +16,6 @@ REQUIRED = [
     "CHANGELOG.md",
     "AGENTS.md",
     "MASTER_PROMPT.md",
-    "scripts/bootstrap_project.py",
     "scripts/coverage_gate.py",
     "GITHUB_SETUP.md",
     "pyproject.toml",

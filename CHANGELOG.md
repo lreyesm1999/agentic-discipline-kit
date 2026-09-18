@@ -7,6 +7,24 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- Agentic Discipline 2 preview: a persistent local project control plane (Python and SQLite)
+  exposed as the `agentic` command, alongside the unchanged `agentic-discipline` command.
+  - Project knowledge with provenance, history, retirement and conflicting-claim detection.
+  - Task contracts, expiring leases and checkpoints another agent can resume from.
+  - Verification evidence bound to the exact inputs it checked, which goes stale when they
+    change, so completion cannot rest on a run of older files.
+  - Isolated Git worktrees for parallel work, fast-forward integration, and recovery from a
+    merge that succeeded in Git but not in the database.
+  - A command line, a versioned API, a stdio MCP server and a read-first local console.
+  - Explicit import from a v1 installation, with dry run, backup and rollback.
+
+  The control plane ships in the Python distribution only: the standalone executables and the
+  npm launcher still start the v1 command. It is a preview, not a stable 2.0 release; its trust
+  boundary and limits are in `docs/v2/LIMITATIONS.md`.
+- Mutation testing in CI, with an outcome gate that fails while any mutant is unresolved.
+  `docs/v2/MUTATION_EXEMPTIONS.md` records the survivors proven to change nothing observable,
+  each with the check that proves it, and the survivors deliberately left unkilled; the gate
+  does not read that file.
 - `agentic-autonomous-project-execution`, a twelfth canonical discipline for continuous
   execution of authorized software plans, task-level blocker isolation, bounded repair
   attempts, resumable status, and evidence-backed completion. All agent adapters and
@@ -25,6 +43,19 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   when nothing in the repository defines that code any more; deleting a feature with its tests
   could never pass the audit. Such tests are listed under `retired_tests` instead.
 
+### Removed
+- macOS standalone builds, and the npm launcher's macOS and Linux ARM64 downloads. CI does not
+  run the test suite on macOS, and no Linux ARM64 build was ever produced, so the launcher
+  requested assets that were untested or missing. On those platforms it now says to install with
+  `pipx install agentic-discipline-kit`.
+- The `bootstrap` command, the `bootstrap_project` function and `scripts/bootstrap_project.py`.
+  They were compatibility aliases for `init`; use `agentic-discipline init --target <path>`, with
+  `--profile <id>` where `--stack <id>` was passed.
+- The compatibility scripts `scripts/acceptance_compile.py`, `crap_score.py`,
+  `integrity_audit.py`, `protected_paths.py`, `quality_engine.py` and `risk_score.py`. Each ran
+  one command of the CLI: `compile-acceptance`, `crap`, `integrity`, `protected`, `quality` and
+  `risk`.
+
 ### Fixed
 - `integrity` charged the lines of a deleted file to the file listed before it, so deleting a
   whole test file after a source file removed its tests and assertions unreported.
@@ -32,6 +63,27 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   It was read in the locale's encoding: on Windows, UTF-8 output came back garbled and a byte the
   code page cannot map crashed the read, so `integrity` failed on such a diff instead of auditing
   it; on any platform, a tool printing invalid UTF-8 crashed its gate or verifier the same way.
+  The control plane's file discovery read non-ASCII paths the same way on Windows.
+- Three installed playbooks told agents to run `risk_score.py`, `scripts/quality_engine.py` and
+  `scripts/integrity_audit.py`, which `init` never copies into a project. They now name
+  `agentic-discipline risk`, `quality` and `integrity`.
+- Verifier contracts and quality gates judge `working_directory` by POSIX and Windows rules
+  together. A verifier validated on Linux accepted `C:\x`, `\\server\share` and `..\x`, and one
+  validated on Windows accepted `/tmp/x`; each leaves the project on the other platform. Paths
+  with a drive such as `C:x` and root-relative Windows paths such as `\x`, which both platforms
+  accepted, are now rejected as well.
+- Task contract scope and verifier input paths are parsed as POSIX paths on every platform. On
+  Windows `/etc/x` was not considered absolute and was accepted; such a task could not change
+  anything outside the repository, but its contract is now rejected as on Linux.
+- A verifier that timed out on Linux or macOS recorded its partial output as a Python bytes
+  literal such as `b'started'`, untrimmed, because that output arrives as bytes there even when
+  text was requested. It is now decoded and trimmed like any other output.
+- `hygiene` missed a fallback written across several added lines, because each added line was
+  searched on its own. Consecutive added lines are now searched together.
+- Plan audit reported fields the task contract allows to be empty (`out_of_scope`,
+  `dependencies`, `boundaries`, `context`) as missing when a plan stated them as empty lists.
+- The integrity audit no longer reports generated evidence or runtime counters as changes to a
+  quality gate.
 
 ## [1.1.0] - 2026-09-06
 

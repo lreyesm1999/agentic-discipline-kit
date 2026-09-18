@@ -12,7 +12,7 @@ from typing import cast
 from . import __version__
 from .acceptance import compile_feature
 from .adapters import ADAPTERS, ALIASES, EMITTERS, LABELS, detect_adapters, sync_adapters
-from .bootstrap import bootstrap_project, initialize_project
+from .bootstrap import initialize_project
 from .common import AgenticError, changed_files, run_git
 from .crap import crap_score
 from .evidence import append_evidence, verify_ledger
@@ -355,12 +355,6 @@ def command_evidence_verify(args: argparse.Namespace) -> int:
     return 0 if result["status"] == "PASS" else 1
 
 
-def command_bootstrap(args: argparse.Namespace) -> int:
-    actions = bootstrap_project(Path(args.target), getattr(args, "stack", None), args.force)
-    _json({"status": "PASS", "actions": actions})
-    return 0
-
-
 def command_init(args: argparse.Namespace) -> int:
     result = initialize_project(
         Path(args.target),
@@ -609,12 +603,6 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--project-root", default=".")
     p.add_argument("--base-ref")
     p.set_defaults(func=command_hygiene)
-
-    p = sub.add_parser("bootstrap", help="Compatibility alias for init")
-    p.add_argument("--target", required=True)
-    p.add_argument("--stack", help="Optional compatibility profile override")
-    p.add_argument("--force", action="store_true")
-    p.set_defaults(func=command_bootstrap)
 
     return parser
 

@@ -249,18 +249,3 @@ def initialize_project(
         "baseline_gate": baseline,
         "actions": actions,
     }
-
-
-def bootstrap_project(target: Path, stack: str | None = None, force: bool = False) -> list[str]:
-    """Backward-compatible bootstrap wrapper.
-
-    New callers should use ``initialize_project``. ``stack`` now selects a data-driven
-    profile and is optional; omitting it enables automatic project detection.
-    """
-
-    result = initialize_project(
-        target,
-        profile_ids=[stack] if stack else None,
-        force=force,
-    )
-    return list(result["actions"])

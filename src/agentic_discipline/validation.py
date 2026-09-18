@@ -6,7 +6,7 @@ import re
 import sys
 import sysconfig
 from importlib import resources
-from pathlib import Path, PurePosixPath, PureWindowsPath
+from pathlib import Path, PureWindowsPath
 from typing import Any
 
 from jsonschema import Draft202012Validator
@@ -16,6 +16,19 @@ from .common import AgenticError
 
 class ValidationError(AgenticError):
     """Raised when an Agentic Discipline document is structurally invalid."""
+
+
+def escapes_project_root(relative: str) -> bool:
+    """Whether a declared project-relative path could leave the project on any platform.
+
+    A contract is validated on one operating system and may run on another, so the
+    path is parsed with Windows rules, which accept both ``/`` and ``\\`` as
+    separators. Any anchor is rejected: a drive (``C:x`` resolves against that
+    drive's current directory), a UNC share, or a root (``/x`` and ``\\x`` start at
+    the current drive's root). So is any ``..`` segment.
+    """
+    windows_path = PureWindowsPath(relative)
+    return bool(windows_path.anchor) or ".." in windows_path.parts
 
 
 def _schema_candidates(name: str) -> list[Path]:
@@ -88,16 +101,8 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
             required_count += 1
 
         working_directory = gate.get("working_directory")
-        if isinstance(working_directory, str):
-            posix_path = PurePosixPath(working_directory)
-            windows_path = PureWindowsPath(working_directory)
-            if (
-                posix_path.is_absolute()
-                or windows_path.is_absolute()
-                or ".." in posix_path.parts
-                or ".." in windows_path.parts
-            ):
-                errors.append(f"gates.{index}.working_directory: must stay inside the project root")
+        if isinstance(working_directory, str) and escapes_project_root(working_directory):
+            errors.append(f"gates.{index}.working_directory: must stay inside the project root")
 
         parser = gate.get("parser")
         thresholds = gate.get("thresholds", {})

@@ -15,7 +15,7 @@ Implementation is functionally green.
 - artifacts/quality-report.md
 
 ## Procedure
-1. Run scripts/quality_engine.py.
+1. Run `agentic-discipline quality`.
 2. Execute configured commands.
 3. Parse structured metrics when parsers exist.
 4. Evaluate thresholds.
