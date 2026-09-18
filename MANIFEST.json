@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-18T16:06:34.752096+00:00",
+  "generated_at_utc": "2026-09-18T18:25:08.087350+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1355,8 +1355,8 @@
     },
     {
       "path": "tests/control/test_console_responses.py",
-      "sha256": "5a4c742d7151ad4ae5501565d80cdfe636fbbb980cab1979ae18e2494adc7c66",
-      "bytes": 5620
+      "sha256": "cc688a2c7160af459b244c30d6b4abc266dfe565bd20c93f428ef500791d855e",
+      "bytes": 5807
     },
     {
       "path": "tests/control/test_context_document.py",
@@ -1400,8 +1400,8 @@
     },
     {
       "path": "tests/control/test_index_and_evidence_records.py",
-      "sha256": "e962a6c9320b26d13ec134c89627209318edf4594d7be1196a35950ce86297fd",
-      "bytes": 20768
+      "sha256": "345a6c71df4ce78a8dcaf012fae34b8264373b78353cc3e608cb9599163f9c09",
+      "bytes": 21238
     },
     {
       "path": "tests/control/test_interfaces.py",
@@ -1452,6 +1452,11 @@
       "path": "tests/control/test_plane_knowledge_rules.py",
       "sha256": "02efc3ed0e66f14f1fb93b414a50810777a6bc11fe58f78fed00360ac2345c47",
       "bytes": 22975
+    },
+    {
+      "path": "tests/control/test_plane_operations.py",
+      "sha256": "ce1cfa5b3e429d23f433a1ad41571435ff2fae8a67e537e98f4b10c4d49167c2",
+      "bytes": 7125
     },
     {
       "path": "tests/control/test_proof_binding.py",
@@ -1535,8 +1540,8 @@
     },
     {
       "path": "tests/test_adapter_documents.py",
-      "sha256": "0ca5ff722e4870a7e0e4235244891829792a3d8c9f306bbb35b943781cf3f996",
-      "bytes": 4387
+      "sha256": "f07c8048b3b238436c272f312e4220c44bef4d6c7c653b6c5df5a3bda0e8c4c1",
+      "bytes": 5306
     },
     {
       "path": "tests/test_adapter_layout.py",
@@ -1675,8 +1680,8 @@
     },
     {
       "path": "tests/test_init_target.py",
-      "sha256": "9286935172e06d4fe7897419af68c38fed1319c662edc40f4cc821d9c03e459b",
-      "bytes": 1210
+      "sha256": "dab645404d772f57691d2b4bf9f728f2e203455162aae0bb1e2a7e8a7aa95997",
+      "bytes": 2430
     },
     {
       "path": "tests/test_initialize_result.py",
@@ -1707,6 +1712,11 @@
       "path": "tests/test_integrity_rules.py",
       "sha256": "61eae0d3523f54712f7b7ffdb117811bc0c1b27d3664b1278a6ed5fab4ff1245",
       "bytes": 2787
+    },
+    {
+      "path": "tests/test_loaders_and_ledger.py",
+      "sha256": "4274ed9b931c77ec99bf32a58563dc44ea1148ca45a6d39eed46f727d8d717bf",
+      "bytes": 5735
     },
     {
       "path": "tests/test_migration_report.py",
@@ -1740,8 +1750,8 @@
     },
     {
       "path": "tests/test_project_detection.py",
-      "sha256": "b60f86089a21a585b2d155b37245a0e4400e1fb5c67ee6bdb4f3498595607659",
-      "bytes": 3745
+      "sha256": "a09c46ab198cd6249701b25c821e233277d8f5159a3ca86da34d4e518715dc09",
+      "bytes": 6347
     },
     {
       "path": "tests/test_quality.py",
