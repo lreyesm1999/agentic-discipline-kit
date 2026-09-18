@@ -25,6 +25,11 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   `docs/v2/MUTATION_EXEMPTIONS.md` records the survivors proven to change nothing observable,
   each with the check that proves it, and the survivors deliberately left unkilled; the gate
   does not read that file.
+- The mutation gate proves four families of equivalent survivors mechanically and stops
+  counting them: SQL keyword or identifier case, codec name case, the `typing.cast` type
+  argument, and pattern case under `re.IGNORECASE`. The original and the mutant must differ in
+  exactly one place that satisfies the rule; each accepted mutant is listed with its rule, and
+  every other survivor still fails the gate.
 - `agentic-autonomous-project-execution`, a twelfth canonical discipline for continuous
   execution of authorized software plans, task-level blocker isolation, bounded repair
   attempts, resumable status, and evidence-backed completion. All agent adapters and

@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-18T06:58:47.809563+00:00",
+  "generated_at_utc": "2026-09-18T13:59:47.111995+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "d3feea7ac80692458ad6e9ea0053e63556cb4991716cc16f9c2d4c9c16a28345",
-      "bytes": 10854
+      "sha256": "8572228493638e3313576f16b7e1087d9dfe30e2093aff9aaaa231ba20668654",
+      "bytes": 11266
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "82a22754dba9d1698776441baccd72f4cb65e6d7d94c841bfca3b17411bf2cc5",
-      "bytes": 4574
+      "sha256": "872d6622ce3068dd462e1dda8d4a4f0c3ab00609bc6c64289af2af336e58a27a",
+      "bytes": 4791
     },
     {
       "path": "docs/adoption.md",
@@ -400,8 +400,8 @@
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
-      "sha256": "42dc11d1508d62cbfa7dd47cbf606413eee56b99d0ab105c3112c90aab58f494",
-      "bytes": 14524
+      "sha256": "b1cc1064d7e33f9a44a06da64a8226a7b6ace5f4c50ce23d83f0640e99bb9b46",
+      "bytes": 15115
     },
     {
       "path": "docs/v2/OPERATIONS.md",
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "58c195e700c7c0782cf0e97e6d4548cef5fda0d07651bf90cb3ffdc249045789",
-      "bytes": 9462
+      "sha256": "78d697da3c0115b5738a2e68e76c3fccf59b70cdf1454032d5d8aded4f9ec8d3",
+      "bytes": 9644
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -980,8 +980,8 @@
     },
     {
       "path": "scripts/mutation_gate.py",
-      "sha256": "9c8b0d0c98652fc57675447c42a5cfbdb27941171cf8bf14a2641261fa7b8627",
-      "bytes": 1887
+      "sha256": "a2f1b40438122c50561375aa00c8580109270214b9992cf7b8ad6f0ac83ffee8",
+      "bytes": 12995
     },
     {
       "path": "scripts/repo_check.py",
@@ -1712,6 +1712,11 @@
       "path": "tests/test_migration_report.py",
       "sha256": "b26dbd5d552c2e3b07229879dcacc029a85df55d86a2a57b777124068e2d6323",
       "bytes": 4329
+    },
+    {
+      "path": "tests/test_mutation_equivalence.py",
+      "sha256": "d63732b82fbd0a40f8235c1aa9b11a8a101a6faa12bfd463ad279d65d2ab920e",
+      "bytes": 11631
     },
     {
       "path": "tests/test_mutation_gate.py",
