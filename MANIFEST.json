@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-17T17:12:02.831299+00:00",
+  "generated_at_utc": "2026-09-18T04:58:42.304682+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -75,8 +75,8 @@
     },
     {
       "path": ".github/workflows/release.yml",
-      "sha256": "4d9a526b08805d89c37b8a7d6d43907482c23ba2535b87b17f41ac868d12d391",
-      "bytes": 5618
+      "sha256": "f5605e401062584d298447481672ad6c5bccbe4ddf4cf169f406b0d5f7fe5feb",
+      "bytes": 5748
     },
     {
       "path": ".github/workflows/security.yml",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "da22a929b3eb90fa27ed7973ca8829405014a1d227f91451bc6a55fb75db7174",
-      "bytes": 10280
+      "sha256": "af9db3fb76a12eb9dac0140b6c32c5793042e13db5109b678cd20f6084d7c2a0",
+      "bytes": 10604
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -355,8 +355,8 @@
     },
     {
       "path": "docs/install.md",
-      "sha256": "38797f1f0de5bc0e63307fe0618cb4cd7c814cddcb6944f6a6c6f051f4dbde31",
-      "bytes": 5157
+      "sha256": "4df3e6ce8a83b4d36470c36446da99dfd64ad7e253266b1e7f6794f2715ebb26",
+      "bytes": 5273
     },
     {
       "path": "docs/payload-migration.md",
@@ -850,13 +850,13 @@
     },
     {
       "path": "packaging/npm/README.md",
-      "sha256": "2027c5cc541d02f4595794ab4955aae41f60194dfb73ba6c002a682dba85d93b",
-      "bytes": 1794
+      "sha256": "108d274b41dc7ad4fce8972e456bddcfc2363b23fee605099ca97fd3dbe078b5",
+      "bytes": 1904
     },
     {
       "path": "packaging/npm/bin/agentic-discipline.js",
-      "sha256": "3e12d8b8b3dc12e0f1349805ce64f349e9ff074ee763a6d5bc9f4e9329638f90",
-      "bytes": 3829
+      "sha256": "f59e07bb2c88a073ebeda50b90eca076e51194014a170414cd2fc0ff7e60c2e8",
+      "bytes": 3816
     },
     {
       "path": "packaging/npm/package.json",
