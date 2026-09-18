@@ -192,4 +192,4 @@ def test_a_claim_repeating_the_canonical_value_is_no_conflict(project: Any) -> N
     repeated = _claim(project, orders["id"], "documentation", 30)
 
     assert project.store.get(canonical["id"], "claim")["disposition"] == "CANONICAL"
-    assert repeated["disposition"] != "CONFLICTING"
+    assert (repeated["disposition"], repeated["conflicts"]) == ("CANDIDATE", [])
