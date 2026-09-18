@@ -10,12 +10,14 @@ be off by one. Each case compares the whole detection.
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
 
 from agentic_discipline.bootstrap import find_contract_root
-from agentic_discipline.profiles import Profile, detect_projects, load_profiles
+from agentic_discipline.common import AgenticError
+from agentic_discipline.profiles import Profile, detect_projects, load_profile, load_profiles
 
 
 def _profiles() -> dict[str, Profile]:
@@ -103,3 +105,72 @@ def test_the_shallowest_project_of_an_ecosystem_represents_the_nested_ones(
     (nested / "pyproject.toml").write_text("", encoding="utf-8")
 
     assert _detect(tmp_path) == [("python", tmp_path, 1.0, ("pyproject.toml",))]
+
+
+def test_sibling_projects_of_one_ecosystem_are_both_detected(tmp_path: Path) -> None:
+    for name in ("api", "web"):
+        (tmp_path / name).mkdir()
+        (tmp_path / name / "pyproject.toml").write_text("", encoding="utf-8")
+
+    assert [(p, r) for p, r, _, _ in _detect(tmp_path)] == [
+        ("python", tmp_path / "api"),
+        ("python", tmp_path / "web"),
+    ]
+
+
+def test_a_nested_duplicate_does_not_hide_later_projects(tmp_path: Path) -> None:
+    (tmp_path / "pyproject.toml").write_text("", encoding="utf-8")
+    (tmp_path / "a").mkdir()
+    (tmp_path / "a" / "pyproject.toml").write_text("", encoding="utf-8")
+    (tmp_path / "b").mkdir()
+    (tmp_path / "b" / "package.json").write_text("{}", encoding="utf-8")
+
+    assert [(p, r) for p, r, _, _ in _detect(tmp_path)] == [
+        ("python", tmp_path),
+        ("typescript", tmp_path / "b"),
+    ]
+
+
+def test_a_negative_depth_is_refused_with_its_reason(tmp_path: Path) -> None:
+    with pytest.raises(AgenticError) as caught:
+        detect_projects(tmp_path, _profiles(), max_depth=-1)
+    assert str(caught.value) == "max detection depth must be zero or greater"
+
+
+def _profile_file(tmp_path: Path, **detector: object) -> Path:
+    # Detectors are validated before the quality configuration is looked up.
+    path = tmp_path / "profile.json"
+    path.write_text(
+        json.dumps({"id": "x", "label": "X", "config": "quality.json", "detectors": [detector]}),
+        encoding="utf-8",
+    )
+    return path
+
+
+@pytest.mark.parametrize(
+    ("detector", "message"),
+    [
+        ({"pattern": "", "confidence": 1}, "profile detector 0 pattern is required"),
+        ({"pattern": 5, "confidence": 1}, "profile detector 0 pattern is required"),
+        (
+            {"pattern": "*.x", "confidence": 0},
+            "profile detector 0 confidence must be between 0 and 1",
+        ),
+    ],
+    ids=["empty-pattern", "non-text-pattern", "zero-confidence"],
+)
+def test_invalid_detectors_are_refused(
+    tmp_path: Path, detector: dict[str, object], message: str
+) -> None:
+    path = _profile_file(tmp_path, **detector)
+    with pytest.raises(AgenticError) as caught:
+        load_profile(path)
+    assert str(caught.value) == f"{message}: {path}"
+
+
+def test_an_unreadable_profile_is_named_in_the_error(tmp_path: Path) -> None:
+    path = tmp_path / "profile.json"
+    path.write_text("{", encoding="utf-8")
+    with pytest.raises(AgenticError) as caught:
+        load_profile(path)
+    assert str(caught.value).startswith(f"invalid profile at {path}: ")

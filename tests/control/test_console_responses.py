@@ -157,3 +157,8 @@ def test_server_binds_loopback_on_the_documented_default_port(project: Any) -> N
         assert web.server_address[0] == "127.0.0.1"
     finally:
         web.server_close()
+
+
+def test_only_the_first_question_mark_starts_the_query(project: Any) -> None:
+    with _serving(project.root) as port:
+        assert _get(port, "/api/status?view=1?extra=2")[0] == 200
