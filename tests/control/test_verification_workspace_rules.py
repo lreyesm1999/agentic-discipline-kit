@@ -8,6 +8,8 @@ Workspace cases run against a real Git repository.
 
 from __future__ import annotations
 
+import os
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -456,3 +458,97 @@ def test_a_primary_changed_after_the_gate_stops_the_merge(
         session,
     )
     assert repo.store.get(task, "task")["state"] != "COMPLETED"
+
+
+def test_merge_refuses_when_the_merge_did_not_reproduce_the_workspace(
+    repo: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # A merge that leaves the primary different from the reviewed workspace, as a
+    # hook rewriting files would, must not be recorded as integrated.
+    task, session, _ = _verified_workspace(repo)
+    real = workspaces.run_git
+
+    def merge_nothing(arguments: list[str], cwd: Path | None = None) -> str:
+        return "" if arguments[0] == "merge" else real(arguments, cwd=cwd)
+
+    monkeypatch.setattr(workspaces, "run_git", merge_nothing)
+
+    _rejects(
+        "INTEGRATION_MISMATCH",
+        "Merged files differ; task remains uncompleted",
+        merge_workspace,
+        repo,
+        task,
+        session,
+    )
+    assert not repo.store.get(task, "task")["integration"].get("merge_performed")
+
+
+def test_merge_refuses_when_only_the_links_differ_afterwards(
+    repo: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, session, _ = _verified_workspace(repo)
+    real_git, real_links = workspaces.run_git, workspaces.link_fingerprint
+    merged: list[bool] = []
+
+    def run_git(arguments: list[str], cwd: Path | None = None) -> str:
+        output = real_git(arguments, cwd=cwd)
+        merged.append(arguments[0] == "merge")
+        return output
+
+    def links(root: Path) -> dict[str, str]:
+        measured = real_links(root)
+        if any(merged) and root == repo.root:
+            return {**measured, "added-by-merge": "link"}
+        return measured
+
+    monkeypatch.setattr(workspaces, "run_git", run_git)
+    monkeypatch.setattr(workspaces, "link_fingerprint", links)
+
+    _rejects(
+        "INTEGRATION_MISMATCH",
+        "Merged files differ; task remains uncompleted",
+        merge_workspace,
+        repo,
+        task,
+        session,
+    )
+
+
+def test_a_workspace_recorded_before_links_were_measured_still_merges(repo: Any) -> None:
+    # Workspaces created before link baselines existed carry no `baseline_links`;
+    # a repository without links matches that missing baseline.
+    task, session, _ = _verified_workspace(repo)
+    workspace_id = repo.store.get(task, "task")["workspace_id"]
+    with repo.store.transaction():
+        current = repo.store.get(workspace_id, "workspace")
+        legacy = {key: value for key, value in current.items() if key != "baseline_links"}
+        repo.store.put("workspace", legacy, expected=current["version"])
+
+    assert merge_workspace(repo, task, session)["merge_performed"] is True
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX symlinks")
+def test_verify_refuses_an_evidence_directory_a_verifier_replaced_with_a_link(
+    project: Any,
+) -> None:
+    # The directory is checked before the run starts, and again before each artifact
+    # is written, because the verifier itself runs in between.
+    swap = (
+        "import os, shutil; target = '.agentic/control/evidence'; "
+        "shutil.rmtree(target, ignore_errors=True); os.makedirs('elsewhere', exist_ok=True); "
+        "os.symlink(os.path.abspath('elsewhere'), target)"
+    )
+    verification = [{"kind": "unit", "command": [sys.executable, "-c", swap], "acceptance": [0]}]
+    task, session = _claimed(project, verification=verification)
+
+    _rejects(
+        "INVALID_PATH",
+        "Evidence directory must not be a symlink",
+        verify,
+        project,
+        task,
+        session,
+    )
+    assert project.store.get(task, "task")["state"] == "FAILED"
+    assert not list((project.root / "elsewhere").iterdir())
