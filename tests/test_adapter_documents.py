@@ -129,3 +129,6 @@ def test_the_chatgpt_bundle_joins_every_discipline_under_its_heading(tmp_path: P
     assert "\n\n\n---" not in bundle
     for item in disciplines:
         assert f"## {item.title}\n\n{item.summary}\n\n{item.body.rstrip()}" in bundle
+    # Consecutive sections meet at exactly one rule.
+    for current, following in zip(disciplines, disciplines[1:], strict=False):
+        assert f"{current.body.rstrip()}\n\n---\n\n## {following.title}\n\n" in bundle
