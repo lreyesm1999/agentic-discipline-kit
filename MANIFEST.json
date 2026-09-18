@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-17T03:08:22.260877+00:00",
+  "generated_at_utc": "2026-09-17T17:08:09.450602+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "9c12cb69f8ef3d5b52d559c4f036ac02a319d5cabc6789e5a808d1b4dc2a91be",
-      "bytes": 6184
+      "sha256": "786d1d7fb28809a55d712323432f8bd64ef55180e658a313e69311050a3da15c",
+      "bytes": 6634
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -340,8 +340,8 @@
     },
     {
       "path": "docs/cli.md",
-      "sha256": "aa25b57abe0786afa96ca60aeb80bf7840d8abf941b343bd1e75ed6b06001bd3",
-      "bytes": 4702
+      "sha256": "c1d36a0c9231e898b2bfed6e961fb63e77ab5870d364744d5fc9f8c0b81a956e",
+      "bytes": 5130
     },
     {
       "path": "docs/compatibility.md",
@@ -835,8 +835,8 @@
     },
     {
       "path": "src/agentic_discipline/cli.py",
-      "sha256": "1e3f1e7d6c0f8f22fa74b78818f1c7707c95e9c282205c6a666c48a110301417",
-      "bytes": 23189
+      "sha256": "39ee17ae8f52ad47afbf6b8e0d759719062e8f3d8721732ff2c032fa6f51c0b5",
+      "bytes": 23992
     },
     {
       "path": "src/agentic_discipline/common.py",
@@ -860,8 +860,8 @@
     },
     {
       "path": "src/agentic_discipline/integrity.py",
-      "sha256": "2b879b1400b8449bc634fdfb50d1a318d3c0a8fd71e02fee2c209fe58b0d7fdd",
-      "bytes": 4170
+      "sha256": "262b94dfc967ef1cd37dc1af9180fc27ea251d7de9a24673f12bdc13f63e75a1",
+      "bytes": 7683
     },
     {
       "path": "src/agentic_discipline/migration.py",
@@ -992,6 +992,11 @@
       "path": "tests/test_integrity.py",
       "sha256": "835b4bc9a38810f72b4c5ecd644bebea2ee917042557621242e5de90b30a56b9",
       "bytes": 1450
+    },
+    {
+      "path": "tests/test_integrity_retired.py",
+      "sha256": "32bf19fc49d6637060ef1096d11ecb53b1713ef5c2deec5217e5ee6d069d990d",
+      "bytes": 15016
     },
     {
       "path": "tests/test_output_encoding.py",
