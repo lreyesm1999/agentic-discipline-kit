@@ -44,6 +44,10 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   could never pass the audit. Such tests are listed under `retired_tests` instead.
 
 ### Removed
+- macOS standalone builds, and the npm launcher's macOS and Linux ARM64 downloads. CI does not
+  run the test suite on macOS, and no Linux ARM64 build was ever produced, so the launcher
+  requested assets that were untested or missing. On those platforms it now says to install with
+  `pipx install agentic-discipline-kit`.
 - The `bootstrap` command, the `bootstrap_project` function and `scripts/bootstrap_project.py`.
   They were compatibility aliases for `init`; use `agentic-discipline init --target <path>`, with
   `--profile <id>` where `--stack <id>` was passed.

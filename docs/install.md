@@ -13,7 +13,9 @@ npx agentic-discipline init
 It detects the tools present in the repository and writes each one's native
 format. Run it from the repository root. Node 18+ is the only requirement; the
 launcher reuses an `agentic-discipline` already on your `PATH` and otherwise
-downloads the standalone build for your platform once and caches it.
+downloads the standalone build for your platform once and caches it. Standalone
+builds exist for Linux x64 and Windows x64; on macOS, use `pipx install
+agentic-discipline-kit` for now.
 
 Preview it first if you prefer:
 
