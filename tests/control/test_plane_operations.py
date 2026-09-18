@@ -242,3 +242,57 @@ def test_invalidation_reaches_tasks_and_claims_after_ones_it_skips(project: Any)
 
     assert result["invalidated"]
     assert project.store.get(canonical["id"], "claim")["disposition"] == "STALE"
+
+
+# --- workspaces, leases and transitions -----------------------------------------------------
+
+
+def test_a_directory_scope_with_a_trailing_slash_overlaps_its_files() -> None:
+    from agentic_discipline.control.workspaces import parallel_safety
+
+    left = {"scope": ["LibX/a.py"], "boundaries": [], "risk": "LOW"}
+    right = {"scope": ["LibX/"], "boundaries": [], "risk": "LOW"}
+
+    assert parallel_safety(left, right)["status"] == "CONFLICTING"
+    assert parallel_safety(right, left)["status"] == "CONFLICTING"
+
+
+def test_ready_clears_a_leftover_active_run(project: Any) -> None:
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())["id"]
+    _force(project, "task", task, state="FAILED", active_run="RUN-left-over")
+
+    assert project.ready(task)["active_run"] is None
+
+
+def test_a_lease_of_one_second_is_accepted(project: Any) -> None:
+    task, session = _claimed(project)
+
+    lease = project.heartbeat(task, session, 1)
+
+    assert lease["state"] == "ACTIVE"
+
+
+def test_cancelling_a_task_is_recorded_as_the_local_owner(project: Any) -> None:
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())["id"]
+
+    cancelled = project.transition(task, "CANCELLED", "no longer needed")
+
+    assert _writers(project, "task", cancelled) == ["local-owner"]
+
+
+def test_a_symbol_retired_by_hand_stays_retired_when_its_file_changes(project: Any) -> None:
+    (project.root / "lib.py").write_text("def total():\n    return 1\n", encoding="utf-8")
+    project.reconcile()
+    (symbol,) = [
+        e
+        for e in project.store.list("entity")
+        if e.get("type") == "symbol" and e["name"] == "total"
+    ]
+    project.knowledge.lifecycle(symbol["id"], "RETIRED", "replaced by sums")
+
+    (project.root / "lib.py").write_text("def total():\n    return 2\n", encoding="utf-8")
+    project.reconcile()
+
+    assert project.store.get(symbol["id"], "entity")["lifecycle"] == "RETIRED"
