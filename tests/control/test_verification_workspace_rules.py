@@ -570,3 +570,24 @@ def test_verify_refuses_an_evidence_directory_a_verifier_replaced_with_a_link(
     )
     assert project.store.get(task, "task")["state"] == "FAILED"
     assert not list((project.root / "elsewhere").iterdir())
+
+
+def test_a_workspace_never_resets_a_branch_that_already_exists(repo: Any) -> None:
+    task = _task(repo)
+    run_git(["branch", f"agentic/{task.lower()}"], cwd=repo.root)
+
+    with pytest.raises(Exception, match="already exists"):
+        create_workspace(repo, task)
+
+
+def test_a_checkpoint_records_the_branch_of_its_workspace(repo: Any) -> None:
+    task = _task(repo)
+    repo.ready(task)
+    session = repo.join("worker", ["code", "terminal"])["session"]
+    repo.claim(task, session)
+
+    record = repo.checkpoint(task, session, checkpoint())
+
+    branch = run_git(["branch", "--show-current"], cwd=repo.root).strip()
+    assert branch
+    assert record["payload"]["branch"] == branch

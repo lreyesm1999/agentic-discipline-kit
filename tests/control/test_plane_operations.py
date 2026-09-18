@@ -193,3 +193,125 @@ def test_a_claim_repeating_the_canonical_value_is_no_conflict(project: Any) -> N
 
     assert project.store.get(canonical["id"], "claim")["disposition"] == "CANONICAL"
     assert (repeated["disposition"], repeated["conflicts"]) == ("CANDIDATE", [])
+
+
+# --- lifecycle, context, invalidate ---------------------------------------------------------
+
+
+def test_retiring_knowledge_records_the_reason_and_what_it_affects(project: Any) -> None:
+    (orders,) = _apply(project, "Orders")
+
+    result = project.knowledge.lifecycle(orders["id"], "RETIRED", "replaced by billing")
+
+    assert project.store.get(orders["id"], "entity")["lifecycle_reason"] == "replaced by billing"
+    assert result["affected"] == []
+
+
+def test_a_directory_scope_with_a_trailing_slash_selects_its_code(project: Any) -> None:
+    (project.root / "LibX").mkdir()
+    (project.root / "LibX" / "a.py").write_text("value = 1\n", encoding="utf-8")
+    project.reconcile()
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task({**contract(), "scope": ["LibX/"]})["id"]
+
+    sources = project.context(task)["sources"]
+
+    assert [e["source_ref"] for e in sources if e["type"] == "file"] == ["LibX/a.py"]
+
+
+def _first(project: Any, kind: str, data: dict[str, Any]) -> None:
+    """Store a record whose id sorts before every generated one."""
+    prefix = kind.upper()[:4]
+    with project.store.transaction():
+        project.store.put(kind, {**data, "id": f"{prefix}-!"})
+
+
+def test_invalidation_reaches_tasks_and_claims_after_ones_it_skips(project: Any) -> None:
+    from agentic_discipline.control.verification import invalidate, verify
+
+    task, session = _claimed(project)
+    verify(project, task, session)
+    (orders,) = _apply(project, "Orders")
+    canonical = _claim(project, orders["id"], "human", 30)
+    _first(project, "task", {**project.store.get(task, "task")})
+    _first(project, "claim", {**canonical, "disposition": "CANDIDATE"})
+    (project.root / "app.py").write_text("value = 2\n", encoding="utf-8")
+    _force(project, "entity", orders["id"], stale=True)
+
+    result = invalidate(project)
+
+    assert result["invalidated"]
+    assert project.store.get(canonical["id"], "claim")["disposition"] == "STALE"
+
+
+# --- workspaces, leases and transitions -----------------------------------------------------
+
+
+def test_a_directory_scope_with_a_trailing_slash_overlaps_its_files() -> None:
+    from agentic_discipline.control.workspaces import parallel_safety
+
+    left = {"scope": ["LibX/a.py"], "boundaries": [], "risk": "LOW"}
+    right = {"scope": ["LibX/"], "boundaries": [], "risk": "LOW"}
+
+    assert parallel_safety(left, right)["status"] == "CONFLICTING"
+    assert parallel_safety(right, left)["status"] == "CONFLICTING"
+
+
+def test_ready_clears_a_leftover_active_run(project: Any) -> None:
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())["id"]
+    _force(project, "task", task, state="FAILED", active_run="RUN-left-over")
+
+    assert project.ready(task)["active_run"] is None
+
+
+def test_a_lease_of_one_second_is_accepted(project: Any) -> None:
+    task, session = _claimed(project)
+
+    lease = project.heartbeat(task, session, 1)
+
+    assert lease["state"] == "ACTIVE"
+
+
+def test_cancelling_a_task_is_recorded_as_the_local_owner(project: Any) -> None:
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())["id"]
+
+    cancelled = project.transition(task, "CANCELLED", "no longer needed")
+
+    assert _writers(project, "task", cancelled) == ["local-owner"]
+
+
+def test_a_symbol_retired_by_hand_stays_retired_when_its_file_changes(project: Any) -> None:
+    (project.root / "lib.py").write_text("def total():\n    return 1\n", encoding="utf-8")
+    project.reconcile()
+    (symbol,) = [
+        e
+        for e in project.store.list("entity")
+        if e.get("type") == "symbol" and e["name"] == "total"
+    ]
+    project.knowledge.lifecycle(symbol["id"], "RETIRED", "replaced by sums")
+
+    (project.root / "lib.py").write_text("def total():\n    return 2\n", encoding="utf-8")
+    project.reconcile()
+
+    assert project.store.get(symbol["id"], "entity")["lifecycle"] == "RETIRED"
+
+
+def test_a_claim_about_something_that_is_not_knowledge_is_refused(project: Any) -> None:
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())["id"]
+
+    with pytest.raises(ControlError) as caught:
+        _claim(project, task, "human", 30)
+
+    assert caught.value.code == "NOT_FOUND"
+
+
+def test_context_reads_the_latest_evidence_of_the_task(project: Any) -> None:
+    from agentic_discipline.control.verification import verify
+
+    task, session = _claimed(project)
+    verify(project, task, session)
+
+    assert project.context(task)["mandatory"]["current_failures"] == []
