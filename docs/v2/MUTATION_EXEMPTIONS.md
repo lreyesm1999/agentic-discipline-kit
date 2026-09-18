@@ -299,7 +299,7 @@ which `init` or `adopt` created before: `_copy_item`, `_install_payload`,
 the document first (`project` in a quality configuration, a verifier's
 `working_directory` and `expected_exit_code`), or the plane always writes it
 (`conflicts` on a claim, `occurrence` on a symbol). A default that an input can
-omit is not in this family: sixteen such sites are killed by documents that leave
+omit is not in this family: nine such sites (eighteen mutants) are killed by documents that leave
 the key out.
 
 **Others.** `doctor` collects missing tools only to test the list for emptiness;
