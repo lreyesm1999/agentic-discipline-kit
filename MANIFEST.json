@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-14T02:33:28.282445+00:00",
+  "generated_at_utc": "2026-09-17T03:08:22.260877+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "881241d86d5cf739a76b9cee9848767dce00374037fb6dc802882605b28538da",
-      "bytes": 5785
+      "sha256": "9c12cb69f8ef3d5b52d559c4f036ac02a319d5cabc6789e5a808d1b4dc2a91be",
+      "bytes": 6184
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -840,8 +840,8 @@
     },
     {
       "path": "src/agentic_discipline/common.py",
-      "sha256": "299a4f34759e245cb2945aeb24edacbb1352dda93e9a070f6ae8e1a5d8a4690d",
-      "bytes": 744
+      "sha256": "4e5b1ff2fcdcb72442b8e98ec76c8c9f7c59a73090625d50b18f69244ab690ae",
+      "bytes": 952
     },
     {
       "path": "src/agentic_discipline/crap.py",
@@ -875,8 +875,8 @@
     },
     {
       "path": "src/agentic_discipline/quality.py",
-      "sha256": "1a80dbc4e120cfb3bcc6293ffdc64ae65295958a81277ee0770815552a12c52f",
-      "bytes": 5834
+      "sha256": "f139907afd17a1cbfabcbea17fc712b781b889640f6a105e7a042422791865e4",
+      "bytes": 5962
     },
     {
       "path": "src/agentic_discipline/requirements.py",
@@ -905,8 +905,8 @@
     },
     {
       "path": "src/agentic_discipline/verifier/executor.py",
-      "sha256": "98c93c8edda67a3e426e4af8ad0bccfe3908786f2b212ee5c04ba176e17a0296",
-      "bytes": 5811
+      "sha256": "564125484bc50a230fc8ab76f384ccd081bb51250a53c4c96683e0d04c59e72b",
+      "bytes": 5943
     },
     {
       "path": "src/agentic_discipline/verifier/protection.py",
@@ -992,6 +992,11 @@
       "path": "tests/test_integrity.py",
       "sha256": "835b4bc9a38810f72b4c5ecd644bebea2ee917042557621242e5de90b30a56b9",
       "bytes": 1450
+    },
+    {
+      "path": "tests/test_output_encoding.py",
+      "sha256": "d7dc138a4defba09d4c5e17e725f8e2be14b882eefe82403a99838ef2f1d43af",
+      "bytes": 3007
     },
     {
       "path": "tests/test_packaging.py",

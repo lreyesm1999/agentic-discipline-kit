@@ -101,7 +101,9 @@ def run_gate(gate: dict[str, Any], cwd: Path | None = None) -> GateResult:
             command,
             cwd=cwd,
             shell=False,
-            text=True,
+            # A tool's output is only reported; an undecodable byte must not end the gate.
+            encoding="utf-8",
+            errors="replace",
             capture_output=True,
             check=False,
             timeout=float(gate.get("timeout_seconds", 900)),
