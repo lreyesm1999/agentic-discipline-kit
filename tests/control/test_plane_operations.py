@@ -367,6 +367,22 @@ def test_a_running_verifier_keeps_its_lease_only_before_its_deadline(
     assert _lease(project, task)["state"] == "EXPIRED"
 
 
+def test_a_missing_deadline_counts_as_already_past_at_any_instant(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Half a second after the epoch: a missing deadline must not read as one second.
+    import time
+
+    task, _ = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=0.25)
+    _force(project, "task", task, active_run="RUN-legacy")
+    monkeypatch.setattr(time, "time", lambda: 0.5)
+
+    _expire(project)
+
+    assert _lease(project, task)["state"] == "EXPIRED"
+
+
 def test_a_running_task_without_a_recorded_deadline_still_expires(
     project: Any, monkeypatch: pytest.MonkeyPatch
 ) -> None:

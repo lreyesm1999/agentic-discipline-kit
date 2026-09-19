@@ -10,7 +10,6 @@ the full response.
 from __future__ import annotations
 
 import http.client
-import inspect
 import json
 import threading
 from collections.abc import Iterator
@@ -151,7 +150,9 @@ def test_requests_are_never_logged(project: Any, capfd: pytest.CaptureFixture[st
 
 
 def test_server_binds_loopback_on_the_documented_default_port(project: Any) -> None:
-    assert inspect.signature(server).parameters["port"].default == 8765
+    from agentic_discipline.control.cli import parser
+
+    assert parser().parse_args(["console"]).port == 8765
     web = server(project.root, 0)
     try:
         assert web.server_address[0] == "127.0.0.1"
