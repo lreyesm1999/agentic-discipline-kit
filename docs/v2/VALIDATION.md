@@ -4,7 +4,9 @@
 
 Verification artifacts preserve actual executed outputs, not inferred PASS values.
 The suite includes the existing v1 tests and new control-plane integration/regression
-cases. The source and artifacts are identified in `evidence/validation.json`.
+cases. The source and artifacts are identified in `evidence/validation.json`, and
+`evidence/README.md` says which run produced each artifact and which ones a
+later run superseded.
 
 | Check | Current result |
 |---|---|

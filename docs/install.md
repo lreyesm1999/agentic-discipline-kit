@@ -17,6 +17,9 @@ downloads the standalone build for your platform once and caches it. Standalone
 builds exist for Linux x64 and Windows x64; on macOS, use `pipx install
 agentic-discipline-kit` for now.
 
+The same package also provides `agentic`, the project control plane described in
+[docs/v2](v2/README.md): `npx -p agentic-discipline agentic adopt`.
+
 Preview it first if you prefer:
 
 ```bash
@@ -92,7 +95,8 @@ tools with a single description field receive them combined, so a rule scoped by
 ## The CLI, for gates and CI
 
 The disciplines above are markdown; the deterministic checks are a program.
-Install it when you want `quality`, `verify`, `risk` or `evidence`:
+Install it when you want `quality`, `verify`, `risk` or `evidence`. It installs both
+commands, `agentic-discipline` and `agentic`:
 
 ```bash
 pipx install agentic-discipline-kit
@@ -104,10 +108,12 @@ container built from the repository's `Dockerfile`, or the composite action,
 which installs the CLI on the runner for you:
 
 ```yaml
-- uses: lreyesm1999/agentic-discipline-kit@v1
+- uses: lreyesm1999/agentic-discipline-kit@v2.0.0
   with:
     config: agentic.config.json
 ```
+
+Pin the action to a published release tag; there is no moving major-version tag.
 
 From source, for contributors (Python 3.11+):
 

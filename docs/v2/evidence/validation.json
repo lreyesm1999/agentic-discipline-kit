@@ -77,15 +77,6 @@
     "src/agentic_discipline/verifier/schema.py": "035f2ccf3a8fa564dddb7dee0ae16dc09e99d2af2f51e60c6b3a53f64e1beaf2",
     "src/agentic_discipline/verifier/sensitivity.py": "0ea9f1c722864f2cb6a9f33bfcc78d37870a5c1ec75004c6d11e3bfc3919e76d"
   },
-  "additional_artifacts": [
-    "benchmark.json",
-    "dogfood.json",
-    "independent-review.json",
-    "mutation-gate-review.json",
-    "mutation.json",
-    "performance-review-equivalence.log",
-    "wheel-smoke.json"
-  ],
   "pending": [],
   "remote_ci": {
     "workflow_run": "35443136819",
@@ -114,5 +105,20 @@
     "accepted_by_reviewed_exception": 109,
     "unresolved": 0,
     "status": "PASS"
-  }
+  },
+  "historical_artifacts": [
+    "benchmark-before-optimization.json",
+    "benchmark.json",
+    "dogfood.json",
+    "independent-review.json",
+    "integrity.log",
+    "mutation-gate-review.json",
+    "mutation.json",
+    "performance-review-equivalence.log",
+    "performance-review-tests.log",
+    "protected-workflow-review.json",
+    "protected.log",
+    "wheel-smoke.json"
+  ],
+  "artifact_index": "README.md"
 }

@@ -10,6 +10,7 @@ import time
 from pathlib import Path
 from typing import Any
 
+from ..evidence import sha256_file
 from .contracts import (
     TRANSITIONS,
     ControlError,
@@ -105,16 +106,19 @@ def adopt(root: Path, dry_run: bool = False) -> dict[str, Any]:
 
 
 def _index(store: Store, report: dict[str, Any]) -> dict[str, Any]:
-    old = {e["source_ref"]: e for e in store.list("entity") if e.get("type") == "file"}
+    # One read of the knowledge graph: files by path, symbols by the file they belong to.
+    old: dict[str, dict[str, Any]] = {}
+    symbols_by_file: dict[str, list[dict[str, Any]]] = {}
+    for entity in store.list("entity"):
+        if entity.get("type") == "file":
+            old[entity["source_ref"]] = entity
+        elif entity.get("type") == "symbol":
+            symbols_by_file.setdefault(entity["file_id"], []).append(entity)
     names = {f["path"] for f in report["files"]}
     removed = {
         name: e for name, e in old.items() if name not in names and e["lifecycle"] == "ACTIVE"
     }
     changed: list[str] = []
-    symbols_by_file: dict[str, list[dict[str, Any]]] = {}
-    for entity in store.list("entity"):
-        if entity.get("type") == "symbol":
-            symbols_by_file.setdefault(entity["file_id"], []).append(entity)
     with store.transaction():
         store.bump()
         for item in report["files"]:
@@ -539,38 +543,40 @@ class Plane:
                 "CAPABILITY_MISMATCH",
                 "Agent lacks task capabilities",
             )
+            active_leases = [item for item in self.store.list("lease") if item["state"] == "ACTIVE"]
             require(
-                not any(
-                    item["task_id"] == task_id and item["state"] == "ACTIVE"
-                    for item in self.store.list("lease")
-                ),
+                not any(item["task_id"] == task_id for item in active_leases),
                 "LEASE_CONFLICT",
                 "Task already has an owner",
             )
             from .workspaces import parallel_safety
 
-            for active in self.store.list("lease"):
-                if active["state"] == "ACTIVE":
-                    other = self.store.get(active["task_id"], "task")
-                    require(
-                        task.get("workspace_id")
-                        and other.get("workspace_id")
-                        and parallel_safety(task, other)["status"] == "SAFE_PARALLEL",
-                        "PARALLEL_CONFLICT",
-                        "Concurrent work requires isolated workspaces and disjoint contracts",
-                    )
+            for active in active_leases:
+                other = self.store.get(active["task_id"], "task")
+                require(
+                    task.get("workspace_id")
+                    and other.get("workspace_id")
+                    and parallel_safety(task, other)["status"] == "SAFE_PARALLEL",
+                    "PARALLEL_CONFLICT",
+                    "Concurrent work requires isolated workspaces and disjoint contracts",
+                )
             workspace = self.workspace_root(task)
-            baseline = task.get("initial_files", fingerprint(workspace))
+            # A task claimed before keeps the baseline it was measured against; the tree
+            # is read again only for a baseline this task does not have yet.
+            recorded = ("initial_files", "initial_links", "initial_line_counts")
+            measured = fingerprint(workspace) if any(key not in task for key in recorded) else {}
             self.store.put(
                 "task",
                 {
                     **task,
                     "state": "CLAIMED",
-                    "initial_files": baseline,
-                    "initial_links": task.get("initial_links", link_fingerprint(workspace)),
-                    "initial_line_counts": task.get(
-                        "initial_line_counts", line_counts(workspace, list(fingerprint(workspace)))
-                    ),
+                    "initial_files": task.get("initial_files", measured),
+                    "initial_links": task["initial_links"]
+                    if "initial_links" in task
+                    else link_fingerprint(workspace),
+                    "initial_line_counts": task["initial_line_counts"]
+                    if "initial_line_counts" in task
+                    else line_counts(workspace, list(measured)),
                 },
                 expected=task["version"],
                 actor=agent["id"],
@@ -748,7 +754,7 @@ class Plane:
                 artifact.is_file()
                 and not artifact.is_symlink()
                 and not artifact.parent.is_symlink()
-                and hashlib.sha256(artifact.read_bytes()).hexdigest() == evidence["artifact_hash"],
+                and sha256_file(artifact) == evidence["artifact_hash"],
                 "EVIDENCE_CORRUPT",
                 "Failure output was changed or removed",
             )

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import shutil
 from datetime import datetime, timezone
@@ -8,6 +7,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from ..common import AgenticError
+from ..evidence import sha256_file
 from ..validation import load_json, validate_schema
 from .schema import load_and_validate_verifier
 
@@ -41,10 +41,6 @@ def _write_registry(project_root: Path, registry: dict[str, Any]) -> None:
     path.write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
 
 
-def _metadata_hash(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
 def list_verifiers(project_root: Path) -> list[dict[str, Any]]:
     return list(load_registry(project_root)["verifiers"])
 
@@ -63,7 +59,7 @@ def load_verifier(project_root: Path, verifier_id: str) -> tuple[dict[str, Any],
     entry, directory = _resolve_entry(project_root, verifier_id)
     metadata_path = directory / "verifier.json"
     if entry.get("trust") == "PROTECTED" and entry.get("metadata_sha256"):
-        actual = _metadata_hash(metadata_path) if metadata_path.is_file() else None
+        actual = sha256_file(metadata_path) if metadata_path.is_file() else None
         if actual != entry["metadata_sha256"]:
             raise AgenticError(f"protected verifier changed: {verifier_id}")
     metadata = load_and_validate_verifier(metadata_path)
@@ -97,7 +93,7 @@ def register_verifier(source: Path, project_root: Path) -> dict[str, Any]:
             "last_validation": datetime.now(timezone.utc).isoformat()
             if metadata["sensitivity"]["status"] == "PROVEN"
             else None,
-            "metadata_sha256": _metadata_hash(destination / "verifier.json"),
+            "metadata_sha256": sha256_file(destination / "verifier.json"),
         }
     )
     _write_registry(project_root, registry)
