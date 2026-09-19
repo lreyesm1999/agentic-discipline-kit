@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
-  "version": "1.1.0",
-  "generated_at_utc": "2026-09-19T12:29:37.947568+00:00",
+  "version": "2.0.0",
+  "generated_at_utc": "2026-09-19T15:38:47.923923+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -10,7 +10,7 @@
     },
     {
       "path": ".claude-plugin/marketplace.json",
-      "sha256": "ce29f83dd3354c6748db7e9cd35765e88f3cff596262eb292e23de919b57ef6f",
+      "sha256": "8c019090868a81b5e6fb10e330610920386166cf8482e2b289372a3722bda0dc",
       "bytes": 974
     },
     {
@@ -75,8 +75,8 @@
     },
     {
       "path": ".github/workflows/release.yml",
-      "sha256": "ce2e319226322a7a756aee7ccb43196554d8b65e7a3457dcc1a2ca65db9c82f2",
-      "bytes": 5748
+      "sha256": "9ea6af48561d0b4b697f5f86d33aac3532191d30076b29fb72236c5b3879bd02",
+      "bytes": 6481
     },
     {
       "path": ".github/workflows/security.yml",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "8572228493638e3313576f16b7e1087d9dfe30e2093aff9aaaa231ba20668654",
-      "bytes": 11266
+      "sha256": "a152bed5be5e2caa3cba372fe31859e12f79143528b4ee2fb1ba13305f4f0f18",
+      "bytes": 11892
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -145,8 +145,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "101a590c25cb58692761dad76e2d7cd5a82295e67686a0b518b03b4455c395f8",
-      "bytes": 16419
+      "sha256": "ed5f5cccb25b2b8459687a64c6bf466d0e98d08e9de640efb7b1d205f9b6037c",
+      "bytes": 16727
     },
     {
       "path": "ROADMAP.md",
@@ -165,7 +165,7 @@
     },
     {
       "path": "VERSION",
-      "sha256": "1575e1af4a95f12f70b4ee6a6adce8160953d93ea17dc2611b90883ccc3ad3b8",
+      "sha256": "c28fcca53637bc88e124af1725df13cb98c69dedefd62fb3cdbe1cdb6b760624",
       "bytes": 6
     },
     {
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "d7a58d1315b12ed7f70a23a517d145ea707ab61b99bf48cd02df085a260d38ef",
-      "bytes": 4861
+      "sha256": "38d9eef22b302815405880fdfde7bb99040de14ff326fd4e8239eb3c72bdd9bc",
+      "bytes": 4840
     },
     {
       "path": "docs/adoption.md",
@@ -395,8 +395,8 @@
     },
     {
       "path": "docs/v2/LIMITATIONS.md",
-      "sha256": "af1e90d42e19eb5698dcc7eb73c46597dde8873601521b9c95a177d20420b172",
-      "bytes": 3802
+      "sha256": "5ab64b8eef0fbc638cebc872f0b58e51c5b2f5ade4f7f43e514442be9c65523a",
+      "bytes": 3827
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
@@ -410,13 +410,13 @@
     },
     {
       "path": "docs/v2/README.md",
-      "sha256": "98e9302d4711f9f49b92a3f33ee5f70680934f36880abe92dfda63448d359f6b",
-      "bytes": 5786
+      "sha256": "9fc36bfd6926999af961ae7c8038244ee67bdb18da1c67d7966063851949359a",
+      "bytes": 5862
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "9a96b4af17b30c087273c1b212ec072473dc8689b1ba232740766850635bab6b",
-      "bytes": 10426
+      "sha256": "64f9384194c21fa44b40cf10488e6541a22f53771484ec01b0edf24abd4cb30f",
+      "bytes": 10869
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -430,13 +430,13 @@
     },
     {
       "path": "docs/v2/evidence/build.log",
-      "sha256": "5a9ff846759a12d83d166b81e2aea363a41311b4c7047b6b834bf06ab1d651d9",
-      "bytes": 50160
+      "sha256": "32e09568f4dd11cbf352b8890c378fe1caaeedf2d68b88ce7340cb8c5b4b2864",
+      "bytes": 369
     },
     {
       "path": "docs/v2/evidence/checks.log",
-      "sha256": "e22d8891bb7d2b820fd3e5ffba8fc5064b618a0d20cada597f33f35d8095f45c",
-      "bytes": 7969
+      "sha256": "600e6d6c690e2df242cfc7d9fdab4c2dc7d859e8bb646aec2eb222673021c578",
+      "bytes": 742
     },
     {
       "path": "docs/v2/evidence/dogfood.json",
@@ -485,13 +485,18 @@
     },
     {
       "path": "docs/v2/evidence/validation.json",
-      "sha256": "a45182672a64051dd32604b484fd454d7cff60ca5a57ea355980c69f1a9dc378",
-      "bytes": 4212
+      "sha256": "6367edee0b7ca242298c33d76f934a3e87b965cbecb015ed24d824b449fe7b49",
+      "bytes": 6582
     },
     {
       "path": "docs/v2/evidence/wheel-smoke.json",
       "sha256": "8103495bf3554c8dde230c334fa0b0884f6a63eceb7e93457e0a0b3ba7f53224",
       "bytes": 4496
+    },
+    {
+      "path": "docs/v2/evidence/wheel-smoke.log",
+      "sha256": "fc1bd56ef29a199aa98d53a1d51d39f8829823f20b6332b946d6b66722ca8cf7",
+      "bytes": 395
     },
     {
       "path": "docs/v2/plan/00_README.md",
@@ -720,12 +725,12 @@
     },
     {
       "path": "packaging/agentic-discipline.spec",
-      "sha256": "6cc1f375152efe8eb29d1e3bad35109244b77bed7dff46d9940e34c7bde3c6ea",
-      "bytes": 1088
+      "sha256": "bdddf6d06af497921b1af3cdac696ae8343a5bd9a6b98ecb04c67739401ab21d",
+      "bytes": 1578
     },
     {
       "path": "packaging/claude-plugin/.claude-plugin/plugin.json",
-      "sha256": "299a6342ad5a17e1fb382de34c5574babc12c8d12234ee8b97fdd9516df16fd9",
+      "sha256": "3d62d8dc8b6ebc926015f27cae58b94b65f806e6b9dbe7166511fa00221e3aa2",
       "bytes": 474
     },
     {
@@ -849,19 +854,34 @@
       "bytes": 79
     },
     {
+      "path": "packaging/entrypoint_control.py",
+      "sha256": "18a1560fea20a25b654f6a5f7378c242021f8d1694b12de787fb329b29b8aedc",
+      "bytes": 87
+    },
+    {
       "path": "packaging/npm/README.md",
-      "sha256": "108d274b41dc7ad4fce8972e456bddcfc2363b23fee605099ca97fd3dbe078b5",
-      "bytes": 1904
+      "sha256": "9c28b731644b398599c4f336385422983bc3ea2b84f4247f0e8778da9217b768",
+      "bytes": 2629
     },
     {
       "path": "packaging/npm/bin/agentic-discipline.js",
-      "sha256": "f59e07bb2c88a073ebeda50b90eca076e51194014a170414cd2fc0ff7e60c2e8",
-      "bytes": 3816
+      "sha256": "c7b1d875a319bc9c79a073e8c7bd3f772411421b0adb684bb2fa5f7d63fe02f7",
+      "bytes": 89
+    },
+    {
+      "path": "packaging/npm/bin/agentic.js",
+      "sha256": "485263dcd423f7fdd591abb0bd517d6a5327b13a4cedaf7e7ff9b006a6cc8141",
+      "bytes": 78
+    },
+    {
+      "path": "packaging/npm/bin/launcher.js",
+      "sha256": "daf442da9d5fcc785116ae70859cf663c2365c29ab17b0214a01e9176a93db16",
+      "bytes": 4284
     },
     {
       "path": "packaging/npm/package.json",
-      "sha256": "071698e7f08c5db6ffc3edcdab296da42a7642f7fc6efd17fae0218f13de34b5",
-      "bytes": 782
+      "sha256": "cd70e748aae077b33d128cb16270e3a4890289d2227f864ef9dc23c1a2ec2f18",
+      "bytes": 815
     },
     {
       "path": "policies/architecture.md",
@@ -905,7 +925,7 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "058f79d27456cc45cce670c7eed4c78d517f0adee946fb99de6381caa2e24e6a",
+      "sha256": "7872986ddce96696787b5c4588785447f90afb8f3023fda47e6cd2357786dd65",
       "bytes": 5858
     },
     {
@@ -1100,7 +1120,7 @@
     },
     {
       "path": "src/agentic_discipline/__init__.py",
-      "sha256": "faa46acb6cdda2fec9513dd70f160025e659666b73256758d9645616bbd5707e",
+      "sha256": "a25b42ecbff864b9d2752077f09fbdbc8ce8c8e20f3735d6ff6860205fe777c8",
       "bytes": 53
     },
     {
@@ -1145,8 +1165,8 @@
     },
     {
       "path": "src/agentic_discipline/control/cli.py",
-      "sha256": "3ced7490418b104c9b6ccbff53879145931e297cb0b83580462da6def5e8bca0",
-      "bytes": 11358
+      "sha256": "4d7b04b24fd15809614a6bda4a548c8a0a24ccd9e58e41d69f7e08b16d18550c",
+      "bytes": 11459
     },
     {
       "path": "src/agentic_discipline/control/console.py",
@@ -1310,8 +1330,8 @@
     },
     {
       "path": "tests/cli_surface.json",
-      "sha256": "10914fcdae21556868d3b4a70a5da4e5e79228232742d7e8686a879a92a23e7d",
-      "bytes": 63031
+      "sha256": "7368235007cdd2a3bdb4c71635f253de092bca68f3ead5e0b0689aaec124dd05",
+      "bytes": 63427
     },
     {
       "path": "tests/control/conftest.py",
@@ -1350,8 +1370,8 @@
     },
     {
       "path": "tests/control/test_cli_dispatch.py",
-      "sha256": "4006f923835b0dc2dfe155f2c41f6808890febba2d358e79f13833f416a393b5",
-      "bytes": 13702
+      "sha256": "6250cbbb26d567b60e81730815503dc81e3d5f014dc7b7342e6e3fd3095e733d",
+      "bytes": 14095
     },
     {
       "path": "tests/control/test_cli_main.py",

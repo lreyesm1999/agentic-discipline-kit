@@ -1,12 +1,13 @@
-# Agentic Discipline 2 — local execution preview
+# Agentic Discipline 2 — local execution
 
 The `agentic` command adds persistent project knowledge, executable task contracts,
 checkpoints, agent leases, isolated Git workspaces and current verification evidence.
 CLI, MCP and the project console use the same application services and SQLite state.
 The existing `agentic-discipline` commands, adapters and release gates remain available.
 
-This branch is a development preview, not a published stable 2.0 release. The package
-version remains 1.1.0 until the normal release process approves a version change.
+Released as 2.0.0 in the Python distribution, the standalone executables and the npm
+launcher (`npx -p agentic-discipline agentic`). It is stable within the trust boundary
+in [LIMITATIONS.md](LIMITATIONS.md): one trusted OS user on a local filesystem.
 See [implementation status](../IMPLEMENTATION_STATUS.md), [design decisions](AUDIT.md),
 and [validation evidence](VALIDATION.md). The supplied [plan](plan/00_README.md) is
 preserved as the design input, separately from measured implementation status.

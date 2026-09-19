@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline",
   "description": "Evidence-backed engineering discipline for AI coding agents: requirements, acceptance, verification, hardening, and release evidence.",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "author": {
     "name": "Agentic Discipline Kit Contributors"
   },

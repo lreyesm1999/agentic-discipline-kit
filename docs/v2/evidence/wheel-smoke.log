@@ -1,0 +1,14 @@
+$ agentic-discipline --version
+2.0.0
+exit=0
+$ agentic --version
+2.0.0
+exit=0
+$ agentic adopt <project> --json
+{"api_version":"2","data":{"adopted":true,"coverage":{"agent_instructions":{"ins
+exit=0
+$ agentic --root <project> knowledge query app.py --json
+{"api_version":"2","data":[{"area":"source","authority":"code","confidence":1,"c
+exit=0
+$ agentic-discipline init --target <project>
+exit=0

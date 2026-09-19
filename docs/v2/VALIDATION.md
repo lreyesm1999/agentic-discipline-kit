@@ -1,6 +1,6 @@
 # Validation and release disposition
 
-**Implementation: local preview. RELEASE READY: NO.**
+**Released as 2.0.0. RELEASE READY: YES** — accepted by the code owner (@lreyesm1999) on 2026-09-19.
 
 Verification artifacts preserve actual executed outputs, not inferred PASS values.
 The suite includes the existing v1 tests and new control-plane integration/regression
@@ -8,19 +8,19 @@ cases. The source and artifacts are identified in `evidence/validation.json`.
 
 | Check | Current result |
 |---|---|
-| Full Python suite | 1474 passed in the integrated local run |
-| Coverage gate | PASS: 95.01% lines, 87.06% branches; thresholds remain 90/85 |
+| Full Python suite | 1605 passed on Linux in a clean clone of the release branch (evidence/checks.log) |
+| Coverage gate | PASS: 98.94% lines, 97.41% branches; thresholds remain 90/85 |
 | Lint and type checking | PASS |
 | Security SAST | PASS: no high-severity Bandit findings |
 | Package build | PASS: wheel and source distribution |
-| Isolated installed wheel | PASS: legacy init, Git setup, new adoption and composed doctor |
+| Isolated installed wheel | PASS: the 2.0.0 wheel in a fresh environment runs `agentic-discipline --version` and `init`, and `agentic --version`, `adopt` and a full-text `knowledge query` (evidence/wheel-smoke.log) |
 | Own-repository task execution | PASS: actual subprocess ran 55 control tests, checkpoint/evidence/task completion persisted |
 | 1,000-file performance fixture | PASS after scoped discovery optimization: status 264.851 ms, claim 167.950 ms; all four targets met |
-| Protected-contract diff | FAIL by design: the mutation outcome fix modifies `.github/workflows/ci.yml`, a protected path. Authorized by the code owner (@lreyesm1999) on 2026-09-14; the check is not bypassed |
+| Protected-contract diff | FAIL by design on the release change: it modifies `.github/workflows/release.yml`, a protected path, to build and smoke-test the `agentic` executable. Authorized by the code owner (@lreyesm1999) on 2026-09-19; the check is not bypassed |
 | Diff integrity audit | PASS: gate configuration and test assertions are checked without treating generated evidence or runtime counters as gate changes |
-| Differential mutation | FAIL: latest full CI run (35392522637, 80e13ff, merged as 1dd4e30) killed 15,129 of 15,590, with 461 survivors and no timeouts; the gate proves 101 of them equivalent, leaving 360 unresolved. The first run is in evidence/mutation.json |
+| Differential mutation | PASS: CI run 35443136819 (8981c84, merged as b1422cc) killed 15,214 of 15,425 with no timeouts; the gate proves 102 survivors equivalent by rule and accepts 109 through the reviewed exceptions in policies/mutation-exceptions.json, leaving none unresolved. The first run is in evidence/mutation.json |
 | Independent review | Focused final review: no remaining HIGH/CRITICAL in reviewed scope; evidence/independent-review.json |
-| Remote platform matrix / release approval | CI for the integrated commit is pending. Stable release is not claimed. |
+| Remote platform matrix / release approval | PASS: CI run 35443136819 passed the suite on Linux and Windows with Python 3.11, 3.12 and 3.13. macOS is not a supported platform. Release accepted by the code owner on 2026-09-19. |
 
 The benchmark creates an explicitly synthetic source fixture and executes a real
 verifier. It is not a production workload claim. `scripts/control_benchmark.py`

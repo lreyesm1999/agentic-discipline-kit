@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 from typing import Any, cast
 
+from .. import __version__
 from . import API_VERSION
 from .api import SCHEMAS, call
 from .contracts import ControlError, encode, require
@@ -21,6 +22,7 @@ def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(
         prog="agentic", description="Agentic Discipline 2 local control plane"
     )
+    root.add_argument("--version", action="version", version=__version__)
     root.add_argument("--root", type=Path, default=Path.cwd())
     commands = root.add_subparsers(dest="group", required=True)
     adoption = commands.add_parser("adopt")

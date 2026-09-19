@@ -6,8 +6,10 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-19
+
 ### Added
-- Agentic Discipline 2 preview: a persistent local project control plane (Python and SQLite)
+- Agentic Discipline 2: a persistent local project control plane (Python and SQLite)
   exposed as the `agentic` command, alongside the unchanged `agentic-discipline` command.
   - Project knowledge with provenance, history, retirement and conflicting-claim detection.
   - Task contracts, expiring leases and checkpoints another agent can resume from.
@@ -18,16 +20,23 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   - A command line, a versioned API, a stdio MCP server and a read-first local console.
   - Explicit import from a v1 installation, with dry run, backup and rollback.
 
-  The control plane ships in the Python distribution only: the standalone executables and the
-  npm launcher still start the v1 command. It is a preview, not a stable 2.0 release; its trust
-  boundary and limits are in `docs/v2/LIMITATIONS.md`.
+  The control plane ships in every distribution: the Python package, the standalone executables
+  (each archive now holds `agentic` beside `agentic-discipline`) and the npm launcher, which adds
+  an `agentic` command (`npx -p agentic-discipline agentic`). `agentic --version` reports the
+  package version. It is stable within the single-user, local trust boundary in
+  `docs/v2/LIMITATIONS.md`.
 - Mutation testing in CI, with an outcome gate that fails while any mutant is unresolved.
-  `docs/v2/MUTATION_EXEMPTIONS.md` records the survivors proven to change nothing observable,
-  each with the check that proves it, and the survivors deliberately left unkilled; the gate
-  does not read that file.
+  `docs/v2/MUTATION_EXEMPTIONS.md` records each survivor proven to change nothing observable,
+  with the check that proves it.
+- A reviewed exception list for the mutation gate, `policies/mutation-exceptions.json`, on a
+  protected path. Each exception names the function and the exact line a mutant changes, before
+  and after, with its family and reason, so it survives mutmut renumbering. The gate accepts a
+  survivor only through an exact match, and fails on any exception that no longer matches one.
+  CI names the list through the gate step's `MUTATION_EXCEPTIONS` environment variable.
 - The mutation gate proves four families of equivalent survivors mechanically and stops
   counting them: SQL keyword or identifier case, codec name case, the `typing.cast` type
-  argument, and pattern case under `re.IGNORECASE`. The original and the mutant must differ in
+  argument, and pattern case under `re.IGNORECASE` (the codec rule also reads the codec passed
+  to `.encode()` and `.decode()`). The original and the mutant must differ in
   exactly one place that satisfies the rule; each accepted mutant is listed with its rule, and
   every other survivor still fails the gate.
 - `agentic-autonomous-project-execution`, a twelfth canonical discipline for continuous
