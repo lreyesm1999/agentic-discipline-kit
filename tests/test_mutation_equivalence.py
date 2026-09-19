@@ -365,9 +365,18 @@ def test_a_stale_exception_fails_the_gate_even_when_nothing_else_remains() -> No
         {"exceptions": [{**_exception(), "extra": "x"}]},
         {"exceptions": [{k: v for k, v in _exception().items() if k != "reason"}]},
         {"exceptions": [_exception(reason="  ")]},
+        {"exceptions": [_exception(original="", mutant=" ")]},
         {"exceptions": [_exception(), _exception(reason="said again")]},
     ],
-    ids=["not-an-object", "not-a-list", "extra-field", "missing-field", "blank", "repeated"],
+    ids=[
+        "not-an-object",
+        "not-a-list",
+        "extra-field",
+        "missing-field",
+        "blank",
+        "no-change",
+        "repeated",
+    ],
 )
 def test_an_incomplete_or_repeated_exception_file_is_refused(tmp_path: Path, data: Any) -> None:
     path = tmp_path / "exceptions.json"
@@ -432,3 +441,11 @@ def test_an_exception_can_name_a_changed_parameter_default(tmp_path: Path) -> No
     )
 
     assert GATE["review"](root, [MUTANT], [entry]) == ({MUTANT: "falsy-default"}, [])
+
+
+def test_an_exception_may_name_a_deleted_line(tmp_path: Path) -> None:
+    path = tmp_path / "exceptions.json"
+    entry = _exception(original="check=False,", mutant="")
+    path.write_text(json.dumps({"exceptions": [entry]}), encoding="utf-8")
+
+    assert GATE["load_exceptions"](path) == [entry]

@@ -20,12 +20,11 @@ the function, the exact line the mutant changes before and after, its family and
 reason, which points back to a section of this file. The file is a protected path,
 so any change to it shows in the protected check and needs review. The gate accepts
 a survivor only when an exception matches its changed line exactly. It fails on every
-other survivor, and on any exception that no longer matches one. The "Known
-survivors, not exempt" at the end are deliberately absent from the list.
+other survivor, and on any exception that no longer matches one.
 
 ## How a survivor leaves the list
 
-Four batches of tests (#20, #21, #22, #24) examined the survivors one by one. Each
+Five batches of tests (#20, #21, #22, #24, #25) examined the survivors one by one. Each
 mutant was applied to the source and the tests of its module were run, after a run
 of the same tests without the mutant. A survivor was resolved in one of three ways,
 in this order of preference:
@@ -42,7 +41,9 @@ bypassing the check in front of it. `create_task`'s server-owned field guard run
 with contract validation replaced. The secret checks in `approve_command` and
 `checkpoint` run with the store's own check replaced. `proof_current`'s requirement
 and cycle checks run with `fresh` replaced. `verify`'s busy guard is reached with
-changes outside the scope, which the next check would otherwise report.
+changes outside the scope, which the next check would otherwise report. `complete`'s
+comparison of the post-merge binding is reached with a forged merge record, since
+`merge_workspace` itself refuses to record a merge the primary does not match.
 
 ## Equivalent by the language: four families
 
@@ -142,9 +143,12 @@ kills the sites where the parent can be missing.
 
 ## Others, each checked
 
-- **`None` for `False` where the value is only tested for truth.** `getattr(args,
-  "check_tools", None)` and `"check_paths"`, and `json.dumps(allow_nan=None)`
-  (checked: it refuses `nan` exactly as `False` does).
+- **`None` for `False` or `""` where the value is only tested for truth.**
+  `getattr(args, "check_tools", None)` and `"check_paths"`, the adapters' `nested`,
+  the flags `pending_id`, `required_tool_missing`, `has_required`, `reaches_evidence`,
+  `passed`, `Session.initialized` and `ready`, `check=None` or a dropped `check` in
+  `subprocess.run`, and `json.dumps(allow_nan=None)` (checked: it refuses `nan` exactly
+  as `False` does).
 - **`"SHA256"` for `"sha256"`** in `hashlib.file_digest` (checked: same digest).
 - **A slice one past the end.** `relative.parts[:len(parts) + 1]` equals
   `relative.parts[:len(parts)]`, so `range(1, len(parts) + 2)` checks the same
@@ -166,23 +170,12 @@ kills the sites where the parent can be missing.
   `--- a/` gives the same pairing, including the mutant's `"XXXX"`. Checked on a
   diff whose first line is `+++ /dev/null`, a deleted-file diff and an empty diff.
 
-## Known survivors, not exempt
+## Resolved rather than excepted
 
-These are not proven equivalent. Each is reachable in principle, and none is listed
-above.
-
-- **`Plane._expire`: the `active_run_deadline` default of `0`.** The plane writes
-  the deadline together with `active_run`, so the default applies only to a forged
-  run without one. Raising it to `1` changes the outcome only when the clock reads
-  less than one second after the epoch.
-- **`Plane.context`: `>` for `>=` when choosing the latest evidence.** The two differ
-  only for two records of the same verifier with the same `finished_at`, where the
-  order between them is arbitrary either way.
-- **`complete`: the `state` key of the post-merge binding.** Comparing the binding
-  as it would be after completion with the current one only matters when the root
-  and the workspace differ. The checks before it (merged files equal to the root,
-  and equal link fingerprints) already refuse every such case found so far. It stays
-  on the kill list until a case is found or the redundancy is proven.
+Three survivors once listed here as known but unproven were settled in #25 instead of
+being excepted. A run with no recorded deadline is tested half a second after the
+epoch. The latest evidence is now chosen by a stable sort, which leaves no comparison
+to mutate. The post-merge binding check is tested past a forged merge record.
 
 ## Method
 

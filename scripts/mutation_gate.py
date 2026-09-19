@@ -134,10 +134,14 @@ def load_exceptions(path: Path) -> list[dict[str, str]]:
         raise ValueError("exceptions file must hold an `exceptions` list")
     seen: set[Change] = set()
     for index, entry in enumerate(entries):
+        # A mutant may delete a line, so one side of the change may be empty; the
+        # function, family and reason may not.
         if (
             not isinstance(entry, dict)
             or set(entry) != set(EXCEPTION_FIELDS)
-            or not all(isinstance(entry[key], str) and entry[key].strip() for key in entry)
+            or not all(isinstance(entry[key], str) for key in entry)
+            or not all(entry[key].strip() for key in ("function", "family", "reason"))
+            or not (entry["original"].strip() or entry["mutant"].strip())
         ):
             raise ValueError(f"exception {index} needs exactly {', '.join(EXCEPTION_FIELDS)}")
         key = (entry["function"], entry["original"], entry["mutant"])
