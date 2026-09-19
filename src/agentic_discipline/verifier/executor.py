@@ -104,7 +104,7 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
             expected = int(metadata["expected_exit_code"])
             result["status"] = "PASS" if completed.returncode == expected else "FAIL"
         except subprocess.TimeoutExpired as exc:
-            result["status"] = "BLOCKED"
+            # The status is still the BLOCKED it started as.
             result["error"] = f"verifier timed out after {metadata['timeout_seconds']} seconds"
             result["observations"] = {
                 "stdout": _partial_output(exc.stdout),
