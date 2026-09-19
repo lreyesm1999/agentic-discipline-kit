@@ -58,7 +58,7 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
     result: dict[str, Any] = {
         "schema_version": "1",
         "verification_id": verifier_id,
-        "status": "BLOCKED" if missing or missing_env else "UNKNOWN",
+        "status": "BLOCKED",
         "started_at": started.isoformat(),
         "finished_at": started.isoformat(),
         "command": shlex.join(parts),

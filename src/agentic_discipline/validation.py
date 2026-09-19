@@ -88,7 +88,7 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
         return errors
 
     names: set[str] = set()
-    required_count = 0
+    has_required = False
     for index, gate in enumerate(gates):
         if not isinstance(gate, dict):
             continue
@@ -98,7 +98,7 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
                 errors.append(f"gates.{index}.name: duplicate gate name {name!r}")
             names.add(name)
         if gate.get("required", True) is True:
-            required_count += 1
+            has_required = True
 
         working_directory = gate.get("working_directory")
         if isinstance(working_directory, str) and escapes_project_root(working_directory):
@@ -126,7 +126,7 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
                                 f"gates.{index}.thresholds.{metric}.{operator}: value must be finite"
                             )
 
-    if gates and required_count == 0:
+    if gates and not has_required:
         errors.append("gates: at least one gate must be required")
     return errors
 

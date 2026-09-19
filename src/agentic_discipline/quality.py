@@ -92,7 +92,7 @@ def run_gate(gate: dict[str, Any], cwd: Path | None = None) -> GateResult:
     start = time.monotonic()
     configured_command = gate["command"]
     command = (
-        shlex.split(configured_command, posix=True)
+        shlex.split(configured_command)
         if isinstance(configured_command, str)
         else configured_command
     )

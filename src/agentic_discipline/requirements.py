@@ -105,7 +105,7 @@ def orphan_requirements(graph: dict[str, Any]) -> list[str]:
         for node in graph.get("nodes", [])
         if isinstance(node, dict) and isinstance(node.get("id"), str)
     }
-    outgoing: dict[str, list[dict[str, Any]]] = {}
+    traced: set[str] = set()
 
     for edge in graph.get("edges", []):
         if not isinstance(edge, dict):
@@ -127,7 +127,7 @@ def orphan_requirements(graph: dict[str, Any]) -> list[str]:
             nodes[source].get("type") in allowed_sources
             and nodes[target].get("type") in allowed_targets
         ):
-            outgoing.setdefault(source, []).append(edge)
+            traced.add(source)
 
     requirements = [node for node in nodes.values() if node.get("type") == "requirement"]
-    return [node["id"] for node in requirements if not outgoing.get(node["id"])]
+    return [node["id"] for node in requirements if node["id"] not in traced]
