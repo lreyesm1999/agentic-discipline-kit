@@ -1,10 +1,10 @@
-# Implementation Status — Agentic Discipline 2 preview
+# Implementation Status — Agentic Discipline 2
 
 ## Completed
 
 The local control plane is implemented alongside the existing v1 toolkit. The table
-records executable preview behavior; it does not certify every future scale target
-or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
+records executable behavior as released in 2.0.0; it does not certify every future
+scale target. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 | Plan phases | Implemented behavior | Deterministic evidence |
 |---|---|---|

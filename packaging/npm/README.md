@@ -37,12 +37,27 @@ npx agentic-discipline adapters sync            # recompile after an update
 npx agentic-discipline doctor --check-tools     # verify the installation
 ```
 
-This launcher reuses an `agentic-discipline` already on your `PATH`, and
+## The project control plane
+
+The package also provides `agentic`, the Agentic Discipline 2 control plane: persistent
+project knowledge, task contracts, checkpoints another agent can resume from, isolated
+Git workspaces and verification evidence that goes stale when its inputs change.
+
+```bash
+npx -p agentic-discipline agentic adopt       # index this repository into .agentic/control
+npx -p agentic-discipline agentic status      # knowledge, tasks, evidence at a glance
+npx -p agentic-discipline agentic mcp         # stdio MCP server for your agent
+```
+
+Its trust boundary is one trusted user on a local filesystem; see
+[LIMITATIONS.md](https://github.com/lreyesm1999/agentic-discipline-kit/blob/main/docs/v2/LIMITATIONS.md).
+
+Each command reuses the same command already on your `PATH`, and
 otherwise downloads the standalone build for your platform once and caches it
 under `~/.cache/agentic-discipline`. Node 18 or newer. Standalone builds exist for
 Linux x64 and Windows x64; on macOS and other platforms, install with pipx below.
 
-Prefer Python? `pipx install agentic-discipline-kit` provides the same CLI.
+Prefer Python? `pipx install agentic-discipline-kit` provides both commands.
 
 Documentation: <https://github.com/lreyesm1999/agentic-discipline-kit>
 

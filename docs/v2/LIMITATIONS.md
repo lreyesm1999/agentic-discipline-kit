@@ -1,4 +1,4 @@
-# Trust boundary and preview limitations
+# Trust boundary and limitations
 
 The initial deployment is one trusted OS user on a local filesystem. SQLite leases
 coordinate cooperating clients; an administrator who can edit source, SQLite or the
@@ -49,7 +49,7 @@ serialize, and HIGH/CRITICAL tasks require review. Fast-forward integration and
 conflict-aborting rebase are supported; semantic conflict resolution is not inferred
 from a clean Git merge. Cleanup preserves branches and refuses dirty active work.
 
-This preview does not claim a stable release. Final human acceptance, the supported
-platform CI matrix, mutation disposition and release evidence remain required by the
-existing repository policies. See VALIDATION.md for executed checks and outstanding
-release gates; absence of a result is not PASS.
+The 2.0.0 release is stable within this boundary and no further. Its release gates —
+human acceptance, the supported platform CI matrix (Linux and Windows), mutation
+disposition and release evidence — are recorded in VALIDATION.md; absence of a result
+is not PASS. macOS is not a supported platform until CI runs the suite there.

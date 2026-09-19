@@ -353,12 +353,14 @@ This kit is a strong fit when:
 
 For a tiny throwaway script, the full lifecycle may be unnecessary. For a product that matters, the cost of one missed requirement is usually higher than the cost of discipline.
 
-## Agentic Discipline 2 preview
+## Agentic Discipline 2: the project control plane
 
-The new `agentic` CLI adds persistent project knowledge, task contracts, cross-agent
+The `agentic` command adds persistent project knowledge, task contracts, cross-agent
 checkpoints, Git workspaces, current verification evidence, MCP and a local console.
-See the [preview guide](docs/v2/README.md) and [implementation status](docs/IMPLEMENTATION_STATUS.md).
-The published v1 command and adapters remain available; this branch does not publish a 2.0 release.
+It ships in every distribution: `pipx install agentic-discipline-kit`, the standalone
+executables, and `npx -p agentic-discipline agentic`. See the [guide](docs/v2/README.md),
+its [trust boundary](docs/v2/LIMITATIONS.md) and [implementation status](docs/IMPLEMENTATION_STATUS.md).
+The `agentic-discipline` command and its adapters are unchanged.
 
 ## Documentation
 
@@ -374,7 +376,7 @@ The published v1 command and adapters remain available; this branch does not pub
 
 ## Project status
 
-**v1.1.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, and compiles one canonical discipline set into every supported agent tool. Installations from earlier versions should run `agentic-discipline migrate --to 3.0` to move the payload under `.agentic/`.
+**v2.0.0 - Production/Stable.** The deterministic core validates contracts, executes reusable verifiers, preserves evidence hashes, and compiles one canonical discipline set into every supported agent tool. The `agentic` control plane is stable within the single-user, local trust boundary described in [docs/v2/LIMITATIONS.md](docs/v2/LIMITATIONS.md). Installations from earlier versions should run `agentic-discipline migrate --to 3.0` to move the payload under `.agentic/`.
 
 ## License
 

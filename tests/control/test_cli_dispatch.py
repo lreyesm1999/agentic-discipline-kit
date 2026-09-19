@@ -367,3 +367,15 @@ def test_session_files_must_be_regular_files(tmp_path: Path) -> None:
             "SESSION_REQUIRED",
             "Supply --session-file created by agent join",
         )
+
+
+def test_the_control_command_reports_the_package_version(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    from agentic_discipline import __version__
+    from agentic_discipline.control.cli import parser
+
+    with pytest.raises(SystemExit) as caught:
+        parser().parse_args(["--version"])
+    assert caught.value.code == 0
+    assert capsys.readouterr().out == __version__ + "\n"
