@@ -733,12 +733,12 @@ class Plane:
             and e["authority"] in {"human", "contract"}
         ]
         latest_evidence: dict[str, dict[str, Any]] = {}
-        for evidence in self.store.list("evidence"):
-            latest = latest_evidence.get(evidence["verifier"])
-            if evidence["task_id"] == task_id and (
-                latest is None or evidence["finished_at"] > latest["finished_at"]
-            ):
-                latest_evidence[evidence["verifier"]] = evidence
+        # Oldest first, so each verifier ends holding its latest record.
+        for evidence in sorted(
+            (e for e in self.store.list("evidence") if e["task_id"] == task_id),
+            key=lambda e: e["finished_at"],
+        ):
+            latest_evidence[evidence["verifier"]] = evidence
         failures = []
         for evidence in latest_evidence.values():
             if evidence["result"] == "PASS":

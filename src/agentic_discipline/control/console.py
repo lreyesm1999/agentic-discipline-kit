@@ -64,5 +64,5 @@ def handler(root: Path) -> type[BaseHTTPRequestHandler]:
     return Handler
 
 
-def server(root: Path, port: int = 8765) -> HTTPServer:
+def server(root: Path, port: int) -> HTTPServer:
     return HTTPServer(("127.0.0.1", port), handler(root))

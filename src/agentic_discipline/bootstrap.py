@@ -79,7 +79,7 @@ def _copy_item(
     actions.append(f"COPY {target}")
 
 
-def _prepare_target(target: Path, kit_root: Path, dry_run: bool = False) -> Path:
+def _prepare_target(target: Path, kit_root: Path, dry_run: bool) -> Path:
     target_root = target.resolve()
     if target_root == Path(target_root.anchor):
         raise AgenticError("refusing to bootstrap into a filesystem root")
