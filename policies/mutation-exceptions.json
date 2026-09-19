@@ -1,0 +1,732 @@
+{
+  "exceptions": [
+    {
+      "function": "agentic_discipline.acceptance.x_compile_feature",
+      "original": "output_path.write_text(json.dumps(result, indent=2), encoding=\"utf-8\")",
+      "mutant": "output_path.write_text(json.dumps(result, indent=2), encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.acceptance.x_compile_feature",
+      "original": "output_path.write_text(json.dumps(result, indent=2), encoding=\"utf-8\")",
+      "mutant": "output_path.write_text(json.dumps(result, indent=2), )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.acceptance.x_parse_feature_text",
+      "original": "pending_id = \"\"",
+      "mutant": "pending_id = None",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.adapters.x__emit_copilot",
+      "original": "nested=False,",
+      "mutant": "nested=None,",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.adapters.x__emit_cursor",
+      "original": "nested=False,",
+      "mutant": "nested=None,",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.adapters.x__emit_windsurf",
+      "original": "nested=False,",
+      "mutant": "nested=None,",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.bootstrap.x__write_json",
+      "original": "path.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "path.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.bootstrap.x__write_json",
+      "original": "path.write_text(json.dumps(payload, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "path.write_text(json.dumps(payload, indent=2) + \"\\n\", )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.cli.x_command_doctor",
+      "original": "required_tool_missing = False",
+      "mutant": "required_tool_missing = None",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.cli.x_command_doctor",
+      "original": "if getattr(args, \"check_tools\", False):",
+      "mutant": "if getattr(args, \"check_tools\", None):",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.cli.x_command_graph",
+      "original": "base_path=graph_path.parent if getattr(args, \"check_paths\", False) else None,",
+      "mutant": "base_path=graph_path.parent if getattr(args, \"check_paths\", None) else None,",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.cli.x_command_quality",
+      "original": "output.write_text(json.dumps(report, indent=2), encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(report, indent=2), encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.cli.x_command_quality",
+      "original": "output.write_text(json.dumps(report, indent=2), encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(report, indent=2), )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.common.x_run_git",
+      "original": "check=False,",
+      "mutant": "",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.common.x_run_git",
+      "original": "check=False,",
+      "mutant": "check=None,",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.console.x_handler",
+      "original": "if self.headers.get(\"Host\") not in {f\"127.0.0.1:{port}\", f\"localhost:{port}\"}:",
+      "mutant": "if self.headers.get(\"host\") not in {f\"127.0.0.1:{port}\", f\"localhost:{port}\"}:",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.console.x_handler",
+      "original": "if self.headers.get(\"Host\") not in {f\"127.0.0.1:{port}\", f\"localhost:{port}\"}:",
+      "mutant": "if self.headers.get(\"HOST\") not in {f\"127.0.0.1:{port}\", f\"localhost:{port}\"}:",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.contracts.x_encode",
+      "original": "return json.dumps(value, sort_keys=True, separators=(\",\", \":\"), allow_nan=False)",
+      "mutant": "return json.dumps(value, sort_keys=True, separators=(\",\", \":\"), allow_nan=None)",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.discovery.x_files",
+      "original": "for i in range(1, len(relative.parts) + 1)",
+      "mutant": "for i in range(1, len(relative.parts) + 2)",
+      "family": "slice-past-end",
+      "reason": "parts[:len(parts) + 1] equals parts[:len(parts)], so the extra prefix is the same one (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.discovery.x_fingerprint",
+      "original": "result[name] = hashlib.file_digest(source, \"sha256\").hexdigest()",
+      "mutant": "result[name] = hashlib.file_digest(source, \"SHA256\").hexdigest()",
+      "family": "hash-name-case",
+      "reason": "hashlib resolves 'SHA256' and 'sha256' to the same digest (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.discovery.x_validate_inputs",
+      "original": "for i in range(1, len(relative.parts) + 1)",
+      "mutant": "for i in range(1, len(relative.parts) + 2)",
+      "family": "slice-past-end",
+      "reason": "parts[:len(parts) + 1] equals parts[:len(parts)], so the extra prefix is the same one (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.knowledge.xǁKnowledgeǁclaim",
+      "original": "subject = self.store.get(data[\"subject\"], \"entity\")",
+      "mutant": "subject = self.store.get(data[\"subject\"], None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.knowledge.xǁKnowledgeǁclaim",
+      "original": "subject = self.store.get(data[\"subject\"], \"entity\")",
+      "mutant": "subject = self.store.get(data[\"subject\"], )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.knowledge.xǁKnowledgeǁclaim",
+      "original": "{**data, \"graph\": \"requirement\", \"type\": \"claim\", \"name\": str(data[\"predicate\"])}",
+      "mutant": "{**data, \"graph\": \"requirement\", \"type\": \"XXclaimXX\", \"name\": str(data[\"predicate\"])}",
+      "family": "placeholder",
+      "reason": "A value that is never observed: any non-empty type passes the claim's entity check, and every returning path overwrites the duration (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.knowledge.xǁKnowledgeǁclaim",
+      "original": "{**data, \"graph\": \"requirement\", \"type\": \"claim\", \"name\": str(data[\"predicate\"])}",
+      "mutant": "{**data, \"graph\": \"requirement\", \"type\": \"CLAIM\", \"name\": str(data[\"predicate\"])}",
+      "family": "placeholder",
+      "reason": "A value that is never observed: any non-empty type passes the claim's entity check, and every returning path overwrites the duration (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.mcp.xǁSessionǁ__init__",
+      "original": "self.initialized = False",
+      "mutant": "self.initialized = None",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.mcp.xǁSessionǁ__init__",
+      "original": "self.ready = False",
+      "mutant": "self.ready = None",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.x_adopt",
+      "original": "target.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "target.parent.mkdir(parents=None, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.x_adopt",
+      "original": "target.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "target.parent.mkdir(exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.x_adopt",
+      "original": "target.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "target.parent.mkdir(parents=False, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.x_adopt",
+      "original": "staging = target.parent / (\"adopt-\" + secrets.token_hex(8))",
+      "mutant": "staging = target.parent / (\"adopt-\" + secrets.token_hex(None))",
+      "family": "token-length",
+      "reason": "token_urlsafe(None) uses the 32 bytes passed explicitly, and the staging name is found by prefix whatever its length (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.x_adopt",
+      "original": "staging = target.parent / (\"adopt-\" + secrets.token_hex(8))",
+      "mutant": "staging = target.parent / (\"adopt-\" + secrets.token_hex(9))",
+      "family": "token-length",
+      "reason": "token_urlsafe(None) uses the 32 bytes passed explicitly, and the staging name is found by prefix whatever its length (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁ_expire",
+      "original": "running = self.store.get(lease[\"task_id\"], \"task\")",
+      "mutant": "running = self.store.get(lease[\"task_id\"], None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁ_expire",
+      "original": "running = self.store.get(lease[\"task_id\"], \"task\")",
+      "mutant": "running = self.store.get(lease[\"task_id\"], )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁ_expire",
+      "original": "task = self.store.get(lease[\"task_id\"], \"task\")",
+      "mutant": "task = self.store.get(lease[\"task_id\"], None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁ_expire",
+      "original": "task = self.store.get(lease[\"task_id\"], \"task\")",
+      "mutant": "task = self.store.get(lease[\"task_id\"], )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁcontext",
+      "original": "{\"evidence\": evidence, \"output\": json.loads(artifact.read_text(encoding=\"utf-8\"))}",
+      "mutant": "{\"evidence\": evidence, \"output\": json.loads(artifact.read_text(encoding=None))}",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁheartbeat",
+      "original": "agent = self.store.get(lease[\"agent_id\"], \"agent\")",
+      "mutant": "agent = self.store.get(lease[\"agent_id\"], None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁheartbeat",
+      "original": "agent = self.store.get(lease[\"agent_id\"], \"agent\")",
+      "mutant": "agent = self.store.get(lease[\"agent_id\"], )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.plane.xǁPlaneǁjoin",
+      "original": "token = secrets.token_urlsafe(32)",
+      "mutant": "token = secrets.token_urlsafe(None)",
+      "family": "token-length",
+      "reason": "token_urlsafe(None) uses the 32 bytes passed explicitly, and the staging name is found by prefix whatever its length (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁentities_at",
+      "original": "{**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "mutant": "{**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"VERSION\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁentities_at",
+      "original": "{**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "mutant": "{**json.loads(row[\"PAYLOAD\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁentities_at",
+      "original": "{**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "mutant": "{**json.loads(row[\"payload\"]), \"id\": row[\"ID\"], \"version\": row[\"version\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁget",
+      "original": "row is not None and (kind is None or row[\"kind\"] == kind),",
+      "mutant": "row is not None and (kind is None or row[\"KIND\"] == kind),",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁget",
+      "original": "return {**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "mutant": "return {**json.loads(row[\"PAYLOAD\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁget",
+      "original": "return {**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "mutant": "return {**json.loads(row[\"payload\"]), \"id\": row[\"ID\"], \"version\": row[\"version\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁget",
+      "original": "return {**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"version\"]}",
+      "mutant": "return {**json.loads(row[\"payload\"]), \"id\": row[\"id\"], \"version\": row[\"VERSION\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁhistory",
+      "original": "\"knowledge_version\": r[\"knowledge_version\"],",
+      "mutant": "\"knowledge_version\": r[\"KNOWLEDGE_VERSION\"],",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁhistory",
+      "original": "\"payload\": json.loads(r[\"payload\"]),",
+      "mutant": "\"payload\": json.loads(r[\"PAYLOAD\"]),",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁhistory",
+      "original": "\"version\": r[\"version\"],",
+      "mutant": "\"version\": r[\"VERSION\"],",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁlist",
+      "original": "{**json.loads(r[\"payload\"]), \"id\": r[\"id\"], \"version\": r[\"version\"]}",
+      "mutant": "{**json.loads(r[\"payload\"]), \"id\": r[\"id\"], \"version\": r[\"VERSION\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁlist",
+      "original": "{**json.loads(r[\"payload\"]), \"id\": r[\"id\"], \"version\": r[\"version\"]}",
+      "mutant": "{**json.loads(r[\"PAYLOAD\"]), \"id\": r[\"id\"], \"version\": r[\"version\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁlist",
+      "original": "{**json.loads(r[\"payload\"]), \"id\": r[\"id\"], \"version\": r[\"version\"]}",
+      "mutant": "{**json.loads(r[\"payload\"]), \"id\": r[\"ID\"], \"version\": r[\"version\"]}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁtimeline",
+      "original": "{**dict(r), \"payload\": json.loads(r[\"payload\"])}",
+      "mutant": "{**dict(r), \"payload\": json.loads(r[\"PAYLOAD\"])}",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁtimeline",
+      "original": "if identifier is None or identifier in r[\"payload\"] or identifier == r[\"actor\"]",
+      "mutant": "if identifier is None or identifier in r[\"PAYLOAD\"] or identifier == r[\"actor\"]",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.store.xǁStoreǁtimeline",
+      "original": "if identifier is None or identifier in r[\"payload\"] or identifier == r[\"actor\"]",
+      "mutant": "if identifier is None or identifier in r[\"payload\"] or identifier == r[\"ACTOR\"]",
+      "family": "case-insensitive-lookup",
+      "reason": "sqlite3.Row columns and HTTP headers are looked up without regard to case (docs/v2/MUTATION_EXEMPTIONS.md: Lookups that ignore case)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_proof_current",
+      "original": "proof_current(plane, plane.store.get(i, \"task\"), visited)",
+      "mutant": "proof_current(plane, plane.store.get(i, None), visited)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_proof_current",
+      "original": "proof_current(plane, plane.store.get(i, \"task\"), visited)",
+      "mutant": "proof_current(plane, plane.store.get(i, ), visited)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_proof_current",
+      "original": "plane.store.get(i, \"entity\")[\"lifecycle\"] == \"ACTIVE\"",
+      "mutant": "plane.store.get(i, None)[\"lifecycle\"] == \"ACTIVE\"",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_proof_current",
+      "original": "plane.store.get(i, \"entity\")[\"lifecycle\"] == \"ACTIVE\"",
+      "mutant": "plane.store.get(i, )[\"lifecycle\"] == \"ACTIVE\"",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_proof_current",
+      "original": "and not plane.store.get(i, \"entity\").get(\"stale\")",
+      "mutant": "and not plane.store.get(i, None).get(\"stale\")",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_proof_current",
+      "original": "and not plane.store.get(i, \"entity\").get(\"stale\")",
+      "mutant": "and not plane.store.get(i, ).get(\"stale\")",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_verify",
+      "original": "passed = False",
+      "mutant": "passed = None",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_verify",
+      "original": "artifact.write_text(encode(output), encoding=\"utf-8\")",
+      "mutant": "artifact.write_text(encode(output), encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_verify",
+      "original": "artifact.write_text(encode(output), encoding=\"utf-8\")",
+      "mutant": "artifact.write_text(encode(output), )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_verify",
+      "original": "current_lease = plane.store.get(lease[\"id\"], \"lease\")",
+      "mutant": "current_lease = plane.store.get(lease[\"id\"], None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_verify",
+      "original": "current_lease = plane.store.get(lease[\"id\"], \"lease\")",
+      "mutant": "current_lease = plane.store.get(lease[\"id\"], )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_verify",
+      "original": "current = plane.store.get(task_id, \"task\")",
+      "mutant": "current = plane.store.get(task_id, None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.verification.x_verify",
+      "original": "current = plane.store.get(task_id, \"task\")",
+      "mutant": "current = plane.store.get(task_id, )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_create_workspace",
+      "original": "current = plane.store.get(task_id, \"task\")",
+      "mutant": "current = plane.store.get(task_id, None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_create_workspace",
+      "original": "current = plane.store.get(task_id, \"task\")",
+      "mutant": "current = plane.store.get(task_id, )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_merge_workspace",
+      "original": "workspace = plane.store.get(task[\"workspace_id\"], \"workspace\")",
+      "mutant": "workspace = plane.store.get(task[\"workspace_id\"], None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_merge_workspace",
+      "original": "workspace = plane.store.get(task[\"workspace_id\"], \"workspace\")",
+      "mutant": "workspace = plane.store.get(task[\"workspace_id\"], )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_refresh_workspace",
+      "original": "if git(directory, [\"rev-parse\", \"--verify\", \"REBASE_HEAD\"]):",
+      "mutant": "if git(directory, [\"rev-parse\", \"--VERIFY\", \"REBASE_HEAD\"]):",
+      "family": "git-flag-echo",
+      "reason": "git rev-parse echoes the unknown --VERIFY and exits exactly as --verify does, with and without REBASE_HEAD (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_refresh_workspace",
+      "original": "current = plane.store.get(task_id, \"task\")",
+      "mutant": "current = plane.store.get(task_id, None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_refresh_workspace",
+      "original": "current = plane.store.get(task_id, \"task\")",
+      "mutant": "current = plane.store.get(task_id, )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_refresh_workspace",
+      "original": "workspace = plane.store.get(task[\"workspace_id\"], \"workspace\")",
+      "mutant": "workspace = plane.store.get(task[\"workspace_id\"], None)",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.control.workspaces.x_refresh_workspace",
+      "original": "workspace = plane.store.get(task[\"workspace_id\"], \"workspace\")",
+      "mutant": "workspace = plane.store.get(task[\"workspace_id\"], )",
+      "family": "store-kind-reread",
+      "reason": "The same identifier was already read with its kind earlier on this path, or an earlier guard already refuses it (docs/v2/MUTATION_EXEMPTIONS.md: Store.get type guards)."
+    },
+    {
+      "function": "agentic_discipline.evidence.x__read_records",
+      "original": "for line_number, line in enumerate(ledger.read_text(encoding=\"utf-8\").splitlines(), 1):",
+      "mutant": "for line_number, line in enumerate(ledger.read_text(encoding=None).splitlines(), 1):",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.evidence.x_append_evidence",
+      "original": "with ledger.open(\"a\", encoding=\"utf-8\") as handle:",
+      "mutant": "with ledger.open(\"a\", encoding=None) as handle:",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.evidence.x_append_evidence",
+      "original": "with ledger.open(\"a\", encoding=\"utf-8\") as handle:",
+      "mutant": "with ledger.open(\"a\", ) as handle:",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.evolution.x_register_lifecycle",
+      "original": "output.write_text(json.dumps(registry, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(registry, indent=2) + \"\\n\", encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.evolution.x_register_lifecycle",
+      "original": "output.write_text(json.dumps(registry, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(registry, indent=2) + \"\\n\", )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.integrity.x__file_changes",
+      "original": "previous = \"\"",
+      "mutant": "previous = \"XXXX\"",
+      "family": "sentinel",
+      "reason": "Any starting line that does not start with '--- a/' pairs the same way (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.migration.x_migrate_payload",
+      "original": "output.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "output.parent.mkdir(parents=None, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.migration.x_migrate_payload",
+      "original": "output.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "output.parent.mkdir(exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.migration.x_migrate_payload",
+      "original": "output.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "output.parent.mkdir(parents=False, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.migration.x_migrate_payload",
+      "original": "output.write_text(json.dumps(report, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(report, indent=2) + \"\\n\", encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.migration.x_migrate_payload",
+      "original": "output.write_text(json.dumps(report, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(report, indent=2) + \"\\n\", )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.requirements.x_validate_requirement_graph",
+      "original": "reaches_evidence = False",
+      "mutant": "reaches_evidence = None",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.validation.x_validate_quality_config",
+      "original": "has_required = False",
+      "mutant": "has_required = None",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "result_path.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "result_path.parent.mkdir(parents=None, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "result_path.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "result_path.parent.mkdir(exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "result_path.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "result_path.parent.mkdir(parents=False, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "check=False,",
+      "mutant": "check=None,",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "check=False,",
+      "mutant": "",
+      "family": "falsy-default",
+      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "output.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "output.parent.mkdir(parents=None, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "output.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "output.parent.mkdir(exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "output.parent.mkdir(parents=True, exist_ok=True)",
+      "mutant": "output.parent.mkdir(parents=False, exist_ok=True)",
+      "family": "mkdir-parent-exists",
+      "reason": "The directory's parent always exists here, created by init or adopt before this call (docs/v2/MUTATION_EXEMPTIONS.md: Directories whose grandparent always exists)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "output.write_text(json.dumps(result, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(result, indent=2) + \"\\n\", encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "output.write_text(json.dumps(result, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "output.write_text(json.dumps(result, indent=2) + \"\\n\", )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.verifier.executor.x_execute_verifier",
+      "original": "\"duration_seconds\": 0.0,",
+      "mutant": "\"duration_seconds\": 1.0,",
+      "family": "placeholder",
+      "reason": "A value that is never observed: any non-empty type passes the claim's entity check, and every returning path overwrites the duration (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.verifier.registry.x__write_registry",
+      "original": "path.write_text(json.dumps(registry, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "path.write_text(json.dumps(registry, indent=2) + \"\\n\", encoding=None)",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.verifier.registry.x__write_registry",
+      "original": "path.write_text(json.dumps(registry, indent=2) + \"\\n\", encoding=\"utf-8\")",
+      "mutant": "path.write_text(json.dumps(registry, indent=2) + \"\\n\", )",
+      "family": "json-ascii",
+      "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    }
+  ]
+}

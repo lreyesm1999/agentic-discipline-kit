@@ -104,6 +104,8 @@ jobs:
         if: always()
         run: mutmut export-cicd-stats
       - name: Enforce mutation outcome
+        env:
+          MUTATION_EXCEPTIONS: policies/mutation-exceptions.json
         run: python scripts/mutation_gate.py --report mutants/mutmut-cicd-stats.json
       - uses: actions/upload-artifact@v7
         if: always()

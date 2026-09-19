@@ -9,6 +9,7 @@ rule is pinned by the mutations it must refuse as well as the ones it accepts.
 from __future__ import annotations
 
 import json
+import os
 import runpy
 import subprocess
 import sys
@@ -24,6 +25,13 @@ GATE_SCRIPT = next(
     if (parent / "scripts" / "mutation_gate.py").is_file()
 )
 GATE = runpy.run_path(str(GATE_SCRIPT))
+
+
+def _clean_env(**extra: str) -> dict[str, str]:
+    env = {k: v for k, v in os.environ.items() if k != "MUTATION_EXCEPTIONS"}
+    return {**env, **extra}
+
+
 MUTANT = "pkg.mod.x_target__mutmut_1"
 
 HEADER = "import re\nfrom typing import cast\n\n"
@@ -83,6 +91,8 @@ def _rule(tmp_path: Path, original: str, mutant: str, header: str = HEADER) -> s
             "codec-name",
         ),
         ('path.read_text(encoding="latin-1")', 'path.read_text(encoding="LATIN-1")', "codec-name"),
+        ('return value.encode("utf-8")', 'return value.encode("UTF-8")', "codec-name"),
+        ('return value.decode("ascii")', 'return value.decode("ASCII")', "codec-name"),
         # cast never looks at its type argument.
         ("return cast(list[int], value)", "return cast(None, value)", "cast-type"),
         ("return cast(dict[str, int], value)", "return cast(dict[str, str], value)", "cast-type"),
@@ -133,6 +143,9 @@ def test_each_rule_accepts_the_mutations_it_proves(
             'path.write_text(value, encoding="utf-8")',
             'path.write_text(value, encoding="XXutf-8XX")',
         ),
+        # Positionally, only the first argument of encode or decode names a codec.
+        ('return value.encode("utf-8", "Strict")', 'return value.encode("utf-8", "strict")'),
+        ('return value.replace("utf-8")', 'return value.replace("UTF-8")'),
         # cast's value argument is behaviour.
         ("return cast(list[int], value)", "return cast(list[int], None)"),
         # Without re.IGNORECASE, case is behaviour.
@@ -261,6 +274,7 @@ def _run(tmp_path: Path, report: dict[str, Any], mutants: Path | None) -> tuple[
         [sys.executable, str(GATE_SCRIPT), "--report", str(path)],
         capture_output=True,
         text=True,
+        env=_clean_env(),
     )
     return process.returncode, json.loads(process.stdout)
 
@@ -293,3 +307,173 @@ def test_without_a_mutants_tree_every_survivor_stays_unresolved(tmp_path: Path) 
     assert code == 1
     assert result["unresolved"] == {"survived": 2}
     assert "equivalent" not in result
+
+
+# --- reviewed exceptions --------------------------------------------------------------------
+
+
+def _exception(**changes: str) -> dict[str, str]:
+    entry = {
+        "function": "pkg.mod.x_target",
+        "original": 'return value.get("flag", False)',
+        "mutant": 'return value.get("flag", None)',
+        "family": "falsy-default",
+        "reason": "only tested for truth",
+    }
+    entry.update(changes)
+    return entry
+
+
+def _flag_tree(tmp_path: Path) -> Path:
+    return _mutants(tmp_path, 'return value.get("flag", False)', 'return value.get("flag", None)')
+
+
+def test_an_exception_matches_the_survivor_by_the_line_it_changes(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+
+    reviewed, stale = GATE["review"](root, [MUTANT], [_exception()])
+
+    assert (reviewed, stale) == ({MUTANT: "falsy-default"}, [])
+
+
+def test_an_exception_for_another_change_or_function_matches_nothing(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+    other_line = _exception(mutant='return value.get("flag", 0)')
+    other_function = _exception(function="pkg.mod.x_other")
+
+    reviewed, stale = GATE["review"](root, [MUTANT], [other_line, other_function])
+
+    assert (reviewed, stale) == ({}, [other_line, other_function])
+
+
+def test_reviewed_survivors_are_subtracted_and_listed_apart_from_proofs() -> None:
+    result = GATE["gate"](
+        _report(), {"m.f__mutmut_1": "sql-case"}, {"m.g__mutmut_4": "falsy-default"}
+    )
+
+    assert result["status"] == "PASS"
+    assert result["unresolved"] == {}
+    assert result["reviewed"] == {"total": 1, "by_family": {"falsy-default": 1}}
+    assert result["reviewed_mutants"] == {"m.g__mutmut_4": "falsy-default"}
+
+
+def test_a_stale_exception_fails_the_gate_even_when_nothing_else_remains() -> None:
+    stale = [_exception()]
+
+    result = GATE["gate"](_report(killed=10, survived=0), None, None, stale)
+
+    assert result["status"] == "FAIL"
+    assert result["stale_exceptions"] == stale
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        [],
+        {"exceptions": {}},
+        {"exceptions": [{**_exception(), "extra": "x"}]},
+        {"exceptions": [{k: v for k, v in _exception().items() if k != "reason"}]},
+        {"exceptions": [_exception(reason="  ")]},
+        {"exceptions": [_exception(original="", mutant=" ")]},
+        {"exceptions": [_exception(), _exception(reason="said again")]},
+    ],
+    ids=[
+        "not-an-object",
+        "not-a-list",
+        "extra-field",
+        "missing-field",
+        "blank",
+        "no-change",
+        "repeated",
+    ],
+)
+def test_an_incomplete_or_repeated_exception_file_is_refused(tmp_path: Path, data: Any) -> None:
+    path = tmp_path / "exceptions.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+    with pytest.raises(ValueError):
+        GATE["load_exceptions"](path)
+
+
+def _run_with(tmp_path: Path, report: dict[str, Any], root: Path, entries: Any) -> tuple[int, Any]:
+    exceptions = tmp_path / "exceptions.json"
+    exceptions.write_text(json.dumps({"exceptions": entries}), encoding="utf-8")
+    path = root / "mutmut-cicd-stats.json"
+    path.write_text(json.dumps(report), encoding="utf-8")
+    process = subprocess.run(
+        [sys.executable, str(GATE_SCRIPT), "--report", str(path), "--exceptions", str(exceptions)],
+        capture_output=True,
+        text=True,
+        env=_clean_env(),
+    )
+    return process.returncode, json.loads(process.stdout)
+
+
+def test_the_command_accepts_a_survivor_its_exceptions_name(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+
+    code, result = _run_with(tmp_path, _report(killed=9, survived=1), root, [_exception()])
+
+    assert (code, result["status"]) == (0, "PASS")
+    assert result["reviewed_mutants"] == {MUTANT: "falsy-default"}
+
+
+def test_the_command_fails_on_an_exception_no_survivor_needs(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+    unused = _exception(function="pkg.mod.x_gone")
+
+    code, result = _run_with(tmp_path, _report(killed=9, survived=1), root, [_exception(), unused])
+
+    assert (code, result["status"]) == (1, "FAIL")
+    assert result["stale_exceptions"] == [unused]
+
+
+def test_the_command_refuses_an_invalid_exceptions_file(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+
+    code, result = _run_with(tmp_path, _report(killed=9, survived=1), root, [{"function": "x"}])
+
+    assert code == 1
+    assert result["reason"].startswith("Cannot read mutation evidence: exception 0 needs")
+
+
+def test_an_exception_can_name_a_changed_parameter_default(tmp_path: Path) -> None:
+    root = tmp_path / "mutants"
+    module = root / "src" / "pkg" / "mod.py"
+    module.parent.mkdir(parents=True)
+    module.write_text(
+        "def x_target__mutmut_orig(port: int = 8765):\n    return port\n\n"
+        "def x_target__mutmut_1(port: int = 8766):\n    return port\n",
+        encoding="utf-8",
+    )
+    entry = _exception(
+        original="def x_target(port: int = 8765):", mutant="def x_target(port: int = 8766):"
+    )
+
+    assert GATE["review"](root, [MUTANT], [entry]) == ({MUTANT: "falsy-default"}, [])
+
+
+def test_an_exception_may_name_a_deleted_line(tmp_path: Path) -> None:
+    path = tmp_path / "exceptions.json"
+    entry = _exception(original="check=False,", mutant="")
+    path.write_text(json.dumps({"exceptions": [entry]}), encoding="utf-8")
+
+    assert GATE["load_exceptions"](path) == [entry]
+
+
+def test_the_command_reads_the_exception_file_named_by_the_environment(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+    exceptions = tmp_path / "exceptions.json"
+    exceptions.write_text(json.dumps({"exceptions": [_exception()]}), encoding="utf-8")
+    report = root / "mutmut-cicd-stats.json"
+    report.write_text(json.dumps(_report(killed=9, survived=1)), encoding="utf-8")
+
+    process = subprocess.run(
+        [sys.executable, str(GATE_SCRIPT), "--report", str(report)],
+        capture_output=True,
+        text=True,
+        env=_clean_env(MUTATION_EXCEPTIONS=str(exceptions)),
+    )
+
+    assert process.returncode == 0
+    assert json.loads(process.stdout)["reviewed_mutants"] == {MUTANT: "falsy-default"}

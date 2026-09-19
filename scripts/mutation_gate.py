@@ -9,11 +9,20 @@ one place, and that place must match one of these rules.
 - `sql-case`: a string passed to `execute` changes only the letter case of SQL
   keywords or unquoted identifiers, which SQLite compares without regard to case.
   Quoted values and quoted identifiers must be unchanged.
-- `codec-name`: an `encoding=` argument names the same codec in another case.
+- `codec-name`: an `encoding=` argument, or the first argument of `.encode()` or
+  `.decode()`, names the same codec in another case.
 - `cast-type`: only the type argument of `typing.cast`, which is never evaluated
   against the value, changes.
 - `ignorecase-pattern`: a pattern matched with `re.IGNORECASE` changes only the case
   of literal letters; escapes, group names and inline flags are unchanged.
+
+A survivor no rule can prove may be accepted by a reviewed exception, read from the
+file named by `--exceptions` or the `MUTATION_EXCEPTIONS` environment variable
+(`policies/mutation-exceptions.json` in CI, a protected path, so changing it needs
+review). An exception names the function and the exact source line the mutant
+changes, before and after, so it keeps matching when mutmut renumbers the mutants of
+that function. An exception that matches no survivor fails
+the gate: the list cannot keep entries for mutants that were killed or removed.
 
 Any other survivor stays unresolved, and the gate fails if the survivors it can read
 do not match the count in mutmut's report.
@@ -24,7 +33,9 @@ from __future__ import annotations
 import argparse
 import ast
 import codecs
+import difflib
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -57,11 +68,19 @@ REGEX_FLAGS = {
     "subn": 4,
 }
 
+EXCEPTION_FIELDS = ("function", "original", "mutant", "family", "reason")
+
 Ancestry = list[tuple[ast.AST, str, int | None]]
 Difference = tuple[Ancestry, Any, Any]
+Change = tuple[str, str, str]
 
 
-def gate(report: Any, equivalent: dict[str, str] | None = None) -> dict[str, Any]:
+def gate(
+    report: Any,
+    equivalent: dict[str, str] | None = None,
+    reviewed: dict[str, str] | None = None,
+    stale: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
     if (
         not isinstance(report, dict)
         or set(report) != set(REQUIRED)
@@ -76,26 +95,130 @@ def gate(report: Any, equivalent: dict[str, str] | None = None) -> dict[str, Any
     ):
         return {"status": "FAIL", "reason": "Incomplete or inconsistent mutation evidence"}
     proven = equivalent or {}
+    accepted = reviewed or {}
     remaining = {key: report[key] for key in UNRESOLVED if report[key]}
-    if proven:
-        survived = report["survived"] - len(proven)
+    if proven or accepted:
+        survived = report["survived"] - len(proven) - len(accepted)
         if survived:
             remaining["survived"] = survived
         else:
             remaining.pop("survived", None)
     result: dict[str, Any] = {
-        "status": "FAIL" if remaining else "PASS",
+        "status": "FAIL" if remaining or stale else "PASS",
         "total": report["total"],
         "killed": report["killed"],
         "unresolved": remaining,
     }
     if proven:
-        rules: dict[str, int] = {}
-        for rule in proven.values():
-            rules[rule] = rules.get(rule, 0) + 1
-        result["equivalent"] = {"total": len(proven), "by_rule": dict(sorted(rules.items()))}
+        result["equivalent"] = {"total": len(proven), "by_rule": _tally(proven)}
         result["equivalent_mutants"] = {name: proven[name] for name in sorted(proven)}
+    if accepted:
+        result["reviewed"] = {"total": len(accepted), "by_family": _tally(accepted)}
+        result["reviewed_mutants"] = {name: accepted[name] for name in sorted(accepted)}
+    if stale:
+        result["stale_exceptions"] = stale
     return result
+
+
+def _tally(labels: dict[str, str]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for label in labels.values():
+        counts[label] = counts.get(label, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def load_exceptions(path: Path) -> list[dict[str, str]]:
+    """Read the reviewed exceptions, refusing any entry that is incomplete or repeated."""
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    entries = data.get("exceptions") if isinstance(data, dict) else None
+    if not isinstance(entries, list):
+        raise ValueError("exceptions file must hold an `exceptions` list")
+    seen: set[Change] = set()
+    for index, entry in enumerate(entries):
+        # A mutant may delete a line, so one side of the change may be empty; the
+        # function, family and reason may not.
+        if (
+            not isinstance(entry, dict)
+            or set(entry) != set(EXCEPTION_FIELDS)
+            or not all(isinstance(entry[key], str) for key in entry)
+            or not all(entry[key].strip() for key in ("function", "family", "reason"))
+            or not (entry["original"].strip() or entry["mutant"].strip())
+        ):
+            raise ValueError(f"exception {index} needs exactly {', '.join(EXCEPTION_FIELDS)}")
+        key = (entry["function"], entry["original"], entry["mutant"])
+        if key in seen:
+            raise ValueError(f"exception {index} repeats an earlier one")
+        seen.add(key)
+    return entries
+
+
+def review(
+    mutants: Path, names: list[str], exceptions: list[dict[str, str]]
+) -> tuple[dict[str, str], list[dict[str, str]]]:
+    """Match survivors to exceptions by the line they change; return matches and stale entries."""
+
+    families = {(e["function"], e["original"], e["mutant"]): e["family"] for e in exceptions}
+    reviewed: dict[str, str] = {}
+    used: set[Change] = set()
+    trees: dict[Path, tuple[ast.Module, list[str]] | None] = {}
+    for name in names:
+        match = MUTANT.match(name)
+        if not match:
+            continue
+        source = mutants / "src" / Path(*match["module"].split(".")).with_suffix(".py")
+        if source not in trees:
+            trees[source] = _parse_with_lines(source)
+        parsed = trees[source]
+        if parsed is None:
+            continue
+        change = _change(*parsed, match["function"], match["number"])
+        if change is None:
+            continue
+        key = (f"{match['module']}.{match['function']}", *change)
+        if key in families:
+            reviewed[name] = families[key]
+            used.add(key)
+    stale = [e for e in exceptions if (e["function"], e["original"], e["mutant"]) not in used]
+    return reviewed, stale
+
+
+def _parse_with_lines(path: Path) -> tuple[ast.Module, list[str]] | None:
+    try:
+        text = path.read_text(encoding="utf-8")
+        return ast.parse(text), text.splitlines()
+    except (OSError, SyntaxError, ValueError):
+        return None
+
+
+def _change(
+    module: ast.Module, lines: list[str], function: str, number: str
+) -> tuple[str, str] | None:
+    """The source lines the mutant removes and adds, each stripped and joined by newlines.
+
+    The signature is included, since a mutant can change a parameter's default; each
+    copy's own name is replaced by the function's, so only the mutation differs.
+    """
+
+    wanted = {f"{function}__mutmut_orig", f"{function}__mutmut_{number}"}
+    found = {
+        node.name: [
+            line.strip().replace(node.name, function)
+            for line in lines[node.lineno - 1 : node.end_lineno]
+        ]
+        for node in ast.walk(module)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in wanted
+    }
+    if len(found) != 2:
+        return None
+    delta = list(
+        difflib.ndiff(found[f"{function}__mutmut_orig"], found[f"{function}__mutmut_{number}"])
+    )
+    removed = "\n".join(line[2:] for line in delta if line.startswith("- "))
+    added = "\n".join(line[2:] for line in delta if line.startswith("+ "))
+    if not removed and not added:
+        return None
+    return removed, added
 
 
 def survivors(mutants: Path) -> list[str]:
@@ -210,8 +333,17 @@ def _codec_name(module: ast.Module, ancestry: Ancestry, before: Any, after: Any)
     values = _strings(before, after)
     if values is None or not ancestry:
         return False
-    parent = ancestry[-1][0]
-    if not isinstance(parent, ast.keyword) or parent.arg != "encoding":
+    parent, field, index = ancestry[-1]
+    keyword = isinstance(parent, ast.keyword) and parent.arg == "encoding"
+    # `text.encode(codec)` and `data.decode(codec)` name the codec positionally.
+    positional = (
+        isinstance(parent, ast.Call)
+        and field == "args"
+        and index == 0
+        and isinstance(parent.func, ast.Attribute)
+        and parent.func.attr in {"encode", "decode"}
+    )
+    if not (keyword or positional):
         return False
     try:
         return codecs.lookup(values[0]).name == codecs.lookup(values[1]).name
@@ -344,11 +476,21 @@ def main() -> int:
         type=Path,
         help="mutmut's mutants directory; defaults to the report's directory",
     )
+    parser.add_argument(
+        "--exceptions",
+        type=Path,
+        default=os.environ.get("MUTATION_EXCEPTIONS") or None,
+        help="reviewed exceptions for survivors no rule proves; defaults to the "
+        "MUTATION_EXCEPTIONS environment variable, and to none without it",
+    )
     args = parser.parse_args()
     try:
         report = json.loads(args.report.read_text(encoding="utf-8"))
         mutants = args.mutants or args.report.parent
+        exceptions = load_exceptions(args.exceptions) if args.exceptions else []
         equivalent: dict[str, str] | None = None
+        reviewed: dict[str, str] | None = None
+        stale: list[dict[str, str]] | None = None
         if (mutants / "src").is_dir():
             names = survivors(mutants)
             if isinstance(report, dict) and len(names) != report.get("survived"):
@@ -360,7 +502,12 @@ def main() -> int:
                 print(json.dumps(result, sort_keys=True))
                 return 1
             equivalent = prove_equivalent(mutants, names)
-        result = gate(report, equivalent)
+            if exceptions:
+                unproven = [name for name in names if name not in equivalent]
+                reviewed, stale = review(mutants, unproven, exceptions)
+        elif exceptions:
+            stale = exceptions
+        result = gate(report, equivalent, reviewed, stale)
     except (OSError, ValueError) as exc:
         result = {"status": "FAIL", "reason": f"Cannot read mutation evidence: {exc}"}
     print(json.dumps(result, sort_keys=True))

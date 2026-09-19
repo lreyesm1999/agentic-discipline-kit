@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "1.1.0",
-  "generated_at_utc": "2026-09-19T12:19:21.958250+00:00",
+  "generated_at_utc": "2026-09-19T12:29:37.947568+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "5c54392be6673b4f4dd467d33a0f82f25c480a7f901384fa37a244826499dee9",
-      "bytes": 3753
+      "sha256": "39feb23fd70d6fa31832430e105dcb5fed1789dfb4e14c0c404e64510b8af21b",
+      "bytes": 3831
     },
     {
       "path": ".github/workflows/release.yml",
@@ -400,8 +400,8 @@
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
-      "sha256": "f85ff716773311fba8b6e6501f97d77a12a4a6689c5abb56228667a7f3870dab",
-      "bytes": 11323
+      "sha256": "c7697bfb567aa488c89b8b61604e2b74102c6b968e9082a5e4b9a9ccbc1e533b",
+      "bytes": 11528
     },
     {
       "path": "docs/v2/OPERATIONS.md",
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2/VALIDATION.md",
-      "sha256": "c797d28d727f741429f492224ca5d3b7c4a6da6e0a44e1a312c864a2ab403107",
-      "bytes": 10008
+      "sha256": "9a96b4af17b30c087273c1b212ec072473dc8689b1ba232740766850635bab6b",
+      "bytes": 10426
     },
     {
       "path": "docs/v2/evidence/benchmark-before-optimization.json",
@@ -879,6 +879,11 @@
       "bytes": 656
     },
     {
+      "path": "policies/mutation-exceptions.json",
+      "sha256": "c86743ee136bfb98f2dce77a7fcb36e7e2cf34a51ac5770e2af19c2b6462256a",
+      "bytes": 46491
+    },
+    {
       "path": "policies/quality-gates.md",
       "sha256": "8ebb1ca80f67047d40d145a9a573dca7ef96f62b2d3c672d9ae0f6e87f0c67a1",
       "bytes": 598
@@ -980,8 +985,8 @@
     },
     {
       "path": "scripts/mutation_gate.py",
-      "sha256": "a2f1b40438122c50561375aa00c8580109270214b9992cf7b8ad6f0ac83ffee8",
-      "bytes": 12995
+      "sha256": "6f8eeb8c7ebe9d9f83f21bce6b610621deb6a22731b63f140e3c2d5064596543",
+      "bytes": 19153
     },
     {
       "path": "scripts/repo_check.py",
@@ -1755,8 +1760,8 @@
     },
     {
       "path": "tests/test_mutation_equivalence.py",
-      "sha256": "d63732b82fbd0a40f8235c1aa9b11a8a101a6faa12bfd463ad279d65d2ab920e",
-      "bytes": 11631
+      "sha256": "93fa9b842b08f9bfb99a8d987c5eadc7d57bf1eb8ec523ed27e909d598dec8c6",
+      "bytes": 18347
     },
     {
       "path": "tests/test_mutation_gate.py",
