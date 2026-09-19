@@ -563,3 +563,25 @@ def test_adoption_reports_the_coverage_it_scanned(tmp_path: Any) -> None:
     expected = scan(tmp_path)["coverage"]
 
     assert adopt(tmp_path)["coverage"] == expected
+
+
+def test_evidence_from_a_run_whose_lease_ends_at_that_instant_is_blocked(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import agentic_discipline.control.verification as verification
+
+    task, session = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW + 10)
+    _frozen(monkeypatch)
+    real = verification.run_gate
+
+    def run_then_expire(gate: dict[str, Any], cwd: Any = None) -> Any:
+        result = real(gate, cwd=cwd)
+        _force(project, "lease", _lease(project, task)["id"], expires_at=NOW)
+        return result
+
+    monkeypatch.setattr(verification, "run_gate", run_then_expire)
+    verification.verify(project, task, session)
+
+    (evidence,) = [e for e in project.store.list("evidence") if e["task_id"] == task]
+    assert evidence["result"] == "BLOCKED"
