@@ -83,6 +83,8 @@ def _rule(tmp_path: Path, original: str, mutant: str, header: str = HEADER) -> s
             "codec-name",
         ),
         ('path.read_text(encoding="latin-1")', 'path.read_text(encoding="LATIN-1")', "codec-name"),
+        ('return value.encode("utf-8")', 'return value.encode("UTF-8")', "codec-name"),
+        ('return value.decode("ascii")', 'return value.decode("ASCII")', "codec-name"),
         # cast never looks at its type argument.
         ("return cast(list[int], value)", "return cast(None, value)", "cast-type"),
         ("return cast(dict[str, int], value)", "return cast(dict[str, str], value)", "cast-type"),
@@ -133,6 +135,9 @@ def test_each_rule_accepts_the_mutations_it_proves(
             'path.write_text(value, encoding="utf-8")',
             'path.write_text(value, encoding="XXutf-8XX")',
         ),
+        # Positionally, only the first argument of encode or decode names a codec.
+        ('return value.encode("utf-8", "Strict")', 'return value.encode("utf-8", "strict")'),
+        ('return value.replace("utf-8")', 'return value.replace("UTF-8")'),
         # cast's value argument is behaviour.
         ("return cast(list[int], value)", "return cast(list[int], None)"),
         # Without re.IGNORECASE, case is behaviour.

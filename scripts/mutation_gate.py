@@ -9,7 +9,8 @@ one place, and that place must match one of these rules.
 - `sql-case`: a string passed to `execute` changes only the letter case of SQL
   keywords or unquoted identifiers, which SQLite compares without regard to case.
   Quoted values and quoted identifiers must be unchanged.
-- `codec-name`: an `encoding=` argument names the same codec in another case.
+- `codec-name`: an `encoding=` argument, or the first argument of `.encode()` or
+  `.decode()`, names the same codec in another case.
 - `cast-type`: only the type argument of `typing.cast`, which is never evaluated
   against the value, changes.
 - `ignorecase-pattern`: a pattern matched with `re.IGNORECASE` changes only the case
@@ -326,8 +327,17 @@ def _codec_name(module: ast.Module, ancestry: Ancestry, before: Any, after: Any)
     values = _strings(before, after)
     if values is None or not ancestry:
         return False
-    parent = ancestry[-1][0]
-    if not isinstance(parent, ast.keyword) or parent.arg != "encoding":
+    parent, field, index = ancestry[-1]
+    keyword = isinstance(parent, ast.keyword) and parent.arg == "encoding"
+    # `text.encode(codec)` and `data.decode(codec)` name the codec positionally.
+    positional = (
+        isinstance(parent, ast.Call)
+        and field == "args"
+        and index == 0
+        and isinstance(parent.func, ast.Attribute)
+        and parent.func.attr in {"encode", "decode"}
+    )
+    if not (keyword or positional):
         return False
     try:
         return codecs.lookup(values[0]).name == codecs.lookup(values[1]).name
