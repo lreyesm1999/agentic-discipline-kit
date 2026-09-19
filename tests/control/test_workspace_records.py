@@ -272,6 +272,29 @@ def test_a_conflicting_refresh_aborts_its_rebase(tmp_path: Path) -> None:
         assert _head(path) == task_commit
 
 
+def test_a_rebase_that_never_started_is_reported_not_aborted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from agentic_discipline.control import workspaces
+
+    repository(tmp_path)
+    with Plane(tmp_path) as plane:
+        task = _task(plane)
+        create_workspace(plane, task)
+        calls: list[list[str]] = []
+
+        def refusing(args: list[str], cwd: Path) -> str:
+            calls.append(args)
+            raise RuntimeError("rebase refused to start")
+
+        monkeypatch.setattr(workspaces, "run_git", refusing)
+        with pytest.raises(RuntimeError) as caught:
+            refresh_workspace(plane, task)
+
+        assert str(caught.value) == "rebase refused to start"
+        assert [args[:2] for args in calls] == [["rebase", _head(tmp_path)]]
+
+
 # --- merge_workspace ----------------------------------------------------------------------
 
 

@@ -553,3 +553,13 @@ def test_resume_without_a_budget_uses_sixteen_thousand_bytes(project: Any) -> No
     project.checkpoint(task, session, checkpoint())
 
     assert project.resume(task, session)["audit"]["budget_bytes"] == 16000
+
+
+def test_adoption_reports_the_coverage_it_scanned(tmp_path: Any) -> None:
+    from agentic_discipline.control.discovery import scan
+    from agentic_discipline.control.plane import adopt
+
+    (tmp_path / "app.py").write_text("value = 1\n", encoding="utf-8")
+    expected = scan(tmp_path)["coverage"]
+
+    assert adopt(tmp_path)["coverage"] == expected
