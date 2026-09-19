@@ -315,3 +315,97 @@ def test_context_reads_the_latest_evidence_of_the_task(project: Any) -> None:
     verify(project, task, session)
 
     assert project.context(task)["mandatory"]["current_failures"] == []
+
+
+# --- clocks and tokens ----------------------------------------------------------------------
+
+NOW = 2_000_000_000.0
+
+
+def _frozen(monkeypatch: pytest.MonkeyPatch) -> None:
+    import time
+
+    monkeypatch.setattr(time, "time", lambda: NOW)
+
+
+def _lease(project: Any, task: str) -> dict[str, Any]:
+    (lease,) = [item for item in project.store.list("lease") if item["task_id"] == task]
+    return lease
+
+
+def _expire(project: Any) -> None:
+    with project.store.transaction():
+        project._expire()
+
+
+def test_a_lease_expires_at_the_instant_it_ends(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, session = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW)
+    _frozen(monkeypatch)
+
+    with pytest.raises(ControlError) as caught:
+        project.owned(task, session)
+    _expire(project)
+
+    assert caught.value.code == "LEASE_LOST"
+    assert _lease(project, task)["state"] == "EXPIRED"
+    assert project.store.get(task, "task")["state"] == "READY"
+
+
+def test_a_running_verifier_keeps_its_lease_only_before_its_deadline(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, _ = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW - 1)
+    _force(project, "task", task, active_run="RUN-1", active_run_deadline=NOW)
+    _frozen(monkeypatch)
+
+    _expire(project)
+
+    assert _lease(project, task)["state"] == "EXPIRED"
+
+
+def test_a_running_task_without_a_recorded_deadline_still_expires(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, _ = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW - 1)
+    _force(project, "task", task, active_run="RUN-legacy")
+    _frozen(monkeypatch)
+
+    _expire(project)
+
+    assert _lease(project, task)["state"] == "EXPIRED"
+
+
+def test_a_session_token_carries_256_bits(project: Any) -> None:
+    session = project.join("worker", ["code"])["session"]
+    assert len(session) == 43
+
+
+def test_adoption_stages_its_database_where_measurement_never_looks(
+    tmp_path: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from pathlib import Path
+
+    from agentic_discipline.control.discovery import allowed
+    from agentic_discipline.control.plane import adopt
+
+    created: list[Path] = []
+    real_mkdir = Path.mkdir
+
+    def mkdir(self: Path, *args: Any, **kwargs: Any) -> None:
+        created.append(self)
+        real_mkdir(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "mkdir", mkdir)
+    (tmp_path / "app.py").write_text("value = 1\n", encoding="utf-8")
+
+    adopt(tmp_path)
+
+    # The staging directory is the one renamed into place, so it no longer exists.
+    (staging,) = [p for p in created if p.parent.name == ".agentic" and not p.exists()]
+    assert staging.name.startswith("adopt-")
+    assert allowed(staging.relative_to(tmp_path) / "state.db") is False
