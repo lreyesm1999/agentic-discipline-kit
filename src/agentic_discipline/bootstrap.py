@@ -47,12 +47,8 @@ def find_contract_root() -> Path:
     if frozen_root:
         candidates.append(Path(frozen_root))
     candidates.append(Path(sysconfig.get_path("data")) / "share" / "agentic-discipline")
-    seen: set[Path] = set()
     for candidate in candidates:
         candidate = candidate.resolve()
-        if candidate in seen:
-            continue
-        seen.add(candidate)
         # Mutmut and similar tools may copy only part of the repository.  A
         # partial copy can contain AGENTS.md/skills but not the profile data;
         # require the complete contract bundle before accepting a candidate.
@@ -230,7 +226,7 @@ def initialize_project(
         (
             gate["name"]
             for gate in config["gates"]
-            if isinstance(gate, dict) and str(gate.get("note", "")).startswith("added by init")
+            if isinstance(gate, dict) and str(gate.get("note")).startswith("added by init")
         ),
         None,
     )

@@ -315,3 +315,273 @@ def test_context_reads_the_latest_evidence_of_the_task(project: Any) -> None:
     verify(project, task, session)
 
     assert project.context(task)["mandatory"]["current_failures"] == []
+
+
+# --- clocks and tokens ----------------------------------------------------------------------
+
+NOW = 2_000_000_000.0
+
+
+def _frozen(monkeypatch: pytest.MonkeyPatch) -> None:
+    import time
+
+    monkeypatch.setattr(time, "time", lambda: NOW)
+
+
+def _lease(project: Any, task: str) -> dict[str, Any]:
+    (lease,) = [item for item in project.store.list("lease") if item["task_id"] == task]
+    return lease
+
+
+def _expire(project: Any) -> None:
+    with project.store.transaction():
+        project._expire()
+
+
+def test_a_lease_expires_at_the_instant_it_ends(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, session = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW)
+    _frozen(monkeypatch)
+
+    with pytest.raises(ControlError) as caught:
+        project.owned(task, session)
+    _expire(project)
+
+    assert caught.value.code == "LEASE_LOST"
+    assert _lease(project, task)["state"] == "EXPIRED"
+    assert project.store.get(task, "task")["state"] == "READY"
+
+
+def test_a_running_verifier_keeps_its_lease_only_before_its_deadline(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, _ = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW - 1)
+    _force(project, "task", task, active_run="RUN-1", active_run_deadline=NOW)
+    _frozen(monkeypatch)
+
+    _expire(project)
+
+    assert _lease(project, task)["state"] == "EXPIRED"
+
+
+def test_a_running_task_without_a_recorded_deadline_still_expires(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, _ = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW - 1)
+    _force(project, "task", task, active_run="RUN-legacy")
+    _frozen(monkeypatch)
+
+    _expire(project)
+
+    assert _lease(project, task)["state"] == "EXPIRED"
+
+
+def test_a_session_token_carries_256_bits(project: Any) -> None:
+    session = project.join("worker", ["code"])["session"]
+    assert len(session) == 43
+
+
+def test_adoption_stages_its_database_where_measurement_never_looks(
+    tmp_path: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from pathlib import Path
+
+    from agentic_discipline.control.discovery import allowed
+    from agentic_discipline.control.plane import adopt
+
+    created: list[Path] = []
+    real_mkdir = Path.mkdir
+
+    def mkdir(self: Path, *args: Any, **kwargs: Any) -> None:
+        created.append(self)
+        real_mkdir(self, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "mkdir", mkdir)
+    (tmp_path / "app.py").write_text("value = 1\n", encoding="utf-8")
+
+    adopt(tmp_path)
+
+    # The staging directory is the one renamed into place, so it no longer exists.
+    (staging,) = {p for p in created if p.parent.name == ".agentic" and not p.exists()}
+    assert staging.name.startswith("adopt-")
+    assert allowed(staging.relative_to(tmp_path) / "state.db") is False
+
+
+# --- proof of dependencies ------------------------------------------------------------------
+
+
+def test_a_dependency_without_proof_is_bound_as_having_none(project: Any) -> None:
+    from agentic_discipline.control.verification import binding
+
+    project.approve_command(contract()["verification"][0]["command"])
+    first = project.create_task(contract())
+    second = project.create_task({**contract(), "dependencies": [first["id"]]})
+
+    assert binding(project, second)["dependencies"] == {first["id"]: []}
+
+
+def test_a_completed_task_without_recorded_proof_is_not_proven(project: Any) -> None:
+    from agentic_discipline.control.verification import proof_current
+
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())
+    forged = _force(project, "task", task["id"], state="COMPLETED")
+
+    assert "proof" not in forged
+    assert proof_current(project, forged) is False
+
+
+# --- checks repeated behind an earlier one --------------------------------------------------
+
+
+@pytest.mark.parametrize("field", ["state", "version", "id", "workspace_id", "integration"])
+def test_server_owned_fields_are_refused_even_past_contract_validation(
+    project: Any, monkeypatch: pytest.MonkeyPatch, field: str
+) -> None:
+    # The contract validator already rejects these keys; this check stands behind it.
+    import agentic_discipline.control.plane as plane_module
+
+    monkeypatch.setattr(plane_module, "task_contract", lambda contract: None)
+    with pytest.raises(ControlError) as caught:
+        project.create_task({**contract(), field: "forged"})
+    assert (caught.value.code, str(caught.value)) == (
+        "INVALID_TASK",
+        "Execution state is server-owned",
+    )
+
+
+def test_a_busy_task_is_refused_before_its_changes_are_checked(project: Any) -> None:
+    from agentic_discipline.control.verification import verify
+
+    task, session = _claimed(project)
+    _force(project, "task", task, active_run="RUN-elsewhere")
+    (project.root / "outside.py").write_text("x = 1\n", encoding="utf-8")
+
+    with pytest.raises(ControlError) as caught:
+        verify(project, task, session)
+    assert (caught.value.code, str(caught.value)) == (
+        "VERIFICATION_BUSY",
+        "A verifier is already running",
+    )
+
+
+def test_a_claim_whose_predicate_is_blank_is_refused(project: Any) -> None:
+    (orders,) = _apply(project, "Orders")
+    with pytest.raises(ControlError) as caught:
+        project.knowledge.claim(
+            {
+                "subject": orders["id"],
+                "predicate": "   ",
+                "value": 30,
+                "source_ref": "brief.md",
+                "authority": "human",
+                "confidence": 1,
+                "observation": "DECLARED",
+            }
+        )
+    assert (caught.value.code, str(caught.value)) == (
+        "INVALID_ENTITY",
+        "name must be nonempty text",
+    )
+
+
+def test_a_file_retired_by_hand_stays_retired_when_it_changes(project: Any) -> None:
+    (project.root / "lib.py").write_text("def total():\n    return 1\n", encoding="utf-8")
+    project.reconcile()
+    (source,) = [
+        e for e in project.store.list("entity") if e.get("type") == "file" and e["name"] == "lib.py"
+    ]
+    project.knowledge.lifecycle(source["id"], "RETIRED", "moved to sums.py")
+
+    (project.root / "lib.py").write_text("def total():\n    return 2\n", encoding="utf-8")
+    project.reconcile()
+
+    assert project.store.get(source["id"], "entity")["lifecycle"] == "RETIRED"
+
+
+def _without_store_secret_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The store checks every record too; these cases test the check that stands before it.
+    import agentic_discipline.control.store as store_module
+
+    monkeypatch.setattr(store_module, "safe_data", lambda value: None)
+
+
+def test_a_command_holding_a_secret_is_refused_before_the_store(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _without_store_secret_check(monkeypatch)
+    with pytest.raises(ControlError) as caught:
+        project.approve_command(["deploy", "--token=ghp_" + "a" * 36])
+    assert caught.value.code == "SECRET_REJECTED"
+
+
+def test_a_checkpoint_holding_a_secret_is_refused_before_the_store(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, session = _claimed(project)
+    _without_store_secret_check(monkeypatch)
+    with pytest.raises(ControlError) as caught:
+        project.checkpoint(task, session, {**checkpoint(), "password": "hunter2"})
+    assert caught.value.code == "SECRET_REJECTED"
+
+
+def test_a_checkpoint_records_the_branch_of_the_workspace(project: Any) -> None:
+    from agentic_discipline.common import run_git
+
+    run_git(["init", "-q", "-b", "checkpointed"], cwd=project.root)
+    task, session = _claimed(project)
+
+    assert project.checkpoint(task, session, checkpoint())["payload"]["branch"] == "checkpointed"
+
+
+def test_a_heartbeat_without_a_lifetime_extends_the_lease_by_five_minutes(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, session = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW + 10)
+    _frozen(monkeypatch)
+
+    assert project.heartbeat(task, session)["expires_at"] == NOW + 300
+
+
+def test_resume_without_a_budget_uses_sixteen_thousand_bytes(project: Any) -> None:
+    task, session = _claimed(project)
+    project.checkpoint(task, session, checkpoint())
+
+    assert project.resume(task, session)["audit"]["budget_bytes"] == 16000
+
+
+def test_adoption_reports_the_coverage_it_scanned(tmp_path: Any) -> None:
+    from agentic_discipline.control.discovery import scan
+    from agentic_discipline.control.plane import adopt
+
+    (tmp_path / "app.py").write_text("value = 1\n", encoding="utf-8")
+    expected = scan(tmp_path)["coverage"]
+
+    assert adopt(tmp_path)["coverage"] == expected
+
+
+def test_evidence_from_a_run_whose_lease_ends_at_that_instant_is_blocked(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import agentic_discipline.control.verification as verification
+
+    task, session = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW + 10)
+    _frozen(monkeypatch)
+    real = verification.run_gate
+
+    def run_then_expire(gate: dict[str, Any], cwd: Any = None) -> Any:
+        result = real(gate, cwd=cwd)
+        _force(project, "lease", _lease(project, task)["id"], expires_at=NOW)
+        return result
+
+    monkeypatch.setattr(verification, "run_gate", run_then_expire)
+    verification.verify(project, task, session)
+
+    (evidence,) = [e for e in project.store.list("evidence") if e["task_id"] == task]
+    assert evidence["result"] == "BLOCKED"

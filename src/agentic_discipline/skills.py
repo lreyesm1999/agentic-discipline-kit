@@ -120,7 +120,7 @@ def load_discipline(path: Path) -> Discipline:
         description=metadata["description"],
         when_to_use=metadata.get("when_to_use", ""),
         globs=globs or ("**",),
-        always=metadata.get("always", "false").lower() == "true",
+        always="always" in metadata and metadata["always"].lower() == "true",
         phase=metadata.get("phase", "implementation"),
         body="\n".join(lines).strip() + "\n",
         slug=path.parent.name,

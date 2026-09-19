@@ -23,7 +23,7 @@ def handler(root: Path) -> type[BaseHTTPRequestHandler]:
             if self.headers.get("Host") not in {f"127.0.0.1:{port}", f"localhost:{port}"}:
                 self.send_error(403)
                 return
-            route = self.path.split("?", 1)[0]
+            route = self.path.partition("?")[0]
             content: Any
             if route in {"/", "/app.css", "/app.js"}:
                 content, mime = {

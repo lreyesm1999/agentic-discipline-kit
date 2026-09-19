@@ -60,7 +60,6 @@ def adopt(root: Path, dry_run: bool = False) -> dict[str, Any]:
                         "root": str(root),
                         "baseline_commit": report["commit"],
                         "baseline_fingerprint": report["fingerprint"],
-                        "coverage": report["coverage"],
                         "stacks": report["stacks"],
                     },
                 )
@@ -166,7 +165,7 @@ def _index(store: Store, report: dict[str, Any]) -> dict[str, Any]:
             )
             _index_symbols(
                 store,
-                {**previous, "symbols": [], "lifecycle": "HISTORICAL"},
+                {**previous, "symbols": []},
                 symbols_by_file.get(previous["id"], []),
             )
         project = store.list("project")[0]
@@ -194,7 +193,7 @@ def _index(store: Store, report: dict[str, Any]) -> dict[str, Any]:
 
 
 def _index_symbols(store: Store, source: dict[str, Any], previous: list[dict[str, Any]]) -> None:
-    old = {(s["name"], s["symbol_type"], s.get("occurrence", 0)): s for s in previous}
+    old = {(s["name"], s["symbol_type"], s["occurrence"]): s for s in previous}
     present = set()
     counts: dict[tuple[str, str], int] = {}
     for symbol in source["symbols"]:
@@ -735,9 +734,10 @@ class Plane:
         ]
         latest_evidence: dict[str, dict[str, Any]] = {}
         for evidence in self.store.list("evidence"):
-            if evidence["task_id"] == task_id and evidence["finished_at"] > latest_evidence.get(
-                evidence["verifier"], {}
-            ).get("finished_at", 0):
+            latest = latest_evidence.get(evidence["verifier"])
+            if evidence["task_id"] == task_id and (
+                latest is None or evidence["finished_at"] > latest["finished_at"]
+            ):
                 latest_evidence[evidence["verifier"]] = evidence
         failures = []
         for evidence in latest_evidence.values():
