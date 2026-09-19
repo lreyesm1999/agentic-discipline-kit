@@ -213,3 +213,21 @@ def test_an_edge_that_names_a_task_is_refused(project: Any) -> None:
         task,
     )
     _refused(lambda: rollback_changeset(project, change["id"], "undo"), task)
+
+
+def test_an_edge_whose_target_names_a_task_is_refused(project: Any) -> None:
+    orders = _entity(project)
+    (change,) = project.store.list("changeset")
+    task = _task(project)
+    with project.store.transaction():
+        project.store.db.execute(
+            "INSERT INTO edges VALUES (?,?,?,?)", ("EDGE-forged", orders["id"], task, "depends_on")
+        )
+
+    _refused(
+        lambda: project.knowledge.apply(
+            [entity("Invoices")], project.store.knowledge_version, "add"
+        ),
+        task,
+    )
+    _refused(lambda: rollback_changeset(project, change["id"], "undo"), task)
