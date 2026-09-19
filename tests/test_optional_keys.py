@@ -43,7 +43,7 @@ def test_a_json_parser_without_metrics_extracts_nothing() -> None:
 def test_a_regex_parser_without_metrics_is_reported_not_crashed() -> None:
     config = {
         "project": "x",
-        "gates": [{"name": "t", "command": ["true"], "parser": {"type": "regex"}}],
+        "gates": [{"name": "t", "command": ["pytest", "-q"], "parser": {"type": "regex"}}],
     }
 
     errors = validate_quality_config(config)
