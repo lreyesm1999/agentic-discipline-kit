@@ -487,3 +487,69 @@ def test_a_claim_whose_predicate_is_blank_is_refused(project: Any) -> None:
         "INVALID_ENTITY",
         "name must be nonempty text",
     )
+
+
+def test_a_file_retired_by_hand_stays_retired_when_it_changes(project: Any) -> None:
+    (project.root / "lib.py").write_text("def total():\n    return 1\n", encoding="utf-8")
+    project.reconcile()
+    (source,) = [
+        e for e in project.store.list("entity") if e.get("type") == "file" and e["name"] == "lib.py"
+    ]
+    project.knowledge.lifecycle(source["id"], "RETIRED", "moved to sums.py")
+
+    (project.root / "lib.py").write_text("def total():\n    return 2\n", encoding="utf-8")
+    project.reconcile()
+
+    assert project.store.get(source["id"], "entity")["lifecycle"] == "RETIRED"
+
+
+def _without_store_secret_check(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The store checks every record too; these cases test the check that stands before it.
+    import agentic_discipline.control.store as store_module
+
+    monkeypatch.setattr(store_module, "safe_data", lambda value: None)
+
+
+def test_a_command_holding_a_secret_is_refused_before_the_store(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _without_store_secret_check(monkeypatch)
+    with pytest.raises(ControlError) as caught:
+        project.approve_command(["deploy", "--token=ghp_" + "a" * 36])
+    assert caught.value.code == "SECRET_REJECTED"
+
+
+def test_a_checkpoint_holding_a_secret_is_refused_before_the_store(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, session = _claimed(project)
+    _without_store_secret_check(monkeypatch)
+    with pytest.raises(ControlError) as caught:
+        project.checkpoint(task, session, {**checkpoint(), "password": "hunter2"})
+    assert caught.value.code == "SECRET_REJECTED"
+
+
+def test_a_checkpoint_records_the_branch_of_the_workspace(project: Any) -> None:
+    from agentic_discipline.common import run_git
+
+    run_git(["init", "-q", "-b", "checkpointed"], cwd=project.root)
+    task, session = _claimed(project)
+
+    assert project.checkpoint(task, session, checkpoint())["payload"]["branch"] == "checkpointed"
+
+
+def test_a_heartbeat_without_a_lifetime_extends_the_lease_by_five_minutes(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    task, session = _claimed(project)
+    _force(project, "lease", _lease(project, task)["id"], expires_at=NOW + 10)
+    _frozen(monkeypatch)
+
+    assert project.heartbeat(task, session)["expires_at"] == NOW + 300
+
+
+def test_resume_without_a_budget_uses_sixteen_thousand_bytes(project: Any) -> None:
+    task, session = _claimed(project)
+    project.checkpoint(task, session, checkpoint())
+
+    assert project.resume(task, session)["audit"]["budget_bytes"] == 16000

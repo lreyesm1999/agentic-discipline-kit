@@ -21,7 +21,7 @@ from test_workspaces import repository
 from agentic_discipline.common import run_git
 from agentic_discipline.control import workspaces
 from agentic_discipline.control.contracts import ControlError, digest
-from agentic_discipline.control.discovery import fingerprint, line_counts, link_fingerprint
+from agentic_discipline.control.discovery import fingerprint, git, line_counts, link_fingerprint
 from agentic_discipline.control.plane import Plane
 from agentic_discipline.control.verification import binding, verify
 from agentic_discipline.control.workspaces import (
@@ -255,6 +255,21 @@ def test_refresh_rebases_and_renews_every_baseline(tmp_path: Path) -> None:
         assert _head(path) != task_commit
         assert (path / "other.py").read_text(encoding="utf-8") == "other = 1\n"
         assert (path / "app.py").read_text(encoding="utf-8") == "value = 2\n"
+
+
+def test_a_conflicting_refresh_aborts_its_rebase(tmp_path: Path) -> None:
+    repository(tmp_path)
+    with Plane(tmp_path) as plane:
+        task = _task(plane)
+        path = Path(create_workspace(plane, task)["path"])
+        task_commit = _commit(path, "app.py", "value = 2\n")
+        _commit(tmp_path, "app.py", "value = 3\n")
+
+        with pytest.raises(RuntimeError):
+            refresh_workspace(plane, task)
+
+        assert git(path, ["rev-parse", "--verify", "REBASE_HEAD"]) == ""
+        assert _head(path) == task_commit
 
 
 # --- merge_workspace ----------------------------------------------------------------------

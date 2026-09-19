@@ -274,3 +274,40 @@ def test_dependencies_must_themselves_be_current(project: Any) -> None:
     assert proof_current(project, task) is True
     _force(project, "task", dependency["id"], state="VERIFYING")
     assert proof_current(project, task) is False
+
+
+# --- checks behind freshness ----------------------------------------------------------------
+
+
+def _past_freshness(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A changed requirement or dependency already makes the evidence stale; these cases
+    # test the checks that stand behind freshness.
+    import agentic_discipline.control.verification as verification
+
+    monkeypatch.setattr(verification, "fresh", lambda plane, evidence, current: True)
+
+
+@pytest.mark.parametrize("fields", [{"lifecycle": "RETIRED"}, {"stale": True}])
+def test_a_retired_or_stale_requirement_ends_proof_even_past_freshness(
+    project: Any, monkeypatch: pytest.MonkeyPatch, fields: dict[str, Any]
+) -> None:
+    requirement = _requirement(project)
+    task = _completed(project, requirements=[requirement["id"]])
+    _past_freshness(monkeypatch)
+    assert proof_current(project, task) is True
+
+    _force(project, "entity", requirement["id"], **fields)
+
+    assert proof_current(project, task) is False
+
+
+def test_a_dependency_cycle_ends_proof_even_past_freshness(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first = _completed(project)
+    second = _completed(project)
+    _force(project, "task", first["id"], dependencies=[second["id"]])
+    _force(project, "task", second["id"], dependencies=[first["id"]])
+    _past_freshness(monkeypatch)
+
+    assert proof_current(project, project.store.get(first["id"], "task")) is False

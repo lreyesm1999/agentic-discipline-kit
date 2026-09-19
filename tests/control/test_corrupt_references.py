@@ -242,3 +242,12 @@ def test_impact_refuses_an_edge_that_reaches_a_task(project: Any) -> None:
         )
 
     _refused(lambda: project.knowledge.impact(orders["id"], "out"), task)
+
+
+def test_a_lease_whose_task_names_knowledge_owns_nothing(project: Any) -> None:
+    orders = _entity(project)
+    task, session = _claimed(project)
+    (lease,) = [item for item in project.store.list("lease") if item["task_id"] == task]
+    _force(project, "lease", lease["id"], task_id=orders["id"])
+
+    _refused(lambda: project.owned(orders["id"], session), orders["id"])

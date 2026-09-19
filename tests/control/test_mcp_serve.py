@@ -61,9 +61,11 @@ class _Source(io.StringIO):
     def __init__(self, text: str) -> None:
         super().__init__(text)
         self.reads = 0
+        self.sizes: list[int | None] = []
 
     def readline(self, size: int | None = -1) -> str:
         self.reads += 1
+        self.sizes.append(size)
         if self.reads > self.MAX_READS:
             raise AssertionError(f"serve read more than {self.MAX_READS} lines")
         return super().readline(size)
@@ -152,3 +154,11 @@ def test_empty_input_ends_without_output(received: list[Any]) -> None:
     sink = _Sink()
     serve(object(), _Source(""), sink)
     assert (sink.getvalue(), sink.flushes, received) == ("", [], [])
+
+
+def test_every_read_is_bounded_one_past_the_limit(received: list[Any]) -> None:
+    # Reading a line whole would let one message take any amount of memory.
+    source = _Source("x" * (MAX_MESSAGE * 2 + 10) + "\n" + '{"id": 5}\n')
+    serve(object(), source, _Sink())
+    assert source.sizes == [MAX_MESSAGE + 1] * source.reads
+    assert source.reads == 5

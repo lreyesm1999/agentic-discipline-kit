@@ -60,7 +60,6 @@ def adopt(root: Path, dry_run: bool = False) -> dict[str, Any]:
                         "root": str(root),
                         "baseline_commit": report["commit"],
                         "baseline_fingerprint": report["fingerprint"],
-                        "coverage": report["coverage"],
                         "stacks": report["stacks"],
                     },
                 )
@@ -166,7 +165,7 @@ def _index(store: Store, report: dict[str, Any]) -> dict[str, Any]:
             )
             _index_symbols(
                 store,
-                {**previous, "symbols": [], "lifecycle": "HISTORICAL"},
+                {**previous, "symbols": []},
                 symbols_by_file.get(previous["id"], []),
             )
         project = store.list("project")[0]
