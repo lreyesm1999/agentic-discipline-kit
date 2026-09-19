@@ -293,3 +293,121 @@ def test_without_a_mutants_tree_every_survivor_stays_unresolved(tmp_path: Path) 
     assert code == 1
     assert result["unresolved"] == {"survived": 2}
     assert "equivalent" not in result
+
+
+# --- reviewed exceptions --------------------------------------------------------------------
+
+
+def _exception(**changes: str) -> dict[str, str]:
+    entry = {
+        "function": "pkg.mod.x_target",
+        "original": 'return value.get("flag", False)',
+        "mutant": 'return value.get("flag", None)',
+        "family": "falsy-default",
+        "reason": "only tested for truth",
+    }
+    entry.update(changes)
+    return entry
+
+
+def _flag_tree(tmp_path: Path) -> Path:
+    return _mutants(tmp_path, 'return value.get("flag", False)', 'return value.get("flag", None)')
+
+
+def test_an_exception_matches_the_survivor_by_the_line_it_changes(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+
+    reviewed, stale = GATE["review"](root, [MUTANT], [_exception()])
+
+    assert (reviewed, stale) == ({MUTANT: "falsy-default"}, [])
+
+
+def test_an_exception_for_another_change_or_function_matches_nothing(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+    other_line = _exception(mutant='return value.get("flag", 0)')
+    other_function = _exception(function="pkg.mod.x_other")
+
+    reviewed, stale = GATE["review"](root, [MUTANT], [other_line, other_function])
+
+    assert (reviewed, stale) == ({}, [other_line, other_function])
+
+
+def test_reviewed_survivors_are_subtracted_and_listed_apart_from_proofs() -> None:
+    result = GATE["gate"](
+        _report(), {"m.f__mutmut_1": "sql-case"}, {"m.g__mutmut_4": "falsy-default"}
+    )
+
+    assert result["status"] == "PASS"
+    assert result["unresolved"] == {}
+    assert result["reviewed"] == {"total": 1, "by_family": {"falsy-default": 1}}
+    assert result["reviewed_mutants"] == {"m.g__mutmut_4": "falsy-default"}
+
+
+def test_a_stale_exception_fails_the_gate_even_when_nothing_else_remains() -> None:
+    stale = [_exception()]
+
+    result = GATE["gate"](_report(killed=10, survived=0), None, None, stale)
+
+    assert result["status"] == "FAIL"
+    assert result["stale_exceptions"] == stale
+
+
+@pytest.mark.parametrize(
+    "data",
+    [
+        [],
+        {"exceptions": {}},
+        {"exceptions": [{**_exception(), "extra": "x"}]},
+        {"exceptions": [{k: v for k, v in _exception().items() if k != "reason"}]},
+        {"exceptions": [_exception(reason="  ")]},
+        {"exceptions": [_exception(), _exception(reason="said again")]},
+    ],
+    ids=["not-an-object", "not-a-list", "extra-field", "missing-field", "blank", "repeated"],
+)
+def test_an_incomplete_or_repeated_exception_file_is_refused(tmp_path: Path, data: Any) -> None:
+    path = tmp_path / "exceptions.json"
+    path.write_text(json.dumps(data), encoding="utf-8")
+
+    with pytest.raises(ValueError):
+        GATE["load_exceptions"](path)
+
+
+def _run_with(tmp_path: Path, report: dict[str, Any], root: Path, entries: Any) -> tuple[int, Any]:
+    exceptions = tmp_path / "exceptions.json"
+    exceptions.write_text(json.dumps({"exceptions": entries}), encoding="utf-8")
+    path = root / "mutmut-cicd-stats.json"
+    path.write_text(json.dumps(report), encoding="utf-8")
+    process = subprocess.run(
+        [sys.executable, str(GATE_SCRIPT), "--report", str(path), "--exceptions", str(exceptions)],
+        capture_output=True,
+        text=True,
+    )
+    return process.returncode, json.loads(process.stdout)
+
+
+def test_the_command_accepts_a_survivor_its_exceptions_name(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+
+    code, result = _run_with(tmp_path, _report(killed=9, survived=1), root, [_exception()])
+
+    assert (code, result["status"]) == (0, "PASS")
+    assert result["reviewed_mutants"] == {MUTANT: "falsy-default"}
+
+
+def test_the_command_fails_on_an_exception_no_survivor_needs(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+    unused = _exception(function="pkg.mod.x_gone")
+
+    code, result = _run_with(tmp_path, _report(killed=9, survived=1), root, [_exception(), unused])
+
+    assert (code, result["status"]) == (1, "FAIL")
+    assert result["stale_exceptions"] == [unused]
+
+
+def test_the_command_refuses_an_invalid_exceptions_file(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+
+    code, result = _run_with(tmp_path, _report(killed=9, survived=1), root, [{"function": "x"}])
+
+    assert code == 1
+    assert result["reason"].startswith("Cannot read mutation evidence: exception 0 needs")
