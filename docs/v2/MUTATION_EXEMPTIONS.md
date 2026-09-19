@@ -10,10 +10,18 @@ proves four of the families below itself, mutant by mutant, from mutmut's `mutan
 tree: SQL keyword and identifier case (`sql-case`), codec name case (`codec-name`),
 the `typing.cast` type argument (`cast-type`) and pattern case under `re.IGNORECASE`
 (`ignorecase-pattern`). It accepts a survivor only when the original and the mutant
-differ in exactly one place and that place satisfies the rule, lists each accepted
-mutant with its rule, and fails on every other survivor, including those recorded
-here with a proof by hand. `tests/test_mutation_equivalence.py` pins what each rule
-must accept and what it must refuse.
+differ in exactly one place and that place satisfies the rule, and lists each accepted
+mutant with its rule. `tests/test_mutation_equivalence.py` pins what each rule must
+accept and what it must refuse.
+
+The equivalents proven by hand below are accepted through
+`policies/mutation-exceptions.json`, the reviewed exception list. Each exception names
+the function, the exact line the mutant changes before and after, its family and the
+reason, which points back to a section of this file. The file is a protected path,
+so any change to it shows in the protected check and needs review. The gate accepts
+a survivor only when an exception matches its changed line exactly. It fails on every
+other survivor, and on any exception that no longer matches one. The "Known
+survivors, not exempt" at the end are deliberately absent from the list.
 
 ## How a survivor leaves the list
 
