@@ -406,6 +406,6 @@ def test_adoption_stages_its_database_where_measurement_never_looks(
     adopt(tmp_path)
 
     # The staging directory is the one renamed into place, so it no longer exists.
-    (staging,) = [p for p in created if p.parent.name == ".agentic" and not p.exists()]
+    (staging,) = {p for p in created if p.parent.name == ".agentic" and not p.exists()}
     assert staging.name.startswith("adopt-")
     assert allowed(staging.relative_to(tmp_path) / "state.db") is False
