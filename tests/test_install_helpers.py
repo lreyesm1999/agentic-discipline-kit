@@ -53,3 +53,15 @@ def test_the_verification_directories_are_created_without_any_payload(tmp_path: 
 
     for name in ("generated", "artifacts"):
         assert (target / ".agentic" / "verification" / name).is_dir()
+
+
+def test_a_payload_item_missing_from_the_kit_does_not_stop_the_rest(tmp_path: Path) -> None:
+    kit = tmp_path / "kit"
+    (kit / "config").mkdir(parents=True)
+    (kit / "config" / "risk-weights.json").write_text("{}\n", encoding="utf-8")
+    target = tmp_path / "project"
+
+    _install_payload(kit, target, force=False, actions=[], dry_run=False)
+
+    assert (target / ".agentic" / "config" / "risk-weights.json").is_file()
+    assert not (target / ".agentic" / "MASTER_PROMPT.md").exists()
