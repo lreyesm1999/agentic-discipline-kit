@@ -187,11 +187,18 @@ def _parse_with_lines(path: Path) -> tuple[ast.Module, list[str]] | None:
 def _change(
     module: ast.Module, lines: list[str], function: str, number: str
 ) -> tuple[str, str] | None:
-    """The source lines the mutant removes and adds, each stripped and joined by newlines."""
+    """The source lines the mutant removes and adds, each stripped and joined by newlines.
+
+    The signature is included, since a mutant can change a parameter's default; each
+    copy's own name is replaced by the function's, so only the mutation differs.
+    """
 
     wanted = {f"{function}__mutmut_orig", f"{function}__mutmut_{number}"}
     found = {
-        node.name: [line.strip() for line in lines[node.lineno : node.end_lineno]]
+        node.name: [
+            line.strip().replace(node.name, function)
+            for line in lines[node.lineno - 1 : node.end_lineno]
+        ]
         for node in ast.walk(module)
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in wanted
     }

@@ -411,3 +411,19 @@ def test_the_command_refuses_an_invalid_exceptions_file(tmp_path: Path) -> None:
 
     assert code == 1
     assert result["reason"].startswith("Cannot read mutation evidence: exception 0 needs")
+
+
+def test_an_exception_can_name_a_changed_parameter_default(tmp_path: Path) -> None:
+    root = tmp_path / "mutants"
+    module = root / "src" / "pkg" / "mod.py"
+    module.parent.mkdir(parents=True)
+    module.write_text(
+        "def x_target__mutmut_orig(port: int = 8765):\n    return port\n\n"
+        "def x_target__mutmut_1(port: int = 8766):\n    return port\n",
+        encoding="utf-8",
+    )
+    entry = _exception(
+        original="def x_target(port: int = 8765):", mutant="def x_target(port: int = 8766):"
+    )
+
+    assert GATE["review"](root, [MUTANT], [entry]) == ({MUTANT: "falsy-default"}, [])
