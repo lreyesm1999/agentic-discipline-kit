@@ -105,7 +105,7 @@ def validate_quality_config(config: dict[str, Any]) -> list[str]:
             errors.append(f"gates.{index}.working_directory: must stay inside the project root")
 
         parser = gate.get("parser")
-        thresholds = gate.get("thresholds", {})
+        thresholds = gate.get("thresholds")
         declared_metrics = set(parser.get("metrics", {})) if isinstance(parser, dict) else set()
         if isinstance(parser, dict) and parser.get("type") == "regex":
             for metric, pattern in parser.get("metrics", {}).items():

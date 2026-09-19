@@ -293,7 +293,7 @@ class Knowledge:
                     "claim",
                     {
                         **old,
-                        "conflicts": list(set(old.get("conflicts", []) + [claim["id"]])),
+                        "conflicts": list(set(old["conflicts"] + [claim["id"]])),
                         "disposition": "SUPERSEDED" if canonical else "CONFLICTING",
                     },
                     expected=old["version"],

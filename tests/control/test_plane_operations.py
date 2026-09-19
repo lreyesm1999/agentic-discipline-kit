@@ -409,3 +409,27 @@ def test_adoption_stages_its_database_where_measurement_never_looks(
     (staging,) = {p for p in created if p.parent.name == ".agentic" and not p.exists()}
     assert staging.name.startswith("adopt-")
     assert allowed(staging.relative_to(tmp_path) / "state.db") is False
+
+
+# --- proof of dependencies ------------------------------------------------------------------
+
+
+def test_a_dependency_without_proof_is_bound_as_having_none(project: Any) -> None:
+    from agentic_discipline.control.verification import binding
+
+    project.approve_command(contract()["verification"][0]["command"])
+    first = project.create_task(contract())
+    second = project.create_task({**contract(), "dependencies": [first["id"]]})
+
+    assert binding(project, second)["dependencies"] == {first["id"]: []}
+
+
+def test_a_completed_task_without_recorded_proof_is_not_proven(project: Any) -> None:
+    from agentic_discipline.control.verification import proof_current
+
+    project.approve_command(contract()["verification"][0]["command"])
+    task = project.create_task(contract())
+    forged = _force(project, "task", task["id"], state="COMPLETED")
+
+    assert "proof" not in forged
+    assert proof_current(project, forged) is False

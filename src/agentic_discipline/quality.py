@@ -170,7 +170,7 @@ def run_quality(config_path: Path, cwd: Path | None = None) -> dict[str, Any]:
     ]
     failed = [item for item in results if item.required and item.status != "PASS"]
     return {
-        "project": config.get("project", "unknown"),
+        "project": config["project"],
         "artifacts_dir": config.get("artifacts_dir", "artifacts"),
         "status": "PASS" if not failed else "FAIL",
         "results": [asdict(item) for item in results],

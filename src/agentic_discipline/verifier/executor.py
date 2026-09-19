@@ -71,7 +71,7 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
         "hashes": {},
     }
     if not missing and not missing_env:
-        working_directory = str(metadata.get("working_directory", "."))
+        working_directory = str(metadata["working_directory"])
         # A verifier package is self-contained by default, so `python run.py`
         # resolves beside verifier.json.  Set an explicit project-relative
         # directory when the verifier intentionally operates from the project.
@@ -101,7 +101,7 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
                 "stdout": completed.stdout[-20000:],
                 "stderr": completed.stderr[-20000:],
             }
-            expected = int(metadata.get("expected_exit_code", 0))
+            expected = int(metadata["expected_exit_code"])
             result["status"] = "PASS" if completed.returncode == expected else "FAIL"
         except subprocess.TimeoutExpired as exc:
             result["status"] = "BLOCKED"

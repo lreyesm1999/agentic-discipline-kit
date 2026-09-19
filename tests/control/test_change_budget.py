@@ -136,3 +136,12 @@ def test_links_already_in_the_baseline_are_not_changes(project: Any) -> None:
     (project.root / "src" / "link.py").symlink_to("target.py")
     task = _task(project, ["src"], max_files=0, max_lines=0)
     assert check_changes(project, task) is None
+
+
+def test_a_task_without_recorded_line_counts_counts_the_lines_now_present(project: Any) -> None:
+    task = _task(project, ["src"], max_lines=3)
+    del task["initial_line_counts"]
+    _write(project.root, "src/new.py", 3)
+    assert check_changes(project, task) is None
+    _write(project.root, "src/new.py", 4)
+    _refused(project, task, "BUDGET_EXCEEDED", "Conservative changed-file line budget exceeded")

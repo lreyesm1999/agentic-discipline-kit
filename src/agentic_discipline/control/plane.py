@@ -194,7 +194,7 @@ def _index(store: Store, report: dict[str, Any]) -> dict[str, Any]:
 
 
 def _index_symbols(store: Store, source: dict[str, Any], previous: list[dict[str, Any]]) -> None:
-    old = {(s["name"], s["symbol_type"], s.get("occurrence", 0)): s for s in previous}
+    old = {(s["name"], s["symbol_type"], s["occurrence"]): s for s in previous}
     present = set()
     counts: dict[tuple[str, str], int] = {}
     for symbol in source["symbols"]:
@@ -735,9 +735,10 @@ class Plane:
         ]
         latest_evidence: dict[str, dict[str, Any]] = {}
         for evidence in self.store.list("evidence"):
-            if evidence["task_id"] == task_id and evidence["finished_at"] > latest_evidence.get(
-                evidence["verifier"], {}
-            ).get("finished_at", 0):
+            latest = latest_evidence.get(evidence["verifier"])
+            if evidence["task_id"] == task_id and (
+                latest is None or evidence["finished_at"] > latest["finished_at"]
+            ):
                 latest_evidence[evidence["verifier"]] = evidence
         failures = []
         for evidence in latest_evidence.values():
