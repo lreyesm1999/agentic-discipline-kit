@@ -295,6 +295,35 @@ def test_a_rebase_that_never_started_is_reported_not_aborted(
         assert [args[:2] for args in calls] == [["rebase", _head(tmp_path)]]
 
 
+def test_completion_refuses_a_merge_record_the_primary_does_not_hold(tmp_path: Path) -> None:
+    # merge_workspace already refuses to record a merge the primary does not match;
+    # this forges that record to reach the check completion keeps behind it.
+    from agentic_discipline.control.verification import complete
+
+    repository(tmp_path)
+    with Plane(tmp_path) as plane:
+        task, agent, _, _ = _verified(plane)
+        current = plane.store.get(task, "task")
+        _force(
+            plane,
+            "task",
+            task,
+            integration={
+                "status": "PASS",
+                "merge_performed": True,
+                "merged_files": fingerprint(tmp_path),
+                "binding": digest(binding(plane, current)),
+            },
+        )
+
+        with pytest.raises(ControlError) as caught:
+            complete(plane, task, agent["session"])
+        assert (caught.value.code, str(caught.value)) == (
+            "INTEGRATION_REQUIRED",
+            "Workspace changes need a current integration gate",
+        )
+
+
 # --- merge_workspace ----------------------------------------------------------------------
 
 

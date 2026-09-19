@@ -39,7 +39,7 @@ def test_a_dry_run_into_a_missing_target_creates_nothing(tmp_path: Path) -> None
 
 def test_init_refuses_a_filesystem_root_with_its_reason() -> None:
     with pytest.raises(AgenticError) as caught:
-        _prepare_target(Path(Path.cwd().anchor), find_contract_root())
+        _prepare_target(Path(Path.cwd().anchor), find_contract_root(), dry_run=True)
     assert str(caught.value) == "refusing to bootstrap into a filesystem root"
 
 
