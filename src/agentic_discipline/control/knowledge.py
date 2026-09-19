@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from collections import deque
 from typing import Any
 
 from .contracts import (
@@ -186,22 +185,15 @@ class Knowledge:
         require(
             direction in {"in", "out"} and 0 <= depth <= 20, "INVALID_QUERY", "Invalid traversal"
         )
-        edges = list(self.store.db.execute("SELECT * FROM edges"))
+        steps = [
+            (source, target) if direction == "out" else (target, source)
+            for source, target in self.store.db.execute("SELECT source, target FROM edges")
+        ]
         visited = {identifier}
-        queue = deque([(identifier, 0)])
-        while queue:
-            current, level = queue.popleft()
-            if level == depth:
-                continue
-            for edge in edges:
-                src, dst = (
-                    (edge["source"], edge["target"])
-                    if direction == "out"
-                    else (edge["target"], edge["source"])
-                )
-                if src == current and dst not in visited:
-                    visited.add(dst)
-                    queue.append((dst, level + 1))
+        frontier = {identifier}
+        for _ in range(depth):
+            frontier = {after for before, after in steps if before in frontier} - visited
+            visited |= frontier
         return [self.store.get(i, "entity") for i in sorted(visited - {identifier})]
 
     def claim(self, data: dict[str, Any]) -> dict[str, Any]:

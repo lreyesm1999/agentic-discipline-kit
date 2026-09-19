@@ -29,9 +29,7 @@ def uid(prefix: str) -> str:
 
 
 def encode(value: Any) -> str:
-    return json.dumps(
-        value, sort_keys=True, separators=(",", ":"), ensure_ascii=True, allow_nan=False
-    )
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), allow_nan=False)
 
 
 def digest(value: Any) -> str:
@@ -284,7 +282,9 @@ def task_contract(data: dict[str, Any]) -> None:
             "Invalid acceptance indexes",
         )
     for verifier in data["verification"]:
-        inputs = verifier.get("inputs", ["."])
+        if "inputs" not in verifier:
+            continue
+        inputs = verifier["inputs"]
         require(
             isinstance(inputs, list) and inputs and all(isinstance(p, str) for p in inputs),
             "INVALID_VERIFIER",

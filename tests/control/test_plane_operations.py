@@ -433,3 +433,57 @@ def test_a_completed_task_without_recorded_proof_is_not_proven(project: Any) -> 
 
     assert "proof" not in forged
     assert proof_current(project, forged) is False
+
+
+# --- checks repeated behind an earlier one --------------------------------------------------
+
+
+@pytest.mark.parametrize("field", ["state", "version", "id", "workspace_id", "integration"])
+def test_server_owned_fields_are_refused_even_past_contract_validation(
+    project: Any, monkeypatch: pytest.MonkeyPatch, field: str
+) -> None:
+    # The contract validator already rejects these keys; this check stands behind it.
+    import agentic_discipline.control.plane as plane_module
+
+    monkeypatch.setattr(plane_module, "task_contract", lambda contract: None)
+    with pytest.raises(ControlError) as caught:
+        project.create_task({**contract(), field: "forged"})
+    assert (caught.value.code, str(caught.value)) == (
+        "INVALID_TASK",
+        "Execution state is server-owned",
+    )
+
+
+def test_a_busy_task_is_refused_before_its_changes_are_checked(project: Any) -> None:
+    from agentic_discipline.control.verification import verify
+
+    task, session = _claimed(project)
+    _force(project, "task", task, active_run="RUN-elsewhere")
+    (project.root / "outside.py").write_text("x = 1\n", encoding="utf-8")
+
+    with pytest.raises(ControlError) as caught:
+        verify(project, task, session)
+    assert (caught.value.code, str(caught.value)) == (
+        "VERIFICATION_BUSY",
+        "A verifier is already running",
+    )
+
+
+def test_a_claim_whose_predicate_is_blank_is_refused(project: Any) -> None:
+    (orders,) = _apply(project, "Orders")
+    with pytest.raises(ControlError) as caught:
+        project.knowledge.claim(
+            {
+                "subject": orders["id"],
+                "predicate": "   ",
+                "value": 30,
+                "source_ref": "brief.md",
+                "authority": "human",
+                "confidence": 1,
+                "observation": "DECLARED",
+            }
+        )
+    assert (caught.value.code, str(caught.value)) == (
+        "INVALID_ENTITY",
+        "name must be nonempty text",
+    )

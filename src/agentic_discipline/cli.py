@@ -69,7 +69,7 @@ def _relative(path: str, root: Path) -> str:
 def _counts(actions: list[str]) -> dict[str, int]:
     tally: dict[str, int] = {}
     for action in actions:
-        verb = action.split(" ", 1)[0]
+        verb = action.partition(" ")[0]
         tally[verb] = tally.get(verb, 0) + 1
     return tally
 
@@ -150,7 +150,7 @@ def command_doctor(args: argparse.Namespace) -> int:
             config_path = root / "agentic.config.example.json"
     config_valid = False
     tools: dict[str, bool] = {}
-    missing_tools: list[str] = []
+    required_tool_missing = False
     config_error: str | None = None
     if config_path is not None:
         try:
@@ -167,7 +167,7 @@ def command_doctor(args: argparse.Namespace) -> int:
                     # A gate `init` already relaxed is reported but never fails
                     # the check, so a clean install does not open on red.
                     if not available and gate.get("required", True):
-                        missing_tools.append(executable)
+                        required_tool_missing = True
         except AgenticError as exc:
             config_error = str(exc)
     required_files = {
@@ -188,7 +188,7 @@ def command_doctor(args: argparse.Namespace) -> int:
         or skill_count < EXPECTED_DISCIPLINES
         or not all(required_files.values())
         or not config_valid
-        or missing_tools
+        or required_tool_missing
     ):
         status = "FAIL"
     checks: dict[str, object] = {

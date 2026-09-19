@@ -216,3 +216,27 @@ def test_the_fingerprint_measures_files_git_ignores(tmp_path: Path) -> None:
 
     assert "build/output.txt" in before
     assert discovery.fingerprint(tmp_path) != before
+
+
+@posix_only
+def test_a_project_reached_through_a_symlink_is_measured(tmp_path: Path) -> None:
+    real = tmp_path / "real"
+    _write(real, "app.py", "src/mod.py")
+    alias = tmp_path / "alias"
+    alias.symlink_to(real, target_is_directory=True)
+
+    assert _names(files(alias, include_ignored=True)) == ["app.py", "src/mod.py"]
+    assert discovery.validate_inputs(alias, ["app.py", "src"]) is None
+
+
+@posix_only
+def test_a_link_is_measured_by_its_target_text_and_never_entered(tmp_path: Path) -> None:
+    # The value is stored as a task's baseline, so its form must not drift.
+    _write(tmp_path, "real/a.txt")
+    (tmp_path / "real" / "inner").symlink_to("a.txt")
+    (tmp_path / "alias").symlink_to("real", target_is_directory=True)
+
+    assert discovery.link_fingerprint(tmp_path) == {
+        "alias": discovery.digest({"link": "real"}),
+        "real/inner": discovery.digest({"link": "a.txt"}),
+    }
