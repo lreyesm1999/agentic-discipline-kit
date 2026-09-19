@@ -15,127 +15,26 @@ mutant with its rule, and fails on every other survivor, including those recorde
 here with a proof by hand. `tests/test_mutation_equivalence.py` pins what each rule
 must accept and what it must refuse.
 
-## `bootstrap.initialize_project` — mutants 152, 154
+## How a survivor leaves the list
 
-```python
-if isinstance(gate, dict) and str(gate.get("note", "")).startswith("added by init")
-```
+Four batches of tests (#20, #21, #22, #24) examined the survivors one by one. Each
+mutant was applied to the source and the tests of its module were run, after a run
+of the same tests without the mutant. A survivor was resolved in one of three ways,
+in this order of preference:
 
-The mutants make the default `None` (`gate.get("note", None)`, and the same by
-removing the argument). For a gate carrying no note the original evaluates
-`str("")` and the mutant `str(None)`, so the comparison is `"".startswith(...)`
-against `"None".startswith(...)`. Neither string starts with `added by init`, so
-both yield `False` for every input, and `baseline` is unchanged. Equivalent.
+1. **A test**, when the mutant exposed behaviour nothing checked.
+2. **Removing the code**, when the mutant changed something no input can reach: a
+   default for a key the schema requires, an initial value every path overwrites, or
+   a second mechanism doing the work of the first. The mutant disappears with the
+   dead code, and no test is written against code that has no effect.
+3. **An entry here**, only when neither applies.
 
-## `control.verification.verify` — mutants 70, 71, 72
-
-```python
-require(not task.get("active_run"), "VERIFICATION_BUSY", "A verifier is already running")
-```
-
-The mutants read another key (`task.get(None)`, `"XXactive_runXX"`, `"ACTIVE_RUN"`),
-so this first guard no longer sees a run in flight and the call proceeds. It is
-then refused by the identical guard at the top of the transaction that starts a
-run, which re-reads the task and raises the same code and message. Verified by
-applying each mutation with bytecode caching disabled: the refusal still arrives,
-raised at the second guard, with `VERIFICATION_BUSY` and the same text. No caller
-can distinguish the two, so nothing observable changes.
-
-The second guard is not equivalent: mutating its key, code or message is caught
-by `tests/control/test_verification_busy.py`.
-
-## `control.plane.Plane.create_task` — the server-owned field guard
-
-```python
-task_contract(contract)
-require(
-    not ({"state", "version", "id", "workspace_id", "integration"} & contract.keys()),
-    "INVALID_TASK",
-    "Execution state is server-owned",
-)
-```
-
-`task_contract` runs first and already refuses any key outside the contract
-(`data.keys() <= required | {"assumptions", "capabilities", "priority"}`), with a
-different message: `Execution state is server-owned; only contract fields are
-accepted`. Calling `create_task` with each of the five fields returns that longer
-message, so the guard below it never runs. Every mutant on it — the five renamed
-set members, their upper-case variants, and the code and message swaps — changes
-a line no caller can reach.
-
-The rule itself is covered: `tests/control/test_contract_rules.py` asserts the
-`task_contract` refusal by exact code and message.
-
-## `verifier.executor.execute_verifier` — the `working_directory` and `expected_exit_code` defaults
-
-```python
-working_directory = str(metadata.get("working_directory", "."))
-expected = int(metadata.get("expected_exit_code", 0))
-```
-
-Both keys are `required` in `schemas/verifier.schema.json`, and `load_verifier`
-validates the contract on every call through `load_and_validate_verifier`. Removing
-either key from a registered package and running the verifier is refused with
-`invalid verifier contract: $: '<key>' is a required property`, before either
-default is read. The mutants that change those defaults (to `None`, to a removed
-argument, or to another value) therefore change unreachable code.
-
-## `acceptance.parse_feature_text` — the pending scenario id sentinel
-
-```python
-pending_id: str | None = None
-...
-"id": pending_id or f"AC-{len(scenarios) + 1:03d}",
-```
-
-The mutants make that sentinel `""` instead of `None`. The value is only ever
-tested for truthiness, and both are falsy, so a scenario without a declared id
-still gets the generated one. `pending_id` is never compared with `is None` or
-with a string, so no caller can distinguish the two.
-
-## Measured, not argued: defaults the suite never falls back to
-
-A `.get(key, default)` mutant can only be observed when the key is missing. Rather
-than arguing case by case, every two-argument `.get` call in the package was
-rewritten to record when it actually used its default, and the whole suite was run
-against the instrumented tree. Of 73 real mapping defaults, 53 were used at least
-once and **20 were never reached in 1250 tests**; those sites carry 39 catalogued
-survivors. The recording is evidence, not proof: it shows the current suite cannot
-reach them, which is exactly what makes those mutants survive.
-
-Two cautions came out of that run, and both matter for anyone repeating it:
-`Store.get(identifier, kind)` is a method, not a mapping, so its two-argument
-calls are not defaults at all and must be excluded — 78 catalogued survivors are
-that type guard, and they are killable (`tests/control/test_record_kinds.py`
-kills thirteen). And 5 of 1255 tests failed under instrumentation, so the
-rewritten tree is not perfectly faithful; the mapping results were unaffected but
-the tool is not clean.
-
-## Equivalent where the measurement runs: the dropped `encoding` argument
-
-```python
-path.write_text(content, encoding="utf-8")
-path.read_text(encoding="utf-8")
-```
-
-Mutants that drop the argument or set it to `None` fall back to the platform's
-preferred encoding. On the Linux environment the mutation campaign runs in,
-`locale.getpreferredencoding(False)` is `UTF-8`, so the mutated call reads and
-writes exactly the same bytes and no test can separate them. Roughly thirty
-catalogued survivors are this shape.
-
-This is an equivalence of the measuring environment, not of the code: on a
-machine whose preferred encoding is not UTF-8 — a Windows console default of
-cp1252, or a container with a POSIX locale — the same mutation would corrupt
-non-ASCII content. The explicit `encoding="utf-8"` in the source is what prevents
-that, and the Windows jobs in the platform matrix are what exercise it. Keep the
-argument; do not treat these survivors as a reason to remove it.
-
-The same holds for subprocess output read as text: `run_git`, the control plane's
-`discovery.git` and `execute_verifier` pass `encoding="utf-8"`, and a mutant that
-drops it or sets it to `None` decodes with the same UTF-8 locale on Linux. On
-Windows the locale default is a legacy code page, and `tests/test_output_encoding.py`
-and `test_git_listing_keeps_non_ascii_paths` fail on the mutated call there.
+A check that repeats an earlier one is kept as defence in depth and tested by
+bypassing the check in front of it. `create_task`'s server-owned field guard runs
+with contract validation replaced. The secret checks in `approve_command` and
+`checkpoint` run with the store's own check replaced. `proof_current`'s requirement
+and cycle checks run with `fresh` replaced. `verify`'s busy guard is reached with
+changes outside the scope, which the next check would otherwise report.
 
 ## Equivalent by the language: four families
 
@@ -149,37 +48,19 @@ cannot change what the call returns. Checked: `cast(None, value) is value` and
 
 **Codec name case.** `"utf-8"`, `"UTF-8"` and `"Utf-8"` resolve to the same codec
 through `codecs.lookup`, so flipping the case of an explicit encoding name cannot
-change a single byte read or written. This is distinct from dropping the argument,
-recorded above, which is only equivalent where the platform default is UTF-8.
+change a single byte read or written (the console's response body, the ledger's
+record hash).
 
 **Pattern case under `re.IGNORECASE`.** When a pattern is matched with
 `re.IGNORECASE`, changing the case of its literal characters cannot change what it
-matches or what its groups capture. Checked on the Gherkin patterns with lines in
-upper, lower and mixed case, plus a line that must not match: every pair matched
-identically and captured identical groups. A mutant that *removes* the flag is not
-in this family; it changes behaviour and stays on the kill list.
+matches or what its groups capture. A mutant that *removes* the flag is not in this
+family; it changes behaviour and stays on the kill list. Where the text was already
+lowercased before matching (`risk`), the flag was the duplicate and was removed.
 
 **`check=False` in `subprocess.run`.** `False` is the default, and the argument is
 only tested for truth, so setting it to `None` or dropping it cannot make the call
 raise. Checked: `subprocess.run(["false"], check=None)` and `check=False` both
-return exit status 1 without raising. Where the argument was only restating the
-default, it was removed instead (`discovery.git`, the audit's repository check).
-
-## `integrity._file_changes` — the previous-line sentinel
-
-```python
-previous = ""
-...
-elif line == "+++ /dev/null" and previous.startswith("--- a/"):
-```
-
-`previous` is only read to see whether it starts with `--- a/`, and it holds the
-starting value only while the first line is examined. Any starting string that does
-not start with `--- a/` therefore gives the same pairing, including the mutant's
-`"XXXX"`. Checked by executing `_file_changes` with the starting value replaced by
-`"XXXX"`, `"x"`, `"--- b/"` and `""` on a diff whose first line is `+++ /dev/null`, a
-deleted-file diff and an empty diff: every variant returned identical pairs. `None`
-is not in this family: it raises on that first line, and a test kills it.
+return exit status 1 without raising.
 
 ## Equivalent by SQLite: case in keywords and identifiers
 
@@ -195,95 +76,120 @@ table: every variant returned the same rows.
 The rule has a boundary, and it was checked mutant by mutant: SQLite does **not**
 ignore case in *values*. `WHERE kind='TASK'` does not match a row whose kind is
 `task`. So a mutant belongs in this family only if every single-quoted literal in
-the statement is unchanged. All catalogued SQL survivors were compared on exactly
-that: none changes a quoted value; each changes only keywords or identifiers.
+the statement is unchanged.
 
-## `Store.get` type guards: which are equivalent, and which only a corrupt store reaches
+## Lookups that ignore case: `sqlite3.Row` and HTTP headers
+
+`row["KIND"]` reads the same column as `row["kind"]`, and `self.headers.get("host")`
+the same header as `"Host"`. Checked: `row["ID"] == row["id"]` and
+`row["PAYLOAD"] == row["payload"]` on a real row, and
+`get("host") == get("HOST") == get("Host")` on an `http.client.HTTPMessage`. Sites:
+`Store.get`, `Store.list`, `Store.entities_at`, `Store.history`, `Store.timeline` and
+the console's `Host` check. `Knowledge.impact` now unpacks `source, target` by
+position and no longer has such a lookup.
+
+## Encoding: killed where it matters, equivalent where the text is ASCII
+
+Dropping `encoding="utf-8"` falls back to the platform's preferred encoding. That is
+UTF-8 on Linux, where the mutation run happens, and a legacy code page on Windows.
+`tests/legacy_code_page.py` makes a missing encoding mean cp1252 on every platform,
+and `tests/test_utf8_on_legacy_code_pages.py` round-trips accented text through
+each reader, writer and subprocess. Those mutants are killed.
+
+What remains is text that is ASCII by construction. `json.dumps` escapes every
+non-ASCII character unless told otherwise, so encoding its output with another codec,
+or with none, produces the same bytes. Checked:
+`json.dumps({"a": "café"}).encode("utf-8") == json.dumps({"a": "café"}).encode("ascii")`.
+About two dozen survivors encode or write `json.dumps` output this way.
+
+## `Store.get` type guards: rereads and guards another guard pre-empts
 
 `Store.get(identifier, kind)` refuses a record of another kind. Where the caller
-supplies the identifier, that refusal is behaviour, and those guards are killed
-by `tests/control/test_record_kinds.py`: task entry points, `transition`, both
-ends of `Knowledge.link`, a claim's subject and evidence, the identity a
-changeset updates, and the changeset a rollback names.
+supplies the identifier, `tests/control/test_record_kinds.py` kills the guard. Where
+the identifier is stored inside another record — a task's workspace, requirements
+and dependencies, a lease's task, a claim's subject and evidence, an evidence
+record's task, a changeset's entities, the edges table — `tests/control/
+test_corrupt_references.py` forges that reference to a record of the wrong kind and
+pins the `NOT_FOUND` refusal.
 
-The remaining guards fall into three groups, told apart by where the identifier
-comes from.
+The survivors left are equivalent for one of two reasons:
 
-**Equivalent: the same identifier was already read with the same kind earlier in
-the call.** The second guard cannot fail when the first passed.
-`create_workspace` and `refresh_workspace` re-read the task inside the transaction
-that updates it; `verify` re-reads it in its `finally` after `owned` read it as a
-task; `Plane._expire` reads a lease's task twice; `Knowledge.claim` reads its
-subject a second time before writing.
+- **The same identifier was already read with the same kind earlier in the call.**
+  `create_workspace` and `refresh_workspace` re-read the task inside the transaction
+  that updates it. `verify` re-reads it in its `finally` after `owned` read it.
+  `Plane._expire` reads a lease's task twice. `Knowledge.claim` reads its subject a
+  second time before writing.
+- **An earlier guard on the same path already refuses.** `binding` reads a task's
+  requirements before `proof_current` does, and `workspace_root` reads the workspace
+  before `merge_workspace` and `refresh_workspace` do. `heartbeat` reads its lease's
+  agent after `owned` has already authenticated that agent. `verify` re-reads its
+  lease by the id of a record that `owned` found through `store.list("lease")`.
 
-The last one needed care, and the order matters. It is the *second* read that is
-redundant, not the first: a declared claim with a subject of the wrong kind is
-refused identically by either read, so dropping the kind at the first read goes
-unseen on that path. The first read is observable only when evidence is checked
-between the two, which is the path the test takes.
+## Directories whose grandparent always exists
 
-**Equivalent: the identifier is the record's own id, taken from a listing of that
-kind.** `verify` re-reads its lease by the id of a record that `owned` found
-through `store.list("lease")`, which only returns leases.
+Every `mkdir(parents=True)` that survives creates a directory directly under the
+project root or under `.agentic/`, which `init` or `adopt` created before: `adopt`,
+`migrate_payload` and both writes in `execute_verifier`. `tests/test_install_helpers.py`
+kills the sites where the parent can be missing.
 
-**Not equivalent, and declared rather than killed: an identifier stored inside
-another record.** `task["workspace_id"]` (`cleanup`, `integration_gate`,
-`merge_workspace`, `refresh_workspace`, `workspace_root`), a lease's `task_id` and
-`agent_id` (`_expire`, `claim`, `heartbeat`), a task's `requirements` and
-`dependencies` (`binding`, `proof_current`, `context`, `readiness`), a claim's
-`subject` and `evidence_refs` and an evidence record's `task_id` (`invalidate`,
-`resolve_claim`, `claim`), and a changeset's entities and the `edges` table
-(`rollback_changeset`, `apply`).
+## Others, each checked
 
-Each of these identifiers is validated when the record holding it is written, so
-the guard only acts on a store edited outside the plane. They are reachable — by
-forging a record into a state the plane never writes — and one of them is killed
-that way (`proof_current` reading proof of another kind), because a proof list is
-the input that decides whether work counts as done. The rest are left as
-survivors: what the plane does with a corrupt store is defence in depth, not a
-contract a caller relies on, and pinning it guard by guard would fix behaviour
-nobody has specified. They are the candidates for a later cycle, not equivalents.
+- **`None` for `False` where the value is only tested for truth.** `getattr(args,
+  "check_tools", None)` and `"check_paths"`, and `json.dumps(allow_nan=None)`
+  (checked: it refuses `nan` exactly as `False` does).
+- **`"SHA256"` for `"sha256"`** in `hashlib.file_digest` (checked: same digest).
+- **A slice one past the end.** `relative.parts[:len(parts) + 1]` equals
+  `relative.parts[:len(parts)]`, so `range(1, len(parts) + 2)` checks the same
+  prefixes as `range(1, len(parts) + 1)` (`files`, `validate_inputs`).
+- **Random lengths.** `secrets.token_urlsafe(None)` uses the default entropy of 32
+  bytes, the value the code passes (checked: both give 43 characters). `adopt`'s
+  staging directory name may be any length; it is found by prefix and renamed.
+- **`git rev-parse --VERIFY REBASE_HEAD`.** `rev-parse` echoes an option it does not
+  know and still resolves the revision, exiting 0 when `REBASE_HEAD` exists and
+  failing when it does not, exactly like `--verify` (checked in a repository with and
+  without a rebase in progress).
+- **Placeholders.** `Knowledge.claim` validates a claim through `entity_contract`
+  with a fixed `type` of `"claim"`, where any non-empty text passes. It stores
+  nothing. `execute_verifier` starts `duration_seconds` at `0.0` so the key keeps
+  its place in the written result, and every path that returns overwrites it.
+- **`integrity._file_changes` — the previous-line sentinel.** `previous` is only
+  read to see whether it starts with `--- a/`. It holds the starting value only while
+  the first line is examined, so any starting string that does not start with
+  `--- a/` gives the same pairing, including the mutant's `"XXXX"`. Checked on a
+  diff whose first line is `+++ /dev/null`, a deleted-file diff and an empty diff.
 
-## Known survivors, not exempt: `Plane._expire` boundaries
+## Known survivors, not exempt
 
-```python
-if lease["state"] == "ACTIVE" and lease["expires_at"] <= time.time():
-    ...
-    and running.get("active_run_deadline", 0) > time.time()
-```
+These are not proven equivalent. Each is reachable in principle, and none is listed
+above.
 
-Three mutants here are not killed by `tests/control/test_lease_lifecycle.py`, and
-none of them is listed as equivalent. Turning `<=` into `<` matters only for a
-lease expiring at exactly the current instant; raising the deadline default from
-`0` to `1` matters only when the key is missing *and* the deadline is `1`; turning
-`>` into `>=` matters only at the same single instant. Each is reachable in
-principle by forcing a timestamp, and unreachable in any run a reader would
-recognise. They stay on the kill list, unkilled.
-
-The rest of the sweep is covered: skipping a lease held by a running verifier
-without ending the sweep, and expiring every lease that ran out.
-
-## Known survivor, not exempt: `Plane.context` evidence default
-
-```python
-if evidence["task_id"] == task_id and evidence["finished_at"] > latest_evidence.get(
-    evidence["verifier"], {}
-).get("finished_at", 0):
-```
-
-The mutant raising that `0` to `1` is not listed above, because it is not proven
-equivalent. The default applies only to the first record seen for a verifier, so
-the two values differ only for a record whose `finished_at` is exactly `1` — one
-second after the epoch. A forced record would distinguish them, so a test could
-exist; it would assert nothing a reader would recognise as behaviour. It stays on
-the kill list, unkilled, rather than being written off.
-
-The neighbouring mutants are killed by `tests/control/test_context_evidence.py`:
-reading another key, or stopping the scan at the first passing verifier.
+- **`Plane._expire`: the `active_run_deadline` default of `0`.** The plane writes
+  the deadline together with `active_run`, so the default applies only to a forged
+  run without one. Raising it to `1` changes the outcome only when the clock reads
+  less than one second after the epoch.
+- **`Plane.context`: `>` for `>=` when choosing the latest evidence.** The two differ
+  only for two records of the same verifier with the same `finished_at`, where the
+  order between them is arbitrary either way.
+- **`complete`: the `state` key of the post-merge binding.** Comparing the binding
+  as it would be after completion with the current one only matters when the root
+  and the workspace differ. The checks before it (merged files equal to the root,
+  and equal link fingerprints) already refuse every such case found so far. It stays
+  on the kill list until a case is found or the redundancy is proven.
 
 ## Method
 
 Apply the mutation to the source, clear `__pycache__` and run with `-B`
-(`PYTHONDONTWRITEBYTECODE=1`), then run the tests that cover the line. Every
-mutation used here is length preserving, so a cached `.pyc` written in the same
-second will silently run the unmutated code and report a false survivor.
+(`PYTHONDONTWRITEBYTECODE=1`), then run the tests that cover the line, after a
+baseline run of the same tests without the mutant. Every mutation used here is
+length preserving, so a cached `.pyc` written in the same second will silently run
+the unmutated code and report a false survivor.
+
+Three techniques reach behaviour a plain run cannot:
+
+- A **legacy code page** (`tests/legacy_code_page.py`) for encodings.
+- A **frozen clock** (`time.time` replaced by a fixed instant) for boundaries: a lease
+  expiring at exactly the current instant, and a lease that ends as a verifier
+  finishes.
+- A **forged store** for references another record holds: a reference written
+  directly with `store.put`, or an edge inserted into the table, pointing at a
+  record of the wrong kind.

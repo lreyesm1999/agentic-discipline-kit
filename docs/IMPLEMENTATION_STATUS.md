@@ -24,7 +24,7 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 - Mutation survivor disposition based on the complete CI campaign; selected local retest was interrupted and is marked partial.
 - Performance fixture now meets all targets after independently reviewed discovery optimization.
-- Final focused independent review is closed; the integrated local suite has 1383 passing tests.
+- Final focused independent review is closed; the integrated local suite has 1474 passing tests.
 - GitHub CI verification of the integration commit is pending.
 
 ## Pending
@@ -34,7 +34,7 @@ or grant release approval. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## Blockers
 
-- Latest full CI mutation run (35317358078, 7884b3e, the code merged as c97abac) has 649 survivors and no timeouts (down from 5,326 on the first measured run); the strengthened CI outcome gate fails explicitly until they are resolved. Mutants proven to change nothing observable are recorded with their proof in docs/v2/MUTATION_EXEMPTIONS.md; the gate does not read that file. It proves four of those families itself (SQL case, codec name case, `typing.cast` type argument, pattern case under `re.IGNORECASE`) and stops counting them; on that run's survivors it accepts 101, leaving 548 unresolved.
+- Latest full CI mutation run (35392522637, 80e13ff, merged as 1dd4e30) has 461 survivors and no timeouts (down from 5,326 on the first measured run); the strengthened CI outcome gate fails explicitly until they are resolved. Mutants proven to change nothing observable are recorded with their proof in docs/v2/MUTATION_EXEMPTIONS.md; the gate does not read that file. It proves four of those families itself (SQL case, codec name case, `typing.cast` type argument, pattern case under `re.IGNORECASE`) and stops counting them; on that run's survivors it accepts 101, leaving 360 unresolved, each recorded in that file as an equivalent or a declared corrupt-store guard.
 - Final human review is required by the repository's trust-boundary/release policies.
 
 ## Technical Debt
