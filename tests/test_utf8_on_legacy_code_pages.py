@@ -133,3 +133,70 @@ def test_subprocess_output_with_accents_is_read_as_utf8(tmp_path: Path) -> None:
     assert (
         run_gate({"name": "t", "command": [sys.executable, "-c", printing]}).stdout == TEXT + "\n"
     )
+
+
+def test_a_legacy_graph_with_accents_is_imported_as_written(tmp_path: Path) -> None:
+    from agentic_discipline.control.migration import import_legacy
+    from agentic_discipline.control.plane import Plane, adopt
+
+    (tmp_path / "app.py").write_bytes(b"value = 1\n")
+    adopt(tmp_path)
+    graph = {
+        "feature_id": "pedidos",
+        "nodes": [{"id": "REQ-café", "type": "requirement"}, {"id": "TEST-1", "type": "test"}],
+        "edges": [{"from": "REQ-café", "to": "TEST-1", "relation": "verified_by"}],
+    }
+    path = _utf8(tmp_path / "legacy.json", json.dumps(graph, ensure_ascii=False))
+
+    with Plane(tmp_path) as plane:
+        imported = import_legacy(plane, path)
+
+    assert "REQ-café" in imported["mapping"]
+
+
+def test_the_constitution_with_accents_loads_its_text(tmp_path: Path) -> None:
+    from agentic_discipline.skills import load_constitution
+
+    core = tmp_path / "agentic" / "constitution" / "CORE.md"
+    core.parent.mkdir(parents=True)
+    _utf8(core, "# Core\n\n" + TEXT + "\n")
+
+    assert TEXT in load_constitution(tmp_path)
+
+
+def test_verifier_output_with_accents_is_recorded_as_utf8(tmp_path: Path) -> None:
+    from agentic_discipline.bootstrap import initialize_project
+    from agentic_discipline.verifier.executor import execute_verifier
+    from agentic_discipline.verifier.registry import register_verifier
+
+    project = tmp_path / "project"
+    initialize_project(project, adapters=["generic"])
+    source = tmp_path / "source"
+    source.mkdir()
+    contract = {
+        "schema_version": "1",
+        "id": "VER-UTF8",
+        "name": "utf8",
+        "requirement_ids": ["REQ-1"],
+        "claim": "output survives",
+        "type": "custom",
+        "origin": "handwritten",
+        "risk": "LOW",
+        "command": [sys.executable, "run.py"],
+        "timeout_seconds": 30,
+        "working_directory": ".",
+        "expected_exit_code": 0,
+        "sensitivity": {"method": "negative_control", "status": "UNPROVEN"},
+        "persistence": "durable",
+        "protected": False,
+    }
+    _utf8(source / "verifier.json", json.dumps(contract))
+    _utf8(
+        source / "run.py",
+        f"import sys; sys.stdout.buffer.write({(TEXT + chr(10)).encode()!r})\n",
+    )
+    register_verifier(source, project)
+
+    result = execute_verifier(project, "VER-UTF8")
+
+    assert result["observations"]["stdout"] == TEXT + "\n"
