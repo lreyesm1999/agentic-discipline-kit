@@ -17,10 +17,11 @@ one place, and that place must match one of these rules.
   of literal letters; escapes, group names and inline flags are unchanged.
 
 A survivor no rule can prove may be accepted by a reviewed exception, read from the
-file named by `--exceptions` (`policies/mutation-exceptions.json` in CI, a protected
-path, so changing it needs review). An exception names the function and the exact
-source line the mutant changes, before and after, so it keeps matching when mutmut
-renumbers the mutants of that function. An exception that matches no survivor fails
+file named by `--exceptions` or the `MUTATION_EXCEPTIONS` environment variable
+(`policies/mutation-exceptions.json` in CI, a protected path, so changing it needs
+review). An exception names the function and the exact source line the mutant
+changes, before and after, so it keeps matching when mutmut renumbers the mutants of
+that function. An exception that matches no survivor fails
 the gate: the list cannot keep entries for mutants that were killed or removed.
 
 Any other survivor stays unresolved, and the gate fails if the survivors it can read
@@ -34,6 +35,7 @@ import ast
 import codecs
 import difflib
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -477,7 +479,9 @@ def main() -> int:
     parser.add_argument(
         "--exceptions",
         type=Path,
-        help="reviewed exceptions for survivors no rule proves; none unless given",
+        default=os.environ.get("MUTATION_EXCEPTIONS") or None,
+        help="reviewed exceptions for survivors no rule proves; defaults to the "
+        "MUTATION_EXCEPTIONS environment variable, and to none without it",
     )
     args = parser.parse_args()
     try:

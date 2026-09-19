@@ -9,6 +9,7 @@ rule is pinned by the mutations it must refuse as well as the ones it accepts.
 from __future__ import annotations
 
 import json
+import os
 import runpy
 import subprocess
 import sys
@@ -24,6 +25,13 @@ GATE_SCRIPT = next(
     if (parent / "scripts" / "mutation_gate.py").is_file()
 )
 GATE = runpy.run_path(str(GATE_SCRIPT))
+
+
+def _clean_env(**extra: str) -> dict[str, str]:
+    env = {k: v for k, v in os.environ.items() if k != "MUTATION_EXCEPTIONS"}
+    return {**env, **extra}
+
+
 MUTANT = "pkg.mod.x_target__mutmut_1"
 
 HEADER = "import re\nfrom typing import cast\n\n"
@@ -266,6 +274,7 @@ def _run(tmp_path: Path, report: dict[str, Any], mutants: Path | None) -> tuple[
         [sys.executable, str(GATE_SCRIPT), "--report", str(path)],
         capture_output=True,
         text=True,
+        env=_clean_env(),
     )
     return process.returncode, json.loads(process.stdout)
 
@@ -395,6 +404,7 @@ def _run_with(tmp_path: Path, report: dict[str, Any], root: Path, entries: Any) 
         [sys.executable, str(GATE_SCRIPT), "--report", str(path), "--exceptions", str(exceptions)],
         capture_output=True,
         text=True,
+        env=_clean_env(),
     )
     return process.returncode, json.loads(process.stdout)
 
@@ -449,3 +459,21 @@ def test_an_exception_may_name_a_deleted_line(tmp_path: Path) -> None:
     path.write_text(json.dumps({"exceptions": [entry]}), encoding="utf-8")
 
     assert GATE["load_exceptions"](path) == [entry]
+
+
+def test_the_command_reads_the_exception_file_named_by_the_environment(tmp_path: Path) -> None:
+    root = _flag_tree(tmp_path)
+    exceptions = tmp_path / "exceptions.json"
+    exceptions.write_text(json.dumps({"exceptions": [_exception()]}), encoding="utf-8")
+    report = root / "mutmut-cicd-stats.json"
+    report.write_text(json.dumps(_report(killed=9, survived=1)), encoding="utf-8")
+
+    process = subprocess.run(
+        [sys.executable, str(GATE_SCRIPT), "--report", str(report)],
+        capture_output=True,
+        text=True,
+        env=_clean_env(MUTATION_EXCEPTIONS=str(exceptions)),
+    )
+
+    assert process.returncode == 0
+    assert json.loads(process.stdout)["reviewed_mutants"] == {MUTANT: "falsy-default"}
