@@ -17,7 +17,7 @@ def parse_feature_text(text: str, feature_id: str = "feature") -> dict[str, Any]
     scenarios: list[dict[str, Any]] = []
     requirements: list[str] = []
     current: dict[str, Any] | None = None
-    pending_id: str | None = None
+    pending_id = ""
     pending_tags: list[str] = []
     unsupported: list[str] = []
 
@@ -49,7 +49,7 @@ def parse_feature_text(text: str, feature_id: str = "feature") -> dict[str, Any]
                 "steps": [],
             }
             scenarios.append(current)
-            pending_id = None
+            pending_id = ""
             pending_tags = []
             continue
 

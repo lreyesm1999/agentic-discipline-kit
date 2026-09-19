@@ -386,3 +386,19 @@ def test_task_rule_violations_report_their_code(
     task: dict[str, Any], code: str, message: str
 ) -> None:
     _rejects(task_contract, task, code, message)
+
+
+def test_a_verifier_without_inputs_does_not_excuse_the_next_ones() -> None:
+    task = contract()
+    (unit,) = task["verification"]
+    task["verification"] = [
+        {k: v for k, v in unit.items() if k != "inputs"},
+        {**unit, "inputs": []},
+    ]
+
+    with pytest.raises(ControlError) as caught:
+        task_contract(task)
+    assert (caught.value.code, str(caught.value)) == (
+        "INVALID_VERIFIER",
+        "Verifier inputs must be nonempty paths",
+    )

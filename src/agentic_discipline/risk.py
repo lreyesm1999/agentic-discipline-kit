@@ -71,7 +71,7 @@ def assess_risk_with_weights(
     factors: dict[str, bool] = {}
 
     for name, pattern in PATTERNS.items():
-        hit = bool(re.search(pattern, normalized, re.IGNORECASE))
+        hit = bool(re.search(pattern, normalized))
         factors[name] = hit
         if hit:
             score += weights[name]
@@ -90,5 +90,5 @@ def assess_risk_with_weights(
 
 
 def level_at_least(level: str, threshold: str) -> bool:
-    order = {"LOW": 0, "STANDARD": 1, "HIGH": 2, "CRITICAL": 3}
-    return order[level] >= order[threshold]
+    order = ("LOW", "STANDARD", "HIGH", "CRITICAL")
+    return order.index(level) >= order.index(threshold)

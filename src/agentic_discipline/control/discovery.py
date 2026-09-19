@@ -74,13 +74,9 @@ def files(root: Path, include_ignored: bool = False, scope: list[str] | None = N
         candidates = [Path(p) for p in output.split("\x00") if p]
     else:
         candidates = []
-        for folder, dirs, names in os.walk(root, followlinks=False):
-            dirs[:] = [
-                d
-                for d in dirs
-                if allowed(Path(folder).relative_to(root) / d)
-                and not (Path(folder) / d).is_symlink()
-            ]
+        # os.walk lists a symlinked directory but never descends into it.
+        for folder, dirs, names in os.walk(root):
+            dirs[:] = [d for d in dirs if allowed(Path(folder).relative_to(root) / d)]
             candidates.extend(Path(folder).relative_to(root) / n for n in names)
     for relative in sorted(set(candidates)):
         if scope is not None and not any(
@@ -125,17 +121,14 @@ def line_counts(root: Path, names: list[str]) -> dict[str, int]:
 def link_fingerprint(root: Path) -> dict[str, str]:
     """Measure link identity for scope accounting without following its target."""
     result = {}
-    for folder, dirs, names in os.walk(root, followlinks=False):
+    # os.walk lists a symlinked directory but never descends into it.
+    for folder, dirs, names in os.walk(root):
         for name in dirs + names:
             path = Path(folder) / name
             relative = path.relative_to(root)
             if allowed(relative) and path.is_symlink():
                 result[relative.as_posix()] = digest({"link": os.readlink(path)})
-        dirs[:] = [
-            d
-            for d in dirs
-            if allowed(Path(folder).relative_to(root) / d) and not (Path(folder) / d).is_symlink()
-        ]
+        dirs[:] = [d for d in dirs if allowed(Path(folder).relative_to(root) / d)]
     return result
 
 
@@ -144,7 +137,7 @@ def validate_inputs(root: Path, scope: list[str]) -> None:
     for value in scope:
         relative = Path(value)
         require(
-            value == "." or allowed(relative),
+            allowed(relative),
             "UNTRACKED_INPUT",
             "Verifier input is excluded from measurement",
         )
@@ -156,7 +149,8 @@ def validate_inputs(root: Path, scope: list[str]) -> None:
             "UNTRACKED_INPUT",
             "Verifier inputs cannot follow symlinks",
         )
-    for folder, dirs, names in os.walk(root, followlinks=False):
+    # os.walk lists a symlinked directory but never descends into it.
+    for folder, dirs, names in os.walk(root):
         for name in dirs + names:
             relative = (Path(folder) / name).relative_to(root)
             if allowed(relative) and any(
@@ -170,11 +164,7 @@ def validate_inputs(root: Path, scope: list[str]) -> None:
                     "UNTRACKED_INPUT",
                     "Symlink in verifier inputs; use contained, measured files",
                 )
-        dirs[:] = [
-            d
-            for d in dirs
-            if allowed(Path(folder).relative_to(root) / d) and not (Path(folder) / d).is_symlink()
-        ]
+        dirs[:] = [d for d in dirs if allowed(Path(folder).relative_to(root) / d)]
 
 
 def area(path: Path) -> str:
@@ -234,24 +224,26 @@ def scan(root: Path, *, max_bytes: int = 262144) -> dict[str, Any]:
         path = root / name
         category = area(Path(name))
         coverage[category]["total"] += 1
-        text = ""
         reason = ""
+        excerpt = ""
+        symbols: list[dict[str, Any]] = []
         if path.stat().st_size > max_bytes:
             reason = "size limit"
         else:
             try:
                 text = path.read_text(encoding="utf-8")
-                if "\x00" in text:
-                    reason = "binary"
             except UnicodeError:
                 reason = "binary"
-        symbols: list[dict[str, Any]] = []
-        if not reason and path.suffix == ".py":
-            try:
-                tree = ast.parse(text)
-                symbols = python_symbols(tree)
-            except SyntaxError:
-                reason = "invalid Python syntax"
+            else:
+                if "\x00" in text:
+                    reason = "binary"
+                elif path.suffix == ".py":
+                    try:
+                        symbols = python_symbols(ast.parse(text))
+                    except SyntaxError:
+                        reason = "invalid Python syntax"
+                if not reason:
+                    excerpt = redact(text[:4000])
         coverage[category]["unknown" if reason else "inspected"] += 1
         observations.append(
             {
@@ -260,7 +252,7 @@ def scan(root: Path, *, max_bytes: int = 262144) -> dict[str, Any]:
                 "area": category,
                 "inspected": not bool(reason),
                 "reason": reason,
-                "excerpt": redact(text[:4000]) if not reason else "",
+                "excerpt": excerpt,
                 "symbols": symbols,
             }
         )

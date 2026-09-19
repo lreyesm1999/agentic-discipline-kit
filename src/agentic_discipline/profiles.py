@@ -54,7 +54,7 @@ class Detection:
     def report(self, repository_root: Path) -> dict[str, Any]:
         result = asdict(self)
         relative = self.root.relative_to(repository_root)
-        result["root"] = relative.as_posix() if relative.parts else "."
+        result["root"] = relative.as_posix()
         result["evidence"] = list(self.evidence)
         return result
 
@@ -173,7 +173,7 @@ def detect_projects(
     selected: list[Detection] = []
     for detection in sorted(
         detections,
-        key=lambda item: (len(item.root.relative_to(root).parts), item.profile, str(item.root)),
+        key=lambda item: (len(item.root.relative_to(root).parts), item.profile),
     ):
         if any(
             existing.profile == detection.profile
@@ -218,11 +218,11 @@ def build_quality_config(
         profile = profiles[detection.profile]
         source = _load_json(profile.config_path, f"quality configuration for {profile.id}")
         relative = detection.root.relative_to(repository_root)
-        location = relative.as_posix() if relative.parts else "."
+        location = relative.as_posix()
         for source_gate in source.get("gates", []):
             if not isinstance(source_gate, dict):
                 raise AgenticError(f"profile {profile.id} contains an invalid gate")
-            gate = copy.deepcopy(source_gate)
+            gate = source_gate
             original_name = gate.get("name")
             if not isinstance(original_name, str):
                 raise AgenticError(f"profile {profile.id} contains a gate without a name")

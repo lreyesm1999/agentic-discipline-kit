@@ -63,24 +63,23 @@ def hygiene(project_root: Path, base_ref: str | None = None) -> dict[str, Any]:
     root = project_root.resolve()
     added: list[str] = []
     changed: list[str] = []
+    blocks: list[list[str]] = []
     if base_ref:
         try:
             changed = changed_files(base_ref, cwd=root)
-            diff = run_git(["diff", "--unified=0", base_ref, "--"], cwd=root)
+            blocks = _added_blocks(run_git(["diff", "--unified=0", base_ref, "--"], cwd=root))
         except AgenticError:
-            diff = ""
-    else:
-        diff = ""
+            pass
     for relative in changed:
         if relative not in added and any(
             Path(relative).name.lower().startswith(prefix) for prefix in TEMPORARY_PATTERNS
         ):
             added.append(relative)
     fallbacks = []
-    for block in _added_blocks(diff):
+    for block in blocks:
         text = "\n".join(block)
         for match in FALLBACK_PATTERN.finditer(text):
-            fallbacks.append(block[text.count("\n", 0, match.start())].strip())
+            fallbacks.append(block[text[: match.start()].count("\n")].strip())
     lifecycle = load_lifecycle(root)
     temporary = [item for item in lifecycle["artifacts"] if item["state"] == "TEMPORARY"]
     deprecated = [

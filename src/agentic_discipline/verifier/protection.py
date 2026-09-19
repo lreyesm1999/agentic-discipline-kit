@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import hashlib
-import json
 from pathlib import Path
 from typing import Any, cast
 
 from ..common import AgenticError
-from .registry import load_registry, registry_path
+from .registry import _write_registry, load_registry
 from .schema import load_and_validate_verifier
 
 
@@ -40,8 +39,6 @@ def protect_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
                 raise AgenticError("only sensitivity-validated verifiers can be protected")
             entry["trust"] = "PROTECTED"
             entry["metadata_sha256"] = _hash(metadata)
-            registry_path(project_root).write_text(
-                json.dumps(registry, indent=2) + "\n", encoding="utf-8"
-            )
+            _write_registry(project_root, registry)
             return cast(dict[str, Any], entry)
     raise AgenticError(f"verifier not found: {verifier_id}")
