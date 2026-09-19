@@ -1,59 +1,81 @@
 {
-  "timestamp": "2026-09-13T18:36:30.314759+00:00",
-  "release_ready": false,
-  "tests_passed": 197,
-  "line_coverage": 95.01,
-  "branch_coverage": 87.06,
+  "timestamp": "2026-09-19T15:38:16.253441+00:00",
+  "version": "2.0.0",
+  "revision": "de8002a58160834e28fc453c621a1e8836189017",
+  "release_ready": true,
+  "release_acceptance": {
+    "by": "@lreyesm1999",
+    "date": "2026-09-19"
+  },
+  "tests_passed": 1605,
+  "line_coverage": 98.94,
+  "branch_coverage": 97.41,
   "checks": [
     {
       "tool": "make",
-      "command": "make check",
+      "command": "ruff, mypy, pytest --cov, coverage gate, repo_check, doctor, integrity (Linux, clean clone)",
       "exit_code": 0,
-      "timestamp": "2026-09-13T18:36:30.314515+00:00",
+      "timestamp": "2026-09-19T15:38:16.253441+00:00",
       "output_artifact": "checks.log",
-      "sha256": "e22d8891bb7d2b820fd3e5ffba8fc5064b618a0d20cada597f33f35d8095f45c"
+      "sha256": "600e6d6c690e2df242cfc7d9fdab4c2dc7d859e8bb646aec2eb222673021c578"
     },
     {
       "tool": "python",
       "command": "python -m build",
       "exit_code": 0,
-      "timestamp": "2026-09-13T13:12:10.202078+00:00",
+      "timestamp": "2026-09-19T15:38:16.253441+00:00",
       "output_artifact": "build.log",
-      "sha256": "5a9ff846759a12d83d166b81e2aea363a41311b4c7047b6b834bf06ab1d651d9"
+      "sha256": "32e09568f4dd11cbf352b8890c378fe1caaeedf2d68b88ce7340cb8c5b4b2864"
     },
     {
-      "tool": "agentic-discipline",
-      "command": "agentic-discipline integrity --base-ref origin/feat/autonomous-project-execution",
-      "exit_code": 1,
-      "timestamp": "2026-09-13T12:57:35.567112+00:00",
-      "output_artifact": "integrity.log",
-      "sha256": "b8a1a3efab896f4a38eee5e7d5f97620683776fb43583147b8b9d600d56b1333"
-    },
-    {
-      "tool": "agentic-discipline",
-      "command": "agentic-discipline protected --base-ref origin/feat/autonomous-project-execution",
-      "exit_code": 1,
-      "timestamp": "2026-09-13T18:36:03.768895+00:00",
-      "output_artifact": "protected-workflow-review.json",
-      "status": "FAIL_EXPECTED_PENDING_AUTHORIZED_REVIEW",
-      "sha256": "92d049fe247fea79b461f43f4cc45840468433800147a3560ea66dddc7d971a7"
+      "tool": "pip",
+      "command": "install the 2.0.0 wheel in a fresh venv; run agentic-discipline and agentic",
+      "exit_code": 0,
+      "timestamp": "2026-09-19T15:38:16.253441+00:00",
+      "output_artifact": "wheel-smoke.log",
+      "sha256": "fc1bd56ef29a199aa98d53a1d51d39f8829823f20b6332b946d6b66722ca8cf7"
     }
   ],
   "source_sha256": {
+    "src/agentic_discipline/__init__.py": "a25b42ecbff864b9d2752077f09fbdbc8ce8c8e20f3735d6ff6860205fe777c8",
+    "src/agentic_discipline/__main__.py": "6d8b7d7846a845059d7a3107143f11131f63c5511d669b44085b15ec5e3d2279",
+    "src/agentic_discipline/acceptance.py": "34d0afde59f6d50c81fef195a9d695ca5c65550fd38113c926d505bb31ea8ef3",
+    "src/agentic_discipline/adapters.py": "f5545dfb35eedee00e55199fc4d8b72b484b05ba3fcc64d9627c1fd435c6f92c",
+    "src/agentic_discipline/bootstrap.py": "897bca222f5fdd26411b0345e54989b0639506c3d3aa0f70f57d040b41a9e945",
+    "src/agentic_discipline/cli.py": "b5bb38192f99f357a0b00d4ac647184e6ff417486e53495dde5f82d148909a79",
+    "src/agentic_discipline/common.py": "4e5b1ff2fcdcb72442b8e98ec76c8c9f7c59a73090625d50b18f69244ab690ae",
     "src/agentic_discipline/control/__init__.py": "8babef8098cebe516972497af69dc5be6698c6152b13989aabf43a8e6018f7b7",
-    "src/agentic_discipline/control/api.py": "671e5478175f70b02d7ce8b7b462a7198cf63d55682946a6ed4a2d215ac203d7",
-    "src/agentic_discipline/control/cli.py": "5240ba44803f6446b6671702757796f9dbd5a29b83f378e8c57fa62a30b67dc8",
-    "src/agentic_discipline/control/console.py": "65dd93b9b6d888a846bc4e47db054d8a8839b3be9406c8a707b72d3649a6534a",
-    "src/agentic_discipline/control/contracts.py": "f6340b2c5c256482c5f49a16e439be8f807083dbed2bd0fced3f7091f8c3e744",
+    "src/agentic_discipline/control/api.py": "96f1667c3b7f9195c20e6ed8b22eb2ec4c8c1839932f9b87d6e7250e513c249f",
+    "src/agentic_discipline/control/cli.py": "4d7b04b24fd15809614a6bda4a548c8a0a24ccd9e58e41d69f7e08b16d18550c",
+    "src/agentic_discipline/control/console.py": "69e0cbae89c3eb676abf3581ecfc19f31769f4e6abf95a7446dc253ef4210e76",
+    "src/agentic_discipline/control/contracts.py": "2047d12320b773d2dab0b492b817d46ef7fb5c668df0ddbc84c254f97376a5ff",
     "src/agentic_discipline/control/diagnostics.py": "8ee561f3ca427c91722b4b334ccbce68940dcf5c73b76589e727a46b82016bd9",
-    "src/agentic_discipline/control/discovery.py": "df481502f3e5e567bf2bebcdf72d460a9c73be9bab965c4e6946f53fa8c90ddb",
-    "src/agentic_discipline/control/knowledge.py": "57d0e3436d7bd80ffc78a429275d758d9581aeb0466429f30c1224f4b8831cfb",
+    "src/agentic_discipline/control/discovery.py": "bd05ace4555f4f7f598dbb7f8d878a6db6484b54f74b4f04ef52fad3a20232fe",
+    "src/agentic_discipline/control/knowledge.py": "9ee3f7c9b8a67963ad24c636aaa9ba48026316afb1756cee66f798a1703d8104",
     "src/agentic_discipline/control/mcp.py": "5feb9f099b6a352756558a25e47bdc2ba391708450b927dbd876fe0da56009d2",
     "src/agentic_discipline/control/migration.py": "2bb44bb33539bcefb60f377087d7c0f81df4d2ff97994ec9a2018fd06ca0800d",
-    "src/agentic_discipline/control/plane.py": "d3178f695b24a0bd2044618afdb08e1adfe7b3bffd993e5f0a24e358a3182a0d",
+    "src/agentic_discipline/control/plane.py": "fa4bbd0f019045432c1f0842a6555e7db18f7d8ec76bf19e575047daf1e7e033",
     "src/agentic_discipline/control/store.py": "b9bff14e78b111e01efe781363a67c3d5407ee6ee23c4a446d791572fdfabff2",
     "src/agentic_discipline/control/verification.py": "37a0879bf4ad5b93513a1e9d3872809096abee67af95ece1a72385a18a9d33fd",
-    "src/agentic_discipline/control/workspaces.py": "d768701c4d62d391d27f9bbb9f4084cb6660c84f8fad80c6329d3433279164ae"
+    "src/agentic_discipline/control/workspaces.py": "d768701c4d62d391d27f9bbb9f4084cb6660c84f8fad80c6329d3433279164ae",
+    "src/agentic_discipline/crap.py": "5cc9ab09cd167a20a6ef45e4bcfce97b7a330ae9428e6d5c53cdd63a69eb2a18",
+    "src/agentic_discipline/evidence.py": "b95f9348fd0206839d9b256e57f17a757e11cea822b0e44ca3fd74095cbd55a9",
+    "src/agentic_discipline/evolution.py": "e96e54ce158cf6d0e2133cedb8fdfdf8a9973a1881ff2947f12679caf2b91cdb",
+    "src/agentic_discipline/integrity.py": "262b94dfc967ef1cd37dc1af9180fc27ea251d7de9a24673f12bdc13f63e75a1",
+    "src/agentic_discipline/migration.py": "3882e478e8fefd8a3e983ff64a8ac7d3f952a2446bcb530a12ac527bb017c45b",
+    "src/agentic_discipline/profiles.py": "7b451d8c2773a63e5594b00dc351106fe039b87a88836aa05d3c41d987a8f152",
+    "src/agentic_discipline/quality.py": "88a6ba81bb8f959dcd2b1ab7814a4e1024902b2b5739bbdaba1a172667956bcc",
+    "src/agentic_discipline/requirements.py": "f73b37d4fd6af1f9c74fe1a4ab419bd04e9f919596ff92e11fa0e881358cfbbb",
+    "src/agentic_discipline/risk.py": "8dcc29b04f5ed466a3e5173e7543b52e1035a9617e0e83d30bfc1479d1a8f477",
+    "src/agentic_discipline/skills.py": "1bccda2e5cd91783faf36d8cc9d73ca766e150be58798b17ffc0126f13d45f94",
+    "src/agentic_discipline/validation.py": "59e0130016ea59dea4651e05cd4fbbf72416bdccaeb4dc13f6a7ff34d0ab03f8",
+    "src/agentic_discipline/verifier/__init__.py": "23bec4ad2513960121bc694cb71c2a7b987a81f307168d82077ebeb5c8eb1acb",
+    "src/agentic_discipline/verifier/executor.py": "36f36517584d49cc2900f3cb270e5e1f0fa7c66fef73a0c6e286327cea26519a",
+    "src/agentic_discipline/verifier/protection.py": "2dde89bdaaf092448130c82a8221b29e0ebf8c323c21cc9460d08b0db139ba6d",
+    "src/agentic_discipline/verifier/registry.py": "2e4fd41fa8fc2d7460b4bea6a6855727e738c55e24bbf5231663ab86c88d9568",
+    "src/agentic_discipline/verifier/result.py": "553fb30e1ebe9acf6f4f145ee28715f7407dd35475d0be4af075f7f7375c0266",
+    "src/agentic_discipline/verifier/schema.py": "035f2ccf3a8fa564dddb7dee0ae16dc09e99d2af2f51e60c6b3a53f64e1beaf2",
+    "src/agentic_discipline/verifier/sensitivity.py": "0ea9f1c722864f2cb6a9f33bfcc78d37870a5c1ec75004c6d11e3bfc3919e76d"
   },
   "additional_artifacts": [
     "benchmark.json",
@@ -64,26 +86,33 @@
     "performance-review-equivalence.log",
     "wheel-smoke.json"
   ],
-  "pending": [
-    "Remote supported-platform CI",
-    "Integrity findings disposition",
-    "Human release acceptance",
-    "GitHub Dependency Graph must be enabled for dependency-review",
-    "Resolve 5,326 survivors and 7 timeouts; strengthened workflow now fails until disposition",
-    "Contract-authorized review for protected .github/workflows/ci.yml mutation gate change"
-  ],
+  "pending": [],
+  "remote_ci": {
+    "workflow_run": "35443136819",
+    "revision": "8981c84",
+    "merged_as": "b1422cc",
+    "platforms": [
+      "ubuntu-latest",
+      "windows-latest"
+    ],
+    "python": [
+      "3.11",
+      "3.12",
+      "3.13"
+    ],
+    "status": "PASS"
+  },
   "remote_mutation": {
-    "revision": "a19c2c196843739507234a93c2581db476b2b0b2",
-    "workflow_run": "34759274115",
-    "job_id": 103727284125,
+    "workflow_run": "35443136819",
+    "job_id": 105897362386,
     "tool": "mutmut",
-    "command": "mutmut run",
-    "exit_code": 0,
-    "count": 14934,
-    "killed": 9601,
-    "survived": 5326,
-    "timed_out": 7,
-    "status": "FAIL_UNRESOLVED_SURVIVORS",
-    "note": "GitHub job success is a process exit; it does not enforce a zero-survivor policy."
+    "count": 15425,
+    "killed": 15214,
+    "survived": 211,
+    "timed_out": 0,
+    "proven_by_rule": 102,
+    "accepted_by_reviewed_exception": 109,
+    "unresolved": 0,
+    "status": "PASS"
   }
 }
