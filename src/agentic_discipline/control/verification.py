@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import hashlib
 import time
 from typing import Any
 
+from ..evidence import sha256_file
 from ..quality import run_gate
 from .contracts import ControlError, digest, encode, redact, require, uid
 from .discovery import fingerprint, link_fingerprint, validate_inputs
@@ -17,8 +17,10 @@ def binding(plane: Plane, task: dict[str, Any]) -> dict[str, Any]:
         set(task["scope"] + [p for v in task["verification"] for p in v.get("inputs", ["."])])
     )
     workspace = plane.workspace_root(task)
+    # One read of the policy, so every part of the binding describes the same one.
+    policy = plane.policy()
     validate_inputs(workspace, inputs)
-    validate_inputs(workspace, plane.policy()["protected_paths"])
+    validate_inputs(workspace, policy["protected_paths"])
     return {
         "files": fingerprint(workspace, inputs),
         "requirements": {i: plane.store.get(i, "entity")["version"] for i in task["requirements"]},
@@ -29,13 +31,13 @@ def binding(plane: Plane, task: dict[str, Any]) -> dict[str, Any]:
             and c["authority"] in {"human", "contract"}
             and c["disposition"] == "CANONICAL"
         },
-        "protected_files": fingerprint(workspace, plane.policy()["protected_paths"]),
+        "protected_files": fingerprint(workspace, policy["protected_paths"]),
         "dependencies": {
             i: plane.store.get(i, "task").get("proof", []) for i in task["dependencies"]
         },
         "verification": digest(task["verification"]),
         "acceptance": digest(task["acceptance"]),
-        "policy": digest(plane.policy()),
+        "policy": digest(policy),
     }
 
 
@@ -46,15 +48,13 @@ def fresh(plane: Plane, evidence: dict[str, Any], current: dict[str, Any]) -> bo
         and artifact.is_file()
         and not artifact.parent.is_symlink()
         and not artifact.is_symlink()
-        and hashlib.sha256(artifact.read_bytes()).hexdigest() == evidence["artifact_hash"]
+        and sha256_file(artifact) == evidence["artifact_hash"]
     )
 
 
 def check_changes(plane: Plane, task: dict[str, Any]) -> None:
-    all_files = {
-        **fingerprint(plane.workspace_root(task)),
-        **link_fingerprint(plane.workspace_root(task)),
-    }
+    workspace = plane.workspace_root(task)
+    all_files = {**fingerprint(workspace), **link_fingerprint(workspace)}
     initial = {**task.get("initial_files", all_files), **task.get("initial_links", {})}
     changed = [p for p in set(initial) | set(all_files) if initial.get(p) != all_files.get(p)]
     require(
@@ -78,7 +78,6 @@ def check_changes(plane: Plane, task: dict[str, Any]) -> None:
         "PROTECTED_CHANGE",
         "Protected changes require review",
     )
-    workspace = plane.workspace_root(task)
     changed_lines = sum(
         max(
             task.get("initial_line_counts", {}).get(p, 0),
@@ -201,7 +200,7 @@ def verify(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
                         "command": spec["command"],
                         "binding": before,
                         "knowledge_version": plane.store.knowledge_version,
-                        "artifact_hash": hashlib.sha256(artifact.read_bytes()).hexdigest(),
+                        "artifact_hash": sha256_file(artifact),
                         "artifact_ref": f".agentic/control/evidence/{identifier}.json",
                         "started_at": started,
                         "finished_at": output["finished_at"],
@@ -271,14 +270,20 @@ def complete(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
             "Checkpoint content does not match its hash",
         )
         if task.get("workspace_id"):
-            require(
-                task.get("integration")
-                and task["integration"]["status"] == "PASS"
-                and task["integration"].get("merge_performed")
-                and task["integration"].get("merged_files") == fingerprint(plane.root)
+            integration = task.get("integration") or {}
+            merged = (
+                integration.get("status") == "PASS"
+                and integration.get("merge_performed")
+                and integration.get("merged_files") == fingerprint(plane.root)
                 and link_fingerprint(plane.root) == link_fingerprint(plane.workspace_root(task))
-                and binding(plane, {**task, "state": "COMPLETED"}) == binding(plane, task)
-                and task["integration"]["binding"] == digest(binding(plane, task)),
+            )
+            # Bound once here; `completion_proof` above already refused a task whose
+            # binding cannot be read.
+            current = binding(plane, task)
+            require(
+                merged
+                and binding(plane, {**task, "state": "COMPLETED"}) == current
+                and integration["binding"] == digest(current),
                 "INTEGRATION_REQUIRED",
                 "Workspace changes need a current integration gate",
             )

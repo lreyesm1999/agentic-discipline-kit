@@ -601,3 +601,29 @@ def test_evidence_from_a_run_whose_lease_ends_at_that_instant_is_blocked(
 
     (evidence,) = [e for e in project.store.list("evidence") if e["task_id"] == task]
     assert evidence["result"] == "BLOCKED"
+
+
+def test_claiming_a_task_again_keeps_its_baseline_without_measuring_again(
+    project: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import agentic_discipline.control.plane as plane_module
+
+    task, session = _claimed(project)
+    before = project.store.get(task, "task")
+    project.release(task, session)
+    measured: list[Any] = []
+    real = plane_module.fingerprint
+    monkeypatch.setattr(
+        plane_module,
+        "fingerprint",
+        lambda *args, **kwargs: (measured.append(args), real(*args, **kwargs))[1],
+    )
+
+    project.claim(task, session)
+
+    after = project.store.get(task, "task")
+    assert (after["initial_files"], after["initial_line_counts"]) == (
+        before["initial_files"],
+        before["initial_line_counts"],
+    )
+    assert measured == []

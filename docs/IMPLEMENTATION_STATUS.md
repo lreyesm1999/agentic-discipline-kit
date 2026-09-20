@@ -20,22 +20,15 @@ scale target. Detailed limitations are in `v2/LIMITATIONS.md`.
 | P25–P26 | Failure injection, property tests, own-repository execution and 1,000-file benchmark | `test_resilience.py`, `v2/evidence/dogfood.json`, `v2/evidence/benchmark.json` |
 | P27 implementation | Explicit legacy import, dry-run, backup, rollback, package compatibility and operational documentation | `test_interfaces.py`, `test_governance.py`, `v2/evidence/wheel-smoke.json` |
 
-## In Progress
+## Released
 
-- Mutation survivor disposition based on the complete CI campaign; selected local retest was interrupted and is marked partial.
-- Performance fixture now meets all targets after independently reviewed discovery optimization.
-- Final focused independent review is closed; the integrated local suite has 1474 passing tests.
-- GitHub CI verification of the integration commit is pending.
-
-## Pending
-
-- P27 release certification: supported platform matrix, required review/acceptance and
-  release evidence. No stable 2.0 version or distribution has been published.
-
-## Blockers
-
-- Latest full CI mutation run (35392522637, 80e13ff, merged as 1dd4e30) has 461 survivors and no timeouts (down from 5,326 on the first measured run); the strengthened CI outcome gate fails explicitly until they are resolved. Mutants proven to change nothing observable are recorded with their proof in docs/v2/MUTATION_EXEMPTIONS.md; the gate does not read that file. It proves four of those families itself (SQL case, codec name case, `typing.cast` type argument, pattern case under `re.IGNORECASE`) and stops counting them; on that run's survivors it accepts 101, leaving 360 unresolved, each recorded in that file as an equivalent or a declared corrupt-store guard.
-- Final human review is required by the repository's trust-boundary/release policies.
+- 2.0.0 ships the control plane in the Python distribution, the standalone executables
+  and the npm launcher. `v2/VALIDATION.md` records the executed release gates.
+- The integrated suite has 1,605 passing tests on Linux, and CI runs it on Linux and
+  Windows with Python 3.11, 3.12 and 3.13.
+- The mutation gate passes: CI run 35443136819 killed 15,214 of 15,425 mutants, proved
+  102 survivors equivalent by rule and accepted 109 through the reviewed exceptions in
+  `policies/mutation-exceptions.json`, leaving none unresolved.
 
 ## Technical Debt
 
@@ -48,14 +41,14 @@ scale target. Detailed limitations are in `v2/LIMITATIONS.md`.
 
 ## Deviations
 
-- Implement the supplied plan as a modular Python/SQLite local preview, reusing the
-  working v1 executor and diagnostics; no TypeScript rewrite or hosted LLM dependency.
+- Implement the supplied plan as a modular Python/SQLite local control plane, reusing
+  the working v1 executor and diagnostics; no TypeScript rewrite or hosted LLM dependency.
 - Plan audit consumes executable structured contracts. The coding agent resolves prose
   and missing business intent using the documented ask-last ladder.
 - Detailed P00–P27 IDs are used; the short roadmap groups multiple phases.
-- The package remains at the existing release version until release approval.
 
 ## Next Tasks
 
-Finish the recorded hardening/review gates, wait for CI on the integration commit,
-then run the repository's release process.
+Keep the gate green: a new survivor, or an exception that stops matching a survivor,
+fails CI until it is killed or reviewed. macOS becomes a supported platform only once
+CI runs the suite there.

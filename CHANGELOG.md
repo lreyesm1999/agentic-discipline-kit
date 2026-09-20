@@ -6,6 +6,30 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 
 ## [Unreleased]
 
+### Changed
+- One file hasher: `sha256_file` replaces the three copies in the verifier package and the
+  inline hashing in the control plane, so evidence artifacts are read in chunks rather than
+  loaded whole.
+- Fewer repeated reads of the same thing: `binding` reads the policy once, `check_changes`
+  resolves the workspace once, `_index` walks the knowledge graph once, `claim` scans the
+  leases once, and `claim`, `refresh_workspace` and `merge_workspace` measure the tree once
+  instead of hashing it again for each record. `refresh_workspace` and `merge_workspace` now
+  store exactly the tree their checks accepted. Measured on the 1,000-file fixture, the
+  timings are unchanged.
+
+### Fixed
+- `init` now adds `.agentic/control/` to the `.gitignore` block it manages. The control
+  plane's SQLite state, its hash chain and its session hashes were left for a project to
+  commit by accident, although the documentation said not to. An installation that already
+  has the managed block keeps it; add the line by hand there.
+- `docs/compatibility.md` listed one generated file per tool; the compiler writes one per
+  discipline, named `agentic-<id>`.
+- `docs/install.md` pinned the composite action to `@v1`, a tag that does not exist.
+- `docs/IMPLEMENTATION_STATUS.md` still described the release as pending, and `GITHUB_SETUP.md`
+  still explained the first push of a repository published since 1.1.0.
+- `docs/v2/evidence/README.md` now says which run produced each artifact and which ones a
+  later run superseded.
+
 ## [2.0.0] - 2026-09-19
 
 ### Added

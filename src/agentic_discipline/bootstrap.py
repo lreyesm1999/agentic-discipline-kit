@@ -159,6 +159,9 @@ def _update_gitignore(target_root: Path, actions: list[str], dry_run: bool) -> N
         ".agent-memory/\n"
         ".agentic/verification/artifacts/\n"
         ".agentic/export/\n"
+        # The control plane's SQLite state and evidence belong to the checkout, not to
+        # history: committing them shares one database, its hashes and its sessions.
+        ".agentic/control/\n"
     )
     existing = gitignore.read_text(encoding="utf-8") if gitignore.exists() else ""
     if marker in existing:

@@ -1,16 +1,12 @@
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 from typing import Any, cast
 
 from ..common import AgenticError
+from ..evidence import sha256_file
 from .registry import _write_registry, load_registry
 from .schema import load_and_validate_verifier
-
-
-def _hash(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def check_protected_verifiers(project_root: Path) -> list[str]:
@@ -22,7 +18,7 @@ def check_protected_verifiers(project_root: Path) -> list[str]:
         metadata = (project_root / entry["path"] / "verifier.json").resolve()
         if not metadata.is_file():
             findings.append(f"protected verifier missing: {entry['id']}")
-        elif entry.get("metadata_sha256") and _hash(metadata) != entry["metadata_sha256"]:
+        elif entry.get("metadata_sha256") and sha256_file(metadata) != entry["metadata_sha256"]:
             findings.append(f"protected verifier changed: {entry['id']}")
     return findings
 
@@ -38,7 +34,7 @@ def protect_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
             if contract["sensitivity"]["status"] != "PROVEN":
                 raise AgenticError("only sensitivity-validated verifiers can be protected")
             entry["trust"] = "PROTECTED"
-            entry["metadata_sha256"] = _hash(metadata)
+            entry["metadata_sha256"] = sha256_file(metadata)
             _write_registry(project_root, registry)
             return cast(dict[str, Any], entry)
     raise AgenticError(f"verifier not found: {verifier_id}")

@@ -1,26 +1,11 @@
-# GitHub Setup
+# GitHub settings
 
-The repository content is ready to push. GitHub-side repository settings cannot be committed as
-normal files, so configure them after the first push.
+Repository settings cannot be committed as files, so they are recorded here. This is
+what the repository is configured with, and what a fork or transfer should reproduce.
 
-## First push
-
-Create an empty GitHub repository, then run:
-
-```bash
-git init
-git add .
-git commit -m "chore: initialize Agentic Discipline Kit repository"
-git branch -M main
-git remote add origin <repository-url>
-git push -u origin main
-```
-
-## Recommended repository description
+## Description and topics
 
 > Evidence-backed engineering controls, quality gates, and protected contracts for AI coding agents.
-
-## Recommended topics
 
 ```text
 ai-agents
@@ -41,6 +26,7 @@ developer-tools
 - Dependabot alerts
 - Dependabot security updates
 - Code scanning
+- Dependency graph, which `Security / dependency-review` needs
 
 ## Default branch ruleset
 
@@ -54,33 +40,43 @@ For `main`:
 - block force pushes;
 - block deletion.
 
-Recommended required checks:
+Recommended required checks, by the name each one reports:
 
 ```text
 CI / lint
 CI / typecheck
-CI / test
+CI / test (ubuntu-latest, 3.12)
+CI / test (windows-latest, 3.12)
 CI / package
+CI / repository
+CI / mutation
 Agentic Integrity / guardrails
 Security / dependency-review
 Security / codeql
+Security / python-security
 ```
+
+`CI / mutation` can be required since every survivor is either killed, proven equivalent
+by a gate rule, or accepted through the reviewed list in
+`policies/mutation-exceptions.json`. A new survivor fails it.
+
+`Agentic Integrity / guardrails` fails by design on a pull request that changes a
+protected path, which is the signal to review that change rather than a defect.
 
 If the repository is transferred or forked, update `.github/CODEOWNERS` with a user or team that has
 write access. Require Code Owner approval for protected-contract and workflow changes.
 
-Mutation testing runs on Linux because current Mutmut releases require operating-system `fork`
-support. Keep `CI / mutation` required for changes to the deterministic Python core.
+## Releases
 
-If a GitHub plan or private-repository configuration does not provide dependency review or CodeQL,
-adjust the required checks to the security capabilities available to that repository.
+Semantic versioning; the current release is `v2.0.0`. Pushing a `v*.*.*` tag runs
+`release.yml`, which builds the Python distribution and an SBOM, builds and smoke-tests
+the `agentic-discipline` and `agentic` executables for Linux and Windows, and publishes:
 
-## Release convention
+| Target | How it authenticates |
+|---|---|
+| PyPI | Trusted publishing: register this repository, `release.yml` and the `pypi` environment as a publisher |
+| npm | OIDC trusted publishing from the `npm` environment; no token is stored |
+| GitHub release | The workflow's own token, uploading every built asset |
 
-Use Semantic Versioning. The first public release is:
-
-```text
-v1.0.0
-```
-
-The included release workflow builds the Python distribution when a `v*.*.*` tag is pushed.
+Both publish jobs are safe to re-run: PyPI skips files it already has, and npm returns
+early when the registry already holds that version.

@@ -130,7 +130,7 @@ def execute_verifier(project_root: Path, verifier_id: str) -> dict[str, Any]:
     output = verification_root(project_root) / "artifacts" / f"{verifier_id}.json"
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
-    result["hashes"]["result"] = _file_hash(output)
+    result["hashes"]["result"] = sha256_file(output)
     output.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     if result["status"] in {"PASS", "FAIL"}:
         append_evidence(
@@ -148,9 +148,3 @@ def _partial_output(output: str | bytes | None) -> str:
 
     text = output.decode(errors="replace") if isinstance(output, bytes) else output or ""
     return text[-20000:]
-
-
-def _file_hash(path: Path) -> str:
-    import hashlib
-
-    return hashlib.sha256(path.read_bytes()).hexdigest()

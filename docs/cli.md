@@ -1,5 +1,8 @@
 # CLI Reference
 
+This is the `agentic-discipline` command. The project control plane has its own
+command, `agentic`, documented in [docs/v2](v2/README.md).
+
 The installed command is:
 
 ```bash

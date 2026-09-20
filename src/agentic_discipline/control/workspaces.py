@@ -187,14 +187,17 @@ def refresh_workspace(plane: Plane, task_id: str) -> dict[str, Any]:
             "VERSION_CONFLICT",
             "Task changed while refreshing; reconcile workspace",
         )
+        # One measurement of the new baseline, so the task and the workspace record
+        # the same primary tree rather than two reads of a moving one.
+        files, links = fingerprint(plane.root), link_fingerprint(plane.root)
         plane.store.put(
             "task",
             {
                 **current,
                 "integration": None,
-                "initial_files": fingerprint(plane.root),
-                "initial_links": link_fingerprint(plane.root),
-                "initial_line_counts": line_counts(plane.root, list(fingerprint(plane.root))),
+                "initial_files": files,
+                "initial_links": links,
+                "initial_line_counts": line_counts(plane.root, list(files)),
             },
             expected=current["version"],
         )
@@ -203,8 +206,8 @@ def refresh_workspace(plane: Plane, task_id: str) -> dict[str, Any]:
             {
                 **workspace,
                 "base_commit": target,
-                "baseline_files": fingerprint(plane.root),
-                "baseline_links": link_fingerprint(plane.root),
+                "baseline_files": files,
+                "baseline_links": links,
             },
             expected=workspace["version"],
         )
@@ -223,11 +226,12 @@ def merge_workspace(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
         # Git and SQLite cannot share one transaction. Recover only the exact
         # previously gated tree after a successful merge and failed DB commit.
         completion_proof(plane, task)
+        merged = fingerprint(plane.root)
         require(
             task.get("integration")
             and task["integration"]["status"] == "PASS"
             and task["integration"]["binding"] == digest(binding(plane, task))
-            and fingerprint(plane.root) == fingerprint(directory)
+            and merged == fingerprint(directory)
             and link_fingerprint(plane.root) == link_fingerprint(directory),
             "INTEGRATION_MISMATCH",
             "Cannot recover a merge whose reviewed contents changed",
@@ -243,7 +247,8 @@ def merge_workspace(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
                 **task["integration"],
                 "merge_performed": True,
                 "merged_commit": target,
-                "merged_files": fingerprint(plane.root),
+                # The tree the checks above accepted, not a later read of it.
+                "merged_files": merged,
                 "recovered": True,
             }
             plane.store.put(
@@ -281,8 +286,9 @@ def merge_workspace(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
         # resolution or force update is hidden inside the integration operation.
         run_git(["merge-base", "--is-ancestor", primary_head, target], cwd=plane.root)
         run_git(["merge", "--ff-only", "--", workspace["branch"]], cwd=plane.root)
+        merged = fingerprint(plane.root)
         require(
-            fingerprint(plane.root) == fingerprint(directory)
+            merged == fingerprint(directory)
             and link_fingerprint(plane.root) == link_fingerprint(directory),
             "INTEGRATION_MISMATCH",
             "Merged files differ; task remains uncompleted",
@@ -291,7 +297,8 @@ def merge_workspace(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
             **task["integration"],
             "merge_performed": True,
             "merged_commit": target,
-            "merged_files": fingerprint(plane.root),
+            # The tree the check above accepted, not a later read of it.
+            "merged_files": merged,
         }
         plane.store.put(
             "task",
