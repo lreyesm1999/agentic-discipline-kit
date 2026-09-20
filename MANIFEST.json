@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-20T01:40:59.711853+00:00",
+  "generated_at_utc": "2026-09-20T02:45:10.116036+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "19c30e4da5aa115d8f9ae8c270d223a6cf0f05808fbc8554a807ef29ac0dc93d",
-      "bytes": 13087
+      "sha256": "a6dece45171fbd9c0e4ea6c2825f3b793a73a0a80de3cb6a0a5ed10f2a181e1a",
+      "bytes": 13417
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -390,8 +390,8 @@
     },
     {
       "path": "docs/v2/INTERFACES.md",
-      "sha256": "64672e1579f2cdc3bf530c3bda4bbb8594e2f888471be0eb22b682619e3e9399",
-      "bytes": 3286
+      "sha256": "93fddf245ac1dfcbe9b5c2f84be06d45e1ce90370597b5415661317f876fcfee",
+      "bytes": 3438
     },
     {
       "path": "docs/v2/LIMITATIONS.md",
@@ -1145,8 +1145,8 @@
     },
     {
       "path": "src/agentic_discipline/bootstrap.py",
-      "sha256": "897bca222f5fdd26411b0345e54989b0639506c3d3aa0f70f57d040b41a9e945",
-      "bytes": 9058
+      "sha256": "37cb66ce0febddd789c8d89514caebc2c4f5becddd9bbee5875095a4a8147ffa",
+      "bytes": 9260
     },
     {
       "path": "src/agentic_discipline/cli.py",
@@ -1880,8 +1880,8 @@
     },
     {
       "path": "tests/test_state_and_gitignore.py",
-      "sha256": "babf0313b543eec52fa83efcb0ab7235a6fab0a55d1dc2e9db6c35195a711b50",
-      "bytes": 3690
+      "sha256": "7e6f7ae0285d80013c9113cb539bb3d8925c0b885a30cfff1e3ea2789e1673f0",
+      "bytes": 3716
     },
     {
       "path": "tests/test_utf8_on_legacy_code_pages.py",
