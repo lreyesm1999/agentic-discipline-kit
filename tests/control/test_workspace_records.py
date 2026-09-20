@@ -295,6 +295,33 @@ def test_a_rebase_that_never_started_is_reported_not_aborted(
         assert [args[:2] for args in calls] == [["rebase", _head(tmp_path)]]
 
 
+def test_completion_refuses_a_merged_record_whose_files_are_not_the_primary_tree(
+    tmp_path: Path,
+) -> None:
+    # After a real merge everything else agrees, so only the recorded file list can fail:
+    # claiming a merge happened does not excuse the tree it claims to have merged.
+    from agentic_discipline.control.verification import complete
+
+    repository(tmp_path)
+    with Plane(tmp_path) as plane:
+        task, agent, _, _ = _verified(plane)
+        merge_workspace(plane, task, agent["session"])
+        integration = plane.store.get(task, "task")["integration"]
+        _force(
+            plane,
+            "task",
+            task,
+            integration={**integration, "merged_files": {"app.py": "not the hash of anything"}},
+        )
+
+        with pytest.raises(ControlError) as caught:
+            complete(plane, task, agent["session"])
+        assert (caught.value.code, str(caught.value)) == (
+            "INTEGRATION_REQUIRED",
+            "Workspace changes need a current integration gate",
+        )
+
+
 def test_completion_refuses_a_merge_record_the_primary_does_not_hold(tmp_path: Path) -> None:
     # merge_workspace already refuses to record a merge the primary does not match;
     # this forges that record to reach the check completion keeps behind it.
@@ -312,36 +339,6 @@ def test_completion_refuses_a_merge_record_the_primary_does_not_hold(tmp_path: P
                 "status": "PASS",
                 "merge_performed": True,
                 "merged_files": fingerprint(tmp_path),
-                "binding": digest(binding(plane, current)),
-            },
-        )
-
-        with pytest.raises(ControlError) as caught:
-            complete(plane, task, agent["session"])
-        assert (caught.value.code, str(caught.value)) == (
-            "INTEGRATION_REQUIRED",
-            "Workspace changes need a current integration gate",
-        )
-
-
-def test_completion_refuses_a_merge_record_whose_files_are_not_the_primary_tree(
-    tmp_path: Path,
-) -> None:
-    # Every part of the merge record is checked: claiming a merge happened is not enough.
-    from agentic_discipline.control.verification import complete
-
-    repository(tmp_path)
-    with Plane(tmp_path) as plane:
-        task, agent, _, _ = _verified(plane)
-        current = plane.store.get(task, "task")
-        _force(
-            plane,
-            "task",
-            task,
-            integration={
-                "status": "PASS",
-                "merge_performed": True,
-                "merged_files": {"app.py": "not the hash of anything"},
                 "binding": digest(binding(plane, current)),
             },
         )
