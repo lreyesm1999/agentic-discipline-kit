@@ -324,6 +324,36 @@ def test_completion_refuses_a_merge_record_the_primary_does_not_hold(tmp_path: P
         )
 
 
+def test_completion_refuses_a_merge_record_whose_files_are_not_the_primary_tree(
+    tmp_path: Path,
+) -> None:
+    # Every part of the merge record is checked: claiming a merge happened is not enough.
+    from agentic_discipline.control.verification import complete
+
+    repository(tmp_path)
+    with Plane(tmp_path) as plane:
+        task, agent, _, _ = _verified(plane)
+        current = plane.store.get(task, "task")
+        _force(
+            plane,
+            "task",
+            task,
+            integration={
+                "status": "PASS",
+                "merge_performed": True,
+                "merged_files": {"app.py": "not the hash of anything"},
+                "binding": digest(binding(plane, current)),
+            },
+        )
+
+        with pytest.raises(ControlError) as caught:
+            complete(plane, task, agent["session"])
+        assert (caught.value.code, str(caught.value)) == (
+            "INTEGRATION_REQUIRED",
+            "Workspace changes need a current integration gate",
+        )
+
+
 # --- merge_workspace ----------------------------------------------------------------------
 
 

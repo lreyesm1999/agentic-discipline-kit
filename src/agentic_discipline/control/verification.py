@@ -277,9 +277,9 @@ def complete(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
                 and integration.get("merged_files") == fingerprint(plane.root)
                 and link_fingerprint(plane.root) == link_fingerprint(plane.workspace_root(task))
             )
-            # Bound once, and only where the merge checks above already passed: reading
-            # it earlier would report a binding failure for a task that never merged.
-            current = binding(plane, task) if merged else None
+            # Bound once here; `completion_proof` above already refused a task whose
+            # binding cannot be read.
+            current = binding(plane, task)
             require(
                 merged
                 and binding(plane, {**task, "state": "COMPLETED"}) == current
