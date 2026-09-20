@@ -24,6 +24,7 @@ BLOCK = (
     ".agent-memory/\n"
     ".agentic/verification/artifacts/\n"
     ".agentic/export/\n"
+    ".agentic/control/\n"
 )
 posix_only = pytest.mark.skipif(os.name != "posix", reason="POSIX symlinks")
 

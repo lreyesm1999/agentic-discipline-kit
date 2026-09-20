@@ -18,6 +18,10 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   timings are unchanged.
 
 ### Fixed
+- `init` now adds `.agentic/control/` to the `.gitignore` block it manages. The control
+  plane's SQLite state, its hash chain and its session hashes were left for a project to
+  commit by accident, although the documentation said not to. An installation that already
+  has the managed block keeps it; add the line by hand there.
 - `docs/compatibility.md` listed one generated file per tool; the compiler writes one per
   discipline, named `agentic-<id>`.
 - `docs/install.md` pinned the composite action to `@v1`, a tag that does not exist.

@@ -45,7 +45,9 @@ Configure the client to launch the installed executable using absolute paths:
 }
 ```
 
-On Windows use the installed `Scripts/agentic.exe`. The MCP client receives the
+On Windows use the installed `Scripts/agentic.exe`. A standalone `agentic` from a
+release archive works the same way and needs no Python; so does the npm launcher,
+as `npx -p agentic-discipline agentic`. The MCP client receives the
 session token from `agent_join` and supplies it to owned task operations. The CLI
 instead writes sessions to a new private file outside the repository. Tokens are
 hashed in SQLite and omitted from status responses. Treat client transcripts that
