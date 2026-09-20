@@ -20,8 +20,14 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ### Fixed
 - `init` now adds `.agentic/control/` to the `.gitignore` block it manages. The control
   plane's SQLite state, its hash chain and its session hashes were left for a project to
-  commit by accident, although the documentation said not to. An installation that already
-  has the managed block keeps it; add the line by hand there.
+  commit by accident, although the documentation said not to.
+- `init` repairs an older block instead of skipping it. A project adopted before a release
+  that added a rule kept a block without it, so running `init` again was no upgrade path;
+  the command now adds only the rules the file is missing, inside the block it owns, and
+  names them in its report (`UPDATE .gitignore (added .agentic/control/)`). A rule the
+  project already ignores elsewhere is not repeated, and the rest of the file is untouched.
+- `init` writes `.gitignore` with the line endings the file already uses. Running it on
+  Windows rewrote a whole LF file as CRLF, which showed up as an all-lines diff.
 - `docs/compatibility.md` listed one generated file per tool; the compiler writes one per
   discipline, named `agentic-<id>`.
 - `docs/install.md` pinned the composite action to `@v1`, a tag that does not exist.

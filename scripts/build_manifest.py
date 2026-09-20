@@ -34,8 +34,14 @@ def included(path: Path, root: Path) -> bool:
 def main() -> int:
     root = Path.cwd()
     files = []
-    for path in sorted((item for item in root.rglob("*") if included(item, root))):
-        relative = path.relative_to(root).as_posix()
+    # Sorted by the recorded path, not by `Path`: comparing paths is case-insensitive on
+    # Windows, so the same tree produced two different orders depending on who rebuilt it.
+    entries = (
+        (item.relative_to(root).as_posix(), item)
+        for item in root.rglob("*")
+        if included(item, root)
+    )
+    for relative, path in sorted(entries):
         content = path.read_bytes()
         files.append(
             {

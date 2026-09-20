@@ -5,7 +5,9 @@
 A project owns `.agentic/control/state.db`, with SQLite WAL, foreign keys, optimistic
 record versions, append-only revisions and a hash-linked audit. Evidence output is
 stored separately under `.agentic/control/evidence/`, with content hashes in SQLite.
-Do not commit this directory or agent session files. Adoption refuses symlinked or
+Do not commit this directory or agent session files; `init` adds the rule that keeps it
+out of history, and running `init` again on a project adopted before 2.0.0 adds the rule
+to the block it already has. Adoption refuses symlinked or
 unmanaged control directories and builds new state in a staging directory before an
 atomic rename. Existing application files and v1 installation payloads are preserved.
 
