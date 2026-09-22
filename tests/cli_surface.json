@@ -1321,6 +1321,19 @@
               "choices": [
                 "agent_join",
                 "approve_command",
+                "assurance_compile",
+                "assurance_debt",
+                "assurance_explain",
+                "assurance_integrity",
+                "assurance_migrate",
+                "assurance_plan",
+                "assurance_register_verifier",
+                "assurance_registry",
+                "assurance_resolve_human",
+                "assurance_rollback",
+                "assurance_status",
+                "assurance_verify",
+                "assurance_waive",
                 "checkpoint_task",
                 "claim_task",
                 "complete_task",
@@ -1895,6 +1908,198 @@
               "type": "Path",
               "choices": null,
               "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
+        "assurance": {
+          "help": "Proof obligations, their current evidence and remaining proof debt",
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "plan",
+                "verify",
+                "status",
+                "explain",
+                "debt",
+                "registry",
+                "integrity",
+                "waive",
+                "resolve",
+                "migrate",
+                "rollback"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "identifier",
+              "nargs": "?",
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--session-file"
+              ],
+              "dest": "session_file",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--input"
+              ],
+              "dest": "input",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--reason"
+              ],
+              "dest": "reason",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--authorization"
+              ],
+              "dest": "authorization",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--decision"
+              ],
+              "dest": "decision",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--rejected"
+              ],
+              "dest": "rejected",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--compile"
+              ],
+              "dest": "compile",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--dry-run"
+              ],
+              "dest": "dry_run",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
               "help": null,
               "metavar": null,
               "version": null

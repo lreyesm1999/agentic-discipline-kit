@@ -6,6 +6,66 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 
 ## [Unreleased]
 
+### Added
+- **Agentic Discipline 2.1 - the Adaptive Assurance Engine.** A change now creates proof
+  obligations, and a task completes only when every mandatory one is resolved by current
+  evidence. The agent no longer declares success; the state of its obligations decides what
+  it may claim and whether the work advances. Guide: [docs/v2.1/README.md](docs/v2.1/README.md).
+  - **Proof obligations** as first-class records: one concrete claim each, with the
+    requirement, acceptance criterion, policy or dependency it came from, the capabilities
+    that could discharge it, the verifiers selected, the paths and symbols it depends on,
+    and its criticality. Identity is derived from the task and the origin, so recompiling a
+    plan updates obligations rather than duplicating them.
+  - **An assurance compiler** that derives them deterministically from the task contract and
+    from repository policy applied to observed paths, using the same risk signals
+    `agentic-discipline risk` already uses. It compiles twice: a forecast from the declared
+    scope before implementing, and the enforced plan from the diff the task actually made.
+  - **Expansion without contraction.** A recompile may add obligations, widen their paths,
+    raise their criticality or deepen the route they require. It can never drop one, make a
+    mandatory claim optional, lower a criticality or leave a claim with no verifier; the
+    refusal is recorded on the plan and written to the audit chain. The only sanctioned
+    contraction is an owner waiver with a reason and an authority, and it is refused while
+    current evidence refutes the claim.
+  - **A verifier capability registry** so the planner reasons about what a verifier proves,
+    how strong that proof is and what it costs, instead of about tool names. Projects can
+    register their own kinds. The task contract keeps supplying the concrete argv.
+  - **A proof planner** that takes the cheapest sufficient route, prefers a falsifying
+    strategy among equally cheap ones, and never lets agent judgment stand in for a
+    deterministic verifier that can reach the claim - at selection and again at resolution.
+  - **Progressive assurance**: a route that reaches no verdict escalates to a deeper one,
+    which replaces it; the superseded verdict stays in the ledger and never counts as proof
+    again. Depth only rises. A plain failure means repair, and staleness means rerun.
+  - **Per-obligation freshness.** Each claim binds to the paths, requirement versions,
+    protected tree, acceptance text, verifiers, claim text and policy it depends on, so an
+    unrelated edit no longer invalidates it and a relevant one always does. Restoring a file
+    byte for byte restores the claim: freshness is content, not history.
+  - **Conflicts and unknowns that cannot become passes.** Current evidence is read together,
+    so one fresh failure beside a fresh pass is `CONFLICTED` whichever ran last; a verifier
+    that could not reach a verdict is `BLOCKED`; a claim no declared verifier reaches is
+    `UNKNOWN`. A verdict is checked against its own hashed artefact, so editing the stored
+    row to say `PASS` does not restore a claim the run failed.
+  - **Proof debt** as a count of open claims - never a confidence score - readable by task,
+    requirement and criticality.
+  - **An assurance decision**: `CONTINUE`, `REPAIR`, `EXPAND_VERIFICATION`, `BLOCK`,
+    `ESCALATE`, `HUMAN_REQUIRED` or `COMPLETE`, from the obligation states plus risk,
+    protected paths and the authority the task contract still grants.
+  - **Human-required claims** that produce a concrete request - the claim, what to inspect,
+    what already passed automatically, what judgment is left - and record the verdict as
+    `HUMAN` evidence bound to the artefacts it judged, so it goes stale when they change.
+  - **`agentic assurance`**: `plan`, `verify`, `status`, `explain`, `debt`, `registry`,
+    `integrity`, and the owner actions `waive`, `resolve`, `migrate` and `rollback`. The
+    same operations are on the versioned API, the read and verify ones over MCP, and a
+    read-first assurance view in the console. One application layer behind all of them.
+  - **The completion invariant.** `task complete` reconciles the plan against the real diff
+    and refuses a task holding mandatory proof debt - on every interface, tested on all four.
+  - **An explicit, idempotent, reversible migration.** Schema 2 exists alongside schema 1, so
+    a 2.0 project keeps its exact behaviour until an owner runs `agentic assurance migrate`.
+    Legacy evidence keeps its artefacts and gains legacy provenance rather than a
+    relationship nobody measured. See [docs/v2.1/MIGRATION.md](docs/v2.1/MIGRATION.md).
+  - **A scoped mutation harness**, `scripts/assurance_mutation.py`, with a baseline control,
+    a journal, resume over identical sources, and a gate against reviewed dispositions in
+    `docs/v2.1/evidence/mutation-dispositions.json`.
+
 ### Changed
 - One file hasher: `sha256_file` replaces the three copies in the verifier package and the
   inline hashing in the control plane, so evidence artifacts are read in chunks rather than
@@ -18,6 +78,16 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   timings are unchanged.
 
 ### Fixed
+- Recompiling an unchanged plan no longer writes a new revision of every obligation and
+  reports it as widened. The merge added a depth field the stored obligation did not carry
+  yet; the depth is now recorded when the obligation is created. Found by the scoped
+  mutation campaign, which also added the isolated test the completion invariant lacked.
+- A `unit` verifier no longer counts as regression proof. The capability registry declared
+  `unit` as supplying `regression`, which let a unit suite close a claim about data it never
+  examined; the dogfood run on this repository caught it closing a migration-safety claim.
+  Capabilities are now narrow: `unit` proves unit behaviour, and `regression`,
+  `historical_stability` and `data_preservation` belong to verifiers that say they examine
+  existing behaviour.
 - `init` now adds `.agentic/control/` to the `.gitignore` block it manages. The control
   plane's SQLite state, its hash chain and its session hashes were left for a project to
   commit by accident, although the documentation said not to.

@@ -1,0 +1,53 @@
+# Gates run on 2026-09-21T07:24:13Z, branch fix/gitignore-upgrade at ec363c2 plus the working tree
+
+$ ruff check .
+All checks passed!
+exit=0
+
+$ ruff format --check .
+188 files already formatted
+exit=0
+
+$ mypy src
+Success: no issues found in 49 source files
+exit=0
+
+$ python -m pytest -q -p no:randomly --cov=agentic_discipline --cov-branch --cov-report=json:C:/Users/Lenier/AppData/Local/Temp/claude/cov.json
+1941 passed, 26 skipped in 160.26s (0:02:40)
+exit=0
+
+$ python scripts/coverage_gate.py --report C:/Users/Lenier/AppData/Local/Temp/claude/cov.json --min-line 90 --min-branch 85
+{
+  "status": "PASS",
+  "line_coverage": 99.16,
+  "branch_coverage": 97.96,
+  "threshold_failures": []
+}
+exit=0
+
+$ bandit -r src scripts -q -lll
+exit=0
+
+$ python scripts/repo_check.py
+    "protected_workflow": true,
+    "manifest_integrity": true
+  },
+  "manifest_errors": [],
+  "status": "PASS"
+}
+exit=0
+
+$ agentic-discipline protected --base-ref HEAD
+{
+  "status": "PASS",
+  "changed": []
+}
+exit=0
+
+$ agentic-discipline integrity --base-ref HEAD
+{
+  "status": "PASS",
+  "findings": [],
+  "retired_tests": []
+}
+exit=0

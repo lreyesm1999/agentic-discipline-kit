@@ -76,8 +76,9 @@ def test_new_database_gets_the_schema_and_connection_settings(tmp_path: Path) ->
         assert TABLES <= names
         assert _rows(store, "SELECT * FROM meta ORDER BY key") == [
             {"key": "knowledge_version", "value": "0"},
-            {"key": "schema_version", "value": "1"},
+            {"key": "schema_version", "value": "2"},
         ]
+        assert store.schema_version == 2
         assert store.db.execute("PRAGMA foreign_keys").fetchone()[0] == 1
         assert store.db.execute("PRAGMA journal_mode").fetchone()[0] == "wal"
         assert store.db.execute("PRAGMA busy_timeout").fetchone()[0] == 5000
@@ -95,7 +96,8 @@ def test_reopening_keeps_existing_state(tmp_path: Path) -> None:
 @pytest.mark.parametrize(
     "change",
     [
-        "UPDATE meta SET value='2' WHERE key='schema_version'",
+        "UPDATE meta SET value='3' WHERE key='schema_version'",
+        "UPDATE meta SET value='' WHERE key='schema_version'",
         "DELETE FROM meta WHERE key='schema_version'",
     ],
 )
@@ -106,6 +108,15 @@ def test_unsupported_schema_versions_are_refused(tmp_path: Path, change: str) ->
     _rejects(
         "SCHEMA_VERSION", "Unsupported database version; restore or upgrade explicitly", Store, path
     )
+
+
+def test_a_two_point_zero_database_still_opens_at_its_own_version(tmp_path: Path) -> None:
+    """A 2.0 project keeps working until an owner migrates it explicitly."""
+    path = tmp_path / "state.db"
+    with Store(path, create=True) as store:
+        store.db.execute("UPDATE meta SET value='1' WHERE key='schema_version'")
+    with Store(path) as store:
+        assert store.schema_version == 1
 
 
 def test_failed_schema_creation_leaves_no_partial_schema(

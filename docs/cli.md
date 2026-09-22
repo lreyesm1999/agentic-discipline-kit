@@ -183,3 +183,34 @@ additions:
 agentic-discipline hygiene
 agentic-discipline hygiene --base-ref origin/main
 ```
+
+## agentic assurance
+
+The `agentic` control plane's assurance engine: the proof obligations a change creates, the
+evidence that currently resolves them, and what the work is allowed to do next. It is
+inactive until a project is migrated; see [Agentic Discipline 2.1](v2.1/README.md).
+
+```bash
+agentic assurance plan TASK-ID --compile        # compile or reconcile the plan
+agentic assurance plan TASK-ID                  # read it: initial, current, what expanded
+agentic assurance verify TASK-ID --session-file /private/worker-a.json
+agentic assurance status [TASK-ID]
+agentic assurance explain PO-ID                  # one claim
+agentic assurance explain TASK-ID                # why a task can or cannot complete
+agentic assurance debt [TASK-ID]
+agentic assurance registry
+agentic assurance integrity
+```
+
+Owner actions, each requiring its own recorded justification:
+
+```bash
+agentic assurance waive PO-ID --reason "..." --authorization "code owner"
+agentic assurance resolve PO-ID --decision "..." [--rejected]
+agentic assurance migrate [--dry-run]
+agentic assurance rollback ASSU-ID --reason "..."
+```
+
+`status`, `debt` and `explain` print a plain reading; every action accepts `--json` for the
+whole record. `verify` exits 1 when a mandatory obligation is still open, and `integrity`
+exits 1 when an invariant is violated.

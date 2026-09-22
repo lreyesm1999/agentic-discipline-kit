@@ -1,0 +1,451 @@
+{
+  "timestamp": "2026-09-21T07:09:51.583992+00:00",
+  "harness": "scripts/assurance_mutation.py",
+  "why_not_mutmut": "mutmut run over the whole package exhausts memory while generating mutants here, and a scoped run deadlocks its workers; this harness mutates one package and runs the assurance selection against each mutant",
+  "scope": "src/agentic_discipline/control/assurance",
+  "modules": [
+    "src/agentic_discipline/control/assurance/compiler.py",
+    "src/agentic_discipline/control/assurance/decision.py",
+    "src/agentic_discipline/control/assurance/impact.py",
+    "src/agentic_discipline/control/assurance/migration.py",
+    "src/agentic_discipline/control/assurance/model.py",
+    "src/agentic_discipline/control/assurance/planner.py",
+    "src/agentic_discipline/control/assurance/registry.py",
+    "src/agentic_discipline/control/assurance/resolver.py",
+    "src/agentic_discipline/control/assurance/service.py"
+  ],
+  "test_selection": [
+    "tests/control/test_assurance_contracts.py",
+    "tests/control/test_assurance_details.py",
+    "tests/control/test_assurance_edges.py",
+    "tests/control/test_assurance_failures.py",
+    "tests/control/test_assurance_interfaces.py",
+    "tests/control/test_assurance_properties.py",
+    "tests/control/test_assurance_scenarios.py",
+    "tests/control/test_assurance_units.py"
+  ],
+  "families": [
+    "comparison",
+    "constant_bool",
+    "constant_number",
+    "constant_string",
+    "loop_control",
+    "return_value"
+  ],
+  "baseline": {
+    "outcome": "SURVIVED",
+    "seconds": 37.531,
+    "meaning": "the modules rebuilt from their own syntax tree, unmutated, still pass"
+  },
+  "sources": "e029682569491f3ac756893fb8314a9d70a6a17bafaf7ecb3b3a5a625f339107",
+  "method": "resumed: every position a previous campaign over the same sources left alive was re-run against the current suite; kills at other positions are carried over",
+  "previous": {
+    "timestamp": "2026-09-21T06:58:21.539476+00:00",
+    "counts": {
+      "KILLED": 2126,
+      "SURVIVED": 37,
+      "TIMEOUT": 0
+    },
+    "test_selection": [
+      "tests/control/test_assurance_contracts.py",
+      "tests/control/test_assurance_details.py",
+      "tests/control/test_assurance_edges.py",
+      "tests/control/test_assurance_failures.py",
+      "tests/control/test_assurance_interfaces.py",
+      "tests/control/test_assurance_properties.py",
+      "tests/control/test_assurance_scenarios.py",
+      "tests/control/test_assurance_units.py"
+    ]
+  },
+  "re_evaluated": 39,
+  "carried_over_kills": 2124,
+  "mutants": 2163,
+  "counts": {
+    "KILLED": 2135,
+    "SURVIVED": 28,
+    "TIMEOUT": 0
+  },
+  "mutation_score": 98.71,
+  "per_module": {
+    "src/agentic_discipline/control/assurance/compiler.py": {
+      "mutants": 13,
+      "survived": 5,
+      "timed_out": 0
+    },
+    "src/agentic_discipline/control/assurance/model.py": {
+      "mutants": 4,
+      "survived": 2,
+      "timed_out": 0
+    },
+    "src/agentic_discipline/control/assurance/planner.py": {
+      "mutants": 6,
+      "survived": 6,
+      "timed_out": 0
+    },
+    "src/agentic_discipline/control/assurance/registry.py": {
+      "mutants": 8,
+      "survived": 8,
+      "timed_out": 0
+    },
+    "src/agentic_discipline/control/assurance/resolver.py": {
+      "mutants": 2,
+      "survived": 2,
+      "timed_out": 0
+    },
+    "src/agentic_discipline/control/assurance/service.py": {
+      "mutants": 6,
+      "survived": 5,
+      "timed_out": 0
+    }
+  },
+  "per_family": {
+    "comparison": {
+      "mutants": 1,
+      "survived": 1
+    },
+    "constant_bool": {
+      "mutants": 1,
+      "survived": 0
+    },
+    "constant_number": {
+      "mutants": 9,
+      "survived": 8
+    },
+    "constant_string": {
+      "mutants": 25,
+      "survived": 16
+    },
+    "loop_control": {
+      "mutants": 1,
+      "survived": 1
+    },
+    "return_value": {
+      "mutants": 2,
+      "survived": 2
+    }
+  },
+  "unresolved": [],
+  "runtime_seconds": 390.501,
+  "partial": false,
+  "status": "PASS",
+  "gate": {
+    "dispositions": "docs/v2.1/evidence/mutation-dispositions.json",
+    "accepted_survivors": 28,
+    "accepted_by_kind": {
+      "equivalent": 24,
+      "platform": 4
+    },
+    "stale_dispositions": [],
+    "unresolved_after_review": 0
+  },
+  "accepted": [
+    {
+      "module": "src/agentic_discipline/control/assurance/compiler.py",
+      "line": 115,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 62.532,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/compiler.py",
+      "line": 239,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 67.328,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/compiler.py",
+      "line": 265,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 64.11,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/compiler.py",
+      "line": 176,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 65.312,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/compiler.py",
+      "line": 297,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 62.422,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/model.py",
+      "line": 112,
+      "family": "comparison",
+      "before": "GtE",
+      "after": "Gt",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 65.125,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/model.py",
+      "line": 104,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 64.984,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/planner.py",
+      "line": 21,
+      "family": "constant_number",
+      "before": "4",
+      "after": "5",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 64.656,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/planner.py",
+      "line": 43,
+      "family": "constant_number",
+      "before": "0",
+      "after": "1",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 66.031,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/planner.py",
+      "line": 43,
+      "family": "constant_number",
+      "before": "1",
+      "after": "2",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 64.485,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/planner.py",
+      "line": 45,
+      "family": "constant_number",
+      "before": "1",
+      "after": "2",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 66.375,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/planner.py",
+      "line": 87,
+      "family": "constant_number",
+      "before": "1",
+      "after": "2",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 66.485,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/planner.py",
+      "line": 91,
+      "family": "constant_number",
+      "before": "1",
+      "after": "2",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 68.156,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 35,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 66.563,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 61,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 67.484,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 85,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 65.953,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 93,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 67.422,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 117,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 66.187,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 141,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 65.844,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 149,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 66.985,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/registry.py",
+      "line": 157,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 64.797,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/resolver.py",
+      "line": 95,
+      "family": "return_value",
+      "before": "return value",
+      "after": "return None",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 65.453,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/resolver.py",
+      "line": 97,
+      "family": "return_value",
+      "before": "return value",
+      "after": "return None",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 65.422,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/service.py",
+      "line": 218,
+      "family": "loop_control",
+      "before": "break",
+      "after": "continue",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 63.156,
+      "kind": "equivalent"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/service.py",
+      "line": 536,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 62.859,
+      "kind": "platform"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/service.py",
+      "line": 536,
+      "family": "constant_string",
+      "before": "text",
+      "after": "XXmutatedXX",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 63.141,
+      "kind": "platform"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/service.py",
+      "line": 551,
+      "family": "constant_number",
+      "before": "384",
+      "after": "385",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 63.672,
+      "kind": "platform"
+    },
+    {
+      "module": "src/agentic_discipline/control/assurance/service.py",
+      "line": 538,
+      "family": "constant_number",
+      "before": "448",
+      "after": "449",
+      "outcome": "SURVIVED",
+      "exit_code": 0,
+      "seconds": 60.953,
+      "kind": "platform"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "about": "Reviewed dispositions for survivors of scripts/assurance_mutation.py. Each entry names the module, the exact source text of the line, the family and the rewrite, so it survives renumbering. An entry that stops matching a survivor fails the campaign, so a killed or removed mutant cannot stay on this list.",
+  "dispositions": [
+    {
+      "module": "compiler.py",
+      "source": "text = \"\\n\".join(sorted(paths)).lower()",
+      "family": "constant_string",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The separator only has to keep one path from running into the next. Any separator that cannot complete a risk pattern across the join behaves the same, and the sentinel cannot; test_the_risk_signals_read_paths_case_insensitively_and_one_per_line pins that a signal never spans two paths."
+    },
+    {
+      "module": "compiler.py",
+      "source": "origin_key=f\"acceptance:{index}\",",
+      "family": "constant_string",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The origin key is hashed into an opaque identifier. Changing its constant prefix changes every such identifier consistently and keeps them unique and deterministic, which is all identity requires; no caller reads the key."
+    },
+    {
+      "module": "compiler.py",
+      "source": "origin_key=f\"policy:{policy_id}\",",
+      "family": "constant_string",
+      "count": 2,
+      "kind": "equivalent",
+      "reason": "As for the acceptance key: the human-acceptance and falsification rules hash their own key into an opaque identifier, and a different constant prefix still yields a unique, deterministic one."
+    },
+    {
+      "module": "compiler.py",
+      "source": "origin_key=f\"impact:requirement:{identifier}\",",
+      "family": "constant_string",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The requirement identifier inside the key keeps each impact obligation unique whatever the constant prefix is."
+    },
+    {
+      "module": "model.py",
+      "source": "return PREFIX + hashlib.sha256(f\"{task_id}\\x00{origin_key}\".encode()).hexdigest()[:16]",
+      "family": "constant_string",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The separator between task and origin only has to be a byte neither contains. Task identifiers are TASK- plus hex and origin keys are fixed words, so the sentinel separates them as well as the NUL does."
+    },
+    {
+      "module": "model.py",
+      "source": "return left if CRITICALITY.index(left) >= CRITICALITY.index(right) else right",
+      "family": "comparison",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The two comparisons differ only when both indexes are equal, and then left and right are the same criticality, so either return is the same value."
+    },
+    {
+      "module": "planner.py",
+      "source": "DEEPEST = 4",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "Raising the last level searched to 5 adds a search at a level no verifier can declare: descriptor_contract only accepts levels 0 to 4, and escalation stops at 4 on its own. The extra iteration finds nothing and returns the same unsatisfiable route."
+    },
+    {
+      "module": "planner.py",
+      "source": "0 if descriptor[\"deterministic\"] else 1,",
+      "family": "constant_number",
+      "count": 2,
+      "kind": "equivalent",
+      "reason": "Ranks are only compared with each other. Rewriting 0 to 1 or 1 to 2 in this tuple position keeps deterministic routes strictly ahead of the rest, so every sort gives the same order."
+    },
+    {
+      "module": "planner.py",
+      "source": "0 if capability in FALSIFYING else 1,",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "Rewriting 1 to 2 keeps falsifying capabilities strictly ahead of the rest in this tie-break, so the order is unchanged."
+    },
+    {
+      "module": "planner.py",
+      "source": "for level in range(minimum, DEEPEST + 1):",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "Searching one level further, to 5, reaches a level no verifier can declare; see DEEPEST."
+    },
+    {
+      "module": "planner.py",
+      "source": "for entry in _supplying(specs, capability, level, minimum)[:1]",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "Taking the two best verifiers per capability instead of one only adds candidates ranked behind the best one, and the choice below takes the best-ranked candidate overall, which is the same."
+    },
+    {
+      "module": "registry.py",
+      "source": "\"supports_incremental\": False,",
+      "family": "constant_string",
+      "count": 8,
+      "kind": "equivalent",
+      "reason": "normalized reads this key with a default of False. Renaming the key on an entry whose value is False leaves the default in its place, so the declared descriptor is identical; the entries declaring True are pinned by test_the_built_in_registry_is_exactly_what_it_declares and were killed."
+    },
+    {
+      "module": "resolver.py",
+      "source": "return False",
+      "family": "return_value",
+      "count": 2,
+      "kind": "equivalent",
+      "reason": "current_for is only used as a filter condition, where None and False are both false. No caller compares its result to False by identity."
+    },
+    {
+      "module": "service.py",
+      "source": "break",
+      "family": "loop_control",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "This break follows the check that nothing is outstanding. Continuing instead reaches escalation with that same empty list, which raises nothing, and the next statement breaks out of the loop; the result is the same."
+    },
+    {
+      "module": "service.py",
+      "source": "not artifact.parent.is_symlink(), \"INVALID_PATH\", \"Evidence directory must not be a symlink\"",
+      "family": "constant_string",
+      "count": 2,
+      "kind": "platform",
+      "reason": "Reaching this refusal needs a symlinked evidence directory, which this Windows campaign cannot create. test_a_human_verdict_refuses_a_symlinked_evidence_directory pins the code and message on POSIX, where CI runs it."
+    },
+    {
+      "module": "service.py",
+      "source": "artifact.parent.mkdir(exist_ok=True, mode=0o700)",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "platform",
+      "reason": "Directory modes are not enforced on Windows. test_a_human_verdict_artefact_is_private pins 0o700 on POSIX, where CI runs it."
+    },
+    {
+      "module": "service.py",
+      "source": "artifact.chmod(0o600)",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "platform",
+      "reason": "File modes are not enforced on Windows. test_a_human_verdict_artefact_is_private pins 0o600 on POSIX, where CI runs it."
+    }
+  ]
+}

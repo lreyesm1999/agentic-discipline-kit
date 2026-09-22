@@ -74,6 +74,34 @@ def parser() -> argparse.ArgumentParser:
     plan = commands.add_parser("plan")
     plan.add_argument("action", choices=["audit"])
     plan.add_argument("--input", required=True, type=Path)
+    assurance = commands.add_parser(
+        "assurance", help="Proof obligations, their current evidence and remaining proof debt"
+    )
+    assurance.add_argument(
+        "action",
+        choices=[
+            "plan",
+            "verify",
+            "status",
+            "explain",
+            "debt",
+            "registry",
+            "integrity",
+            "waive",
+            "resolve",
+            "migrate",
+            "rollback",
+        ],
+    )
+    assurance.add_argument("identifier", nargs="?")
+    assurance.add_argument("--session-file", type=Path)
+    assurance.add_argument("--input", type=Path)
+    assurance.add_argument("--reason")
+    assurance.add_argument("--authorization")
+    assurance.add_argument("--decision")
+    assurance.add_argument("--rejected", action="store_true")
+    assurance.add_argument("--compile", action="store_true")
+    assurance.add_argument("--dry-run", action="store_true")
     readiness = commands.add_parser("readiness")
     readiness.add_argument("identifier")
     context = commands.add_parser("context")
@@ -113,6 +141,126 @@ def session(path: Path | None) -> str:
         "Supply --session-file created by agent join",
     )
     return str(read_input(path)["session"])
+
+
+def render_assurance(action: str, data: dict[str, Any]) -> str:
+    """The plain reading of an assurance answer; --json carries the whole record."""
+    lines: list[str] = []
+    if action == "explain" and "headline" in data:
+        lines += [data["headline"], f"{data['required']} mandatory proof obligations."]
+        lines += [f"  {state:<16} {count}" for state, count in sorted(data["counts"].items())]
+        for item in data["outstanding"]:
+            lines += [
+                "",
+                f"{item['status']}:",
+                f"  {item['obligation_id']}",
+                f"  {item['claim']}",
+                f"  Reason: {item['reason']}",
+            ]
+            for identifier in item["current_evidence"] + item["stale_evidence"]:
+                lines.append(f"  Evidence: {identifier}")
+        if data["required_next_actions"]:
+            lines.append("")
+            lines.append("Required next actions:")
+            lines += [
+                f"  {number}. {action_text}"
+                for number, action_text in enumerate(data["required_next_actions"], 1)
+            ]
+        return "\n".join(lines)
+    if action == "explain":
+        evidence = [
+            f"  {e['id']} {e['result']} {e['currency']} ({e['kind']}, {e['evidence_class']})"
+            for e in data["evidence"]
+        ]
+        lines += [
+            data["obligation"]["id"],
+            "Claim:",
+            f"  {data['claim']}",
+            "Origin:",
+            f"  {data['required_because']}",
+            "Affected by:",
+            *(f"  {p}" for p in data["affected_paths"] or ["(declared task scope)"]),
+            "Evidence:",
+            *(evidence or ["  none recorded"]),
+            "Current state:",
+            f"  {data['status']} - {data['reason']}",
+        ]
+        if data["human_request"]:
+            lines += ["Human resolution:", f"  {data['human_request']['resolve_with']}"]
+        return "\n".join(lines)
+    for report in data["tasks"]:
+        identifier = report["task_id"]
+        counts = report.get("counts") or report.get("required_counts", {})
+        lines.append(f"{identifier} ASSURANCE")
+        lines.append(f"  Required obligations {report['required']}")
+        for state, count in sorted(counts.items()):
+            lines.append(f"  {state:<22} {count}")
+        lines.append(f"  Proof debt           {report['proof_debt']}")
+        if action == "status":
+            lines.append(f"  Decision             {report['decision']['decision']}")
+        for item in report.get("outstanding", []):
+            lines.append(f"  - {item['obligation_id']} {item['status']}: {item['claim']}")
+    if not lines:
+        lines.append("No assurance plan has been compiled yet")
+    return "\n".join(lines)
+
+
+def assurance_command(plane: Plane, args: argparse.Namespace) -> dict[str, Any]:
+    if args.action == "plan":
+        if args.compile:
+            return call(plane, "assurance_compile", {"task_id": args.identifier}, local=True)
+        return call(plane, "assurance_plan", {"task_id": args.identifier}, local=True)
+    if args.action == "verify":
+        return call(
+            plane,
+            "assurance_verify",
+            {"task_id": args.identifier, "session": session(args.session_file)},
+            local=True,
+        )
+    if args.action in {"status", "debt"}:
+        data = {"task_id": args.identifier} if args.identifier else {}
+        return call(plane, "assurance_" + args.action, data, local=True)
+    if args.action == "explain":
+        return call(plane, "assurance_explain", {"obligation_id": args.identifier}, local=True)
+    if args.action in {"registry", "integrity"}:
+        return call(plane, "assurance_" + args.action, {}, local=True)
+    if args.action == "waive":
+        require(
+            args.reason is not None and args.authorization is not None,
+            "DECISION_REQUIRED",
+            "A waiver needs --reason and --authorization",
+        )
+        return call(
+            plane,
+            "assurance_waive",
+            {
+                "obligation_id": args.identifier,
+                "reason": args.reason,
+                "authorization": args.authorization,
+            },
+            local=True,
+        )
+    if args.action == "resolve":
+        require(args.decision is not None, "DECISION_REQUIRED", "Record --decision")
+        return call(
+            plane,
+            "assurance_resolve_human",
+            {
+                "obligation_id": args.identifier,
+                "decision": args.decision,
+                "accepted": not args.rejected,
+            },
+            local=True,
+        )
+    if args.action == "migrate":
+        return call(plane, "assurance_migrate", {"dry_run": args.dry_run}, local=True)
+    require(args.reason is not None, "REASON_REQUIRED", "Rollback requires --reason")
+    return call(
+        plane,
+        "assurance_rollback",
+        {"identifier": args.identifier, "reason": args.reason},
+        local=True,
+    )
 
 
 def run(args: argparse.Namespace) -> dict[str, Any] | None:
@@ -192,6 +340,8 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
                 {"identifier": args.value},
                 local=True,
             )
+        if args.group == "assurance":
+            return assurance_command(plane, args)
         if args.group == "plan":
             return call(plane, "plan_audit", {"plan": read_input(args.input)}, local=True)
         if args.group in {"readiness", "context"}:
@@ -247,6 +397,8 @@ def main() -> None:
         if result is not None:
             if args.json:
                 print(encode(result))
+            elif args.group == "assurance" and args.action in {"status", "debt", "explain"}:
+                print(render_assurance(args.action, result["data"]))
             elif args.group == "status":
                 data = result["data"]
                 print(
