@@ -96,13 +96,42 @@ def _render_init(result: dict[str, object]) -> None:
         print(f"                   + {baseline}: added so the config still checks something")
     tally = ", ".join(f"{count} {verb.lower()}" for verb, count in sorted(_counts(actions).items()))
     print(f"  Files            {tally}")
+    control = cast(dict[str, object], result.get("control") or {})
+    print(f"  Control plane    {str(control.get('detail', 'not attempted'))}")
     print("")
     print("Visible in your repository root: AGENTS.md, agentic.config.json")
     print("Everything else lives in .agentic/")
     print("")
     if relaxed:
         print("Review the relaxed gates in agentic.config.json before making CI blocking.")
-    print("Next:  agentic-discipline doctor --check-tools")
+
+    # What init claims is what the readiness checks measured after it finished writing, so
+    # the closing line cannot say ready while the workflow is not.
+    report = cast(dict[str, object] | None, result.get("readiness"))
+    if report is None:
+        print("Next:  agentic-discipline init        (this run wrote nothing)")
+        return
+    state = str(report["execution_readiness"])
+    headline = {
+        "READY": "Status: READY FOR AGENTIC EXECUTION",
+        "DEGRADED": "Status: RULES ONLY - orchestration is not available",
+    }.get(state, f"Status: {state}")
+    print(headline)
+    if state not in {"READY", "DEGRADED"}:
+        print("")
+        print(f"Reason: {report['reason']}")
+        for check in cast(list[dict[str, object]], report["checks"]):
+            if check["status"] == "PASS" or check["advisory"]:
+                continue
+            print(f"  - {check['label']} ({check['status']}): {check['detail']}")
+            if check["repair"]:
+                print(f"    Repair: {check['repair']}")
+    print("")
+    print(
+        "Next:  ask for the work you want done."
+        if state == "READY"
+        else "Next:  agentic-discipline doctor --check-tools"
+    )
 
 
 def _render_adapters(result: dict[str, object], root: Path) -> None:
@@ -360,6 +389,14 @@ def command_evidence_verify(args: argparse.Namespace) -> int:
     return 0 if result["status"] == "PASS" else 1
 
 
+def _adopt_choice(args: argparse.Namespace) -> bool | None:
+    """None is the ordinary run: adopt unless the project recorded that it does not want to."""
+
+    if getattr(args, "no_adopt", False):
+        return False
+    return True if getattr(args, "adopt", False) else None
+
+
 def command_init(args: argparse.Namespace) -> int:
     result = initialize_project(
         Path(args.target),
@@ -369,11 +406,18 @@ def command_init(args: argparse.Namespace) -> int:
         max_depth=args.max_depth,
         adapters=args.adapter or None,
         dry_run=args.dry_run,
+        adopt=_adopt_choice(args),
+        rules_only=getattr(args, "rules_only", False),
     )
     if args.json:
         _json(result)
     else:
         _render_init(result)
+    # An install that did not reach a usable state says so in its exit code, so a script
+    # that chains `init` with real work stops here instead of continuing half-configured.
+    report = result.get("readiness")
+    if isinstance(report, dict) and report["execution_readiness"] not in {"READY", "DEGRADED"}:
+        return 1
     return 0
 
 
@@ -559,6 +603,22 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--dry-run", action="store_true", help="Report what would change without writing"
+    )
+    p.add_argument(
+        "--rules-only",
+        action="store_true",
+        help="Install the disciplines and quality configuration alone, recording that this"
+        " project does not want the control plane",
+    )
+    p.add_argument(
+        "--no-adopt",
+        action="store_true",
+        help="Skip the control plane for this run only, without recording a choice",
+    )
+    p.add_argument(
+        "--adopt",
+        action="store_true",
+        help="Initialise the control plane even on a project previously installed rules-only",
     )
     p.add_argument("--json", action="store_true", help="Emit machine-readable output")
     p.set_defaults(func=command_init)

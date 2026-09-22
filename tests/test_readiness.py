@@ -26,7 +26,7 @@ def project(tmp_path: Path) -> Path:
     root = tmp_path / "project"
     root.mkdir()
     (root / "pyproject.toml").write_text("[project]\nname='x'\n", encoding="utf-8")
-    initialize_project(root)
+    initialize_project(root, adopt=False)
     run_git(["init"], cwd=root)
     return root
 
@@ -191,11 +191,13 @@ def test_the_kit_checkout_is_not_a_project_that_installed_itself(tmp_path: Path)
 def test_a_project_without_git_cannot_bind_a_change_to_a_commit(tmp_path: Path) -> None:
     root = tmp_path / "nogit"
     root.mkdir()
-    initialize_project(root)
+    initialize_project(root, adopt=False)
     report = readiness.inspect(root, deep=False)
     git = _check(report, "git_integration")
     assert (git["status"], git["repair"]) == ("MISSING", "git init")
-    assert report["execution_readiness"] == "PARTIAL"
+    # Adoption works without git, so this is reported as drift rather than as a gap: what it
+    # costs is binding a change to a commit, which the execution preflight refuses on its own.
+    assert (report["execution_readiness"], report["drift"]) == ("PARTIAL", ["git_integration"])
 
 
 def _doctor(

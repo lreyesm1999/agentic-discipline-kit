@@ -32,6 +32,45 @@ agentic-discipline init --max-depth 6
 When nothing is recognized, `init` emits a generic Git-based gate instead of rejecting the project.
 See [Project profiles](profiles.md) for the descriptor format.
 
+One run leaves the project operational, not merely configured: after the contracts and the
+adapters, `init` initialises the control plane, indexes the project and then measures
+readiness, so its closing line is what the checks found rather than a claim.
+
+```text
+  Control plane    the repository was adopted and indexed
+
+Status: READY FOR AGENTIC EXECUTION
+
+Next:  ask for the work you want done.
+```
+
+Adoption inspects the repository and records state. It does not edit your files, install
+dependencies, or run instructions it finds in the tree, and it works outside git as well,
+so the order of `init` and `git init` does not matter.
+
+Every phase is idempotent. A second `init` keeps the existing state database with its tasks,
+leases, checkpoints and evidence, brings the index up to date, and writes nothing else. Two
+cases are refused rather than resolved:
+
+| Situation | What `init` does |
+|---|---|
+| `.agentic/control/` exists without a state database | installs the rules, leaves the directory untouched, reports `BROKEN`, and exits nonzero. A second database beside the first would split the project's history. |
+| `--rules-only` on a project that is already adopted | records nothing and says so. Removing existing state is the owner's decision, never the side effect of a flag. |
+
+For the rules alone, say so explicitly:
+
+```bash
+agentic-discipline init --rules-only   # records the choice; readiness reads DEGRADED
+agentic-discipline init --no-adopt     # skips the control plane for this run only
+agentic-discipline init --adopt        # initialises it on a project installed rules-only
+```
+
+A recorded `--rules-only` survives ordinary re-runs: nothing turns orchestration on behind
+the owner's back, and `--adopt` is how it is turned on.
+
+`init` exits nonzero when the project it leaves behind is not usable, so a script that chains
+it with real work stops instead of continuing half-configured.
+
 The generated configuration is intentionally conservative: it recommends gates but does not install
 or execute project dependencies during initialization.
 

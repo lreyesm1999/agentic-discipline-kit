@@ -402,6 +402,7 @@ def _git_integration(root: Path) -> Check:
             "MISSING",
             "this directory is not a git working tree, so no change can be bound to a commit",
             "git init",
+            advisory=True,
         )
     return Check("git_integration", "PASS", "working tree")
 

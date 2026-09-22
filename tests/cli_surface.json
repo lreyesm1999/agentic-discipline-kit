@@ -668,6 +668,54 @@
             {
               "action": "_StoreTrueAction",
               "options": [
+                "--rules-only"
+              ],
+              "dest": "rules_only",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Install the disciplines and quality configuration alone, recording that this project does not want the control plane",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--no-adopt"
+              ],
+              "dest": "no_adopt",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Skip the control plane for this run only, without recording a choice",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--adopt"
+              ],
+              "dest": "adopt",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Initialise the control plane even on a project previously installed rules-only",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
                 "--json"
               ],
               "dest": "json",

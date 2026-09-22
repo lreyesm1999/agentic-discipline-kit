@@ -7,6 +7,15 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **`init` leaves the project operational, not merely configured.** After the contracts and
+  the adapters it initialises the control plane, indexes the project and measures readiness,
+  so one command produces a repository that can run the workflow and a closing line that
+  reports what the checks found. Every phase is idempotent: a second run keeps the state
+  database with its tasks, leases, checkpoints and evidence, and only brings the index up to
+  date. An unexplained `.agentic/control/` and a `--rules-only` on an adopted project are
+  refused with their reason rather than resolved. `--rules-only` records the choice,
+  `--no-adopt` skips adoption for one run, and `--adopt` turns it on; a recorded choice
+  survives ordinary re-runs. `init` exits nonzero when what it leaves behind is not usable.
 - **One readiness model, and a `doctor` that reports the truth.** Installation health,
   project health and execution readiness are three separate questions, so a repository with
   every discipline installed and no control plane no longer reports PASS. Nine checks, each

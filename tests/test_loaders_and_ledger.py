@@ -50,6 +50,9 @@ def test_init_passes_every_option_to_initialize_project(
         adapter=["claude"],
         dry_run=True,
         json=True,
+        rules_only=False,
+        no_adopt=False,
+        adopt=False,
     )
 
     assert cli.command_init(args) == 0
@@ -65,6 +68,8 @@ def test_init_passes_every_option_to_initialize_project(
                 "max_depth": 2,
                 "adapters": ["claude"],
                 "dry_run": True,
+                "adopt": None,
+                "rules_only": False,
             },
         ),
         (
@@ -76,6 +81,8 @@ def test_init_passes_every_option_to_initialize_project(
                 "max_depth": 2,
                 "adapters": None,
                 "dry_run": True,
+                "adopt": None,
+                "rules_only": False,
             },
         ),
     ]
