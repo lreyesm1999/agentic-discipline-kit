@@ -26,7 +26,7 @@
       "required": true,
       "commands": {
         "doctor": {
-          "help": "Validate repository installation",
+          "help": "Report installation, project and execution readiness",
           "description": null,
           "defaults": {
             "func": "command_doctor"
@@ -61,6 +61,38 @@
               "choices": null,
               "required": false,
               "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Emit the machine report instead of the table",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--fast"
+              ],
+              "dest": "fast",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Skip the working-tree scan that detects stale project knowledge",
               "metavar": null,
               "version": null
             }

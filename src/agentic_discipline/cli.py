@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from . import __version__
+from . import __version__, readiness
 from .acceptance import compile_feature
 from .adapters import ADAPTERS, ALIASES, EMITTERS, LABELS, detect_adapters, sync_adapters
 from .bootstrap import initialize_project
@@ -28,7 +28,7 @@ from .verifier.protection import check_protected_verifiers, protect_verifier
 from .verifier.registry import list_verifiers, load_verifier, register_verifier
 from .verifier.schema import load_and_validate_verifier, validate_verifier
 
-EXPECTED_DISCIPLINES = 11
+EXPECTED_DISCIPLINES = readiness.EXPECTED_DISCIPLINES
 
 
 def _json(data: object) -> None:
@@ -48,11 +48,7 @@ def _doctor_root() -> Path:
 
 
 def _installed_skills(root: Path) -> int:
-    for relative in (Path(".agentic") / "skills", Path("disciplines")):
-        directory = root / relative
-        if directory.is_dir():
-            return len(list(directory.glob("*/SKILL.md")))
-    return 0
+    return readiness.skill_count(root)
 
 
 def _first_existing(root: Path, *candidates: Path) -> bool:
@@ -182,7 +178,12 @@ def command_doctor(args: argparse.Namespace) -> int:
             Path("schemas") / "agentic-config.schema.json",
         ),
     }
-    status = "PASS"
+    # Installation facts alone once decided this, which is how a project with every
+    # discipline installed and no control plane reported PASS. They are still reported,
+    # because they are true and callers read them, but the verdict now comes from whether
+    # the workflow can actually run.
+    report = readiness.inspect(root, deep=not getattr(args, "fast", False), config=config_path)
+    status = "PASS" if report["execution_readiness"] in {"READY", "DEGRADED"} else "FAIL"
     if (
         not git_worktree
         or skill_count < EXPECTED_DISCIPLINES
@@ -202,9 +203,13 @@ def command_doctor(args: argparse.Namespace) -> int:
         "config_error": config_error,
         "tools": tools,
         "skills": skill_count,
+        "readiness": report,
         "status": status,
     }
-    _json(checks)
+    if getattr(args, "json", False):
+        _json(checks)
+    else:
+        print(readiness.render(report))
     return 0 if status == "PASS" else 1
 
 
@@ -466,9 +471,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p = sub.add_parser("doctor", help="Validate repository installation")
+    p = sub.add_parser("doctor", help="Report installation, project and execution readiness")
     p.add_argument("--config")
     p.add_argument("--check-tools", action="store_true")
+    p.add_argument(
+        "--json", action="store_true", help="Emit the machine report instead of the table"
+    )
+    p.add_argument(
+        "--fast",
+        action="store_true",
+        help="Skip the working-tree scan that detects stale project knowledge",
+    )
     p.set_defaults(func=command_doctor)
 
     p = sub.add_parser("crap", help="Calculate CRAP score")

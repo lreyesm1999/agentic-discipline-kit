@@ -37,12 +37,59 @@ or execute project dependencies during initialization.
 
 ## doctor
 
-Checks Git worktree state, protected contracts, schemas and quality configuration. Add
-`--check-tools` to verify configured executables.
+Answers three separate questions and never blurs them: whether the kit is installed
+correctly, whether this project is under management, and whether the full workflow can
+actually run. Rules that nothing enforces are not a passing project, so a repository with
+every discipline installed and no control plane now reports what it is.
 
 ```bash
 agentic-discipline doctor
 ```
+
+```text
+Agentic Discipline status
+
+Installation         PASS
+Disciplines          PASS
+Agent adapter        PASS
+Quality gates        PASS
+Control plane        MISSING
+Project adoption     MISSING
+Knowledge            MISSING
+Task orchestration   MISSING
+Git integration      PASS
+
+Installation health  PASS
+Project health       PARTIAL
+Execution readiness  PARTIAL
+
+Reason: Control plane: the control plane has never been initialised here
+
+Outstanding:
+- Control plane (MISSING): the control plane has never been initialised here
+  Repair: agentic adopt
+```
+
+Execution readiness is one of five states:
+
+| State | Meaning |
+|---|---|
+| `READY` | the whole workflow is available |
+| `PARTIAL` | every gap can be repaired without a decision, and each repair is named |
+| `DEGRADED` | orchestration is unavailable by the project's own choice, such as a rules-only install |
+| `BROKEN` | something needs a human: an altered audit chain, an unreadable database, a control directory with no database, a plane adopted for another checkout |
+| `NOT_INITIALIZED` | the kit is not installed here |
+
+The exit code is zero for `READY` and `DEGRADED`, because a recorded choice is not a fault,
+and nonzero for the rest.
+
+An index that has fallen behind the working tree is reported as drift rather than as a gap:
+it is listed, `agentic reconcile` repairs it, and starting work repairs it anyway, so it does
+not by itself make a project less than `READY`.
+
+Options: `--check-tools` probes the executables the gates call, `--json` prints the machine
+report (the 2.0 fields plus a `readiness` block), `--fast` skips the working-tree scan that
+detects drift, and `--config` points at a specific quality configuration.
 
 ## risk
 

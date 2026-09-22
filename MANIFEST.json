@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-22T19:15:30.040195+00:00",
+  "generated_at_utc": "2026-09-22T22:27:53.502926+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "89abd6328346e734fbee57b05f67c94a10f6d4544edbf5a903ca0d9f2fe9453f",
-      "bytes": 19743
+      "sha256": "2059151312e931e04c16989d752cf8bd4c2328c41fae3d0d2453e2f34d22ef2f",
+      "bytes": 20679
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -345,8 +345,8 @@
     },
     {
       "path": "docs/cli.md",
-      "sha256": "4e413f846bbcaec39d4292770b75172d30353fbfa80f64a909e2cf224f0a36c3",
-      "bytes": 6415
+      "sha256": "dc702bbb2910bae1909f069be333c02d395a81a6fc32c89d632b3e363eaea031",
+      "bytes": 8313
     },
     {
       "path": "docs/compatibility.md",
@@ -1235,8 +1235,8 @@
     },
     {
       "path": "src/agentic_discipline/cli.py",
-      "sha256": "b5bb38192f99f357a0b00d4ac647184e6ff417486e53495dde5f82d148909a79",
-      "bytes": 23472
+      "sha256": "2dd54c3b040f64a7013aa4f21de958e8601182b8de6d660297050c0fc2091ac2",
+      "bytes": 24214
     },
     {
       "path": "src/agentic_discipline/common.py",
@@ -1320,8 +1320,8 @@
     },
     {
       "path": "src/agentic_discipline/control/diagnostics.py",
-      "sha256": "5031139920f3e4a9218c5adce452f2436f4a47187b697904238ac32c54637419",
-      "bytes": 1088
+      "sha256": "04d6ae1e2150b3b3d2977f0be2e787c89439343f0e6d0d05430752d92ede199e",
+      "bytes": 1098
     },
     {
       "path": "src/agentic_discipline/control/discovery.py",
@@ -1399,6 +1399,11 @@
       "bytes": 5935
     },
     {
+      "path": "src/agentic_discipline/readiness.py",
+      "sha256": "7a4c74217c7343daab5547ebb7bc1137cdb0aefe481175008023152557b283cc",
+      "bytes": 19783
+    },
+    {
       "path": "src/agentic_discipline/requirements.py",
       "sha256": "f73b37d4fd6af1f9c74fe1a4ab419bd04e9f919596ff92e11fa0e881358cfbbb",
       "bytes": 5170
@@ -1470,8 +1475,8 @@
     },
     {
       "path": "tests/cli_surface.json",
-      "sha256": "c58d4861682a026a392f59deacce14327c6aa770724604b272783336a4b68bd4",
-      "bytes": 69291
+      "sha256": "1bf00d905470be57c984a0a619b62e64cdbec54f11c067aeccf2aed3fbc55624",
+      "bytes": 70294
     },
     {
       "path": "tests/control/assurance_support.py",
@@ -1585,8 +1590,8 @@
     },
     {
       "path": "tests/control/test_control_doctor.py",
-      "sha256": "b6c537d989449becd903110d33520dc236188154c72f37cb55636fa73e57ee81",
-      "bytes": 3854
+      "sha256": "edefd2be97e4dc356a49f3f93c938f85bb3ab3c113501fa0c116bba179e42b5b",
+      "bytes": 3864
     },
     {
       "path": "tests/control/test_corrupt_references.py",
@@ -1785,8 +1790,8 @@
     },
     {
       "path": "tests/test_cli.py",
-      "sha256": "4131334fdd420adc8506816aadef6e6a9fe4f86e9a2ef2acdc5303e04397c8b4",
-      "bytes": 5819
+      "sha256": "fecf58a4129806531512d61139c7f6784da44ae0696c98ced2674f5738aa4cfc",
+      "bytes": 6193
     },
     {
       "path": "tests/test_cli_listings.py",
@@ -1815,8 +1820,8 @@
     },
     {
       "path": "tests/test_command_edges.py",
-      "sha256": "e7346e565f82964c461d0c378a30601fd0911e6e5fe83e666b35a5fee1cae441",
-      "bytes": 2136
+      "sha256": "c83c6ebde098aa9469b99d80cd6fa73f6e03685d5b75058765dc88db77b90feb",
+      "bytes": 2145
     },
     {
       "path": "tests/test_common.py",
@@ -1845,8 +1850,8 @@
     },
     {
       "path": "tests/test_doctor_report.py",
-      "sha256": "255c8eab5fe98ea9d591d49fe59ab2fe3d0fd9f03fa511784efc3b668f11968c",
-      "bytes": 8721
+      "sha256": "5f55dcd6220fe79e29a58acd2a4c849e5b81d0d97f068c95ce431b68d009d28c",
+      "bytes": 8936
     },
     {
       "path": "tests/test_doctor_root.py",
@@ -2022,6 +2027,11 @@
       "path": "tests/test_quality_report.py",
       "sha256": "50f54302656b4464d67feb739252a241743ce6b49673c3e39b1746c34cb43f05",
       "bytes": 4279
+    },
+    {
+      "path": "tests/test_readiness.py",
+      "sha256": "4e2576c718586d1e8879661043a67de0a80e960a54d13e0a52805f814de4d35a",
+      "bytes": 10228
     },
     {
       "path": "tests/test_requirement_traceability_rules.py",

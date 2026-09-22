@@ -41,7 +41,7 @@ def test_doctor_asks_git_about_the_project_not_the_current_directory(
     run_git(["init", "-q"], cwd=nested)
     monkeypatch.chdir(nested)
 
-    cli.command_doctor(argparse.Namespace())
+    cli.command_doctor(argparse.Namespace(json=True))
 
     assert json.loads(capsys.readouterr().out)["git_worktree"] is False
 

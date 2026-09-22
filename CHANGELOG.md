@@ -7,6 +7,14 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **One readiness model, and a `doctor` that reports the truth.** Installation health,
+  project health and execution readiness are three separate questions, so a repository with
+  every discipline installed and no control plane no longer reports PASS. Nine checks, each
+  with the reason it is not met and the command that repairs it, resolve to one of `READY`,
+  `PARTIAL`, `DEGRADED`, `BROKEN` or `NOT_INITIALIZED`. An index that has fallen behind the
+  tree is reported as drift, not as a gap, so the check does not turn red on every edit.
+  `doctor` prints a table by default and keeps its machine report under `--json`, where the
+  2.0 fields are unchanged and a `readiness` block is added.
 - **Agentic Discipline 2.1 - the Adaptive Assurance Engine.** A change now creates proof
   obligations, and a task completes only when every mandatory one is resolved by current
   evidence. The agent no longer declares success; the state of its obligations decides what
@@ -78,6 +86,9 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   timings are unchanged.
 
 ### Fixed
+- A complete installation is twelve disciplines, not eleven. The expected count was one
+  short, so a project missing a discipline reported a healthy installation; it now reports
+  `STALE`, which `agentic-discipline init --force` repairs.
 - Recompiling an unchanged plan no longer writes a new revision of every obligation and
   reports it as widened. The merge added a depth field the stored obligation did not carry
   yet; the depth is now recorded when the obligation is created. Found by the scoped

@@ -47,7 +47,7 @@ def test_doctor_runs_the_installation_check_in_the_project(
     }
     assert installation["calls"] == [
         (
-            [sys.executable, "-m", "agentic_discipline", "doctor"],
+            [sys.executable, "-m", "agentic_discipline", "doctor", "--json"],
             {
                 "cwd": project.root,
                 "text": True,
