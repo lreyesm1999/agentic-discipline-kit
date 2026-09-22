@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from . import __version__, readiness
+from . import __version__, readiness, repair
 from .acceptance import compile_feature
 from .adapters import ADAPTERS, ALIASES, EMITTERS, LABELS, detect_adapters, sync_adapters
 from .bootstrap import initialize_project
@@ -240,6 +240,55 @@ def command_doctor(args: argparse.Namespace) -> int:
     else:
         print(readiness.render(report))
     return 0 if status == "PASS" else 1
+
+
+def command_repair(args: argparse.Namespace) -> int:
+    result = repair.apply(
+        _doctor_root(),
+        dry_run=getattr(args, "dry_run", False),
+        deep=not getattr(args, "fast", False),
+    )
+    if getattr(args, "json", False):
+        _json(result)
+    else:
+        _render_repair(result)
+    return 0 if result["status"] == "PASS" else 1
+
+
+def _render_repair(result: dict[str, object]) -> None:
+    report = cast(dict[str, object], result["readiness"])
+    planned = cast(list[dict[str, object]], result["planned"])
+    repaired = cast(list[dict[str, object]], result["repaired"])
+    failed = cast(list[dict[str, object]], result["failed"])
+    if result["dry_run"]:
+        print("DRY RUN - nothing was written.")
+    print(f"Execution readiness  {result['before']} -> {report['execution_readiness']}")
+    print("")
+    for entry in planned or repaired:
+        print(f"  - {entry['action']}: {entry['outcome']}")
+    for entry in failed:
+        print(f"  ! {entry['action']}: {entry['outcome']}")
+    if not planned and not repaired and not failed:
+        print("  Nothing to repair.")
+    # Only what no repair answers belongs under that heading: in a dry run the checks a
+    # planned repair covers are not waiting on anybody.
+    covered = {entry["check"] for entry in [*planned, *repaired, *failed]}
+    remaining = [
+        check
+        for check in cast(list[dict[str, object]], report["checks"])
+        if check["status"] != "PASS"
+        and not check["advisory"]
+        and check["name"] not in covered
+        and check["caused_by"] not in covered
+    ]
+    # And a consequence of something already named above is not a second decision.
+    named = {check["name"] for check in remaining}
+    remaining = [check for check in remaining if check["caused_by"] not in named]
+    if remaining:
+        print("")
+        print("Left for a person to decide:")
+        for check in remaining:
+            print(f"  - {check['label']} ({check['status']}): {check['detail']}")
 
 
 def command_crap(args: argparse.Namespace) -> int:
@@ -527,6 +576,18 @@ def build_parser() -> argparse.ArgumentParser:
         help="Skip the working-tree scan that detects stale project knowledge",
     )
     p.set_defaults(func=command_doctor)
+
+    p = sub.add_parser(
+        "repair", help="Repair what can be repaired without a decision, and report the rest"
+    )
+    p.add_argument(
+        "--dry-run", action="store_true", help="Report what would be repaired without writing"
+    )
+    p.add_argument(
+        "--fast", action="store_true", help="Skip the working-tree scan that detects drift"
+    )
+    p.add_argument("--json", action="store_true", help="Emit machine-readable output")
+    p.set_defaults(func=command_repair)
 
     p = sub.add_parser("crap", help="Calculate CRAP score")
     p.add_argument("--complexity", type=float, required=True)

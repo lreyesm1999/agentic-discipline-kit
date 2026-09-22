@@ -99,6 +99,64 @@
           ],
           "subcommands": null
         },
+        "repair": {
+          "help": "Repair what can be repaired without a decision, and report the rest",
+          "description": null,
+          "defaults": {
+            "func": "command_repair"
+          },
+          "arguments": [
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--dry-run"
+              ],
+              "dest": "dry_run",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Report what would be repaired without writing",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--fast"
+              ],
+              "dest": "fast",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Skip the working-tree scan that detects drift",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Emit machine-readable output",
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
         "crap": {
           "help": "Calculate CRAP score",
           "description": null,

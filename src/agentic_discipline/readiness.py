@@ -70,6 +70,10 @@ class Check:
     # as work starts. An index a few edits behind is the normal state of an active
     # repository, and a check that turns red on every edit teaches people to ignore it.
     advisory: bool = False
+    # The check this one is only failing because of. Three checks read the control plane, so
+    # without it they report the same absence three more times; naming the cause lets a
+    # reader, and a repair, treat them as one thing.
+    caused_by: str | None = None
 
     @property
     def repairable(self) -> bool:
@@ -84,6 +88,7 @@ class Check:
             "repair": self.repair,
             "repairable": self.repairable,
             "advisory": self.advisory,
+            "caused_by": self.caused_by,
         }
 
 
@@ -327,7 +332,10 @@ def _control_plane(root: Path, kind: str, mode: str) -> tuple[Check, Any]:
 def _project_adoption(root: Path, store: Any) -> Check:
     if store is None:
         return Check(
-            "project_adoption", "MISSING", "no project record, because there is no control plane"
+            "project_adoption",
+            "MISSING",
+            "no project record, because there is no control plane",
+            caused_by="control_plane",
         )
     records = store.list("project")
     if not records:
@@ -345,7 +353,10 @@ def _project_adoption(root: Path, store: Any) -> Check:
 def _knowledge(root: Path, store: Any, *, deep: bool) -> Check:
     if store is None:
         return Check(
-            "knowledge", "MISSING", "no knowledge store, because there is no control plane"
+            "knowledge",
+            "MISSING",
+            "no knowledge store, because there is no control plane",
+            caused_by="control_plane",
         )
     files = [e for e in store.list("entity") if e["graph"] == "code" and not e.get("symbol_type")]
     if not files:
@@ -379,6 +390,7 @@ def _task_orchestration(store: Any) -> Check:
             "task_orchestration",
             "MISSING",
             "tasks, leases and checkpoints need the control plane",
+            caused_by="control_plane",
         )
     if not store.list("policy"):
         return Check(

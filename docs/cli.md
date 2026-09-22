@@ -130,6 +130,44 @@ Options: `--check-tools` probes the executables the gates call, `--json` prints 
 report (the 2.0 fields plus a `readiness` block), `--fast` skips the working-tree scan that
 detects drift, and `--config` points at a specific quality configuration.
 
+## repair
+
+Closes the gaps `doctor` found that can be closed without a decision, and reports the rest.
+
+```bash
+agentic-discipline repair            # or --dry-run to see the plan first
+```
+
+```text
+Execution readiness  PARTIAL -> READY
+
+  - initialise the control plane: adopted the repository and indexed the project
+```
+
+A repair qualifies only when it cannot lose data, cannot change what the project is supposed
+to do, needs nothing from outside the machine, and writes only files the kit itself owns: the
+payload under `.agentic/`, the managed block inside each adapter file, and the control
+directory. The payload is filled in rather than overwritten, so a configuration you edited by
+hand comes out as you left it, and tasks, leases, checkpoints and evidence are never touched.
+
+Four repairs exist, and they run in dependency order, with the reindex last because the
+earlier ones write files: reinstall the payload, recompile the agent surfaces, initialise the
+control plane, reindex the project. A check that is only failing because another one is has no
+repair of its own - adopting a project restores its record, its index and its orchestration
+together - so nothing is attempted whose cause is still open.
+
+These are never repaired, because each one needs a person and guessing would destroy history:
+
+| Finding | Why not |
+|---|---|
+| `.agentic/control/` with no state database | a second database beside it would split the project's history |
+| an audit chain that does not verify | the history has been altered; what it recorded is no longer known |
+| a plane adopted for another checkout | its tasks and evidence belong to a different tree |
+
+Every repair is written to the audit chain as `readiness.repair`, with the state it moved
+from and to. Nothing to repair writes nothing, including no audit record. The exit code is
+zero when the project is usable afterwards.
+
 ## risk
 
 Classifies a git diff.

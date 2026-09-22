@@ -7,6 +7,14 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **`agentic-discipline repair`: safe auto-repair with an audit record.** It reinstalls a
+  pruned payload, recompiles stale agent surfaces, initialises a missing control plane and
+  reindexes a project that has drifted, in dependency order, and writes what it did to the
+  audit chain as `readiness.repair`. A repair qualifies only when it cannot lose data, change
+  what the project is supposed to do, reach outside the machine, or write anything but the
+  files the kit itself owns; the payload is filled in rather than overwritten. An unexplained
+  control directory, an altered audit chain and a plane adopted for another checkout are
+  reported and never repaired, and a repair whose cause is still open is not attempted.
 - **`init` leaves the project operational, not merely configured.** After the contracts and
   the adapters it initialises the control plane, indexes the project and measures readiness,
   so one command produces a repository that can run the workflow and a closing line that
