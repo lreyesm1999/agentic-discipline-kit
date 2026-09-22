@@ -37,6 +37,38 @@ contracts, installed disciplines and quality configuration are valid. Use the ex
 [install guide](../install.md) for that setup. Do not overwrite existing instructions
 merely to make doctor pass.
 
+## Preflight
+
+Every real execution starts here, and so does every agent working in this repository:
+
+```sh
+agentic preflight              # checks, repairs what is safe, reports the mode
+agentic preflight --no-repair   # report only
+```
+
+Eight requirements are reported in order: installation, version, control plane, adoption,
+knowledge, git, quality configuration, task orchestration. Whatever can be repaired without a
+decision is repaired first, and named in the report. The result is one of three modes:
+
+| Mode | Meaning |
+|---|---|
+| `FULL` | every requirement is met; the whole workflow is available |
+| `DEGRADED` | work can proceed, and the report lists exactly what is unavailable and why |
+| `BLOCKED` | the work stops, with the precise reason |
+
+`DEGRADED` exists so that nothing is ever implied. A rules-only project gets the disciplines
+and no orchestration, and the report says which five things are gone: task contracts and their
+readiness, leases, checkpoints and resumable state, recorded evidence and proof obligations,
+and the completion invariant. A project outside git keeps the workflow but loses workspace
+isolation, change integrity checks and rollback to a checkpoint.
+
+An operation that cannot honestly run in a mode refuses rather than pretending: `DEGRADED_MODE`
+when the work needs orchestration, `NOT_READY` when it needs git or when the mode is blocked.
+
+The same preflight is on the versioned API as the owner-only `preflight` operation. The command
+line is what serves a project that has no control plane yet, because opening one requires it to
+exist.
+
 ## Execute a task
 
 Start with [task.json](../../examples/control/task.json) and replace its objective,

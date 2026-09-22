@@ -30,6 +30,10 @@ PAYLOAD = {
     "config/risk-weights.json": ".agentic/config/risk-weights.json",
 }
 
+# The payload layout this release installs. A project carrying a higher one was installed by
+# a newer kit, and this one must not quietly write over it.
+PAYLOAD_SCHEMA = "3"
+
 # Directories such as `specs/`, `acceptance/` and `artifacts/` are created on
 # demand by the phase that needs them; pre-creating them littered an adopting
 # repository with `.gitkeep` files for phases a project may never reach.
@@ -133,7 +137,7 @@ def _install_payload(
     _write_json(
         target_root / ".agentic" / "config.json",
         {
-            "schema_version": "3",
+            "schema_version": PAYLOAD_SCHEMA,
             "adk": {"risk_default": "STANDARD", "unknown_blocks_release": True},
             "agents": {"mode": "auto", "adapters": ["generic"]},
             "verification": {

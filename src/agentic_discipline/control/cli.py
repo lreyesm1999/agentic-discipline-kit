@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from .. import __version__
-from . import API_VERSION
+from . import API_VERSION, preflight
 from .api import SCHEMAS, call
 from .contracts import ControlError, encode, require
 from .migration import import_legacy, rollback_changeset
@@ -30,6 +30,15 @@ def parser() -> argparse.ArgumentParser:
     adoption.add_argument("--dry-run", action="store_true")
     for name in ("status", "doctor", "reconcile"):
         commands.add_parser(name)
+    flight = commands.add_parser(
+        "preflight", help="Check, repair what is safe, and report the mode work may proceed in"
+    )
+    flight.add_argument(
+        "--no-repair", action="store_true", help="Report without repairing anything"
+    )
+    flight.add_argument(
+        "--fast", action="store_true", help="Skip the working-tree scan that detects drift"
+    )
     api = commands.add_parser("api", help="Call a versioned operation using a JSON input file")
     api.add_argument("operation", choices=sorted(SCHEMAS))
     api.add_argument("--input", type=Path)
@@ -266,6 +275,11 @@ def assurance_command(plane: Plane, args: argparse.Namespace) -> dict[str, Any]:
 def run(args: argparse.Namespace) -> dict[str, Any] | None:
     if args.group == "adopt":
         return {"api_version": API_VERSION, "data": adopt(args.path, args.dry_run)}
+    if args.group == "preflight":
+        return {
+            "api_version": API_VERSION,
+            "data": preflight.run(args.root, repair_first=not args.no_repair, deep=not args.fast),
+        }
     with Plane(args.root) as plane:
         if args.group == "mcp":
             from .mcp import serve
@@ -399,6 +413,8 @@ def main() -> None:
                 print(encode(result))
             elif args.group == "assurance" and args.action in {"status", "debt", "explain"}:
                 print(render_assurance(args.action, result["data"]))
+            elif args.group == "preflight":
+                print(preflight.render(result["data"]))
             elif args.group == "status":
                 data = result["data"]
                 print(

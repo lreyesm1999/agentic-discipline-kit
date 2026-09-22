@@ -6,7 +6,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from . import API_VERSION
+from . import API_VERSION, preflight
 from .assurance import migration as assurance_migration
 from .assurance import service as assurance_service
 from .contracts import ControlError, require
@@ -39,6 +39,12 @@ def schema(properties: dict[str, Any], required: list[str] | None = None) -> dic
 SCHEMAS: dict[str, dict[str, Any]] = {
     "status": schema({}),
     "doctor": schema({}),
+    # Both flags default to the safe reading: repair what can be repaired, and look at the
+    # working tree. A caller that only wants the report says so.
+    "preflight": schema(
+        {"repair": {"type": "boolean"}, "deep": {"type": "boolean"}},
+        required=[],
+    ),
     "discover_project": schema({}),
     "query_knowledge": schema(
         {
@@ -140,6 +146,8 @@ LOCAL_ONLY = {
     "assurance_register_verifier",
     "assurance_migrate",
     "assurance_rollback",
+    # Preflight repairs what it safely can, which is a write, so it stays with the owner.
+    "preflight",
 }
 READ_ONLY = {
     "doctor",
@@ -213,6 +221,10 @@ def call(plane: Plane, name: str, args: dict[str, Any], *, local: bool = False) 
     require(not errors, "INVALID_INPUT", "; ".join(e.message for e in errors))
     if name == "doctor":
         result: Any = doctor(plane)
+    elif name == "preflight":
+        result = preflight.for_plane(
+            plane, repair_first=args.get("repair", True), deep=args.get("deep", True)
+        )
     elif name in {"status", "knowledge_health"}:
         result = plane.status()
     elif name in {"discover_project", "reconcile"}:

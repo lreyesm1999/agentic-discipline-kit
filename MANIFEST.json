@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-22T23:06:49.774639+00:00",
+  "generated_at_utc": "2026-09-22T23:51:14.131885+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "511326b280404d61c8c5d57a70c4d07c85388022c786f9e7566a067ebc3cac0a",
-      "bytes": 22218
+      "sha256": "3b67ce4835ade4aa20dc6f626df7b7dc9d10bdb97a183dad0f6bc603014702c6",
+      "bytes": 23268
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -475,8 +475,8 @@
     },
     {
       "path": "docs/v2/README.md",
-      "sha256": "9fc36bfd6926999af961ae7c8038244ee67bdb18da1c67d7966063851949359a",
-      "bytes": 5862
+      "sha256": "731975151ffdceb85dad0b662e0fae7b8d35c61fc431ab04fa2b5b431480b32b",
+      "bytes": 7450
     },
     {
       "path": "docs/v2/VALIDATION.md",
@@ -1230,8 +1230,8 @@
     },
     {
       "path": "src/agentic_discipline/bootstrap.py",
-      "sha256": "5786ebd554973b43c37853dad82f4c09bf5d733058b3e2f46f65b3b3e967c20c",
-      "bytes": 15792
+      "sha256": "e37a3717e9aab4bc069ee06fd534edcb4ebb5869e029f9c3882b6e2a0e094b1d",
+      "bytes": 15978
     },
     {
       "path": "src/agentic_discipline/cli.py",
@@ -1250,8 +1250,8 @@
     },
     {
       "path": "src/agentic_discipline/control/api.py",
-      "sha256": "72b4f27771ee7f41747bb279e2be29a4b7936b9c2a154049238a17694f518e61",
-      "bytes": 11946
+      "sha256": "a243aed064eae11d194a8d348bc7f2aa6c119ce62f48b866c85f2d36a06c6b24",
+      "bytes": 12507
     },
     {
       "path": "src/agentic_discipline/control/assurance/__init__.py",
@@ -1305,8 +1305,8 @@
     },
     {
       "path": "src/agentic_discipline/control/cli.py",
-      "sha256": "6bffe41b6eb1580a35569bf34a30f911da4493c42bd1b247565ba9330b4b1b5a",
-      "bytes": 17625
+      "sha256": "a0f1c3c91908f5922747b5092f09a29006fb990684efb7588ba095ade1423ff0",
+      "bytes": 18311
     },
     {
       "path": "src/agentic_discipline/control/console.py",
@@ -1347,6 +1347,11 @@
       "path": "src/agentic_discipline/control/plane.py",
       "sha256": "7a1779bd117d9f6258b4aa881b86f5b2926f0f9380c270ccc564e25068b5f636",
       "bytes": 35269
+    },
+    {
+      "path": "src/agentic_discipline/control/preflight.py",
+      "sha256": "1d68add73dc199fa3d0f0cab4396153e1901d997687e2074ae2196d1ad7b6b78",
+      "bytes": 8430
     },
     {
       "path": "src/agentic_discipline/control/store.py",
@@ -1400,13 +1405,13 @@
     },
     {
       "path": "src/agentic_discipline/readiness.py",
-      "sha256": "c0e94e3bfc590b09a0beee0fc044bf731a6188822515df6789adbd39d628d893",
-      "bytes": 19765
+      "sha256": "6396a830672ac73cdaa75c3d73d8d549e343a22da384e03459ab0cec8e80fa49",
+      "bytes": 21613
     },
     {
       "path": "src/agentic_discipline/repair.py",
-      "sha256": "7dbae656a5097d0008e614d7d38f4923dc089d59fd3181b4eb4908a980e75e9d",
-      "bytes": 7486
+      "sha256": "80e78aad8448365aeaebd0cc0e59cb6cee47841318bf5bbed317e1e3d9c0d6b9",
+      "bytes": 7447
     },
     {
       "path": "src/agentic_discipline/requirements.py",
@@ -1480,8 +1485,8 @@
     },
     {
       "path": "tests/cli_surface.json",
-      "sha256": "7c27a7dcd4942ea0f12e53bee3e3e104ba8915b59e6669da87d8db435de86dc5",
-      "bytes": 73622
+      "sha256": "e7b08ecc2695dd7c6d3094161a9d9cac8a52e3744f399501ad964b18649a2a64",
+      "bytes": 75302
     },
     {
       "path": "tests/control/assurance_support.py",
@@ -1500,8 +1505,8 @@
     },
     {
       "path": "tests/control/test_api_dispatch.py",
-      "sha256": "4ce8dafaea49aa3654bfc044477873bcf9eb4451d362ae5b7e274e11f5bee657",
-      "bytes": 18473
+      "sha256": "42eed771e2b71245ce36aae2cb23b20501f377934667e334fcd87a072605e27d",
+      "bytes": 18683
     },
     {
       "path": "tests/control/test_assurance_contracts.py",
@@ -1689,6 +1694,11 @@
       "bytes": 22665
     },
     {
+      "path": "tests/control/test_preflight.py",
+      "sha256": "092ba556c8444053b3a742e9b7b383a326eedf28dbf1d17aab270b2a932530b9",
+      "bytes": 9338
+    },
+    {
       "path": "tests/control/test_proof_binding.py",
       "sha256": "6f349fc6a861d13de77ff2b064e7e23c2f6d0a8d8c69b00fd5f5a93f020d6d9d",
       "bytes": 12111
@@ -1705,8 +1715,8 @@
     },
     {
       "path": "tests/control/test_repair.py",
-      "sha256": "5a647d861aff84c65bdfb97820e3016903de72c71c10a88dc0a7a8f40bed9e03",
-      "bytes": 9727
+      "sha256": "c94987a8856e61a17f604acc40b18a6be5ce274c5435e8daf27285fcdbd104e9",
+      "bytes": 9487
     },
     {
       "path": "tests/control/test_resilience.py",

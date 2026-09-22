@@ -39,7 +39,13 @@ REPAIRABLE = ("MISSING", "STALE")
 # the kit is not installed here at all.
 STATES = ("READY", "PARTIAL", "DEGRADED", "BROKEN", "NOT_INITIALIZED")
 
-INSTALLATION_CHECKS = ("installation", "disciplines", "agent_adapter", "quality_gates")
+INSTALLATION_CHECKS = (
+    "installation",
+    "version",
+    "disciplines",
+    "agent_adapter",
+    "quality_gates",
+)
 PROJECT_CHECKS = ("control_plane", "project_adoption", "knowledge", "task_orchestration")
 # Git is what both halves stand on: adoption records a baseline commit, and every
 # verification binds to the tree git reports.
@@ -47,6 +53,7 @@ ENVIRONMENT_CHECKS = ("git_integration",)
 
 LABELS = {
     "installation": "Installation",
+    "version": "Version",
     "disciplines": "Disciplines",
     "agent_adapter": "Agent adapter",
     "quality_gates": "Quality gates",
@@ -177,6 +184,50 @@ def _installation(root: Path, kind: str) -> Check:
             "agentic-discipline init --force",
         )
     return Check("installation", "PASS", f"version {__version__}")
+
+
+def _version(root: Path, kind: str) -> Check:
+    """Whether this kit can manage this project's payload, in both directions."""
+
+    from . import __version__
+    from .bootstrap import PAYLOAD_SCHEMA
+    from .migration import LEGACY_PATHS
+
+    if kind != "project":
+        return Check("version", "PASS", f"kit {__version__}")
+    try:
+        payload = json.loads((root / PAYLOAD_CONFIG).read_text(encoding="utf-8"))
+        schema = str(payload["schema_version"])
+    except (OSError, ValueError, KeyError):
+        schema = ""
+    installs = int(PAYLOAD_SCHEMA)
+    carried = int(schema) if schema.isdigit() else installs
+    if carried > installs:
+        # Writing this release's layout over a newer one would silently downgrade the project.
+        return Check(
+            "version",
+            "FAIL",
+            f"the payload is schema {schema} and this kit installs {PAYLOAD_SCHEMA}:"
+            " upgrade the kit rather than downgrading the project",
+        )
+    legacy = [path for path in LEGACY_PATHS if (root / path).exists()]
+    if legacy:
+        return Check(
+            "version",
+            "STALE",
+            f"an earlier layout is still in the repository root: {', '.join(legacy)}."
+            " The payload under .agentic/ is what is read; these are leftovers",
+            "agentic-discipline migrate --prune",
+            advisory=True,
+        )
+    if carried < installs:
+        return Check(
+            "version",
+            "FAIL",
+            f"the payload is schema {schema} and this kit installs {PAYLOAD_SCHEMA}:"
+            " run `agentic-discipline migrate`, which rewrites generated files",
+        )
+    return Check("version", "PASS", f"kit {__version__}, payload schema {schema or PAYLOAD_SCHEMA}")
 
 
 def _disciplines(root: Path) -> Check:
@@ -427,6 +478,7 @@ def inspect(root: Path, *, deep: bool = True, config: Path | None = None) -> dic
     kind = shape(root)
     checks = [
         _installation(root, kind),
+        _version(root, kind),
         _disciplines(root),
         _agent_adapter(root, kind),
         _quality_gates(root, config),

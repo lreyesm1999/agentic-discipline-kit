@@ -23,6 +23,8 @@ from .common import AgenticError
 # Ordered by dependency: the payload carries the disciplines the adapters are compiled from,
 # the adapters have to be current before a plan is trusted, the plane cannot be adopted
 # before the project exists on disk, and the index follows adoption.
+# A payload from another release is not on this list: migration rewrites generated files, so
+# it stays with the owner even though the command is a single line.
 ORDER = (
     "installation",
     "disciplines",

@@ -31,6 +31,7 @@ MODULE_FUNCTIONS = (
     "parallel_safety",
     "assurance_service",
     "assurance_migration",
+    "preflight",
 )
 TASKS = [
     {"id": "TASK-A", "state": "READY"},
@@ -395,6 +396,12 @@ DISPATCH: list[
         [("assurance_migration.rollback", (PLANE, "ASSU-1", "reverting the upgrade"), {})],
         ("result", "assurance_migration.rollback"),
     ),
+    (
+        "preflight",
+        {},
+        [("preflight.for_plane", (PLANE,), {"repair_first": True, "deep": True})],
+        ("result", "preflight.for_plane"),
+    ),
 ]
 
 
@@ -473,6 +480,7 @@ def test_owner_operations_are_listed_and_refused_to_workers(
         "assurance_register_verifier",
         "assurance_migrate",
         "assurance_rollback",
+        "preflight",
     }
     plane, log = recorded
     arguments = {operation: args for operation, args, *_ in DISPATCH}

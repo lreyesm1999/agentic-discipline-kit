@@ -7,6 +7,19 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **A mandatory execution preflight, `agentic preflight`.** Eight requirements - installation,
+  version, control plane, adoption, knowledge, git, quality configuration, task orchestration -
+  are checked, whatever can be repaired safely is repaired first, and the result is one of
+  three modes: `FULL`, `DEGRADED` or `BLOCKED`. A degraded mode is never implied: the report
+  names what is unavailable, whether that is orchestration in a rules-only project or the
+  operations that need a commit in a project outside git. `preflight.requires` lets an
+  operation refuse a mode it cannot honestly run in, and the same preflight is on the
+  versioned API as an owner-only operation.
+- **A version check in readiness.** A payload from a newer kit is `BROKEN` rather than
+  silently downgraded; one from an older release stops the work and names `migrate`, which
+  rewrites generated files and so stays with the owner; leftovers from the pre-`.agentic`
+  layout are reported as drift with `migrate --prune`, because deleting files is never
+  automatic.
 - **`agentic-discipline repair`: safe auto-repair with an audit record.** It reinstalls a
   pruned payload, recompiles stale agent surfaces, initialises a missing control plane and
   reindexes a project that has drifted, in dependency order, and writes what it did to the

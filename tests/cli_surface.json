@@ -1443,6 +1443,62 @@
           ],
           "subcommands": null
         },
+        "preflight": {
+          "help": "Check, repair what is safe, and report the mode work may proceed in",
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--no-repair"
+              ],
+              "dest": "no_repair",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Report without repairing anything",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--fast"
+              ],
+              "dest": "fast",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Skip the working-tree scan that detects drift",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
         "api": {
           "help": "Call a versioned operation using a JSON input file",
           "description": null,
@@ -1490,6 +1546,7 @@
                 "lifecycle",
                 "parallel_safety",
                 "plan_audit",
+                "preflight",
                 "query_knowledge",
                 "readiness",
                 "reconcile",
