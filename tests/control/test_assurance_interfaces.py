@@ -519,11 +519,20 @@ def test_the_shipped_assurance_example_routes_every_claim_its_change_raises(
 ) -> None:
     """The example in `examples/control/` has to be one a project can actually run, and the
     routes its README promises have to be the ones the planner picks."""
-    data = json.loads(
-        (Path(__file__).resolve().parents[2] / "examples/control/assurance-task.json").read_text(
-            encoding="utf-8"
-        )
+    # The mutation gate runs this suite from a copy of the tree under `mutants/`, which
+    # holds the package and the tests but not the examples, so the file is looked for in
+    # each ancestor rather than at a fixed distance from this one.
+    example = Path("examples/control/assurance-task.json")
+    found = next(
+        (
+            parent / example
+            for parent in Path(__file__).resolve().parents
+            if (parent / example).is_file()
+        ),
+        None,
     )
+    assert found is not None, f"{example} is missing"
+    data = json.loads(found.read_text(encoding="utf-8"))
     for verifier in data["verification"]:
         repository.approve_command(verifier["command"])
     task = repository.create_task(data)
