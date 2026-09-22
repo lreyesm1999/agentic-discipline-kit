@@ -193,16 +193,20 @@ def apply(tree: ast.AST, position: int) -> tuple[str, Mutation] | None:
         if index != position:
             continue
         field, slot, value = replacement
+        # Which attribute exists is decided by the node's own kind, and `candidates` only
+        # ever pairs a node with a field that kind has. Saying so in the type is honest;
+        # silencing the checker line by line would not be.
+        target: Any = node
         if field == "ops":
-            node.ops[slot] = value  # type: ignore[attr-defined]
+            target.ops[slot] = value
         elif field == "op":
-            node.op = value  # type: ignore[attr-defined]
+            target.op = value
         elif field == "value":
-            node.value = value  # type: ignore[attr-defined]
+            target.value = value
         elif field == "negate":
-            node.test = ast.UnaryOp(op=ast.Not(), operand=node.test)  # type: ignore[attr-defined]
+            target.test = ast.UnaryOp(op=ast.Not(), operand=target.test)
         elif field == "drop_return":
-            node.value = None  # type: ignore[attr-defined]
+            target.value = None
         elif field == "break":
             return _swap_statement(clone, node, ast.Continue()), Mutation(
                 "", getattr(node, "lineno", 0), family, before, after

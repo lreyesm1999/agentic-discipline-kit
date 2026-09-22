@@ -37,17 +37,29 @@ $ python scripts/repo_check.py
 }
 exit=0
 
-$ agentic-discipline protected --base-ref HEAD
+
+$ agentic-discipline protected --base-ref origin/main
 {
   "status": "PASS",
   "changed": []
 }
 exit=0
 
-$ agentic-discipline integrity --base-ref HEAD
+$ agentic-discipline integrity --base-ref origin/main
 {
-  "status": "PASS",
-  "findings": [],
+  "status": "FAIL",
+  "findings": [
+    {
+      "file": "tests/test_state_and_gitignore.py",
+      "pattern": "test_removed",
+      "line": "def test_an_already_configured_gitignore_is_left_alone(tmp_path: Path) -> None:"
+    }
+  ],
   "retired_tests": []
 }
-exit=0
+exit=1
+
+# The integrity audit against origin/main reports one removed test in
+# tests/test_state_and_gitignore.py. It comes from ec363c2, the commit this branch
+# carries from pull request #29, and not from this change: the same audit run against
+# that commit reports nothing, and #29 fails this gate on its own branch too.

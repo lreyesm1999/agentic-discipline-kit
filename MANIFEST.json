@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-21T07:24:13.212592+00:00",
+  "generated_at_utc": "2026-09-22T19:11:15.746348+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -427,6 +427,11 @@
       "path": "docs/v2.1/evidence/benchmark.json",
       "sha256": "fcb95e139ff98802e4759d4db7eb3066f2d1048b0376ad37d4c82dcba8b725c6",
       "bytes": 2037
+    },
+    {
+      "path": "docs/v2.1/evidence/checks.log",
+      "sha256": "65ac07a8971d70cb7daebbffbf63e1cd0b6e87cf58a07d2d4a1e2a833367faf9",
+      "bytes": 1698
     },
     {
       "path": "docs/v2.1/evidence/dogfood.json",
@@ -1065,8 +1070,8 @@
     },
     {
       "path": "scripts/assurance_mutation.py",
-      "sha256": "85b2c22cfd710f048cf8414ecb8f67611914bc8edbd043fc7e4e3bf2bca2021f",
-      "bytes": 23886
+      "sha256": "cb60d996ece9d941dfbf794b1e65034ac715f0a405427f7dc4154e72521e868f",
+      "bytes": 24017
     },
     {
       "path": "scripts/build_manifest.py",
