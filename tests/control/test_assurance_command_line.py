@@ -30,7 +30,7 @@ def plane(tmp_path: Path) -> Any:
         yield opened
 
 
-def _run(plane: Any, *arguments: str) -> tuple[int, dict[str, Any] | str]:
+def _run(plane: Any, *arguments: str) -> tuple[int, Any]:
     argv = ["agentic", "--root", str(plane.root), "assurance", *arguments]
     with mock.patch.object(sys, "argv", argv), mock.patch("sys.stdout") as stdout:
         try:
@@ -56,12 +56,12 @@ def test_plan_reads_the_stored_plan_and_compile_writes_one(plane: Any) -> None:
 
     code, answer = _run(plane, "plan", task, "--compile", "--json")
     assert code == 0
-    compiled = answer["data"]  # type: ignore[index]
+    compiled = answer["data"]
     assert compiled["task_id"] == task
 
     code, answer = _run(plane, "plan", task, "--json")
     assert code == 0
-    assert answer["data"] == service.plan_view(plane, task)  # type: ignore[index]
+    assert answer["data"] == service.plan_view(plane, task)
 
 
 def test_status_and_debt_answer_for_one_task_or_for_all(plane: Any) -> None:
@@ -75,10 +75,10 @@ def test_status_and_debt_answer_for_one_task_or_for_all(plane: Any) -> None:
         ("debt", service.debt_report(plane, task)),
     ):
         code, answer = _run(plane, action, task, "--json")
-        assert (code, answer["data"]) == (0, expected)  # type: ignore[index]
+        assert (code, answer["data"]) == (0, expected)
     code, answer = _run(plane, "status", "--json")
-    assert answer["data"] == service.status(plane)  # type: ignore[index]
-    assert len(answer["data"]["tasks"]) == 2  # type: ignore[index]
+    assert answer["data"] == service.status(plane)
+    assert len(answer["data"]["tasks"]) == 2
 
 
 def test_status_and_debt_print_the_plain_report(plane: Any) -> None:
@@ -99,9 +99,9 @@ def test_explain_answers_for_a_task_and_for_one_obligation(plane: Any) -> None:
     obligation = service.obligations_for(plane, task)[0]["id"]
 
     code, answer = _run(plane, "explain", task, "--json")
-    assert (code, answer["data"]) == (0, service.explain(plane, task))  # type: ignore[index]
+    assert (code, answer["data"]) == (0, service.explain(plane, task))
     code, answer = _run(plane, "explain", obligation, "--json")
-    assert answer["data"] == service.explain(plane, obligation)  # type: ignore[index]
+    assert answer["data"] == service.explain(plane, obligation)
 
     code, text = _run(plane, "explain", obligation)
     assert str(text).startswith(f"{obligation}\nClaim:\n")
@@ -109,9 +109,9 @@ def test_explain_answers_for_a_task_and_for_one_obligation(plane: Any) -> None:
 
 def test_registry_and_integrity_are_read_without_arguments(plane: Any) -> None:
     code, answer = _run(plane, "registry", "--json")
-    assert (code, answer["data"]) == (0, service.registry(plane))  # type: ignore[index]
+    assert (code, answer["data"]) == (0, service.registry(plane))
     code, answer = _run(plane, "integrity", "--json")
-    assert answer["data"] == service.integrity(plane)  # type: ignore[index]
+    assert answer["data"] == service.integrity(plane)
 
 
 def test_a_waiver_needs_a_reason_and_an_authority(plane: Any) -> None:
@@ -121,7 +121,7 @@ def test_a_waiver_needs_a_reason_and_an_authority(plane: Any) -> None:
     for missing in (["--authorization", "owner"], ["--reason", "accepted"]):
         code, answer = _run(plane, "waive", obligation, *missing)
         assert code == 2
-        assert answer == {  # type: ignore[comparison-overlap]
+        assert answer == {
             "api_version": "2",
             "status": "ERROR",
             "code": "DECISION_REQUIRED",
@@ -147,7 +147,7 @@ def test_a_human_verdict_needs_its_decision(plane: Any) -> None:
     obligation = service.obligations_for(plane, task)[0]["id"]
 
     code, answer = _run(plane, "resolve", obligation)
-    assert (code, answer["code"], answer["message"]) == (  # type: ignore[index]
+    assert (code, answer["code"], answer["message"]) == (
         2,
         "DECISION_REQUIRED",
         "Record --decision",
@@ -157,10 +157,10 @@ def test_a_human_verdict_needs_its_decision(plane: Any) -> None:
 def test_migration_and_rollback_are_owner_actions_with_their_reason(plane: Any) -> None:
     code, answer = _run(plane, "migrate", "--dry-run", "--json")
     assert code == 0
-    assert answer["data"]["dry_run"] is True  # type: ignore[index]
+    assert answer["data"]["dry_run"] is True
 
     code, answer = _run(plane, "rollback", "ASSU-0")
-    assert (code, answer["code"], answer["message"]) == (  # type: ignore[index]
+    assert (code, answer["code"], answer["message"]) == (
         2,
         "REASON_REQUIRED",
         "Rollback requires --reason",
@@ -175,7 +175,7 @@ def test_verification_runs_the_task_s_verifiers_for_its_worker(plane: Any, tmp_p
     code, answer = _run(plane, "verify", task, "--session-file", str(session_file), "--json")
 
     assert code == 0
-    assert answer["data"]["status"] == "PASS"  # type: ignore[index]
+    assert answer["data"]["status"] == "PASS"
 
 
 def test_a_rollback_with_its_reason_returns_the_project_to_where_it_was(plane: Any) -> None:
@@ -188,7 +188,41 @@ def test_a_rollback_with_its_reason_returns_the_project_to_where_it_was(plane: A
     )
 
     assert code == 0
-    data = answer["data"]  # type: ignore[index]
+    data = answer["data"]
     # Back to the schema the migration recorded it came from.
     assert (data["rolled_back"], data["schema_version"]) == (True, applied["from_schema"])
     assert data["migration"]["rollback_reason"] == "trying it later"
+
+
+def _human_claim(plane: Any, task: str) -> str:
+    """Route one obligation to a person, the way the planner does for human-only claims."""
+
+    obligation = dict(service.obligations_for(plane, task)[0])
+    with plane.store.transaction():
+        plane.store.put(
+            "obligation",
+            {
+                **obligation,
+                "required_verifiers": [f"human:{obligation['id']}"],
+                "plan": {**obligation["plan"], "human_required": True},
+            },
+            expected=obligation["version"],
+        )
+    return str(obligation["id"])
+
+
+def test_a_human_verdict_is_recorded_as_accepted_or_rejected(plane: Any) -> None:
+    task, _ = _task(plane)
+    obligation = _human_claim(plane, task)
+
+    code, answer = _run(plane, "resolve", obligation, "--decision", "reads correctly", "--json")
+    assert code == 0
+    recorded = answer["data"]["evidence"]
+    assert (recorded["result"], recorded["verifier"]) == ("PASS", f"human:{obligation}")
+    assert service.explain(plane, obligation)["status"] == "VERIFIED"
+
+    code, answer = _run(
+        plane, "resolve", obligation, "--decision", "misses a case", "--rejected", "--json"
+    )
+    assert code == 0
+    assert answer["data"]["evidence"]["result"] == "FAIL"

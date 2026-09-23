@@ -65,7 +65,7 @@ def test_legacy_evidence_of_an_undeclared_kind_is_classified_as_measured(plane: 
                 "acceptance": [0],
                 "result": "PASS",
                 "exit_code": 0,
-                "command": ["true"],
+                "command": ["pytest", "-q", "tests/test_custom.py"],
             },
         )
 
