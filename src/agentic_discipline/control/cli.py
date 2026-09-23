@@ -42,8 +42,15 @@ def parser() -> argparse.ArgumentParser:
     job = commands.add_parser(
         "work", help="Turn a request in your own words into governed, claimed work"
     )
-    job.add_argument("action", choices=["start", "derive"])
-    job.add_argument("request", help="What you want done, in your own words")
+    job.add_argument(
+        "action", choices=["start", "derive", "checkpoint", "verify", "finish", "next"]
+    )
+    job.add_argument("request", nargs="?", default="", help="What you want done, in your own words")
+    job.add_argument("--task", help="The task to act on, for checkpoint, verify and finish")
+    job.add_argument("--session-file", type=Path)
+    job.add_argument("--reason", choices=list(work.CHECKPOINT_REASONS), default="slice_complete")
+    job.add_argument("--summary", action="append", default=[])
+    job.add_argument("--next-action")
     job.add_argument("--agent", default="local-agent")
     job.add_argument("--capability", action="append", default=[], dest="capabilities")
     job.add_argument(
@@ -325,6 +332,28 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
         if args.group in {"status", "doctor", "reconcile"}:
             return call(plane, args.group, {}, local=True)
         if args.group == "work":
+            if args.action == "next":
+                return {"data": work.next_ready(plane)}
+            if args.action in {"checkpoint", "verify", "finish"}:
+                require(bool(args.task), "TASK_REQUIRED", "Name the task with --task")
+                token = session(args.session_file)
+                if args.action == "verify":
+                    return {"data": work.verify(plane, args.task, token)}
+                if args.action == "finish":
+                    return {
+                        "data": work.finish(plane, args.task, token, summary=args.summary or None)
+                    }
+                return {
+                    "data": work.checkpoint(
+                        plane,
+                        args.task,
+                        token,
+                        reason=args.reason,
+                        summary=args.summary or None,
+                        next_action=args.next_action,
+                    )
+                }
+            require(bool(args.request.strip()), "INVALID_REQUEST", "Describe the work")
             if args.action == "derive":
                 return {"data": work.derive(plane, args.request)}
             result = work.start(

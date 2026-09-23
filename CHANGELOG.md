@@ -7,6 +7,15 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **Checkpoints, verification and completion without being asked.** `agentic work checkpoint`
+  records resumable state at the seven moments worth recording, filling in everything the
+  records already hold - the files measured against the tree as it was claimed, the commands
+  and results from the evidence since the last checkpoint, the next action from the first
+  unproven claim - so a checkpoint cannot disagree with the evidence beside it. `agentic work
+  verify` runs what the task declared, which is the project's own gates. `agentic work finish`
+  verifies, checkpoints and completes, or returns the refusal as an answer: `VERIFICATION_FAILED`
+  for a failing gate, and the completion invariant's own refusal with the outstanding claims for
+  proof debt. `agentic work next` names the task whose turn it is.
 - **`agentic work start "<request>"`: a request in your own words becomes governed work.**
   The task contract is derived from what is already recorded - the request, the project's
   requirements, its knowledge index, its quality gates, its risk rules and its policy - and
@@ -127,6 +136,11 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   timings are unchanged.
 
 ### Fixed
+- A test run's own output files are no longer treated as project content. Running a coverage
+  gate wrote `.coverage` into the tree, which counted as a change outside the task's scope and
+  failed the task for a file nobody wrote; the same churn moved the tree fingerprint, so
+  evidence elsewhere went stale for the same reason. Coverage data and `htmlcov/` are now
+  excluded from discovery, beside the caches that already were.
 - A complete installation is twelve disciplines, not eleven. The expected count was one
   short, so a project missing a discipline reported a healthy installation; it now reports
   `STALE`, which `agentic-discipline init --force` repairs.

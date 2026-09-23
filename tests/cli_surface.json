@@ -1514,7 +1514,11 @@
               "type": null,
               "choices": [
                 "start",
-                "derive"
+                "derive",
+                "checkpoint",
+                "verify",
+                "finish",
+                "next"
               ],
               "required": true,
               "help": null,
@@ -1525,13 +1529,101 @@
               "action": "_StoreAction",
               "options": [],
               "dest": "request",
+              "nargs": "?",
+              "const": null,
+              "default": "",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "What you want done, in your own words",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--task"
+              ],
+              "dest": "task",
               "nargs": null,
               "const": null,
               "default": null,
               "type": null,
               "choices": null,
-              "required": true,
-              "help": "What you want done, in your own words",
+              "required": false,
+              "help": "The task to act on, for checkpoint, verify and finish",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--session-file"
+              ],
+              "dest": "session_file",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--reason"
+              ],
+              "dest": "reason",
+              "nargs": null,
+              "const": null,
+              "default": "slice_complete",
+              "type": null,
+              "choices": [
+                "slice_complete",
+                "before_risky_operation",
+                "before_release",
+                "blocked",
+                "context_limit",
+                "handoff",
+                "before_integration"
+              ],
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_AppendAction",
+              "options": [
+                "--summary"
+              ],
+              "dest": "summary",
+              "nargs": null,
+              "const": null,
+              "default": [],
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--next-action"
+              ],
+              "dest": "next_action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
               "metavar": null,
               "version": null
             },
@@ -1681,8 +1773,12 @@
                 "task_ready",
                 "task_transition",
                 "timeline",
+                "work_checkpoint",
                 "work_derive",
+                "work_finish",
+                "work_next",
                 "work_start",
+                "work_verify",
                 "workspace_cleanup",
                 "workspace_create",
                 "workspace_merge",

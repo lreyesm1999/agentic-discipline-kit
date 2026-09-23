@@ -457,6 +457,7 @@ def start(
         }
     approved = _approve_gates(plane, contract["verification"])
     task = plane.create_task(contract)
+    _compile_obligations(plane, task["id"])
     with plane.store.transaction():
         plane.store.put(
             "work_request",
@@ -484,6 +485,20 @@ def start(
         agent=agent,
         capabilities=capabilities,
     )
+
+
+def _compile_obligations(plane: Any, task_id: str) -> None:
+    """Give the new task its proof obligations, so completion has something to enforce.
+
+    Without this the task would start with nothing to prove and the debt report would say so,
+    which reads as finished work that was never asked to demonstrate anything.
+    """
+
+    from .assurance import service
+
+    if not service.enabled(plane):
+        return
+    service.compile_plan(plane, task_id, phase="INITIAL")
 
 
 def _readiness(plane: Any, task: dict[str, Any]) -> dict[str, Any]:
@@ -611,3 +626,238 @@ def render(result: dict[str, Any]) -> str:
         ]
     lines += ["", f"Reason: {result['reason']}"]
     return "\n".join(lines)
+
+
+# --- while the work runs -------------------------------------------------------------------
+
+# When a checkpoint is worth taking. Each one is a moment where losing the thread would cost
+# real work: a finished slice, something risky about to happen, a lease about to be released,
+# a blocker, a context limit, a handoff, or an integration.
+CHECKPOINT_REASONS = (
+    "slice_complete",
+    "before_risky_operation",
+    "before_release",
+    "blocked",
+    "context_limit",
+    "handoff",
+    "before_integration",
+)
+
+
+def _evidence_since(plane: Any, task_id: str, after: float) -> list[dict[str, Any]]:
+    """Evidence recorded after a moment. A run is placed by when it finished."""
+
+    return sorted(
+        (
+            record
+            for record in plane.store.list("evidence")
+            if record["task_id"] == task_id and float(record["finished_at"]) > after
+        ),
+        key=lambda record: float(record["finished_at"]),
+    )
+
+
+def _last_checkpoint(plane: Any, task_id: str) -> dict[str, Any] | None:
+    recorded = [record for record in plane.store.list("checkpoint") if record["task_id"] == task_id]
+    if not recorded:
+        return None
+    # A checkpoint keeps its resumable context under `payload`, and its own clock with it.
+    latest: dict[str, Any] = max(recorded, key=lambda record: float(record["payload"]["timestamp"]))
+    return latest
+
+
+def checkpoint(
+    plane: Any,
+    task_id: str,
+    session: str,
+    *,
+    reason: str,
+    summary: list[str] | None = None,
+    next_action: str | None = None,
+    discoveries: list[str] | None = None,
+    assumptions: list[str] | None = None,
+    pending: list[str] | None = None,
+) -> dict[str, Any]:
+    """Record resumable state, filling in everything that can be measured.
+
+    What the agent knows and nothing else can supply - what it was trying, what it would do
+    next - is asked for. What the records already hold - which files changed, which commands
+    ran, what they returned, what failed - is read rather than retyped, so a checkpoint cannot
+    quietly disagree with the evidence beside it.
+    """
+
+    from .verification import changed_paths
+
+    require(reason in CHECKPOINT_REASONS, "INVALID_CHECKPOINT", f"Unknown reason: {reason}")
+    task, _ = plane.owned(task_id, session)
+    previous = _last_checkpoint(plane, task_id)
+    since = float(previous["payload"]["timestamp"]) if previous else 0.0
+    evidence = _evidence_since(plane, task_id, since)
+    passed = [record for record in evidence if record["result"] == "PASS"]
+    failures = [
+        f"{record['kind']}: {record['result']} (exit {record['exit_code']})"
+        for record in evidence
+        if record["result"] != "PASS"
+    ]
+    # What the agent says it did, else what the records show was proven, else the plain truth
+    # that nothing has been proven yet - which is exactly what a blocked checkpoint records.
+    # None of the three is invented, and the files that changed are measured either way.
+    proven_all = sorted(
+        {
+            str(record["kind"])
+            for record in plane.store.list("evidence")
+            if record["task_id"] == task_id and record["result"] == "PASS"
+        }
+    )
+    completed = list(summary or [])
+    if not completed and passed:
+        completed = [f"{record['kind']} verified" for record in passed]
+    if not completed and proven_all:
+        completed = [f"previously verified: {', '.join(proven_all)}"]
+    if not completed:
+        completed = ["no verified work yet"]
+    outstanding = _outstanding(plane, task)
+    data = {
+        "completed_work": completed,
+        "modified_files": changed_paths(plane, task),
+        "commands_run": [" ".join(record["command"]) for record in evidence],
+        "tests_run": [record["kind"] for record in evidence],
+        "test_results": [record["result"] for record in evidence],
+        "failures": failures,
+        "discoveries": list(discoveries or []),
+        "assumptions": list(assumptions or task.get("assumptions", [])),
+        "pending_issues": list(pending if pending is not None else outstanding),
+        "current_hypothesis": f"{task['objective']} ({reason.replace('_', ' ')})",
+        "next_action": next_action
+        or (f"prove: {outstanding[0]}" if outstanding else "complete the task"),
+    }
+    recorded = plane.checkpoint(task_id, session, data)
+    with plane.store.transaction():
+        plane.store.event("local-agent", "work.checkpoint", {"task": task_id, "reason": reason})
+    return {
+        "status": "PASS",
+        "reason": reason,
+        "checkpoint": recorded["id"],
+        "context": recorded["payload"],
+        "outstanding": outstanding,
+    }
+
+
+def _outstanding(plane: Any, task: dict[str, Any]) -> list[str]:
+    """What is still unproven, from the obligations when they exist and the criteria when not."""
+
+    from .assurance import service
+
+    if service.enabled(plane):
+        try:
+            debt = service.debt_report(plane, task_id=task["id"])
+        except (AgenticError, KeyError):
+            debt = None
+        reports = list((debt or {}).get("tasks", []))
+        if sum(report.get("obligations", 0) for report in reports):
+            return [
+                str(entry["claim"]) for report in reports for entry in report.get("outstanding", [])
+            ]
+    proven = {
+        record["kind"]
+        for record in plane.store.list("evidence")
+        if record["task_id"] == task["id"] and record["result"] == "PASS"
+    }
+    return [] if set(task["required_evidence"]) <= proven else list(task["acceptance"])
+
+
+def verify(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+    """Run what the task declared, record the evidence, and say what remains unproven.
+
+    The verifiers are the project's own gates, because that is where they came from, so this
+    is not a second set of checks beside them.
+    """
+
+    from .verification import verify as run_verification
+
+    result = run_verification(plane, task_id, session)
+    task, _ = plane.owned(task_id, session)
+    outstanding = _outstanding(plane, task)
+    return {
+        "status": result["status"],
+        "verification": result,
+        "outstanding": outstanding,
+        "state": plane.store.get(task_id, "task")["state"],
+    }
+
+
+def finish(
+    plane: Any,
+    task_id: str,
+    session: str,
+    *,
+    summary: list[str] | None = None,
+) -> dict[str, Any]:
+    """Checkpoint, then complete - or report precisely why completion was refused.
+
+    Completion is the control plane's own invariant: dependencies, scope, contracts, a current
+    checkpoint, passing verification, fresh evidence, valid integration, and no mandatory proof
+    debt. Nothing here weakens it; a refusal is returned as the answer rather than raised as a
+    surprise, with what is still unproven beside it.
+    """
+
+    from .verification import complete as run_completion
+
+    marker = checkpoint(
+        plane,
+        task_id,
+        session,
+        reason="before_integration",
+        summary=summary,
+        next_action="complete the task",
+    )
+    # A task that has not been verified is verified here rather than refused for it: running
+    # what the task declared is part of finishing, not a separate thing to remember.
+    verification: dict[str, Any] | None = None
+    if plane.store.get(task_id, "task")["state"] == "CLAIMED":
+        verification = verify(plane, task_id, session)
+        if verification["status"] != "PASS":
+            return {
+                "status": "BLOCKED",
+                "state": plane.store.get(task_id, "task")["state"],
+                "code": "VERIFICATION_FAILED",
+                "reason": "verification did not pass, so the task cannot complete",
+                "outstanding": verification["outstanding"],
+                "checkpoint": marker["checkpoint"],
+                "verification": verification["verification"],
+                "completion": None,
+            }
+    try:
+        completion = run_completion(plane, task_id, session)
+    except AgenticError as exc:
+        task, _ = plane.owned(task_id, session)
+        return {
+            "status": "BLOCKED",
+            "state": task["state"],
+            "code": getattr(exc, "code", "COMPLETION_REFUSED"),
+            "reason": str(exc),
+            "outstanding": marker["outstanding"],
+            "checkpoint": marker["checkpoint"],
+            "verification": verification["verification"] if verification else None,
+            "completion": None,
+        }
+    return {
+        "status": "PASS",
+        "state": plane.store.get(task_id, "task")["state"],
+        "reason": "every requirement of completion is met",
+        "outstanding": [],
+        "checkpoint": marker["checkpoint"],
+        "verification": verification["verification"] if verification else None,
+        "completion": completion,
+    }
+
+
+def next_ready(plane: Any) -> dict[str, Any] | None:
+    """The next task whose turn it is, so finishing one leads into the next without asking."""
+
+    for task in plane.store.list("task"):
+        if task["state"] != "READY":
+            continue
+        if plane.readiness(task["id"])["status"] == "READY":
+            return dict(task)
+    return None

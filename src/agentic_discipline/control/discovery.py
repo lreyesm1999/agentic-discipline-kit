@@ -25,7 +25,13 @@ EXCLUDED = {
     ".hypothesis",
     "artifacts",
     ".agent-memory",
+    "htmlcov",
 }
+# Files a test run leaves behind. They are not project content, and counting them as content
+# had two costs: running the project's own coverage gate reported a change outside the task's
+# scope, which failed the task for a file nobody wrote, and it moved the tree fingerprint, so
+# evidence elsewhere went stale for the same reason.
+RUN_ARTIFACTS = (".coverage", "coverage.xml", "coverage.json", ".junit.xml")
 SECRET_NAMES = {
     "credentials",
     "credentials.json",
@@ -41,6 +47,7 @@ SECRET_NAMES = {
 def allowed(path: Path) -> bool:
     return not (
         set(path.parts) & EXCLUDED
+        or any(path.name == name or path.name.startswith(name + ".") for name in RUN_ARTIFACTS)
         or (
             ".agentic" in path.parts
             and any(p == "control" or p.startswith("adopt-") for p in path.parts)

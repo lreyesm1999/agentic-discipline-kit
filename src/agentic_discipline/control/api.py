@@ -49,6 +49,22 @@ SCHEMAS: dict[str, dict[str, Any]] = {
         required=["request"],
     ),
     "work_derive": schema({"request": {"type": "string", "minLength": 1}}),
+    "work_checkpoint": schema(
+        {
+            "task_id": STRING,
+            "session": STRING,
+            "reason": {"type": "string", "enum": list(work.CHECKPOINT_REASONS)},
+            "summary": {"type": "array", "items": STRING},
+            "next_action": {"type": "string", "minLength": 1},
+        },
+        required=["task_id", "session", "reason"],
+    ),
+    "work_verify": schema({"task_id": STRING, "session": STRING}),
+    "work_finish": schema(
+        {"task_id": STRING, "session": STRING, "summary": {"type": "array", "items": STRING}},
+        required=["task_id", "session"],
+    ),
+    "work_next": schema({}),
     # Both flags default to the safe reading: repair what can be repaired, and look at the
     # working tree. A caller that only wants the report says so.
     "preflight": schema(
@@ -172,6 +188,7 @@ READ_ONLY = {
     "impact_analysis",
     "get_context",
     "get_ready_tasks",
+    "work_next",
     "task_list",
     "knowledge_health",
     "timeline",
@@ -245,6 +262,21 @@ def call(plane: Plane, name: str, args: dict[str, Any], *, local: bool = False) 
         )
     elif name == "work_derive":
         result = work.derive(plane, args["request"])
+    elif name == "work_checkpoint":
+        result = work.checkpoint(
+            plane,
+            args["task_id"],
+            args["session"],
+            reason=args["reason"],
+            summary=args.get("summary"),
+            next_action=args.get("next_action"),
+        )
+    elif name == "work_verify":
+        result = work.verify(plane, args["task_id"], args["session"])
+    elif name == "work_finish":
+        result = work.finish(plane, args["task_id"], args["session"], summary=args.get("summary"))
+    elif name == "work_next":
+        result = work.next_ready(plane)
     elif name == "preflight":
         result = preflight.for_plane(
             plane, repair_first=args.get("repair", True), deep=args.get("deep", True)

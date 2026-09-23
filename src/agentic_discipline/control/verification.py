@@ -87,11 +87,18 @@ def assurance_stamps(plane: Plane, task: dict[str, Any]) -> dict[str, dict[str, 
     return stamps
 
 
-def check_changes(plane: Plane, task: dict[str, Any]) -> None:
+def changed_paths(plane: Plane, task: dict[str, Any]) -> list[str]:
+    """What this task has changed since it was claimed, measured rather than reported."""
+
     workspace = plane.workspace_root(task)
     all_files = {**fingerprint(workspace), **link_fingerprint(workspace)}
     initial = {**task.get("initial_files", all_files), **task.get("initial_links", {})}
-    changed = [p for p in set(initial) | set(all_files) if initial.get(p) != all_files.get(p)]
+    return sorted(p for p in set(initial) | set(all_files) if initial.get(p) != all_files.get(p))
+
+
+def check_changes(plane: Plane, task: dict[str, Any]) -> None:
+    workspace = plane.workspace_root(task)
+    changed = changed_paths(plane, task)
     require(
         len(changed) <= task["budget"]["max_files"],
         "BUDGET_EXCEEDED",

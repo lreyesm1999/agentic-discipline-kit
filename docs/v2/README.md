@@ -104,6 +104,35 @@ project, so those exact commands are approved and recorded in the audit chain; n
 One working tree holds one claim. A second request is recorded and readied, and its claim
 waits, because two claims at once are only safe in isolated workspaces with disjoint contracts.
 
+## While the work runs
+
+Three things happen without being asked for:
+
+```sh
+agentic work checkpoint --task TASK-... --session-file s.json --reason slice_complete
+agentic work verify     --task TASK-... --session-file s.json
+agentic work finish     --task TASK-... --session-file s.json
+agentic work next
+```
+
+**Checkpoints** are taken at the moments where losing the thread costs real work:
+`slice_complete`, `before_risky_operation`, `before_release`, `blocked`, `context_limit`,
+`handoff`, `before_integration`. What the agent knows - what it was trying, what it would do
+next - is asked for; everything else is read from the records rather than retyped, so a
+checkpoint cannot disagree with the evidence beside it: the changed files are measured against
+the tree as it was claimed, the commands, results and failures come from the evidence recorded
+since the last checkpoint, and the next action is the first claim still unproven. A checkpoint
+that has nothing to report says `no verified work yet`, which is what a blocked one means.
+
+**Verification** runs what the task declared, which is the project's own gates, because that is
+where the verifiers came from. There is no second set of checks beside them.
+
+**Finishing** verifies if the task has not been verified, takes a checkpoint before
+integration, and then completes - or reports the refusal as an answer. Completion is the control
+plane's invariant and nothing here weakens it: a failing gate returns `VERIFICATION_FAILED`, and
+mandatory proof debt returns the refusal with what is still unproven beside it. When one task
+completes, `work next` names the next task whose turn it is.
+
 ## Execute a task
 
 Start with [task.json](../../examples/control/task.json) and replace its objective,

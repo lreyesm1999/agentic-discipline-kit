@@ -421,6 +421,31 @@ DISPATCH: list[
         [("work.derive", (PLANE, "Add cancellation to src/app.py"), {})],
         ("result", "work.derive"),
     ),
+    (
+        "work_checkpoint",
+        {"task_id": "TASK-A", "session": "token", "reason": "slice_complete"},
+        [
+            (
+                "work.checkpoint",
+                (PLANE, "TASK-A", "token"),
+                {"reason": "slice_complete", "summary": None, "next_action": None},
+            )
+        ],
+        ("result", "work.checkpoint"),
+    ),
+    (
+        "work_verify",
+        _session(),
+        [("work.verify", (PLANE, "TASK-A", "token"), {})],
+        ("result", "work.verify"),
+    ),
+    (
+        "work_finish",
+        _session(),
+        [("work.finish", (PLANE, "TASK-A", "token"), {"summary": None})],
+        ("result", "work.finish"),
+    ),
+    ("work_next", {}, [("work.next_ready", (PLANE,), {})], ("result", "work.next_ready")),
 ]
 
 
@@ -526,6 +551,7 @@ def test_read_only_operations_are_listed() -> None:
         "impact_analysis",
         "get_context",
         "get_ready_tasks",
+        "work_next",
         "task_list",
         "knowledge_health",
         "timeline",
