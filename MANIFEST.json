@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T02:23:36.555995+00:00",
+  "generated_at_utc": "2026-09-23T20:11:58.310575+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -390,8 +390,8 @@
     },
     {
       "path": "docs/v2/INTERFACES.md",
-      "sha256": "93fddf245ac1dfcbe9b5c2f84be06d45e1ce90370597b5415661317f876fcfee",
-      "bytes": 3438
+      "sha256": "8c0afdf9f81684c8ef01a981a91b76caa697120cbd41933c5b4045e3ae9c8f60",
+      "bytes": 4183
     },
     {
       "path": "docs/v2/LIMITATIONS.md",
@@ -1194,6 +1194,11 @@
       "bytes": 9962
     },
     {
+      "path": "src/agentic_discipline/control/intelligence.py",
+      "sha256": "b240c9308606903e5f09ce00b57b80109b0eca7f2281b7614d1a32f46fd6e121",
+      "bytes": 3621
+    },
+    {
       "path": "src/agentic_discipline/control/knowledge.py",
       "sha256": "9ee3f7c9b8a67963ad24c636aaa9ba48026316afb1756cee66f798a1703d8104",
       "bytes": 14327
@@ -1210,8 +1215,8 @@
     },
     {
       "path": "src/agentic_discipline/control/plane.py",
-      "sha256": "7a1779bd117d9f6258b4aa881b86f5b2926f0f9380c270ccc564e25068b5f636",
-      "bytes": 35269
+      "sha256": "a654bc8f747bbb8632dd49d29ddffb4fffad680dcd4e2f9bd18140bb1f41e562",
+      "bytes": 35587
     },
     {
       "path": "src/agentic_discipline/control/store.py",
@@ -1220,8 +1225,8 @@
     },
     {
       "path": "src/agentic_discipline/control/verification.py",
-      "sha256": "0cd72b5b1c72079f2226ea4a1914a1b407bf5cfaf4ec84d9849f93d26246d5d5",
-      "bytes": 15258
+      "sha256": "f720315358660c34906e098b63f323ce4ed56e7b7272de0a0dcd65c1c781b6e3",
+      "bytes": 15589
     },
     {
       "path": "src/agentic_discipline/control/workspaces.py",
@@ -1437,6 +1442,11 @@
       "path": "tests/control/test_index_and_evidence_records.py",
       "sha256": "345a6c71df4ce78a8dcaf012fae34b8264373b78353cc3e608cb9599163f9c09",
       "bytes": 21238
+    },
+    {
+      "path": "tests/control/test_intelligence_bridge.py",
+      "sha256": "623c5735243a741dbd8ed55a62b8c9219f925b79f4bae7e71f5988fa722f0866",
+      "bytes": 2416
     },
     {
       "path": "tests/control/test_interfaces.py",

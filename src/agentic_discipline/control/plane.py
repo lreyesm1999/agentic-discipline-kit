@@ -22,6 +22,7 @@ from .contracts import (
     uid,
 )
 from .discovery import fingerprint, git, line_counts, link_fingerprint, scan
+from .intelligence import intelligence_snapshot
 from .knowledge import Knowledge
 from .store import Store
 
@@ -384,6 +385,7 @@ class Plane:
         reasons.extend({"type": "conflict", "id": c} for c in conflicts)
         if task.get("blocker"):
             reasons.append({"type": "human", "reason": task["blocker"]})
+        reasons.extend(intelligence_snapshot(self.root, task_id)["reasons"])
         return {
             "task_id": task_id,
             "status": "BLOCKED"
@@ -783,6 +785,9 @@ class Plane:
             "policy": self.policy(),
             "current_failures": failures,
         }
+        intelligence = intelligence_snapshot(self.root, task_id)
+        if intelligence["binding"] is not None or intelligence["reasons"]:
+            mandatory["intelligence"] = intelligence
         used = len(encode(mandatory).encode())
         require(
             type(budget) is int and used <= budget <= 1000000,

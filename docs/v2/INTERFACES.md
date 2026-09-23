@@ -23,6 +23,18 @@ human authority, set execution state, or promote assertions to verified facts.
 For historical queries supply `at_version` to `query_knowledge`; retired entities are
 excluded by default and available with `historical: true`.
 
+## Optional Agentic Intelligence handoff
+
+When `.agentic/intelligence/` exists, task readiness reads `readiness.json` and blocks
+records whose `id` exactly matches the Agentic Discipline task ID. If
+`latest-context.json` has that same `root_id`, mandatory rows in
+`executable-constraints.jsonl` are included in the task context. Unapproved mandatory
+rows block readiness. The selected constraints and blocker list are hashed into the
+verification binding, so a changed handoff invalidates earlier proof. Missing or
+malformed handoff files block execution while the handoff directory exists. The two
+systems must use the same task ID; this reader does not map IDs automatically or
+execute a constraint's `verification` instruction as a command.
+
 ## MCP configuration
 
 The server implements the
