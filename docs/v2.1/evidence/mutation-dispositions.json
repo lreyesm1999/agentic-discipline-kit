@@ -3,14 +3,6 @@
   "dispositions": [
     {
       "module": "compiler.py",
-      "source": "text = \"\\n\".join(sorted(paths)).lower()",
-      "family": "constant_string",
-      "count": 1,
-      "kind": "equivalent",
-      "reason": "The separator only has to keep one path from running into the next. Any separator that cannot complete a risk pattern across the join behaves the same, and the sentinel cannot; test_the_risk_signals_read_paths_case_insensitively_and_one_per_line pins that a signal never spans two paths."
-    },
-    {
-      "module": "compiler.py",
       "source": "origin_key=f\"acceptance:{index}\",",
       "family": "constant_string",
       "count": 1,
@@ -40,54 +32,6 @@
       "count": 1,
       "kind": "equivalent",
       "reason": "The separator between task and origin only has to be a byte neither contains. Task identifiers are TASK- plus hex and origin keys are fixed words, so the sentinel separates them as well as the NUL does."
-    },
-    {
-      "module": "model.py",
-      "source": "return left if CRITICALITY.index(left) >= CRITICALITY.index(right) else right",
-      "family": "comparison",
-      "count": 1,
-      "kind": "equivalent",
-      "reason": "The two comparisons differ only when both indexes are equal, and then left and right are the same criticality, so either return is the same value."
-    },
-    {
-      "module": "planner.py",
-      "source": "DEEPEST = 4",
-      "family": "constant_number",
-      "count": 1,
-      "kind": "equivalent",
-      "reason": "Raising the last level searched to 5 adds a search at a level no verifier can declare: descriptor_contract only accepts levels 0 to 4, and escalation stops at 4 on its own. The extra iteration finds nothing and returns the same unsatisfiable route."
-    },
-    {
-      "module": "planner.py",
-      "source": "0 if descriptor[\"deterministic\"] else 1,",
-      "family": "constant_number",
-      "count": 2,
-      "kind": "equivalent",
-      "reason": "Ranks are only compared with each other. Rewriting 0 to 1 or 1 to 2 in this tuple position keeps deterministic routes strictly ahead of the rest, so every sort gives the same order."
-    },
-    {
-      "module": "planner.py",
-      "source": "0 if capability in FALSIFYING else 1,",
-      "family": "constant_number",
-      "count": 1,
-      "kind": "equivalent",
-      "reason": "Rewriting 1 to 2 keeps falsifying capabilities strictly ahead of the rest in this tie-break, so the order is unchanged."
-    },
-    {
-      "module": "planner.py",
-      "source": "for level in range(minimum, DEEPEST + 1):",
-      "family": "constant_number",
-      "count": 1,
-      "kind": "equivalent",
-      "reason": "Searching one level further, to 5, reaches a level no verifier can declare; see DEEPEST."
-    },
-    {
-      "module": "planner.py",
-      "source": "for entry in _supplying(specs, capability, level, minimum)[:1]",
-      "family": "constant_number",
-      "count": 1,
-      "kind": "equivalent",
-      "reason": "Taking the two best verifiers per capability instead of one only adds candidates ranked behind the best one, and the choice below takes the best-ranked candidate overall, which is the same."
     },
     {
       "module": "registry.py",

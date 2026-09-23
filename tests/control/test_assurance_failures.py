@@ -38,13 +38,15 @@ def _verified(repository: Any) -> tuple[str, str, dict[str, Any]]:
     service.verify(repository, task_id, session)
     obligation = obligations_for(repository, task_id)[0]
     task = repository.store.get(task_id, "task")
-    assert resolver.resolve(repository, task, obligation)["status"] == "VERIFIED"
+    evidence = resolver.task_evidence(repository, task_id)
+    assert resolver.resolve(repository, task, obligation, evidence=evidence)["status"] == "VERIFIED"
     return task_id, session, obligation
 
 
 def _status(repository: Any, task_id: str, obligation: dict[str, Any]) -> str:
     task = repository.store.get(task_id, "task")
-    return str(resolver.resolve(repository, task, obligation)["status"])
+    evidence = resolver.task_evidence(repository, task_id)
+    return str(resolver.resolve(repository, task, obligation, evidence=evidence)["status"])
 
 
 # --- artefacts ------------------------------------------------------------------------
@@ -208,7 +210,8 @@ def test_changing_the_declared_verifiers_invalidates_the_proof_bound_to_them(
         )
 
     moved = repository.store.get(obligation["id"], "obligation")
-    assert resolver.resolve(repository, task, moved)["status"] == "UNRESOLVED"
+    evidence = resolver.task_evidence(repository, task_id)
+    assert resolver.resolve(repository, task, moved, evidence=evidence)["status"] == "UNRESOLVED"
 
 
 def test_deleting_an_obligation_behind_the_engine_is_reported_by_the_integrity_check(

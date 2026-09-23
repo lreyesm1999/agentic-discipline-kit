@@ -109,7 +109,7 @@ def is_obligation(identifier: str) -> bool:
 
 
 def stronger(left: str, right: str) -> str:
-    return left if CRITICALITY.index(left) >= CRITICALITY.index(right) else right
+    return max(left, right, key=CRITICALITY.index)
 
 
 def obligation_contract(data: dict[str, Any]) -> None:

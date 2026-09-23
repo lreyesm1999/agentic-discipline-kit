@@ -300,7 +300,12 @@ def test_stale_symbols_and_stale_dependents_are_left_out(repository: Any) -> Non
 
 def test_a_human_claim_waiting_for_its_verdict_says_why(repository: Any) -> None:
     task_id, _, accepted = _critical(repository)
-    resolution = resolver.resolve(repository, repository.store.get(task_id, "task"), accepted)
+    resolution = resolver.resolve(
+        repository,
+        repository.store.get(task_id, "task"),
+        accepted,
+        evidence=resolver.task_evidence(repository, task_id),
+    )
     assert (resolution["status"], resolution["reason"]) == (
         "HUMAN_REQUIRED",
         "no automated verifier can settle this claim",

@@ -194,9 +194,9 @@ def _update_gitignore(target_root: Path, actions: list[str], dry_run: bool) -> N
     if not missing:
         actions.append(f"SKIP {gitignore} (already configured)")
         return
-    end = marker_at + 1
-    while end < len(lines) and lines[end].strip():
-        end += 1
+    # The block runs to its first blank line, or to the end of the file. Found with a bounded
+    # search rather than a hand-stepped loop, so no slip in the stepping can run forever.
+    end = next((at for at in range(marker_at + 1, len(lines)) if not lines[at].strip()), len(lines))
     updated = [*lines[:end], *missing, *lines[end:]]
     _write_gitignore(gitignore, newline.join(updated) + newline, dry_run)
     actions.append(f"UPDATE {gitignore} (added {', '.join(missing)})")

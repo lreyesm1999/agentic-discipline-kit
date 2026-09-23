@@ -820,7 +820,7 @@ def test_a_contract_route_is_described_completely(repository: Any) -> None:
     task = repository.store.get(task_id, "task")
     known = registry.Registry()
     compiled = compiler.compile_obligations(repository, task, known, phase="INITIAL")
-    (routed,) = planner.plan(repository, task, compiled["obligations"], known)
+    (routed,) = planner.plan(task, compiled["obligations"], known)
     assert routed["plan"] == {
         "level": 1,
         "selected": routed["required_verifiers"],
@@ -1002,7 +1002,12 @@ def test_a_waived_claim_resolves_to_a_complete_record(repository: Any) -> None:
     obligation = obligations_for(repository, task_id)[0]
     service.waive(repository, obligation["id"], "accepted", "owner")
     stored = repository.store.get(obligation["id"], "obligation")
-    assert resolver.resolve(repository, repository.store.get(task_id, "task"), stored) == {
+    assert resolver.resolve(
+        repository,
+        repository.store.get(task_id, "task"),
+        stored,
+        evidence=resolver.task_evidence(repository, task_id),
+    ) == {
         "obligation_id": obligation["id"],
         "status": "WAIVED",
         "reason": "an owner waiver is recorded for this obligation",

@@ -525,7 +525,7 @@ def test_a_contract_obligation_keeps_the_verifiers_its_own_contract_bound(
     task = repository.store.get(task_id, "task")
     known = service.registry_for(repository)
     compiled = compiler.compile_obligations(repository, task, known, phase="INITIAL")
-    planned = planner.plan(repository, task, compiled["obligations"], known)
+    planned = planner.plan(task, compiled["obligations"], known)
 
     assert len(planned[0]["required_verifiers"]) == 2
     assert planned[0]["plan"]["route"].startswith("verifiers the task contract bound")
@@ -594,7 +594,9 @@ def test_unknown_is_never_pass(repository: Any) -> None:
     strength = policy_obligation(repository, task_id, "TEST-STRENGTH")
     task = repository.store.get(task_id, "task")
 
-    resolution = resolver.resolve(repository, task, strength)
+    resolution = resolver.resolve(
+        repository, task, strength, evidence=resolver.task_evidence(repository, task["id"])
+    )
 
     assert resolution["status"] == "UNKNOWN"
     assert resolution["status"] not in model.RESOLVED

@@ -18,7 +18,6 @@ from .registry import COSTS, Registry
 # Depth required by risk is expressed by the compiler, which adds a falsification
 # obligation for HIGH and CRITICAL work rather than by forbidding cheap proof here.
 SHALLOWEST = 1
-DEEPEST = 4
 # Falsification first: given equal cost, prefer a route that tries to break the claim.
 FALSIFYING = {"falsification", "property", "invariant", "test_strength", "falsification_review"}
 
@@ -37,27 +36,23 @@ def pool(task: dict[str, Any], registry: Registry) -> list[dict[str, Any]]:
     ]
 
 
-def _rank(entry: dict[str, Any], capability: str) -> tuple[int, int, int, str]:
+def _rank(entry: dict[str, Any], capability: str) -> tuple[int, bool, int, bool, str, str]:
+    """Shallowest first; then deterministic, cheaper, falsifying, and finally by name.
+
+    The capability's own name breaks the last tie, when one verifier supplies several of
+    the acceptable capabilities, so the choice never depends on the order they were listed.
+
+    Deterministic dominance lives here and nowhere else: `False` sorts before `True`, so a
+    deterministic verifier at the same depth always wins over judgment.
+    """
     descriptor = entry["descriptor"]
     return (
-        0 if descriptor["deterministic"] else 1,
+        descriptor["level"],
+        not descriptor["deterministic"],
         COSTS.index(descriptor["cost"]),
-        0 if capability in FALSIFYING else 1,
+        capability not in FALSIFYING,
         entry["kind"],
-    )
-
-
-def _supplying(
-    specs: list[dict[str, Any]], capability: str, level: int, floor: int
-) -> list[dict[str, Any]]:
-    return sorted(
-        (
-            e
-            for e in specs
-            if capability in e["descriptor"]["capabilities"]
-            and floor <= e["descriptor"]["level"] <= level
-        ),
-        key=lambda e: _rank(e, capability),
+        capability,
     )
 
 
@@ -84,21 +79,19 @@ def plan_for(
             "deterministic_available": [],
         }
     deterministic = sorted(set(acceptable) & registry.deterministic_capabilities())
-    for level in range(minimum, DEEPEST + 1):
-        candidates = [
-            (capability, entry)
-            for capability in sorted(acceptable)
-            for entry in _supplying(specs, capability, level, minimum)[:1]
-        ]
-        # Deterministic dominance: while a declared deterministic verifier can reach one
-        # of the acceptable capabilities, a judgment route is not a substitute for it.
-        preferred = [item for item in candidates if item[1]["descriptor"]["deterministic"]]
-        chosen = sorted(preferred or candidates, key=lambda item: _rank(item[1], item[0]))
-        if not chosen:
-            continue
-        capability, entry = chosen[0]
+    # Every declared verifier that supplies an acceptable capability at or below the floor
+    # the escalations have reached, and of those the one `_rank` puts first.
+    candidates = [
+        (capability, entry)
+        for capability in acceptable
+        for entry in specs
+        if capability in entry["descriptor"]["capabilities"]
+        and entry["descriptor"]["level"] >= minimum
+    ]
+    if candidates:
+        capability, entry = min(candidates, key=lambda item: _rank(item[1], item[0]))
         return {
-            "level": max(level, entry["descriptor"]["level"]),
+            "level": entry["descriptor"]["level"],
             "selected": [entry["digest"]],
             "covered": [capability],
             "route": f"{entry['kind']} supplies {capability} "
@@ -126,7 +119,6 @@ def contract_level(obligation: dict[str, Any], specs: list[dict[str, Any]]) -> i
 
 
 def plan(
-    plane: Any,
     task: dict[str, Any],
     obligations: list[dict[str, Any]],
     registry: Registry,
