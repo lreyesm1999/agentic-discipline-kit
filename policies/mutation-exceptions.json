@@ -727,6 +727,41 @@
       "mutant": "path.write_text(json.dumps(registry, indent=2) + \"\\n\", )",
       "family": "json-ascii",
       "reason": "Reads or writes json.dumps output, which escapes every non-ASCII character, so any codec gives the same bytes (docs/v2/MUTATION_EXEMPTIONS.md: Encoding)."
+    },
+    {
+      "function": "agentic_discipline.control.api.x_assurance",
+      "original": "return assurance_migration.migrate(plane, dry_run=args.get(\"dry_run\", False))",
+      "mutant": "return assurance_migration.migrate(plane, dry_run=args.get(\"dry_run\", None))",
+      "family": "falsy-default",
+      "reason": "dry_run is only tested for truth, so None and the argument's own False default both migrate (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.api.x_assurance",
+      "original": "return assurance_migration.migrate(plane, dry_run=args.get(\"dry_run\", False))",
+      "mutant": "return assurance_migration.migrate(plane, dry_run=args.get(\"dry_run\", ))",
+      "family": "falsy-default",
+      "reason": "dry_run is only tested for truth, so a missing default is None and the argument's own False default both migrate (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.assurance.migration.x_migrate",
+      "original": "or (descriptor[\"evidence_class\"] if descriptor.get(\"declared\") else \"MEASURED\"),",
+      "mutant": "or (descriptor[\"evidence_class\"] if (descriptor.get(\"declared\")) or True else \"MEASURED\"),",
+      "family": "measured-default",
+      "reason": "The only descriptor with declared false is the undeclared kind, whose evidence class is already MEASURED, so forcing the condition true stores the same class (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.assurance.registry.x_normalized",
+      "original": "\"supports_incremental\": bool(data.get(\"supports_incremental\", False)),",
+      "mutant": "\"supports_incremental\": bool(data.get(\"supports_incremental\", None)),",
+      "family": "falsy-default",
+      "reason": "A missing incremental flag is passed through bool, and bool(None) is False (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
+    },
+    {
+      "function": "agentic_discipline.control.assurance.registry.x_normalized",
+      "original": "\"supports_incremental\": bool(data.get(\"supports_incremental\", False)),",
+      "mutant": "\"supports_incremental\": bool(data.get(\"supports_incremental\", )),",
+      "family": "falsy-default",
+      "reason": "A missing incremental flag is passed through bool, and omitting the default yields None, which bool turns into False (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
     }
   ]
 }
