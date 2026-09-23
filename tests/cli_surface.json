@@ -1499,6 +1499,125 @@
           ],
           "subcommands": null
         },
+        "work": {
+          "help": "Turn a request in your own words into governed, claimed work",
+          "description": null,
+          "defaults": {},
+          "arguments": [
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "action",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": [
+                "start",
+                "derive"
+              ],
+              "required": true,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [],
+              "dest": "request",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": null,
+              "choices": null,
+              "required": true,
+              "help": "What you want done, in your own words",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--agent"
+              ],
+              "dest": "agent",
+              "nargs": null,
+              "const": null,
+              "default": "local-agent",
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_AppendAction",
+              "options": [
+                "--capability"
+              ],
+              "dest": "capabilities",
+              "nargs": null,
+              "const": null,
+              "default": [],
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--no-claim"
+              ],
+              "dest": "no_claim",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": "Record and ready the task without claiming it",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreAction",
+              "options": [
+                "--session-out"
+              ],
+              "dest": "session_out",
+              "nargs": null,
+              "const": null,
+              "default": null,
+              "type": "Path",
+              "choices": null,
+              "required": false,
+              "help": "Write the session token of the claim to this file",
+              "metavar": null,
+              "version": null
+            },
+            {
+              "action": "_StoreTrueAction",
+              "options": [
+                "--json"
+              ],
+              "dest": "json",
+              "nargs": 0,
+              "const": true,
+              "default": false,
+              "type": null,
+              "choices": null,
+              "required": false,
+              "help": null,
+              "metavar": null,
+              "version": null
+            }
+          ],
+          "subcommands": null
+        },
         "api": {
           "help": "Call a versioned operation using a JSON input file",
           "description": null,
@@ -1562,6 +1681,8 @@
                 "task_ready",
                 "task_transition",
                 "timeline",
+                "work_derive",
+                "work_start",
                 "workspace_cleanup",
                 "workspace_create",
                 "workspace_merge",

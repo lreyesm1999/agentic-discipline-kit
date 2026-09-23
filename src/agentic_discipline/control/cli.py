@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from .. import __version__
-from . import API_VERSION, preflight
+from . import API_VERSION, preflight, work
 from .api import SCHEMAS, call
 from .contracts import ControlError, encode, require
 from .migration import import_legacy, rollback_changeset
@@ -38,6 +38,19 @@ def parser() -> argparse.ArgumentParser:
     )
     flight.add_argument(
         "--fast", action="store_true", help="Skip the working-tree scan that detects drift"
+    )
+    job = commands.add_parser(
+        "work", help="Turn a request in your own words into governed, claimed work"
+    )
+    job.add_argument("action", choices=["start", "derive"])
+    job.add_argument("request", help="What you want done, in your own words")
+    job.add_argument("--agent", default="local-agent")
+    job.add_argument("--capability", action="append", default=[], dest="capabilities")
+    job.add_argument(
+        "--no-claim", action="store_true", help="Record and ready the task without claiming it"
+    )
+    job.add_argument(
+        "--session-out", type=Path, help="Write the session token of the claim to this file"
     )
     api = commands.add_parser("api", help="Call a versioned operation using a JSON input file")
     api.add_argument("operation", choices=sorted(SCHEMAS))
@@ -141,6 +154,15 @@ def read_input(path: Path | None) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     require(isinstance(data, dict), "INVALID_INPUT", "JSON input must be an object")
     return cast(dict[str, Any], data)
+
+
+def write_session(path: Path, token: str) -> None:
+    """Hand the claim's session to the caller the way `agent join --session-file` does."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps({"session": token}) + "\n", encoding="utf-8")
+    if os.name == "posix":
+        path.chmod(0o600)
 
 
 def session(path: Path | None) -> str:
@@ -302,6 +324,19 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
             return {"data": rollback_changeset(plane, args.identifier, args.reason)}
         if args.group in {"status", "doctor", "reconcile"}:
             return call(plane, args.group, {}, local=True)
+        if args.group == "work":
+            if args.action == "derive":
+                return {"data": work.derive(plane, args.request)}
+            result = work.start(
+                plane,
+                args.request,
+                agent=args.agent,
+                capabilities=args.capabilities or None,
+                claim=not args.no_claim,
+            )
+            if args.session_out and result.get("session"):
+                write_session(args.session_out, str(result["session"]))
+            return {"data": result}
         if args.group == "api":
             data = read_input(args.input)
             if args.session_file:
@@ -413,6 +448,8 @@ def main() -> None:
                 print(encode(result))
             elif args.group == "assurance" and args.action in {"status", "debt", "explain"}:
                 print(render_assurance(args.action, result["data"]))
+            elif args.group == "work" and args.action == "start":
+                print(work.render(result["data"]))
             elif args.group == "preflight":
                 print(preflight.render(result["data"]))
             elif args.group == "status":

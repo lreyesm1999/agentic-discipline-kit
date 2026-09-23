@@ -6,7 +6,7 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from . import API_VERSION, preflight
+from . import API_VERSION, preflight, work
 from .assurance import migration as assurance_migration
 from .assurance import service as assurance_service
 from .contracts import ControlError, require
@@ -39,6 +39,16 @@ def schema(properties: dict[str, Any], required: list[str] | None = None) -> dic
 SCHEMAS: dict[str, dict[str, Any]] = {
     "status": schema({}),
     "doctor": schema({}),
+    "work_start": schema(
+        {
+            "request": {"type": "string", "minLength": 1},
+            "agent": {"type": "string", "minLength": 1},
+            "capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}},
+            "claim": {"type": "boolean"},
+        },
+        required=["request"],
+    ),
+    "work_derive": schema({"request": {"type": "string", "minLength": 1}}),
     # Both flags default to the safe reading: repair what can be repaired, and look at the
     # working tree. A caller that only wants the report says so.
     "preflight": schema(
@@ -148,6 +158,10 @@ LOCAL_ONLY = {
     "assurance_rollback",
     # Preflight repairs what it safely can, which is a write, so it stays with the owner.
     "preflight",
+    # Deriving work creates a task, approves the project's own gate commands and claims a
+    # lease. Each of those is the owner's to do.
+    "work_start",
+    "work_derive",
 }
 READ_ONLY = {
     "doctor",
@@ -221,6 +235,16 @@ def call(plane: Plane, name: str, args: dict[str, Any], *, local: bool = False) 
     require(not errors, "INVALID_INPUT", "; ".join(e.message for e in errors))
     if name == "doctor":
         result: Any = doctor(plane)
+    elif name == "work_start":
+        result = work.start(
+            plane,
+            args["request"],
+            agent=args.get("agent", "local-agent"),
+            capabilities=args.get("capabilities"),
+            claim=args.get("claim", True),
+        )
+    elif name == "work_derive":
+        result = work.derive(plane, args["request"])
     elif name == "preflight":
         result = preflight.for_plane(
             plane, repair_first=args.get("repair", True), deep=args.get("deep", True)

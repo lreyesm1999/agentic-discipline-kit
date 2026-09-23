@@ -69,6 +69,41 @@ The same preflight is on the versioned API as the owner-only `preflight` operati
 line is what serves a project that has no control plane yet, because opening one requires it to
 exist.
 
+## Ask for the work
+
+A request in your own words is enough. This derives the task contract, links it to work that
+already exists, evaluates readiness, joins as an agent and claims a lease:
+
+```sh
+agentic work start "add reservation cancellation to src/reservations.py"
+agentic work derive "..."      # what would be recorded, without recording it
+```
+
+Everything in the contract comes from something already recorded, and the report says where:
+
+| Field | Derived from |
+|---|---|
+| objective | the request, unedited |
+| scope | paths the request names, or the files the project's index associates with its words |
+| acceptance | the criteria on a matched requirement, or the request itself, quoted |
+| verification | the required gates in `agentic.config.json`, nothing invented to run |
+| risk | the project's own risk rules applied to that scope |
+| dependencies | open tasks that already own part of the scope |
+
+Detail nobody stated is never filled in, and completion still needs evidence for every
+criterion, which is what stops a coarse request from passing as finished work.
+
+Four things are decisions the system will not make for you, and each one stops the request
+with the question instead of a guess: no scope can be derived, the scope touches a protected
+contract, the project's risk rules make the work `CRITICAL`, or no required gate proves
+behaviour. A blocked request leaves no task behind.
+
+The command allow-list is not widened. The gates in `agentic.config.json` were written by the
+project, so those exact commands are approved and recorded in the audit chain; nothing else is.
+
+One working tree holds one claim. A second request is recorded and readied, and its claim
+waits, because two claims at once are only safe in isolated workspaces with disjoint contracts.
+
 ## Execute a task
 
 Start with [task.json](../../examples/control/task.json) and replace its objective,

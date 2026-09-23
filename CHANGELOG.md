@@ -7,6 +7,17 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **`agentic work start "<request>"`: a request in your own words becomes governed work.**
+  The task contract is derived from what is already recorded - the request, the project's
+  requirements, its knowledge index, its quality gates, its risk rules and its policy - and
+  every field says where it came from. The same request twice is the same task, and a request
+  that falls inside open work links to it. Readiness is evaluated, the agent joins and the task
+  is claimed, all without a further command. Four decisions stop the request instead of being
+  guessed: an undecidable scope, a protected contract in scope, `CRITICAL` risk, and a gate set
+  where nothing proves behaviour. A blocked request leaves no task behind. The command
+  allow-list is not widened: the project's own required gates are approved and recorded, and
+  nothing else. One working tree holds one claim, so a second request is recorded and readied
+  while its claim waits.
 - **A mandatory execution preflight, `agentic preflight`.** Eight requirements - installation,
   version, control plane, adoption, knowledge, git, quality configuration, task orchestration -
   are checked, whatever can be repaired safely is repaired first, and the result is one of

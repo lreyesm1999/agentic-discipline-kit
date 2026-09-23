@@ -32,6 +32,7 @@ MODULE_FUNCTIONS = (
     "assurance_service",
     "assurance_migration",
     "preflight",
+    "work",
 )
 TASKS = [
     {"id": "TASK-A", "state": "READY"},
@@ -402,6 +403,24 @@ DISPATCH: list[
         [("preflight.for_plane", (PLANE,), {"repair_first": True, "deep": True})],
         ("result", "preflight.for_plane"),
     ),
+    (
+        "work_start",
+        {"request": "Add cancellation to src/app.py"},
+        [
+            (
+                "work.start",
+                (PLANE, "Add cancellation to src/app.py"),
+                {"agent": "local-agent", "capabilities": None, "claim": True},
+            )
+        ],
+        ("result", "work.start"),
+    ),
+    (
+        "work_derive",
+        {"request": "Add cancellation to src/app.py"},
+        [("work.derive", (PLANE, "Add cancellation to src/app.py"), {})],
+        ("result", "work.derive"),
+    ),
 ]
 
 
@@ -481,6 +500,8 @@ def test_owner_operations_are_listed_and_refused_to_workers(
         "assurance_migrate",
         "assurance_rollback",
         "preflight",
+        "work_start",
+        "work_derive",
     }
     plane, log = recorded
     arguments = {operation: args for operation, args, *_ in DISPATCH}
