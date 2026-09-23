@@ -126,7 +126,6 @@ def contract_level(obligation: dict[str, Any], specs: list[dict[str, Any]]) -> i
 
 
 def plan(
-    plane: Any,
     task: dict[str, Any],
     obligations: list[dict[str, Any]],
     registry: Registry,

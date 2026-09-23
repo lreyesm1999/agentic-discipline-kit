@@ -79,7 +79,7 @@ def compile_plan(plane: Any, task_id: str, *, phase: str) -> dict[str, Any]:
     existing = {o["id"]: o for o in obligations_for(plane, task_id)}
     floors = {i: o["floor"] for i, o in existing.items() if o.get("floor")}
     compiled = compile_obligations(plane, task, registry, phase=phase)
-    candidates = plan_routes(plane, task, compiled["obligations"], registry, floors=floors)
+    candidates = plan_routes(task, compiled["obligations"], registry, floors=floors)
     now = time.time()
     added, widened, refused = [], [], []
     with plane.store.transaction():
@@ -206,13 +206,14 @@ def verify(plane: Any, task_id: str, session: str, *, rounds: int = 2) -> dict[s
     executions: list[dict[str, Any]] = []
     escalations: list[str] = []
     plans = [reconcile(plane, task_id)]
-    task = plane.store.get(task_id, "task")
+    # `reconcile` has read this identifier as a task already; these are re-reads.
+    task = plane.store.get(task_id)
     report = debt(plane, task)
     for _ in range(max(1, rounds)):
         specs = pending_specs(plane, task_id, report["outstanding"])
         if specs:
             executions.append(run_verifiers(plane, task_id, session, specs=specs))
-            task = plane.store.get(task_id, "task")
+            task = plane.store.get(task_id)
             report = debt(plane, task)
         if not report["outstanding"]:
             break
@@ -221,7 +222,7 @@ def verify(plane: Any, task_id: str, session: str, *, rounds: int = 2) -> dict[s
             break
         escalations.extend(raised)
         plans.append(reconcile(plane, task_id))
-        task = plane.store.get(task_id, "task")
+        task = plane.store.get(task_id)
         report = debt(plane, task)
         if not pending_specs(plane, task_id, report["outstanding"]):
             break
@@ -386,7 +387,7 @@ def explain_obligation(plane: Any, obligation_id: str) -> dict[str, Any]:
     obligation = plane.store.get(obligation_id, "obligation")
     task = plane.store.get(obligation["task_id"], "task")
     records = [e for e in plane.store.list("evidence") if e["task_id"] == task["id"]]
-    resolution = resolve(plane, task, obligation, evidence=records)
+    resolution = resolve(plane, task, obligation)
     lookup = {e["id"]: e for e in records}
     requirements = [plane.store.get(i, "entity") for i in obligation["origin"]["requirement_ids"]]
     return {
@@ -404,7 +405,7 @@ def explain_obligation(plane: Any, obligation_id: str) -> dict[str, Any]:
         "required_because": obligation["origin"]["generated_reason"],
         "affected_paths": obligation["affected_paths"],
         "affected_symbols": obligation["affected_symbols"],
-        "plan": obligation.get("plan", {}),
+        "plan": obligation["plan"],
         "status": resolution["status"],
         "reason": resolution["reason"],
         "evidence": [
@@ -454,7 +455,7 @@ def human_request(
         "reference": obligation["origin"]["architecture_ids"],
         "automatic_checks_passed": passed,
         "remaining_judgment": obligation["origin"]["generated_reason"],
-        "why_no_verifier": obligation.get("plan", {}).get("route", ""),
+        "why_no_verifier": obligation["plan"]["route"],
         "resolve_with": f"agentic assurance resolve {obligation['id']} --decision <text>",
         "current_status": resolution["status"],
     }
@@ -524,7 +525,7 @@ def resolve_human(
     obligation = plane.store.get(obligation_id, "obligation")
     task = plane.store.get(obligation["task_id"], "task")
     require(
-        bool(obligation.get("plan", {}).get("human_required")),
+        bool(obligation["plan"].get("human_required")),
         "NOT_HUMAN_REQUIRED",
         "This obligation has an automated route; run it instead",
     )
@@ -547,7 +548,7 @@ def resolve_human(
         "exit_code": 0 if accepted else 1,
         "recorded_at": time.time(),
     }
-    artifact.write_text(encode(payload), encoding="utf-8")
+    artifact.write_bytes(encode(payload).encode("utf-8"))
     artifact.chmod(0o600)
     scoped = obligation_binding(plane, task, obligation)
     with plane.store.transaction():
@@ -590,7 +591,7 @@ def resolve_human(
             },
             actor="local-owner",
         )
-    return {"evidence": record, "obligation": plane.store.get(obligation_id, "obligation")}
+    return {"evidence": record, "obligation": plane.store.get(obligation_id)}
 
 
 def integrity(plane: Any) -> dict[str, Any]:

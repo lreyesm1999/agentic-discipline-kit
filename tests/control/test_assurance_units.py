@@ -525,7 +525,7 @@ def test_a_contract_obligation_keeps_the_verifiers_its_own_contract_bound(
     task = repository.store.get(task_id, "task")
     known = service.registry_for(repository)
     compiled = compiler.compile_obligations(repository, task, known, phase="INITIAL")
-    planned = planner.plan(repository, task, compiled["obligations"], known)
+    planned = planner.plan(task, compiled["obligations"], known)
 
     assert len(planned[0]["required_verifiers"]) == 2
     assert planned[0]["plan"]["route"].startswith("verifiers the task contract bound")

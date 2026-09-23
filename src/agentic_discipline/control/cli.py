@@ -147,7 +147,7 @@ def render_assurance(action: str, data: dict[str, Any]) -> str:
     """The plain reading of an assurance answer; --json carries the whole record."""
     lines: list[str] = []
     if action == "explain" and "headline" in data:
-        lines += [data["headline"], f"{data['required']} mandatory proof obligations."]
+        lines = [data["headline"], f"{data['required']} mandatory proof obligations."]
         lines += [f"  {state:<16} {count}" for state, count in sorted(data["counts"].items())]
         for item in data["outstanding"]:
             lines += [
@@ -172,7 +172,7 @@ def render_assurance(action: str, data: dict[str, Any]) -> str:
             f"  {e['id']} {e['result']} {e['currency']} ({e['kind']}, {e['evidence_class']})"
             for e in data["evidence"]
         ]
-        lines += [
+        lines = [
             data["obligation"]["id"],
             "Claim:",
             f"  {data['claim']}",
@@ -190,7 +190,7 @@ def render_assurance(action: str, data: dict[str, Any]) -> str:
         return "\n".join(lines)
     for report in data["tasks"]:
         identifier = report["task_id"]
-        counts = report.get("counts") or report.get("required_counts", {})
+        counts = report["counts"]
         lines.append(f"{identifier} ASSURANCE")
         lines.append(f"  Required obligations {report['required']}")
         for state, count in sorted(counts.items()):
@@ -209,21 +209,20 @@ def assurance_command(plane: Plane, args: argparse.Namespace) -> dict[str, Any]:
     if args.action == "plan":
         if args.compile:
             return call(plane, "assurance_compile", {"task_id": args.identifier}, local=True)
-        return call(plane, "assurance_plan", {"task_id": args.identifier}, local=True)
+        return call(plane, "assurance_plan", {"task_id": args.identifier})
     if args.action == "verify":
         return call(
             plane,
             "assurance_verify",
             {"task_id": args.identifier, "session": session(args.session_file)},
-            local=True,
         )
     if args.action in {"status", "debt"}:
         data = {"task_id": args.identifier} if args.identifier else {}
-        return call(plane, "assurance_" + args.action, data, local=True)
+        return call(plane, "assurance_" + args.action, data)
     if args.action == "explain":
-        return call(plane, "assurance_explain", {"obligation_id": args.identifier}, local=True)
+        return call(plane, "assurance_explain", {"obligation_id": args.identifier})
     if args.action in {"registry", "integrity"}:
-        return call(plane, "assurance_" + args.action, {}, local=True)
+        return call(plane, "assurance_" + args.action, {})
     if args.action == "waive":
         require(
             args.reason is not None and args.authorization is not None,
