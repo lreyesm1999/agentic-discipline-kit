@@ -1,0 +1,426 @@
+{
+  "timestamp": "2026-09-21T07:13:39.610715+00:00",
+  "repository": "C:\\Users\\Lenier\\Desktop\\agentic-discipline-kit",
+  "commit": "",
+  "runtime_seconds": 88.077,
+  "fixture": "this repository; every verdict comes from a real pytest process",
+  "task": "TASK-617154f4af874b74bf3683bc13ad4a9f",
+  "plan_created": {
+    "phase": "INITIAL",
+    "obligations": 3,
+    "plan_digest": "69ae30ed014218b49b875632b15ebd08ff7f0373f0f8aff7d314f4a1ca2a61cb",
+    "signals": []
+  },
+  "verifier_executions": [
+    {
+      "kind": "acceptance",
+      "command": "tests/control/test_assurance_scenarios.py",
+      "result": "PASS",
+      "exit_code": 0,
+      "evidence_class": "DETERMINISTIC",
+      "artifact": ".agentic/control/evidence/EVD-4f22be8b7f8c4079a2a4211bb886a132.json"
+    },
+    {
+      "kind": "unit",
+      "command": "tests/control/test_assurance_edges.py",
+      "result": "PASS",
+      "exit_code": 0,
+      "evidence_class": "DETERMINISTIC",
+      "artifact": ".agentic/control/evidence/EVD-b00c22a1446243dcae942a5fe6eaae84.json"
+    },
+    {
+      "kind": "property",
+      "command": "tests/control/test_assurance_properties.py",
+      "result": "PASS",
+      "exit_code": 0,
+      "evidence_class": "DETERMINISTIC",
+      "artifact": ".agentic/control/evidence/EVD-21f9bb00c9d14efe89ecc3e1e0090ab4.json"
+    }
+  ],
+  "expansion": {
+    "added": [
+      "PO-24bf553b88ea0c6c"
+    ],
+    "signals": [
+      "migration"
+    ],
+    "retained_after_removal": [
+      "PO-24bf553b88ea0c6c"
+    ],
+    "refused_contractions": []
+  },
+  "blocked_completion": {
+    "completed": false,
+    "code": "PROOF_DEBT",
+    "message": "Mandatory proof obligations are unresolved: PO-24bf553b88ea0c6c UNKNOWN"
+  },
+  "conflicting_evidence": {
+    "step": "with one passing and one failing verifier",
+    "required": 1,
+    "counts": {
+      "CONFLICTED": 1
+    },
+    "proof_debt": 1,
+    "decision": "BLOCK",
+    "obligations": [
+      {
+        "id": "PO-20d7dc8170d51c41",
+        "claim": "The assurance properties hold",
+        "derivation": "CONTRACT",
+        "criticality": "STANDARD",
+        "enforced": true,
+        "status": "CONFLICTED"
+      }
+    ],
+    "decision_reasons": [
+      "conflicting evidence on PO-20d7dc8170d51c41: The assurance properties hold"
+    ]
+  },
+  "waiver": {
+    "obligation_id": "PO-24bf553b88ea0c6c",
+    "criticality": "CRITICAL",
+    "reason": "the migration surface was removed from the change, so the claim has no subject",
+    "authorization": "code owner (@lreyesm1999)",
+    "status_when_waived": "UNKNOWN"
+  },
+  "explained_waived_claim": {
+    "claim": "The migration preserves the data that already exists.",
+    "status": "WAIVED",
+    "required_because": "observed migration surface in docs/v2.1/evidence/dogfood/migration-notes.md"
+  },
+  "steps": [
+    {
+      "step": "compiled from the declared contract",
+      "required": 2,
+      "counts": {
+        "UNRESOLVED": 2
+      },
+      "proof_debt": 2,
+      "decision": "EXPAND_VERIFICATION",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "UNRESOLVED"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "UNRESOLVED"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": false,
+          "status": "UNRESOLVED"
+        }
+      ]
+    },
+    {
+      "step": "after running the declared verifiers",
+      "required": 3,
+      "counts": {
+        "VERIFIED": 3
+      },
+      "proof_debt": 0,
+      "decision": "COMPLETE",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "step": "after editing a file the proof rested on",
+      "required": 3,
+      "counts": {
+        "STALE": 3
+      },
+      "proof_debt": 3,
+      "decision": "EXPAND_VERIFICATION",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "STALE"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "STALE"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "STALE"
+        }
+      ]
+    },
+    {
+      "step": "after restoring that file byte for byte",
+      "required": 3,
+      "counts": {
+        "VERIFIED": 3
+      },
+      "proof_debt": 0,
+      "decision": "COMPLETE",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        }
+      ]
+    },
+    {
+      "step": "after the diff reached a migration surface",
+      "required": 4,
+      "counts": {
+        "STALE": 3,
+        "UNKNOWN": 1
+      },
+      "proof_debt": 4,
+      "decision": "ESCALATE",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "STALE"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "STALE"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "STALE"
+        },
+        {
+          "id": "PO-24bf553b88ea0c6c",
+          "claim": "The migration preserves the data that already exists.",
+          "derivation": "POLICY",
+          "criticality": "CRITICAL",
+          "enforced": true,
+          "status": "UNKNOWN"
+        }
+      ]
+    },
+    {
+      "step": "after removing the surface again",
+      "required": 4,
+      "counts": {
+        "UNKNOWN": 1,
+        "VERIFIED": 3
+      },
+      "proof_debt": 1,
+      "decision": "ESCALATE",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24bf553b88ea0c6c",
+          "claim": "The migration preserves the data that already exists.",
+          "derivation": "POLICY",
+          "criticality": "CRITICAL",
+          "enforced": true,
+          "status": "UNKNOWN"
+        }
+      ]
+    },
+    {
+      "step": "when completion was attempted",
+      "required": 4,
+      "counts": {
+        "UNKNOWN": 1,
+        "VERIFIED": 3
+      },
+      "proof_debt": 1,
+      "decision": "ESCALATE",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24bf553b88ea0c6c",
+          "claim": "The migration preserves the data that already exists.",
+          "derivation": "POLICY",
+          "criticality": "CRITICAL",
+          "enforced": true,
+          "status": "UNKNOWN"
+        }
+      ]
+    },
+    {
+      "step": "after the recorded waiver",
+      "required": 4,
+      "counts": {
+        "VERIFIED": 3,
+        "WAIVED": 1
+      },
+      "proof_debt": 0,
+      "decision": "COMPLETE",
+      "obligations": [
+        {
+          "id": "PO-0a82e6a5a3c17e4c",
+          "claim": "The engine refuses the tampering and failure cases",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-15ad7f577d97bf5e",
+          "claim": "The twelve assurance scenarios hold end to end",
+          "derivation": "CONTRACT",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24ae7f69b849d9f1",
+          "claim": "The tests covering this change detect meaningful implementation errors.",
+          "derivation": "POLICY",
+          "criticality": "HIGH",
+          "enforced": true,
+          "status": "VERIFIED"
+        },
+        {
+          "id": "PO-24bf553b88ea0c6c",
+          "claim": "The migration preserves the data that already exists.",
+          "derivation": "POLICY",
+          "criticality": "CRITICAL",
+          "enforced": true,
+          "status": "WAIVED"
+        }
+      ]
+    }
+  ],
+  "final_task_state": "COMPLETED",
+  "integrity": {
+    "status": "PASS",
+    "checked": [
+      "obligation status is an owner state",
+      "no obligation a plan recorded has disappeared",
+      "every waiver records a reason and its authority",
+      "no completed task holds mandatory proof debt",
+      "judgment evidence never claims a deterministic class",
+      "evidence references the run that produced it"
+    ]
+  },
+  "audit": {
+    "records": 3053,
+    "head_hash": "1ab26cddd317e4e7f697e622d698e3a4651eba6323822b4d59e5baab7d5fdec5",
+    "status": "PASS"
+  }
+}

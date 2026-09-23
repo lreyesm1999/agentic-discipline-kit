@@ -63,3 +63,44 @@ def test_command_exits_nonzero_for_actual_survivors(tmp_path: Path, complete_rep
         text=True,
     )
     assert passed.returncode == 0
+
+
+def test_a_partial_scope_ignores_exceptions_for_files_it_did_not_mutate(
+    tmp_path: Path, complete_report
+) -> None:
+    report = tmp_path / "mutation-stats.json"
+    report.write_text(json.dumps({**complete_report, "total": 1, "killed": 1}))
+    (tmp_path / "mutants" / "src").mkdir(parents=True)
+    exceptions = tmp_path / "exceptions.json"
+    exceptions.write_text(
+        json.dumps(
+            {
+                "exceptions": [
+                    {
+                        "function": "agentic_discipline.cli.x_command_quality",
+                        "original": "left",
+                        "mutant": "right",
+                        "family": "falsy-default",
+                        "reason": "the value is only tested for truth",
+                    }
+                ]
+            }
+        )
+    )
+    scope = tmp_path / "scope.txt"
+    scope.write_text("src/agentic_discipline/control/api.py\n")
+    command = [
+        sys.executable,
+        str(GATE_SCRIPT),
+        "--report",
+        str(report),
+        "--mutants",
+        str(tmp_path / "mutants"),
+        "--exceptions",
+        str(exceptions),
+    ]
+    outside = subprocess.run([*command, "--scope", str(scope)], capture_output=True, text=True)
+    assert outside.returncode == 0
+    inside = subprocess.run(command, capture_output=True, text=True)
+    assert inside.returncode == 1
+    assert json.loads(inside.stdout)["stale_exceptions"]

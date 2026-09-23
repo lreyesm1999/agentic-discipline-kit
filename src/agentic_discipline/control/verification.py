@@ -11,6 +11,23 @@ from .contracts import ControlError, digest, encode, redact, require, uid
 from .discovery import fingerprint, link_fingerprint, validate_inputs
 from .plane import Plane
 
+JUDGMENTS = {
+    "PASS": "NO_COUNTEREXAMPLE_FOUND",
+    "FAIL": "COUNTEREXAMPLE_FOUND",
+    "BLOCKED": "INCONCLUSIVE",
+}
+
+
+def _judgment(status: str) -> str:
+    """A judgment verdict is named as what it is; it never becomes a deterministic PASS."""
+    return JUDGMENTS[status]
+
+
+def registry_for(plane: Plane) -> Any:
+    from .assurance.service import registry_for as build
+
+    return build(plane)
+
 
 def binding(plane: Plane, task: dict[str, Any]) -> dict[str, Any]:
     inputs = list(
@@ -42,14 +59,30 @@ def binding(plane: Plane, task: dict[str, Any]) -> dict[str, Any]:
 
 
 def fresh(plane: Plane, evidence: dict[str, Any], current: dict[str, Any]) -> bool:
-    artifact = plane.directory / "evidence" / (evidence["id"] + ".json")
-    return bool(
-        evidence["binding"] == current
-        and artifact.is_file()
-        and not artifact.parent.is_symlink()
-        and not artifact.is_symlink()
-        and sha256_file(artifact) == evidence["artifact_hash"]
-    )
+    from .assurance.resolver import artifact_intact
+
+    return bool(evidence["binding"] == current and artifact_intact(plane, evidence))
+
+
+def assurance_stamps(plane: Plane, task: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Bind each verifier to the obligations it is being run for, before it runs."""
+    from .assurance.resolver import obligation_binding, obligations_for
+    from .assurance.service import enabled
+
+    stamps: dict[str, dict[str, Any]] = {}
+    if not enabled(plane):
+        return stamps
+    for obligation in obligations_for(plane, task["id"]):
+        try:
+            scoped = obligation_binding(plane, task, obligation)
+        except (ControlError, OSError):
+            continue
+        for spec in obligation["required_verifiers"]:
+            entry = stamps.setdefault(spec, {"obligation_ids": [], "obligation_bindings": {}})
+            # Obligations are listed in identifier order, so each list is built sorted.
+            entry["obligation_ids"].append(obligation["id"])
+            entry["obligation_bindings"][obligation["id"]] = scoped
+    return stamps
 
 
 def check_changes(plane: Plane, task: dict[str, Any]) -> None:
@@ -94,8 +127,16 @@ def check_changes(plane: Plane, task: dict[str, Any]) -> None:
     )
 
 
-def verify(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
+def verify(
+    plane: Plane, task_id: str, session: str, specs: list[str] | None = None
+) -> dict[str, Any]:
     task, lease = plane.owned(task_id, session)
+    selected = (
+        task["verification"]
+        if specs is None
+        else [v for v in task["verification"] if digest(v) in set(specs)]
+    )
+    require(selected, "NO_VERIFIER_SELECTED", "No declared verifier matches the requested proof")
     require(
         task["state"] in {"CLAIMED", "RUNNING", "VERIFYING", "FAILED"},
         "INVALID_TRANSITION",
@@ -118,6 +159,8 @@ def verify(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
         "Evidence directory must not be a symlink",
     )
     before = binding(plane, task)
+    stamps = assurance_stamps(plane, task)
+    known = registry_for(plane)
     check_changes(plane, task)
     workspace = plane.workspace_root(task)
     run_id = uid("RUN")
@@ -148,7 +191,7 @@ def verify(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
     runtime = float(task.get("runtime_used", 0))
     passed = False
     try:
-        for spec in task["verification"]:
+        for spec in selected:
             remaining = task["budget"]["max_runtime"] - runtime
             require(remaining > 0, "BUDGET_EXCEEDED", "Runtime budget exhausted")
             started = time.time()
@@ -184,6 +227,8 @@ def verify(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
                 lease_valid = (
                     current_lease["state"] == "ACTIVE" and current_lease["expires_at"] > time.time()
                 )
+                stamp = stamps.get(digest(spec), {"obligation_ids": [], "obligation_bindings": {}})
+                descriptor = known.get(spec["kind"])
                 record = plane.store.put(
                     "evidence",
                     {
@@ -193,6 +238,14 @@ def verify(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
                         "verifier": digest(spec),
                         "acceptance": spec["acceptance"],
                         "run_id": run_id,
+                        **stamp,
+                        "evidence_class": descriptor["evidence_class"],
+                        **(
+                            {"judgment": _judgment(result.status)}
+                            if descriptor["evidence_class"] == "AGENT_JUDGMENT"
+                            else {}
+                        ),
+                        "run_consistent": before == after,
                         "result": "BLOCKED"
                         if result.status == "ERROR" or not lease_valid
                         else result.status,
@@ -210,7 +263,10 @@ def verify(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
                 )
                 results.append(record)
         check_changes(plane, task)
-        passed = len(results) == len(task["verification"]) and all(
+        # A run reports what it ran, which is what VERIFYING has always meant here. Whether
+        # the task holds proof for everything is answered by `completion_proof` and by the
+        # obligation states, both of which completion checks.
+        passed = len(results) == len(selected) and all(
             e["result"] == "PASS" and not e["stale"] for e in results
         )
     finally:
@@ -254,7 +310,37 @@ def completion_proof(plane: Plane, task: dict[str, Any]) -> list[dict[str, Any]]
     return selected
 
 
+def assurance_gate(plane: Plane, task_id: str) -> list[dict[str, Any]]:
+    """Reconcile against the real diff, then report the mandatory claims still open.
+
+    Compiling here is what makes the completion invariant unavoidable: a task cannot
+    reach completion without its obligations being derived from the change it made.
+    """
+    from .assurance.decision import mandatory_debt
+    from .assurance.service import enabled, reconcile
+
+    if not enabled(plane):
+        return []
+    reconcile(plane, task_id)
+    # `reconcile` has already read this identifier as a task.
+    return mandatory_debt(plane, plane.store.get(task_id))
+
+
 def complete(plane: Plane, task_id: str, session: str) -> dict[str, Any]:
+    # The 2.0 conditions are checked first so their diagnostics stay the ones callers
+    # already act on; the transaction below then checks everything again before writing.
+    preflight, _ = plane.owned(task_id, session)
+    require(
+        preflight["state"] == "VERIFYING", "INVALID_TRANSITION", "Only a verified task can complete"
+    )
+    completion_proof(plane, preflight)
+    outstanding = assurance_gate(plane, task_id)
+    require(
+        not outstanding,
+        "PROOF_DEBT",
+        "Mandatory proof obligations are unresolved: "
+        + "; ".join(f"{i['obligation_id']} {i['status']}" for i in outstanding),
+    )
     with plane.store.transaction():
         task, lease = plane.owned(task_id, session)
         require(

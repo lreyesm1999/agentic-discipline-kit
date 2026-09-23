@@ -72,6 +72,37 @@ interface.
 
 Hash evidence and produce an explicit release decision. UNKNOWN is not PASS.
 
+## Assurance: what the change has to keep true
+
+When a project runs the `agentic` control plane with the assurance engine enabled, the
+lifecycle above gains one question that governs whether it may finish: **is every claim
+this change must keep true currently supported by evidence?**
+
+```text
+plan   -> agentic assurance plan TASK-ID --compile     what will have to be proven
+build  -> implement the slice
+test   -> agentic assurance verify TASK-ID             run only what is open, then resolve
+verify -> agentic assurance status TASK-ID             counts, proof debt, decision
+```
+
+The obligations come from the task's own acceptance criteria and from repository policy
+applied to the paths the change actually touched. A diff that reaches further than the
+contract declared adds obligations; nothing removes one without an owner waiver that
+records a reason and an authority.
+
+`agentic task complete` refuses a task that still holds mandatory proof debt, so a phase is
+finished when its claims are resolved, not when the agent says so. Read one claim with
+`agentic assurance explain PO-ID`: what it asserts, where it came from, which paths it
+depends on, which evidence currently speaks for it, and what to do next.
+
+Two rules matter more than the commands:
+
+- An agent may discover that **more** assurance is needed. It may never decide that less is.
+- `UNKNOWN` is not `PASS`, a stale result proves nothing, and one current failure beside one
+  current pass is a conflict rather than a pass.
+
+See [Agentic Discipline 2.1](v2.1/README.md).
+
 ## 12. Retrospective
 
 Record agent/process failures separately from product truth. Promote recurring lessons into policy

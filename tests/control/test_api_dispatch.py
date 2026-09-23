@@ -29,6 +29,8 @@ MODULE_FUNCTIONS = (
     "create_workspace",
     "cleanup",
     "parallel_safety",
+    "assurance_service",
+    "assurance_migration",
 )
 TASKS = [
     {"id": "TASK-A", "state": "READY"},
@@ -309,6 +311,90 @@ DISPATCH: list[
         ],
         ("result", "parallel_safety"),
     ),
+    (
+        "assurance_status",
+        {"task_id": "TASK-A"},
+        [("assurance_service.status", (PLANE, "TASK-A"), {})],
+        ("result", "assurance_service.status"),
+    ),
+    (
+        "assurance_plan",
+        {"task_id": "TASK-A"},
+        [("assurance_service.plan_view", (PLANE, "TASK-A"), {})],
+        ("result", "assurance_service.plan_view"),
+    ),
+    (
+        "assurance_explain",
+        {"obligation_id": "PO-1"},
+        [("assurance_service.explain", (PLANE, "PO-1"), {})],
+        ("result", "assurance_service.explain"),
+    ),
+    (
+        "assurance_debt",
+        {"task_id": "TASK-A"},
+        [("assurance_service.debt_report", (PLANE, "TASK-A"), {})],
+        ("result", "assurance_service.debt_report"),
+    ),
+    (
+        "assurance_registry",
+        {},
+        [("assurance_service.registry", (PLANE,), {})],
+        ("result", "assurance_service.registry"),
+    ),
+    (
+        "assurance_integrity",
+        {},
+        [("assurance_service.integrity", (PLANE,), {})],
+        ("result", "assurance_service.integrity"),
+    ),
+    (
+        "assurance_verify",
+        _session(),
+        [("assurance_service.verify", (PLANE, "TASK-A", "token"), {})],
+        ("result", "assurance_service.verify"),
+    ),
+    (
+        "assurance_compile",
+        {"task_id": "TASK-A", "phase": "INITIAL"},
+        [("assurance_service.compile_plan", (PLANE, "TASK-A"), {"phase": "INITIAL"})],
+        ("result", "assurance_service.compile_plan"),
+    ),
+    (
+        "assurance_waive",
+        {"obligation_id": "PO-1", "reason": "accepted risk", "authorization": "owner"},
+        [("assurance_service.waive", (PLANE, "PO-1", "accepted risk", "owner"), {})],
+        ("result", "assurance_service.waive"),
+    ),
+    (
+        "assurance_resolve_human",
+        {"obligation_id": "PO-1", "decision": "hierarchy matches", "accepted": True},
+        [
+            (
+                "assurance_service.resolve_human",
+                (PLANE, "PO-1", "hierarchy matches", True),
+                {},
+            )
+        ],
+        ("result", "assurance_service.resolve_human"),
+    ),
+    (
+        "assurance_register_verifier",
+        {"descriptor": {"id": "golden"}},
+        [("assurance_service.register_verifier", (PLANE, {"id": "golden"}), {})],
+        ("result", "assurance_service.register_verifier"),
+    ),
+    (
+        "assurance_migrate",
+        {"dry_run": True},
+        [("assurance_migration.migrate", (PLANE,), {"dry_run": True})],
+        ("result", "assurance_migration.migrate"),
+    ),
+    (
+        "assurance_rollback",
+        {"identifier": "ASSU-1", "reason": "reverting the upgrade"},
+        [("assurance_migration.rollback", (PLANE, "ASSU-1", "reverting the upgrade"), {})],
+        ("result", "assurance_migration.rollback"),
+    ),
 ]
 
 
@@ -381,6 +467,12 @@ def test_owner_operations_are_listed_and_refused_to_workers(
         "workspace_cleanup",
         "workspace_refresh",
         "workspace_merge",
+        "assurance_compile",
+        "assurance_waive",
+        "assurance_resolve_human",
+        "assurance_register_verifier",
+        "assurance_migrate",
+        "assurance_rollback",
     }
     plane, log = recorded
     arguments = {operation: args for operation, args, *_ in DISPATCH}
@@ -411,6 +503,12 @@ def test_read_only_operations_are_listed() -> None:
         "readiness",
         "plan_audit",
         "parallel_safety",
+        "assurance_status",
+        "assurance_plan",
+        "assurance_explain",
+        "assurance_debt",
+        "assurance_registry",
+        "assurance_integrity",
     }
     assert not READ_ONLY & LOCAL_ONLY
 

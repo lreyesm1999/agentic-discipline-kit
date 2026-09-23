@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T02:23:36.555995+00:00",
+  "generated_at_utc": "2026-09-23T18:59:09.779687+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "39feb23fd70d6fa31832430e105dcb5fed1789dfb4e14c0c404e64510b8af21b",
-      "bytes": 3831
+      "sha256": "59321b6524c252949aa95a9de1344b6b049bff033adf2662a5db39580ef70bbc",
+      "bytes": 5081
     },
     {
       "path": ".github/workflows/release.yml",
@@ -85,8 +85,8 @@
     },
     {
       "path": ".gitignore",
-      "sha256": "194717e242e0ff8611232974a6ce7405b469c991558f97ad13ed8d7848b5939d",
-      "bytes": 463
+      "sha256": "ed8c3c6e9a744129efda487b82875bdaf27f8637cce37e80123d408b112e768c",
+      "bytes": 482
     },
     {
       "path": ".pre-commit-config.yaml",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "f9127eb3af384ba16ce8882b97548ca737e1dfc055d73655ffb93129c810d7e8",
-      "bytes": 13944
+      "sha256": "89abd6328346e734fbee57b05f67c94a10f6d4544edbf5a903ca0d9f2fe9453f",
+      "bytes": 19743
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -145,13 +145,13 @@
     },
     {
       "path": "README.md",
-      "sha256": "b4ff6aa5945e225538bed03560d781ee9542542cfb3d9709734313c7a1cc9c69",
-      "bytes": 16884
+      "sha256": "218c2f623c9d2250306034137694d284f1b5f6acfff42d389b9e3093e8204ae4",
+      "bytes": 18532
     },
     {
       "path": "ROADMAP.md",
-      "sha256": "d85e95a5cc7afa5c8331200a4441d0a6bea3f42cb14f840c93930c08f05141c0",
-      "bytes": 735
+      "sha256": "22cc81cf267d02a41d1c25ebefb1310c0290c4e53cdc8240f63104b89840a9c8",
+      "bytes": 1056
     },
     {
       "path": "SECURITY.md",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "ddb0d82ef9d514e6a4835b22f4f594c7721ea49c8dd04553b69c2326f07868d2",
-      "bytes": 4034
+      "sha256": "de75fd706c8382f4916c0e05771ce68b144e5fa55fcf0967245a3a94704931f7",
+      "bytes": 10292
     },
     {
       "path": "docs/adoption.md",
@@ -335,8 +335,8 @@
     },
     {
       "path": "docs/architecture.md",
-      "sha256": "618869c5131fe0ad2a5f3e8d49e17d206e26deccc146f36fac69e235c59ef9fe",
-      "bytes": 1255
+      "sha256": "8117f07ad01f9859e66735f5b472490a4d5ab5cee695b3d4ee8d5a29b19083a8",
+      "bytes": 2096
     },
     {
       "path": "docs/assets/agentic-discipline-hero.svg",
@@ -345,8 +345,8 @@
     },
     {
       "path": "docs/cli.md",
-      "sha256": "f08d1edf054e637b22734907b512268165d90d2511b8198251707b72b8b3f6c4",
-      "bytes": 5084
+      "sha256": "4e413f846bbcaec39d4292770b75172d30353fbfa80f64a909e2cf224f0a36c3",
+      "bytes": 6415
     },
     {
       "path": "docs/compatibility.md",
@@ -384,14 +384,79 @@
       "bytes": 671
     },
     {
+      "path": "docs/v2.1/ARCHITECTURE.md",
+      "sha256": "7cdafba1a2e0760c5a0315a0912774415fc9bcdbf6cb43dfb6b685bf69b90a76",
+      "bytes": 8585
+    },
+    {
+      "path": "docs/v2.1/LIMITATIONS.md",
+      "sha256": "5e8fa52100880435b265143d9267b320797dfd58231d43857518df6525a46257",
+      "bytes": 7195
+    },
+    {
+      "path": "docs/v2.1/MIGRATION.md",
+      "sha256": "693a0ef2214a2d67190cccde07ab8f17c24762a528774556d672ff7c1e355289",
+      "bytes": 4566
+    },
+    {
+      "path": "docs/v2.1/PLAN.md",
+      "sha256": "47a4c0dfaaf8c40b84626da8614b69fea616b24c6633873f157aaf76a3402965",
+      "bytes": 3560
+    },
+    {
+      "path": "docs/v2.1/README.md",
+      "sha256": "dd6d55ea41046736fde5098e3256297a02318d8058e065b66634953df9bc82b3",
+      "bytes": 14416
+    },
+    {
+      "path": "docs/v2.1/SECURITY.md",
+      "sha256": "f236df477c7640d0d363313c3255d8d4c072ab1293fb0bb5194bad2414df5e36",
+      "bytes": 6833
+    },
+    {
+      "path": "docs/v2.1/VALIDATION.md",
+      "sha256": "04f37f0d3156b9bca2bc77f3ab88a052e101dfaa6cebab3fc4da597868c51a78",
+      "bytes": 15470
+    },
+    {
+      "path": "docs/v2.1/evidence/README.md",
+      "sha256": "09b59e642876f0da6031d7999beaa82b0c863d18874a9fbaf482b7c3f9616cf1",
+      "bytes": 3455
+    },
+    {
+      "path": "docs/v2.1/evidence/benchmark.json",
+      "sha256": "139f7f42309a798f4bd2dd342bcd4d7969d41c5fe60596ade031d6d5e382c49a",
+      "bytes": 1953
+    },
+    {
+      "path": "docs/v2.1/evidence/checks.log",
+      "sha256": "252424613b964737f988c6ffd709bd6d83646e9a99bd949aa68e4098a5aa9998",
+      "bytes": 1633
+    },
+    {
+      "path": "docs/v2.1/evidence/dogfood.json",
+      "sha256": "1e99851aba533aea65536e292ff782e5a75a2945b517ba047cb02462eb840a4f",
+      "bytes": 12668
+    },
+    {
+      "path": "docs/v2.1/evidence/mutation-dispositions.json",
+      "sha256": "274c617fde2b103efbf3d8c3282a95455ef5c91adea4e620333a88d1ca1fa3e0",
+      "bytes": 4210
+    },
+    {
+      "path": "docs/v2.1/evidence/mutation.json",
+      "sha256": "056e7a16ccceea636a36ee9d0ad5e983e70c73afc7709c6f61c13d09f6bf5334",
+      "bytes": 12422
+    },
+    {
       "path": "docs/v2/AUDIT.md",
       "sha256": "6df8086ac3c3531c2f13745fea85a73b15626a31d10393a3bbec63825066f3d8",
       "bytes": 2512
     },
     {
       "path": "docs/v2/INTERFACES.md",
-      "sha256": "93fddf245ac1dfcbe9b5c2f84be06d45e1ce90370597b5415661317f876fcfee",
-      "bytes": 3438
+      "sha256": "b77abf84400dbc49922db92534ea70b6037e07cd26590208efb2cd0c8311638d",
+      "bytes": 4065
     },
     {
       "path": "docs/v2/LIMITATIONS.md",
@@ -400,8 +465,8 @@
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
-      "sha256": "c7697bfb567aa488c89b8b61604e2b74102c6b968e9082a5e4b9a9ccbc1e533b",
-      "bytes": 11528
+      "sha256": "7a0afc493d7d21fa1ca72011d3691fd703a3db7eb3c9a7860a79a11e9f6b98be",
+      "bytes": 12349
     },
     {
       "path": "docs/v2/OPERATIONS.md",
@@ -700,8 +765,18 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "56c841dde8f22260a1ba86434876edbff952d5c0ac355fa5355da2b17a436042",
-      "bytes": 2860
+      "sha256": "65c65905e920f6e80dcb87a34eb722d10399a7e391984a20e9da5cb8ae5f7fbe",
+      "bytes": 4408
+    },
+    {
+      "path": "examples/control/README.md",
+      "sha256": "42daf0d47e8d5494422f504de713561a6d8f7f14dadad83708a13028f38d0268",
+      "bytes": 2802
+    },
+    {
+      "path": "examples/control/assurance-task.json",
+      "sha256": "1c195717dc6a26cc16bcbe03aef3327dc60d1241a6c3d7c31ecec2d9b3639cf7",
+      "bytes": 2254
     },
     {
       "path": "examples/control/checkpoint.json",
@@ -905,8 +980,8 @@
     },
     {
       "path": "policies/mutation-exceptions.json",
-      "sha256": "c86743ee136bfb98f2dce77a7fcb36e7e2cf34a51ac5770e2af19c2b6462256a",
-      "bytes": 46491
+      "sha256": "10bc3c2802de177b574bd2ce4d8adfeb3f1bd90a5b9539a017243386d517323a",
+      "bytes": 49007
     },
     {
       "path": "policies/quality-gates.md",
@@ -989,6 +1064,16 @@
       "bytes": 1067
     },
     {
+      "path": "scripts/assurance_dogfood.py",
+      "sha256": "424a71c5f99fa99005d5c97e62f31f7659ac21060e5ffc2a8c13dfb356d1cacb",
+      "bytes": 13157
+    },
+    {
+      "path": "scripts/assurance_mutation.py",
+      "sha256": "5ab318e2bf64af545e11f336bbce99f213c7d6fc27cf2196fd760c26dc4eb39f",
+      "bytes": 23435
+    },
+    {
       "path": "scripts/build_manifest.py",
       "sha256": "42f4642b75aa76bbd41de97069a7e303c55f3530bd7efd5e56c11c857ae1a13e",
       "bytes": 1940
@@ -1000,8 +1085,8 @@
     },
     {
       "path": "scripts/control_benchmark.py",
-      "sha256": "bc8d2d3049de65e7df1944f5f4bf4c3690e99b07dc01ed1414461bf217a11cac",
-      "bytes": 4898
+      "sha256": "75c6c4d0abd7924548c550dda7acee7dae68e220449b918868aa92f5ba1cad50",
+      "bytes": 6563
     },
     {
       "path": "scripts/coverage_gate.py",
@@ -1010,8 +1095,13 @@
     },
     {
       "path": "scripts/mutation_gate.py",
-      "sha256": "6f8eeb8c7ebe9d9f83f21bce6b610621deb6a22731b63f140e3c2d5064596543",
-      "bytes": 19153
+      "sha256": "950ce30cdede3f871f0d2bc955805435f8e1a23235fe13375f6cf4a584fdb062",
+      "bytes": 20538
+    },
+    {
+      "path": "scripts/mutation_scope.py",
+      "sha256": "dceb887cc314971a427cb277e18d2d5ed380b63b92b904753a277a0d6447bee2",
+      "bytes": 9252
     },
     {
       "path": "scripts/repo_check.py",
@@ -1165,18 +1255,68 @@
     },
     {
       "path": "src/agentic_discipline/control/api.py",
-      "sha256": "96f1667c3b7f9195c20e6ed8b22eb2ec4c8c1839932f9b87d6e7250e513c249f",
-      "bytes": 8648
+      "sha256": "72b4f27771ee7f41747bb279e2be29a4b7936b9c2a154049238a17694f518e61",
+      "bytes": 11946
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/__init__.py",
+      "sha256": "12fe72c2d61d1b07bc9bc84bf7d07da88d98dfecc5b78032c0fe5215e6ea1bde",
+      "bytes": 568
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/compiler.py",
+      "sha256": "559fd5a7135617e3a91212a45e9d22962c1d5d5a79bdda0964bd359bc1786b40",
+      "bytes": 13155
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/decision.py",
+      "sha256": "dab6d59f6c14cac330c47d3e883c42938e2e8fd80d75add445c3234d41d502a6",
+      "bytes": 5818
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/impact.py",
+      "sha256": "f7ccc9c29ee8426e89a424b17c43f335a52ac523141ea574329e54392872ae90",
+      "bytes": 2657
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/migration.py",
+      "sha256": "e1335844d86341b38f066abfbbfa224e4af83c58da5a94b4b358739f364ca1d4",
+      "bytes": 6211
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/model.py",
+      "sha256": "c72f0c3055f9ecbea3a946aa342490e2e4bc0e68747344a918a6535425d6518f",
+      "bytes": 8532
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/planner.py",
+      "sha256": "fd98c568b04344858b1f57af9bb7caacf1fad6ace2c5ddc57a75423ab2d5cb60",
+      "bytes": 6398
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/registry.py",
+      "sha256": "56428763a68f53f5d028cfba3a8952a6644b35f262d4ce464e9ea9c05b1c4999",
+      "bytes": 8506
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/resolver.py",
+      "sha256": "b51dcd24e40276fb7045f394261168a5fe786919dd43c19151d85bc7be14d1b0",
+      "bytes": 10675
+    },
+    {
+      "path": "src/agentic_discipline/control/assurance/service.py",
+      "sha256": "6038958f9f76e41fe1d1ae28edb83cc25cf1b464c9cdf776bd870ae698af049b",
+      "bytes": 28350
     },
     {
       "path": "src/agentic_discipline/control/cli.py",
-      "sha256": "4d7b04b24fd15809614a6bda4a548c8a0a24ccd9e58e41d69f7e08b16d18550c",
-      "bytes": 11459
+      "sha256": "291d1dedb9a85d6da4d1a160cb2d30e54efa768ed65ca380646a0d191aa376e3",
+      "bytes": 17510
     },
     {
       "path": "src/agentic_discipline/control/console.py",
-      "sha256": "69e0cbae89c3eb676abf3581ecfc19f31769f4e6abf95a7446dc253ef4210e76",
-      "bytes": 7977
+      "sha256": "d2d6d24c19c0534376a2f80178f5908a86274d4ef692b765d0e3ba5e6ba3329d",
+      "bytes": 9128
     },
     {
       "path": "src/agentic_discipline/control/contracts.py",
@@ -1185,8 +1325,8 @@
     },
     {
       "path": "src/agentic_discipline/control/diagnostics.py",
-      "sha256": "8ee561f3ca427c91722b4b334ccbce68940dcf5c73b76589e727a46b82016bd9",
-      "bytes": 728
+      "sha256": "5031139920f3e4a9218c5adce452f2436f4a47187b697904238ac32c54637419",
+      "bytes": 1088
     },
     {
       "path": "src/agentic_discipline/control/discovery.py",
@@ -1215,13 +1355,13 @@
     },
     {
       "path": "src/agentic_discipline/control/store.py",
-      "sha256": "b9bff14e78b111e01efe781363a67c3d5407ee6ee23c4a446d791572fdfabff2",
-      "bytes": 9650
+      "sha256": "83c954174459c41a924721b49515bb86c5460e964422a1be0d619f8b3723c14a",
+      "bytes": 10002
     },
     {
       "path": "src/agentic_discipline/control/verification.py",
-      "sha256": "0cd72b5b1c72079f2226ea4a1914a1b407bf5cfaf4ec84d9849f93d26246d5d5",
-      "bytes": 15258
+      "sha256": "56117184a5f03f4f6c0059b488f15ac0dc5b1624b96b2eba60ff7cc51c37f4c8",
+      "bytes": 18862
     },
     {
       "path": "src/agentic_discipline/control/workspaces.py",
@@ -1335,8 +1475,13 @@
     },
     {
       "path": "tests/cli_surface.json",
-      "sha256": "7368235007cdd2a3bdb4c71635f253de092bca68f3ead5e0b0689aaec124dd05",
-      "bytes": 63427
+      "sha256": "c58d4861682a026a392f59deacce14327c6aa770724604b272783336a4b68bd4",
+      "bytes": 69291
+    },
+    {
+      "path": "tests/control/assurance_support.py",
+      "sha256": "fb04eedf79ac645f2cef33b9202906272563e3cce324257df2d67d7026b1f252",
+      "bytes": 4279
     },
     {
       "path": "tests/control/conftest.py",
@@ -1350,8 +1495,83 @@
     },
     {
       "path": "tests/control/test_api_dispatch.py",
-      "sha256": "f55806954d9cb6d196020d86d6952e35cb417c461086a274e31e7536da672f57",
-      "bytes": 15260
+      "sha256": "4ce8dafaea49aa3654bfc044477873bcf9eb4451d362ae5b7e274e11f5bee657",
+      "bytes": 18473
+    },
+    {
+      "path": "tests/control/test_assurance_command_line.py",
+      "sha256": "7ac929c2ee94bd9ba58534520cbd95025d1e63cd0b9c00f221d0fe992aa9a57d",
+      "bytes": 7974
+    },
+    {
+      "path": "tests/control/test_assurance_completion_guards.py",
+      "sha256": "2d8a3c203a3843d1fdb59150e904e9b1d153e412192d98866e04527f63867f9b",
+      "bytes": 5238
+    },
+    {
+      "path": "tests/control/test_assurance_contracts.py",
+      "sha256": "91a6fce84c6716a79af7a1b5d709078a080dca9ac533430b904e2e24b5f27263",
+      "bytes": 73596
+    },
+    {
+      "path": "tests/control/test_assurance_derivation.py",
+      "sha256": "477072c3dd4fbfc5c6229e34f7cbc272f261ce2271846b5e27bd6f0edf85c610",
+      "bytes": 5574
+    },
+    {
+      "path": "tests/control/test_assurance_details.py",
+      "sha256": "1aa3d3e499c6e6494f69514be667db4103a401e3d951e8d564d6ea4e286c5cff",
+      "bytes": 33828
+    },
+    {
+      "path": "tests/control/test_assurance_edges.py",
+      "sha256": "1b949d86b803110da910b813299dfb018fbab3b7578487a3a2cd563a04207a3f",
+      "bytes": 26499
+    },
+    {
+      "path": "tests/control/test_assurance_failures.py",
+      "sha256": "3b521800a532393ae7f4f069b45cbe9367b584cb4dbdf5191089487105201028",
+      "bytes": 13364
+    },
+    {
+      "path": "tests/control/test_assurance_interfaces.py",
+      "sha256": "2328dd57bfe880efb45965c5b930d52faa3368576caca8f2b2033109517fb4a2",
+      "bytes": 28496
+    },
+    {
+      "path": "tests/control/test_assurance_mutation_survivors.py",
+      "sha256": "4409050715e402d08ace64de6a188fbb3fbe22c9f581c849ae05b255614fc64a",
+      "bytes": 6376
+    },
+    {
+      "path": "tests/control/test_assurance_properties.py",
+      "sha256": "58ec01a2a364efe42802d09ccca77f880ce620a1f9acbbe3f5c1a69330a2ef5b",
+      "bytes": 10538
+    },
+    {
+      "path": "tests/control/test_assurance_rendering.py",
+      "sha256": "0a7f4ce7aed9e5437147cdc40edf89a96982e2ba8c397a98100bba8fd9f01e8c",
+      "bytes": 6173
+    },
+    {
+      "path": "tests/control/test_assurance_scenarios.py",
+      "sha256": "9412f135a230dd9766f43c91e5ba428b2393e66dc566c87b357f3e2f784c3b72",
+      "bytes": 29135
+    },
+    {
+      "path": "tests/control/test_assurance_service_guards.py",
+      "sha256": "03140f20ba2580904bb6024b12a33135f11d2dcae30cc9b3936206800d8779a2",
+      "bytes": 6575
+    },
+    {
+      "path": "tests/control/test_assurance_small_guards.py",
+      "sha256": "4f5c7200df014bbc7a851100e2b259c7763d5f74b859ff420da5338fa444cce4",
+      "bytes": 3938
+    },
+    {
+      "path": "tests/control/test_assurance_units.py",
+      "sha256": "d3a262236c5383bd578dab4adae8b0b1a7888e5e92edf11a702a2a520ca154e6",
+      "bytes": 24065
     },
     {
       "path": "tests/control/test_blocker_and_workspace_root.py",
@@ -1385,8 +1605,8 @@
     },
     {
       "path": "tests/control/test_console_responses.py",
-      "sha256": "43c1624319712182a78e823039fc39035ae26dc3e989ca054a6f0220b483c60b",
-      "bytes": 5832
+      "sha256": "8f9f5fc9e9a50dfd242797aaee7fa6b1fa6a6b50de30beef72e27b29c7a70285",
+      "bytes": 5908
     },
     {
       "path": "tests/control/test_context_document.py",
@@ -1405,8 +1625,8 @@
     },
     {
       "path": "tests/control/test_control_doctor.py",
-      "sha256": "5aa3214603afd4a812f863abde60bdd5c146e8e644541c72fe5d04791750d654",
-      "bytes": 2728
+      "sha256": "b6c537d989449becd903110d33520dc236188154c72f37cb55636fa73e57ee81",
+      "bytes": 3854
     },
     {
       "path": "tests/control/test_corrupt_references.py",
@@ -1435,8 +1655,8 @@
     },
     {
       "path": "tests/control/test_index_and_evidence_records.py",
-      "sha256": "345a6c71df4ce78a8dcaf012fae34b8264373b78353cc3e608cb9599163f9c09",
-      "bytes": 21238
+      "sha256": "60d15804a35bb266e67d6e7cb67316245229b47f88b603318d2982249f20acd6",
+      "bytes": 21460
     },
     {
       "path": "tests/control/test_interfaces.py",
@@ -1535,8 +1755,8 @@
     },
     {
       "path": "tests/control/test_store_records.py",
-      "sha256": "2530a640648493adda54e9e5911d78d990afaaee2d50d07fbb349658c459cde7",
-      "bytes": 14334
+      "sha256": "1cf662275bb4f3f6c3a30bb8f2fa4ab0b458654e19fa324687e44f5be83f0258",
+      "bytes": 14838
     },
     {
       "path": "tests/control/test_task_records.py",
@@ -1790,8 +2010,13 @@
     },
     {
       "path": "tests/test_mutation_gate.py",
-      "sha256": "f6b1f8e2e146838b65e67e4f442497e3bf8d7aa7042c10869372c6dd8b98f25f",
-      "bytes": 1996
+      "sha256": "4577d8e97241536f485bba4787fbd168105bde5742b4cbbd28244391821ad101",
+      "bytes": 3428
+    },
+    {
+      "path": "tests/test_mutation_scope.py",
+      "sha256": "5e33b34aa59824878bd603c7da085170f39018b72b97cf44217c59c2aa0f8d42",
+      "bytes": 7184
     },
     {
       "path": "tests/test_optional_keys.py",

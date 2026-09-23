@@ -362,6 +362,45 @@ executables, and `npx -p agentic-discipline agentic`. See the [guide](docs/v2/RE
 its [trust boundary](docs/v2/LIMITATIONS.md) and [implementation status](docs/IMPLEMENTATION_STATUS.md).
 The `agentic-discipline` command and its adapters are unchanged.
 
+## Agentic Discipline 2.1: the Adaptive Assurance Engine
+
+> Every change creates proof obligations. A task is complete only when all required proof
+> obligations are resolved by current evidence.
+
+2.0 asks whether a task's verifiers passed. 2.1 asks whether every claim the change must
+keep true is currently supported by evidence - and refuses completion while any mandatory
+claim is failed, unknown, blocked, conflicted, stale or waiting on a human.
+
+```bash
+agentic assurance plan TASK-104 --compile
+agentic assurance verify TASK-104 --session-file /private/worker-a.json
+agentic assurance status TASK-104
+agentic assurance explain PO-007
+```
+
+```text
+TASK-104 ASSURANCE
+  Required obligations 12
+  FAILED                 1
+  HUMAN_REQUIRED         1
+  UNKNOWN                1
+  VERIFIED               9
+  Proof debt           3
+  Decision             BLOCK
+```
+
+Obligations are derived deterministically from the task contract and from repository policy
+applied to the paths the change actually touched. The set grows when the real diff reaches
+further than the contract declared; it never shrinks without an audited waiver. Each claim
+binds to what it depends on, so an unrelated edit does not invalidate it and a relevant one
+always does. Deterministic proof always beats agent judgment, and `UNKNOWN` is never `PASS`.
+
+The engine is off until a project is migrated on purpose, so existing 2.0 projects are
+unaffected. See the [guide](docs/v2.1/README.md), the
+[architecture](docs/v2.1/ARCHITECTURE.md), the [migration](docs/v2.1/MIGRATION.md), the
+[threat model](docs/v2.1/SECURITY.md) and the
+[measured limits](docs/v2.1/LIMITATIONS.md).
+
 ## Documentation
 
 - [Install guide](docs/install.md)

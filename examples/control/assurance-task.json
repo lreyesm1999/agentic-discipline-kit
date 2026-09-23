@@ -1,0 +1,63 @@
+{
+  "objective": "Change how broker profitability is calculated",
+  "scope": ["src/pnl", "src/api", "migrations", "tests"],
+  "out_of_scope": ["deployment", "production data"],
+  "requirements": [],
+  "acceptance": [
+    "The new calculation matches the worked examples in the specification",
+    "The reporting endpoint returns the new figures for a current account"
+  ],
+  "dependencies": [],
+  "boundaries": ["profitability domain", "reporting API"],
+  "context": [],
+  "verification": [
+    {
+      "kind": "acceptance",
+      "command": ["python", "-B", "-m", "pytest", "-q", "tests/acceptance/test_profitability.py"],
+      "acceptance": [0],
+      "inputs": ["src/pnl", "tests/acceptance"]
+    },
+    {
+      "kind": "integration",
+      "command": ["python", "-B", "-m", "pytest", "-q", "tests/integration/test_reporting_api.py"],
+      "acceptance": [1],
+      "inputs": ["src/api", "tests/integration"]
+    },
+    {
+      "kind": "regression",
+      "command": ["python", "-B", "-m", "pytest", "-q", "tests/regression/test_historical_pnl.py"],
+      "acceptance": [],
+      "inputs": ["src/pnl", "tests/regression"]
+    },
+    {
+      "kind": "contract",
+      "command": ["python", "-B", "scripts/check_api_compatibility.py"],
+      "acceptance": [],
+      "inputs": ["src/api", "schemas"]
+    },
+    {
+      "kind": "property",
+      "command": ["python", "-B", "-m", "pytest", "-q", "tests/property/test_pnl_invariants.py"],
+      "acceptance": [],
+      "inputs": ["src/pnl", "tests/property"]
+    },
+    {
+      "kind": "migration",
+      "command": ["python", "-B", "-m", "pytest", "-q", "tests/migrations/test_balances_preserved.py"],
+      "acceptance": [],
+      "inputs": ["migrations", "tests/migrations"]
+    }
+  ],
+  "required_evidence": ["acceptance", "contract", "integration", "migration", "property", "regression"],
+  "rollback": "Revert only the task-owned patch from its recorded baseline",
+  "definition_of_done": "Every mandatory proof obligation resolved by current evidence, plus a resumable checkpoint; project release gates apply separately",
+  "risk": "HIGH",
+  "budget": {
+    "max_runtime": 1200,
+    "max_retries": 4,
+    "max_files": 30,
+    "max_lines": 6000,
+    "max_external_calls": 0,
+    "max_cost": 0
+  }
+}

@@ -468,6 +468,30 @@ def _only_literal_case(before: str, after: str) -> bool:
     return True
 
 
+def source_for_exception(function: str) -> str:
+    """The source file a reviewed exception names, from its mutmut function id."""
+
+    module = function.rpartition(".")[0]
+    if not module or not function.startswith("agentic_discipline."):
+        raise ValueError(f"exception function {function!r} is not a package function")
+    return "src/" + module.replace(".", "/") + ".py"
+
+
+def exceptions_in_scope(
+    exceptions: list[dict[str, str]], scope: set[str]
+) -> list[dict[str, str]]:
+    """Keep exceptions for files this campaign mutated.
+
+    A partial run must not call every other exception stale. An exception for a file
+    that was mutated and no longer matches a survivor still fails the gate.
+    """
+
+    normalized = {path.replace("\\", "/") for path in scope}
+    return [
+        entry for entry in exceptions if source_for_exception(entry["function"]) in normalized
+    ]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--report", type=Path, required=True)
@@ -483,11 +507,24 @@ def main() -> int:
         help="reviewed exceptions for survivors no rule proves; defaults to the "
         "MUTATION_EXCEPTIONS environment variable, and to none without it",
     )
+    parser.add_argument(
+        "--scope",
+        type=Path,
+        help="files this campaign mutated, one relative path per line; exceptions "
+        "for any other file are not treated as stale",
+    )
     args = parser.parse_args()
     try:
         report = json.loads(args.report.read_text(encoding="utf-8"))
         mutants = args.mutants or args.report.parent
         exceptions = load_exceptions(args.exceptions) if args.exceptions else []
+        if args.scope:
+            scope = {
+                line.strip().replace("\\", "/")
+                for line in args.scope.read_text(encoding="utf-8").splitlines()
+                if line.strip()
+            }
+            exceptions = exceptions_in_scope(exceptions, scope)
         equivalent: dict[str, str] | None = None
         reviewed: dict[str, str] | None = None
         stale: list[dict[str, str]] | None = None

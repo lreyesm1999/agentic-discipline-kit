@@ -1,0 +1,85 @@
+{
+  "about": "Reviewed dispositions for survivors of scripts/assurance_mutation.py. Each entry names the module, the exact source text of the line, the family and the rewrite, so it survives renumbering. An entry that stops matching a survivor fails the campaign, so a killed or removed mutant cannot stay on this list.",
+  "dispositions": [
+    {
+      "module": "compiler.py",
+      "source": "origin_key=f\"acceptance:{index}\",",
+      "family": "constant_string",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The origin key is hashed into an opaque identifier. Changing its constant prefix changes every such identifier consistently and keeps them unique and deterministic, which is all identity requires; no caller reads the key."
+    },
+    {
+      "module": "compiler.py",
+      "source": "origin_key=f\"policy:{policy_id}\",",
+      "family": "constant_string",
+      "count": 2,
+      "kind": "equivalent",
+      "reason": "As for the acceptance key: the human-acceptance and falsification rules hash their own key into an opaque identifier, and a different constant prefix still yields a unique, deterministic one."
+    },
+    {
+      "module": "compiler.py",
+      "source": "origin_key=f\"impact:requirement:{identifier}\",",
+      "family": "constant_string",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The requirement identifier inside the key keeps each impact obligation unique whatever the constant prefix is."
+    },
+    {
+      "module": "model.py",
+      "source": "return PREFIX + hashlib.sha256(f\"{task_id}\\x00{origin_key}\".encode()).hexdigest()[:16]",
+      "family": "constant_string",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "The separator between task and origin only has to be a byte neither contains. Task identifiers are TASK- plus hex and origin keys are fixed words, so the sentinel separates them as well as the NUL does."
+    },
+    {
+      "module": "registry.py",
+      "source": "\"supports_incremental\": False,",
+      "family": "constant_string",
+      "count": 8,
+      "kind": "equivalent",
+      "reason": "normalized reads this key with a default of False. Renaming the key on an entry whose value is False leaves the default in its place, so the declared descriptor is identical; the entries declaring True are pinned by test_the_built_in_registry_is_exactly_what_it_declares and were killed."
+    },
+    {
+      "module": "resolver.py",
+      "source": "return False",
+      "family": "return_value",
+      "count": 2,
+      "kind": "equivalent",
+      "reason": "current_for is only used as a filter condition, where None and False are both false. No caller compares its result to False by identity."
+    },
+    {
+      "module": "service.py",
+      "source": "break",
+      "family": "loop_control",
+      "count": 1,
+      "kind": "equivalent",
+      "reason": "This break follows the check that nothing is outstanding. Continuing instead reaches escalation with that same empty list, which raises nothing, and the next statement breaks out of the loop; the result is the same."
+    },
+    {
+      "module": "service.py",
+      "source": "not artifact.parent.is_symlink(), \"INVALID_PATH\", \"Evidence directory must not be a symlink\"",
+      "family": "constant_string",
+      "count": 2,
+      "kind": "platform",
+      "reason": "Reaching this refusal needs a symlinked evidence directory, which this Windows campaign cannot create. test_a_human_verdict_refuses_a_symlinked_evidence_directory pins the code and message on POSIX, where CI runs it."
+    },
+    {
+      "module": "service.py",
+      "source": "artifact.parent.mkdir(exist_ok=True, mode=0o700)",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "platform",
+      "reason": "Directory modes are not enforced on Windows. test_a_human_verdict_artefact_is_private pins 0o700 on POSIX, where CI runs it."
+    },
+    {
+      "module": "service.py",
+      "source": "artifact.chmod(0o600)",
+      "family": "constant_number",
+      "count": 1,
+      "kind": "platform",
+      "reason": "File modes are not enforced on Windows. test_a_human_verdict_artefact_is_private pins 0o600 on POSIX, where CI runs it."
+    }
+  ]
+}
