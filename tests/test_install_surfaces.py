@@ -30,6 +30,9 @@ def _init_namespace(target: Path, **overrides: object) -> argparse.Namespace:
         "adapter": [],
         "dry_run": False,
         "json": False,
+        "rules_only": False,
+        "no_adopt": False,
+        "adopt": False,
     }
     values.update(overrides)
     return argparse.Namespace(**values)

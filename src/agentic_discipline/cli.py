@@ -211,7 +211,7 @@ def command_doctor(args: argparse.Namespace) -> int:
     # discipline installed and no control plane reported PASS. They are still reported,
     # because they are true and callers read them, but the verdict now comes from whether
     # the workflow can actually run.
-    report = readiness.inspect(root, deep=not getattr(args, "fast", False), config=config_path)
+    report = readiness.inspect(root, deep=not args.fast, config=config_path)
     status = "PASS" if report["execution_readiness"] in {"READY", "DEGRADED"} else "FAIL"
     if (
         not git_worktree
@@ -235,7 +235,7 @@ def command_doctor(args: argparse.Namespace) -> int:
         "readiness": report,
         "status": status,
     }
-    if getattr(args, "json", False):
+    if args.json:
         _json(checks)
     else:
         print(readiness.render(report))
@@ -245,10 +245,10 @@ def command_doctor(args: argparse.Namespace) -> int:
 def command_repair(args: argparse.Namespace) -> int:
     result = repair.apply(
         _doctor_root(),
-        dry_run=getattr(args, "dry_run", False),
-        deep=not getattr(args, "fast", False),
+        dry_run=args.dry_run,
+        deep=not args.fast,
     )
-    if getattr(args, "json", False):
+    if args.json:
         _json(result)
     else:
         _render_repair(result)
@@ -441,9 +441,9 @@ def command_evidence_verify(args: argparse.Namespace) -> int:
 def _adopt_choice(args: argparse.Namespace) -> bool | None:
     """None is the ordinary run: adopt unless the project recorded that it does not want to."""
 
-    if getattr(args, "no_adopt", False):
+    if args.no_adopt:
         return False
-    return True if getattr(args, "adopt", False) else None
+    return True if args.adopt else None
 
 
 def command_init(args: argparse.Namespace) -> int:
@@ -456,7 +456,7 @@ def command_init(args: argparse.Namespace) -> int:
         adapters=args.adapter or None,
         dry_run=args.dry_run,
         adopt=_adopt_choice(args),
-        rules_only=getattr(args, "rules_only", False),
+        rules_only=args.rules_only,
     )
     if args.json:
         _json(result)

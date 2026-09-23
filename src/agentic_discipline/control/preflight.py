@@ -49,12 +49,14 @@ NEEDS_GIT = ("workspace isolation", "change integrity checks", "rollback to a ch
 # another one points at the requirement that explains it rather than at a check name.
 ANSWERED_BY = {check: name for name, sources in REQUIREMENTS for check in sources}
 
+# Check statuses from worst to best; a requirement answers with its worst check.
+SEVERITY = ("FAIL", "MISSING", "STALE", "OFF", "PASS")
+
 
 def _requirement(name: str, checks: list[dict[str, Any]]) -> dict[str, Any]:
     """The worst of the readiness checks that answer this requirement, with its reason."""
 
-    ordering = {"FAIL": 0, "MISSING": 1, "STALE": 2, "OFF": 3, "PASS": 4}
-    worst = min(checks, key=lambda check: ordering[str(check["status"])])
+    worst = min(checks, key=lambda check: SEVERITY.index(str(check["status"])))
     cause = worst["caused_by"]
     return {
         "requirement": name,
@@ -62,7 +64,8 @@ def _requirement(name: str, checks: list[dict[str, Any]]) -> dict[str, Any]:
         "detail": worst["detail"],
         "repair": worst["repair"],
         "advisory": worst["advisory"],
-        "caused_by": ANSWERED_BY.get(str(cause)) if cause else None,
+        # A check that nothing caused, or that no requirement answers, points nowhere.
+        "caused_by": ANSWERED_BY.get(cause),
     }
 
 

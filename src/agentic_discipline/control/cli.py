@@ -167,7 +167,7 @@ def write_session(path: Path, token: str) -> None:
     """Hand the claim's session to the caller the way `agent join --session-file` does."""
 
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps({"session": token}) + "\n", encoding="utf-8")
+    path.write_bytes((json.dumps({"session": token}) + "\n").encode())
     if os.name == "posix":
         path.chmod(0o600)
 
@@ -318,7 +318,7 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
                 plane,
                 args.request,
                 agent=args.agent,
-                capabilities=args.capabilities or None,
+                capabilities=args.capabilities,
                 claim=not args.no_claim,
                 flight=flight,
             )
@@ -361,16 +361,14 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
                 if args.action == "verify":
                     return {"data": work.verify(plane, args.task, token)}
                 if args.action == "finish":
-                    return {
-                        "data": work.finish(plane, args.task, token, summary=args.summary or None)
-                    }
+                    return {"data": work.finish(plane, args.task, token, summary=args.summary)}
                 return {
                     "data": work.checkpoint(
                         plane,
                         args.task,
                         token,
                         reason=args.reason,
-                        summary=args.summary or None,
+                        summary=args.summary,
                         next_action=args.next_action,
                     )
                 }

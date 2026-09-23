@@ -238,14 +238,14 @@ def _set_control_mode(target_root: Path, mode: str, actions: list[str], dry_run:
 
     path = target_root / ".agentic" / "config.json"
     try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
+        payload = json.loads(path.read_bytes())
     except (OSError, ValueError):
         return
     if payload.get("control", {}).get("mode") == mode:
         return
     if not dry_run:
-        path.write_text(
-            json.dumps({**payload, "control": {"mode": mode}}, indent=2) + "\n", encoding="utf-8"
+        path.write_bytes(
+            (json.dumps({**payload, "control": {"mode": mode}}, indent=2) + "\n").encode()
         )
     actions.append(f"UPDATE {path} (control mode {mode})")
 

@@ -40,7 +40,7 @@ def _doctor(
 ) -> tuple[int, dict[str, Any]]:
     monkeypatch.chdir(root)
     capsys.readouterr()
-    code = cli.command_doctor(argparse.Namespace(json=True, **args))
+    code = cli.command_doctor(argparse.Namespace(json=True, fast=False, **args))
     report = json.loads(capsys.readouterr().out)
     # The readiness block has its own tests; what belongs here is the installation half.
     report.pop("readiness")

@@ -152,7 +152,9 @@ def _requirements(plane: Any, request: str) -> list[dict[str, Any]]:
             continue
         if entity.get("stale"):
             continue
-        text = " ".join(str(entity.get(key, "")) for key in ("name", "statement", "excerpt"))
+        text = " ".join(
+            str(entity[key]) for key in ("name", "statement", "excerpt") if key in entity
+        )
         overlap = words & set(terms(text))
         if overlap:
             matched.append((len(overlap), entity))
@@ -196,12 +198,13 @@ def _verifiers(root: Path, criteria: int) -> tuple[list[dict[str, Any]], list[st
         return [], [], f"the quality configuration cannot be read: {exc}"
     verifiers: list[dict[str, Any]] = []
     kinds: list[str] = []
+    # The schema has already made every gate an object with a name and a command.
     for gate in config["gates"]:
-        if not isinstance(gate, dict) or not gate.get("required", True):
+        if not gate.get("required", True):
             continue
         command = gate["command"]
         argv = list(command) if isinstance(command, list) else command.split()
-        kind = _kind(str(gate.get("name", "")))
+        kind = _kind(gate["name"])
         cited = list(range(criteria)) if kind in BEHAVIOURAL else []
         verifiers.append({"kind": kind, "command": argv, "acceptance": cited})
         if kind not in kinds:
@@ -508,8 +511,9 @@ def _readiness(plane: Any, task: dict[str, Any]) -> dict[str, Any]:
     """
 
     report = plane.readiness(task["id"])
-    reasons = report.get("reasons", [])
-    pending = [plane.store.get(identifier, "task") for identifier in task["dependencies"]]
+    reasons = report["reasons"]
+    # `create_task` read every dependency as a task before accepting the contract.
+    pending = [plane.store.get(identifier) for identifier in task["dependencies"]]
     waiting = [item["id"] for item in pending if item["state"] != "COMPLETED"]
     if report["status"] == "READY":
         return {"state": "READY", "reasons": [], "waiting_for": []}
@@ -529,7 +533,7 @@ def _held_elsewhere(plane: Any, task_id: str) -> str | None:
     for lease in plane.store.list("lease"):
         if lease["state"] != "ACTIVE" or lease["task_id"] == task_id:
             continue
-        other = plane.store.get(lease["task_id"], "task")
+        other = plane.store.get(lease["task_id"])
         if not other.get("workspace_id"):
             return str(lease["task_id"])
     return None
@@ -552,13 +556,13 @@ def _report(
     lease: dict[str, Any] | None = None
     if state["state"] == "READY" and task["state"] == "PLANNED":
         plane.ready(task["id"])
-        task = plane.store.get(task["id"], "task")
+        task = plane.store.get(task["id"])
     held = _held_elsewhere(plane, task["id"])
     if claim and state["state"] == "READY" and task["state"] == "READY" and not held:
         joined = plane.join(agent, capabilities or ["code"])
         session = str(joined["session"])
         lease = plane.claim(task["id"], session)
-        task = plane.store.get(task["id"], "task")
+        task = plane.store.get(task["id"])
     if held and state["state"] == "READY":
         state = {
             **state,
@@ -643,14 +647,21 @@ CHECKPOINT_REASONS = (
 )
 
 
-def _evidence_since(plane: Any, task_id: str, after: float) -> list[dict[str, Any]]:
-    """Evidence recorded after a moment. A run is placed by when it finished."""
+def _evidence_since(
+    plane: Any, task_id: str, previous: dict[str, Any] | None
+) -> list[dict[str, Any]]:
+    """Evidence recorded since the last checkpoint, or all of it before the first one.
 
+    A run is placed by when it finished.
+    """
+
+    after = float(previous["payload"]["timestamp"]) if previous is not None else None
     return sorted(
         (
             record
             for record in plane.store.list("evidence")
-            if record["task_id"] == task_id and float(record["finished_at"]) > after
+            if record["task_id"] == task_id
+            and (after is None or float(record["finished_at"]) > after)
         ),
         key=lambda record: float(record["finished_at"]),
     )
@@ -690,8 +701,7 @@ def checkpoint(
     require(reason in CHECKPOINT_REASONS, "INVALID_CHECKPOINT", f"Unknown reason: {reason}")
     task, _ = plane.owned(task_id, session)
     previous = _last_checkpoint(plane, task_id)
-    since = float(previous["payload"]["timestamp"]) if previous else 0.0
-    evidence = _evidence_since(plane, task_id, since)
+    evidence = _evidence_since(plane, task_id, previous)
     passed = [record for record in evidence if record["result"] == "PASS"]
     failures = [
         f"{record['kind']}: {record['result']} (exit {record['exit_code']})"
@@ -777,7 +787,7 @@ def verify(plane: Any, task_id: str, session: str) -> dict[str, Any]:
         "status": result["status"],
         "verification": result,
         "outstanding": outstanding,
-        "state": plane.store.get(task_id, "task")["state"],
+        "state": plane.store.get(task_id)["state"],
     }
 
 
@@ -808,13 +818,14 @@ def finish(
     )
     # A task that has not been verified is verified here rather than refused for it: running
     # what the task declared is part of finishing, not a separate thing to remember.
-    verification: dict[str, Any] | None = None
-    if plane.store.get(task_id, "task")["state"] == "CLAIMED":
-        verification = verify(plane, task_id, session)
+    verification = (
+        verify(plane, task_id, session) if plane.store.get(task_id)["state"] == "CLAIMED" else None
+    )
+    if verification is not None:
         if verification["status"] != "PASS":
             return {
                 "status": "BLOCKED",
-                "state": plane.store.get(task_id, "task")["state"],
+                "state": plane.store.get(task_id)["state"],
                 "code": "VERIFICATION_FAILED",
                 "reason": "verification did not pass, so the task cannot complete",
                 "outstanding": verification["outstanding"],
@@ -838,7 +849,7 @@ def finish(
         }
     return {
         "status": "PASS",
-        "state": plane.store.get(task_id, "task")["state"],
+        "state": plane.store.get(task_id)["state"],
         "reason": "every requirement of completion is met",
         "outstanding": [],
         "checkpoint": marker["checkpoint"],
