@@ -17,8 +17,18 @@ downloads the standalone build for your platform once and caches it. Standalone
 builds exist for Linux x64 and Windows x64; on macOS, use `pipx install
 agentic-discipline-kit` for now.
 
+That one command is all a normal user runs. It installs the disciplines **and** makes the
+control plane operational: the project is adopted, indexed and checked, and the report ends
+with `Status: READY FOR AGENTIC EXECUTION`. After that, ask for the work you want done -
+there is no second administrative step.
+
+For the rules alone, ask for them: `npx agentic-discipline init --rules-only` records that
+choice, and readiness then reads `DEGRADED` rather than pretending orchestration is
+available. `--adopt` turns it on later.
+
 The same package also provides `agentic`, the project control plane described in
-[docs/v2](v2/README.md): `npx -p agentic-discipline agentic adopt`.
+[docs/v2](v2/README.md). Its commands are for inspecting and steering what the workflow does
+on your behalf; they are not steps you have to run to get the guarantees.
 
 Preview it first if you prefer:
 
@@ -32,6 +42,7 @@ npx agentic-discipline init --dry-run
 AGENTS.md              read by Codex, Zed, Cline, Aider, Jules and others
 agentic.config.json    quality gates, generated for your stack
 .agentic/              everything else: disciplines, playbooks, policies, schemas
+.agentic/control/      the project's own state: tasks, evidence, checkpoints (gitignored)
 ```
 
 Two visible files. Everything else lives in `.agentic/`, the way tooling

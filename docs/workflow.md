@@ -1,5 +1,17 @@
 # Engineering Workflow
 
+## Before any real execution
+
+A request for implementation starts with operational readiness, not with the first edit.
+`agentic preflight` checks installation, version, control plane, adoption, knowledge, Git,
+quality configuration and task orchestration, repairs what it safely can, and reports
+`FULL`, `DEGRADED` or `BLOCKED`. `agentic work start "<request>"` then derives or links the
+task, evaluates readiness and claims it; checkpoints, verification and completion follow on
+their own while the work runs. The user asks for the work and never runs these by hand.
+
+A degraded mode is always stated: what is unavailable and why, and whether proceeding is
+safe. Work that needs the full workflow stops rather than continuing on the rules alone.
+
 ## Autonomous execution across phases
 
 For a request to execute or resume an approved plan, apply

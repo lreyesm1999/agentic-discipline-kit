@@ -14,6 +14,28 @@ the missing scripts, and promote them to `required` deliberately.
 The payload installs under `.agentic/`. Only `AGENTS.md` and `agentic.config.json` are added to the
 repository root, which is usually what makes the adoption PR reviewable.
 
+Adoption is part of `init`. The control plane is initialised under `.agentic/control/`, which is
+gitignored, and the repository is inspected and indexed: no file is edited, nothing is installed, and
+no instruction found in the tree is executed. A second `init` keeps every task, lease, checkpoint and
+piece of evidence and only brings the index up to date. After that, ask for the work - there is no
+separate adoption step.
+
+To install the rules without the control plane, say so with `init --rules-only`. The choice is
+recorded, survives ordinary re-runs, and readiness reports `DEGRADED` rather than implying an
+orchestration that is not there; `init --adopt` turns it on later.
+
+## Upgrading an existing installation
+
+A repository installed before this release has `.agentic/`, `AGENTS.md` and `agentic.config.json` but
+no `.agentic/control/state.db`. Nothing has to be done about it: the next implementation request runs
+the preflight, which initialises and adopts the control plane on its own, or run
+`agentic-discipline init` again, which does the same and changes nothing else. `doctor` names the
+state in the meantime as `PARTIAL`, with the repair.
+
+Two situations are left for a person, because resolving them automatically could destroy history:
+a `.agentic/control/` directory without a state database, and a state database whose audit chain
+does not verify. Both are reported as `BROKEN` and never adopted over.
+
 Installing the disciplines needs no runtime at all. The Python CLI is only required for the
 deterministic gates, and adopters can use a standalone executable, a container built from the
 repository's `Dockerfile`, or the GitHub Composite Action instead of managing it.

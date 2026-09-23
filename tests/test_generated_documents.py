@@ -27,6 +27,9 @@ EXPECTED_CONFIG = {
         "default_timeout_seconds": 120,
     },
     "evidence": {"root": "artifacts/agentic", "hash": "sha256"},
+    # Written by the phase that makes the project operational, so the mode a project is in
+    # is recorded where the rest of its configuration lives.
+    "control": {"mode": "managed"},
 }
 EXPECTED_REGISTRY = {"schema_version": "1", "verifiers": []}
 
@@ -60,9 +63,8 @@ def test_force_restores_payload_files_config_and_registry(tmp_path: Path) -> Non
         path.write_text("{}", encoding="utf-8")
 
     initialize_project(target)
-    assert [path.read_text(encoding="utf-8") for path in (config, registry, risk_weights)] == [
-        "{}"
-    ] * 3
+    assert json.loads(config.read_text(encoding="utf-8")) == {"control": {"mode": "managed"}}
+    assert [path.read_text(encoding="utf-8") for path in (registry, risk_weights)] == ["{}"] * 2
 
     initialize_project(target, force=True)
     assert config.read_text(encoding="utf-8") == _json_text(EXPECTED_CONFIG)

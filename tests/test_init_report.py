@@ -32,6 +32,13 @@ def _result(root: Path, **changes: object) -> dict[str, object]:
             {"name": "e2e", "note": "no browser available"},
         ],
         "baseline_gate": "syntax",
+        "control_mode": "managed",
+        "control": {"status": "ADOPTED", "detail": "the repository was adopted and indexed"},
+        "readiness": {
+            "execution_readiness": "READY",
+            "reason": "every check passes; the full workflow is available",
+            "checks": [],
+        },
         "actions": [
             f"WRITE {root}/AGENTS.md",
             f"WRITE {root}/agentic.config.json",
@@ -60,11 +67,65 @@ def test_full_report_lists_every_surface_gate_caveat_and_file(
         "                   ! e2e: no browser available",
         "                   + syntax: added so the config still checks something",
         "  Files            1 ready, 1 skip, 1 update, 2 write",
+        "  Control plane    the repository was adopted and indexed",
         "",
         "Visible in your repository root: AGENTS.md, agentic.config.json",
         "Everything else lives in .agentic/",
         "",
         "Review the relaxed gates in agentic.config.json before making CI blocking.",
+        "Status: READY FOR AGENTIC EXECUTION",
+        "",
+        "Next:  ask for the work you want done.",
+    ]
+
+
+def test_a_report_that_is_not_ready_names_every_gap_and_its_repair(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    _render_init(
+        _result(
+            tmp_path,
+            relaxed_gates=[],
+            baseline_gate=None,
+            control={"status": "BLOCKED", "detail": "Control directory already exists"},
+            readiness={
+                "execution_readiness": "BROKEN",
+                "reason": "Control plane: .agentic/control exists without a state database",
+                "checks": [
+                    {
+                        "label": "Control plane",
+                        "status": "FAIL",
+                        "detail": "exists without a state database",
+                        "repair": None,
+                        "advisory": False,
+                    },
+                    {
+                        "label": "Knowledge",
+                        "status": "MISSING",
+                        "detail": "no knowledge store",
+                        "repair": "agentic reconcile",
+                        "advisory": False,
+                    },
+                    {
+                        "label": "Git integration",
+                        "status": "PASS",
+                        "detail": "working tree",
+                        "repair": None,
+                        "advisory": False,
+                    },
+                ],
+            },
+        )
+    )
+    assert capsys.readouterr().out.splitlines()[-9:] == [
+        "",
+        "Status: BROKEN",
+        "",
+        "Reason: Control plane: .agentic/control exists without a state database",
+        "  - Control plane (FAIL): exists without a state database",
+        "  - Knowledge (MISSING): no knowledge store",
+        "    Repair: agentic reconcile",
+        "",
         "Next:  agentic-discipline doctor --check-tools",
     ]
 
@@ -79,6 +140,8 @@ def test_dry_run_report_without_caveats(tmp_path: Path, capsys: pytest.CaptureFi
             relaxed_gates=[],
             baseline_gate=None,
             actions=[f"WRITE {tmp_path}/AGENTS.md"],
+            control={"status": "PENDING", "detail": "would adopt the repository and index it"},
+            readiness=None,
         )
     )
     assert capsys.readouterr().out.splitlines() == [
@@ -89,11 +152,12 @@ def test_dry_run_report_without_caveats(tmp_path: Path, capsys: pytest.CaptureFi
         "  Agent surfaces   0",
         "  Quality gates    5 generated, 0 relaxed",
         "  Files            1 write",
+        "  Control plane    would adopt the repository and index it",
         "",
         "Visible in your repository root: AGENTS.md, agentic.config.json",
         "Everything else lives in .agentic/",
         "",
-        "Next:  agentic-discipline doctor --check-tools",
+        "Next:  agentic-discipline init        (this run wrote nothing)",
     ]
 
 

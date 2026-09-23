@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from .. import __version__
-from . import API_VERSION
+from . import API_VERSION, preflight, work
 from .api import SCHEMAS, call
 from .contracts import ControlError, encode, require
 from .migration import import_legacy, rollback_changeset
@@ -30,6 +30,35 @@ def parser() -> argparse.ArgumentParser:
     adoption.add_argument("--dry-run", action="store_true")
     for name in ("status", "doctor", "reconcile"):
         commands.add_parser(name)
+    flight = commands.add_parser(
+        "preflight", help="Check, repair what is safe, and report the mode work may proceed in"
+    )
+    flight.add_argument(
+        "--no-repair", action="store_true", help="Report without repairing anything"
+    )
+    flight.add_argument(
+        "--fast", action="store_true", help="Skip the working-tree scan that detects drift"
+    )
+    job = commands.add_parser(
+        "work", help="Turn a request in your own words into governed, claimed work"
+    )
+    job.add_argument(
+        "action", choices=["start", "derive", "checkpoint", "verify", "finish", "next"]
+    )
+    job.add_argument("request", nargs="?", default="", help="What you want done, in your own words")
+    job.add_argument("--task", help="The task to act on, for checkpoint, verify and finish")
+    job.add_argument("--session-file", type=Path)
+    job.add_argument("--reason", choices=list(work.CHECKPOINT_REASONS), default="slice_complete")
+    job.add_argument("--summary", action="append", default=[])
+    job.add_argument("--next-action")
+    job.add_argument("--agent", default="local-agent")
+    job.add_argument("--capability", action="append", default=[], dest="capabilities")
+    job.add_argument(
+        "--no-claim", action="store_true", help="Record and ready the task without claiming it"
+    )
+    job.add_argument(
+        "--session-out", type=Path, help="Write the session token of the claim to this file"
+    )
     api = commands.add_parser("api", help="Call a versioned operation using a JSON input file")
     api.add_argument("operation", choices=sorted(SCHEMAS))
     api.add_argument("--input", type=Path)
@@ -132,6 +161,15 @@ def read_input(path: Path | None) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     require(isinstance(data, dict), "INVALID_INPUT", "JSON input must be an object")
     return cast(dict[str, Any], data)
+
+
+def write_session(path: Path, token: str) -> None:
+    """Hand the claim's session to the caller the way `agent join --session-file` does."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes((json.dumps({"session": token}) + "\n").encode())
+    if os.name == "posix":
+        path.chmod(0o600)
 
 
 def session(path: Path | None) -> str:
@@ -265,6 +303,33 @@ def assurance_command(plane: Plane, args: argparse.Namespace) -> dict[str, Any]:
 def run(args: argparse.Namespace) -> dict[str, Any] | None:
     if args.group == "adopt":
         return {"api_version": API_VERSION, "data": adopt(args.path, args.dry_run)}
+    if args.group == "work" and args.action in {"start", "derive"}:
+        require(bool(args.request.strip()), "INVALID_REQUEST", "Describe the work")
+        flight = preflight.run(args.root)
+        if flight["mode"] == "BLOCKED":
+            return {"api_version": API_VERSION, "data": {**flight, "status": "BLOCKED"}}
+        # Governed work needs the control plane. A rules-only project is refused by name
+        # rather than told to adopt something it chose not to have.
+        preflight.requires(flight)
+        with Plane(args.root) as plane:
+            if args.action == "derive":
+                return {"api_version": API_VERSION, "data": work.derive(plane, args.request)}
+            result = work.start(
+                plane,
+                args.request,
+                agent=args.agent,
+                capabilities=args.capabilities,
+                claim=not args.no_claim,
+                flight=flight,
+            )
+        if args.session_out and result.get("session"):
+            write_session(args.session_out, str(result["session"]))
+        return {"api_version": API_VERSION, "data": result}
+    if args.group == "preflight":
+        return {
+            "api_version": API_VERSION,
+            "data": preflight.run(args.root, repair_first=not args.no_repair, deep=not args.fast),
+        }
     with Plane(args.root) as plane:
         if args.group == "mcp":
             from .mcp import serve
@@ -287,6 +352,27 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
             return {"data": rollback_changeset(plane, args.identifier, args.reason)}
         if args.group in {"status", "doctor", "reconcile"}:
             return call(plane, args.group, {}, local=True)
+        if args.group == "work":
+            if args.action == "next":
+                return {"data": work.next_ready(plane)}
+            if args.action in {"checkpoint", "verify", "finish"}:
+                require(bool(args.task), "TASK_REQUIRED", "Name the task with --task")
+                token = session(args.session_file)
+                if args.action == "verify":
+                    return {"data": work.verify(plane, args.task, token)}
+                if args.action == "finish":
+                    return {"data": work.finish(plane, args.task, token, summary=args.summary)}
+                return {
+                    "data": work.checkpoint(
+                        plane,
+                        args.task,
+                        token,
+                        reason=args.reason,
+                        summary=args.summary,
+                        next_action=args.next_action,
+                    )
+                }
+            raise ControlError("UNKNOWN_OPERATION", f"work {args.action}")
         if args.group == "api":
             data = read_input(args.input)
             if args.session_file:
@@ -398,6 +484,11 @@ def main() -> None:
                 print(encode(result))
             elif args.group == "assurance" and args.action in {"status", "debt", "explain"}:
                 print(render_assurance(args.action, result["data"]))
+            elif args.group == "work" and args.action == "start":
+                data = result["data"]
+                print(preflight.render(data) if "requirements" in data else work.render(data))
+            elif args.group == "preflight":
+                print(preflight.render(result["data"]))
             elif args.group == "status":
                 data = result["data"]
                 print(

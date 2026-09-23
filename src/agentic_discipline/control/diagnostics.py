@@ -14,7 +14,7 @@ def doctor(plane: Plane) -> dict[str, Any]:
     from .assurance.service import integrity
 
     result = subprocess.run(
-        [sys.executable, "-m", "agentic_discipline", "doctor"],
+        [sys.executable, "-m", "agentic_discipline", "doctor", "--json"],
         cwd=plane.root,
         text=True,
         capture_output=True,

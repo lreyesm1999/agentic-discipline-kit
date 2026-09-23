@@ -30,6 +30,9 @@ def _init_namespace(target: Path, **overrides: object) -> argparse.Namespace:
         "adapter": [],
         "dry_run": False,
         "json": False,
+        "rules_only": False,
+        "no_adopt": False,
+        "adopt": False,
     }
     values.update(overrides)
     return argparse.Namespace(**values)
@@ -48,7 +51,11 @@ def test_init_prints_a_readable_summary(tmp_path: Path, capsys: pytest.CaptureFi
     assert "AGENTS.md, agentic.config.json" in out
     # A relaxed gate is named with its reason, not hidden.
     assert "typescript/lint" in out
-    assert "doctor --check-tools" in out
+    # One command leaves the project able to run the workflow, and the report closes on that
+    # rather than on another command to type.
+    assert "Control plane    the repository was adopted and indexed" in out
+    assert "Status: READY FOR AGENTIC EXECUTION" in out
+    assert "Next:  ask for the work you want done." in out
     assert not out.lstrip().startswith("{")
 
 

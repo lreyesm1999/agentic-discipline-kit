@@ -7,6 +7,73 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **The canonical execution rule, in one source and on every agent surface.**
+  `agentic-autonomous-project-execution` now opens with it: when the kit is installed and the
+  user asks for implementation, verify operational readiness first; initialise and adopt the
+  control plane when that is safe; never continue silently without it while claiming the full
+  workflow. It carries the preflight, the request-to-task derivation, the automatic
+  checkpoints, verification and completion, and the degraded-mode reporting contract, and it
+  compiles to Claude Code, Cursor, Copilot, Windsurf, Antigravity, Gemini, the ChatGPT bundle
+  and `AGENTS.md` from that one file. `AGENTS.md` and `MASTER_PROMPT.md` state the same rule,
+  with the owner's authorisation for the protected-contract change.
+- **Checkpoints, verification and completion without being asked.** `agentic work checkpoint`
+  records resumable state at the seven moments worth recording, filling in everything the
+  records already hold - the files measured against the tree as it was claimed, the commands
+  and results from the evidence since the last checkpoint, the next action from the first
+  unproven claim - so a checkpoint cannot disagree with the evidence beside it. `agentic work
+  verify` runs what the task declared, which is the project's own gates. `agentic work finish`
+  verifies, checkpoints and completes, or returns the refusal as an answer: `VERIFICATION_FAILED`
+  for a failing gate, and the completion invariant's own refusal with the outstanding claims for
+  proof debt. `agentic work next` names the task whose turn it is.
+- **`agentic work start "<request>"`: a request in your own words becomes governed work.**
+  The task contract is derived from what is already recorded - the request, the project's
+  requirements, its knowledge index, its quality gates, its risk rules and its policy - and
+  every field says where it came from. The same request twice is the same task, and a request
+  that falls inside open work links to it. Readiness is evaluated, the agent joins and the task
+  is claimed, all without a further command. Four decisions stop the request instead of being
+  guessed: an undecidable scope, a protected contract in scope, `CRITICAL` risk, and a gate set
+  where nothing proves behaviour. A blocked request leaves no task behind. The command
+  allow-list is not widened: the project's own required gates are approved and recorded, and
+  nothing else. One working tree holds one claim, so a second request is recorded and readied
+  while its claim waits.
+- **A mandatory execution preflight, `agentic preflight`.** Eight requirements - installation,
+  version, control plane, adoption, knowledge, git, quality configuration, task orchestration -
+  are checked, whatever can be repaired safely is repaired first, and the result is one of
+  three modes: `FULL`, `DEGRADED` or `BLOCKED`. A degraded mode is never implied: the report
+  names what is unavailable, whether that is orchestration in a rules-only project or the
+  operations that need a commit in a project outside git. `preflight.requires` lets an
+  operation refuse a mode it cannot honestly run in, and the same preflight is on the
+  versioned API as an owner-only operation.
+- **A version check in readiness.** A payload from a newer kit is `BROKEN` rather than
+  silently downgraded; one from an older release stops the work and names `migrate`, which
+  rewrites generated files and so stays with the owner; leftovers from the pre-`.agentic`
+  layout are reported as drift with `migrate --prune`, because deleting files is never
+  automatic.
+- **`agentic-discipline repair`: safe auto-repair with an audit record.** It reinstalls a
+  pruned payload, recompiles stale agent surfaces, initialises a missing control plane and
+  reindexes a project that has drifted, in dependency order, and writes what it did to the
+  audit chain as `readiness.repair`. A repair qualifies only when it cannot lose data, change
+  what the project is supposed to do, reach outside the machine, or write anything but the
+  files the kit itself owns; the payload is filled in rather than overwritten. An unexplained
+  control directory, an altered audit chain and a plane adopted for another checkout are
+  reported and never repaired, and a repair whose cause is still open is not attempted.
+- **`init` leaves the project operational, not merely configured.** After the contracts and
+  the adapters it initialises the control plane, indexes the project and measures readiness,
+  so one command produces a repository that can run the workflow and a closing line that
+  reports what the checks found. Every phase is idempotent: a second run keeps the state
+  database with its tasks, leases, checkpoints and evidence, and only brings the index up to
+  date. An unexplained `.agentic/control/` and a `--rules-only` on an adopted project are
+  refused with their reason rather than resolved. `--rules-only` records the choice,
+  `--no-adopt` skips adoption for one run, and `--adopt` turns it on; a recorded choice
+  survives ordinary re-runs. `init` exits nonzero when what it leaves behind is not usable.
+- **One readiness model, and a `doctor` that reports the truth.** Installation health,
+  project health and execution readiness are three separate questions, so a repository with
+  every discipline installed and no control plane no longer reports PASS. Nine checks, each
+  with the reason it is not met and the command that repairs it, resolve to one of `READY`,
+  `PARTIAL`, `DEGRADED`, `BROKEN` or `NOT_INITIALIZED`. An index that has fallen behind the
+  tree is reported as drift, not as a gap, so the check does not turn red on every edit.
+  `doctor` prints a table by default and keeps its machine report under `--json`, where the
+  2.0 fields are unchanged and a `readiness` block is added.
 - **Agentic Discipline 2.1 - the Adaptive Assurance Engine.** A change now creates proof
   obligations, and a task completes only when every mandatory one is resolved by current
   evidence. The agent no longer declares success; the state of its obligations decides what
@@ -67,6 +134,14 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
     `docs/v2.1/evidence/mutation-dispositions.json`.
 
 ### Changed
+- **`agentic-discipline init` makes the project operational by default.** It used to install
+  the rules and leave the control plane to a separate `agentic adopt`. For the previous
+  behaviour, pass `--rules-only` (recorded) or `--no-adopt` (this run only). Existing
+  installations need nothing: the next implementation request, or another `init`, adopts them
+  and changes nothing else. See [docs/adoption.md](docs/adoption.md#upgrading-an-existing-installation).
+- **`agentic-discipline doctor` prints a table and exits on execution readiness.** The 2.0 JSON
+  fields are unchanged under `--json`, with a `readiness` block added. A project whose rules
+  are installed and whose control plane is missing now exits nonzero, which is the point.
 - One file hasher: `sha256_file` replaces the three copies in the verifier package and the
   inline hashing in the control plane, so evidence artifacts are read in chunks rather than
   loaded whole.
@@ -78,6 +153,14 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   timings are unchanged.
 
 ### Fixed
+- A test run's own output files are no longer treated as project content. Running a coverage
+  gate wrote `.coverage` into the tree, which counted as a change outside the task's scope and
+  failed the task for a file nobody wrote; the same churn moved the tree fingerprint, so
+  evidence elsewhere went stale for the same reason. Coverage data and `htmlcov/` are now
+  excluded from discovery, beside the caches that already were.
+- A complete installation is twelve disciplines, not eleven. The expected count was one
+  short, so a project missing a discipline reported a healthy installation; it now reports
+  `STALE`, which `agentic-discipline init --force` repairs.
 - Recompiling an unchanged plan no longer writes a new revision of every obligation and
   reports it as widened. The merge added a depth field the stored obligation did not carry
   yet; the depth is now recorded when the obligation is created. Found by the scoped

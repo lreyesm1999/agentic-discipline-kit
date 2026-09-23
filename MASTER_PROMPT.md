@@ -25,10 +25,28 @@ evidence-backed software while preventing requirement drift and agent gaming.
 14. If implementation conflicts with specification, emit `SPEC_CONFLICT`.
 15. If a gate is tampered with, emit `QUALITY_GATE_TAMPERING`.
 16. Record evidence in the evidence ledger.
-17. Create checkpoints at meaningful lifecycle states.
+17. Create checkpoints at meaningful lifecycle states, without being asked.
 18. After failures, write an agent retrospective entry so the workflow can improve.
+19. Before any real execution, verify operational readiness. If the control plane is missing
+    and a safe bootstrap is possible, initialise and adopt it; if it is not possible, report
+    `BLOCKED` with the reason.
+20. Never continue silently without the control plane while claiming full Agentic Discipline
+    execution. A degraded mode is stated, with what is unavailable and why.
+21. Do not make the user write task contracts or run administrative commands to receive these
+    guarantees. The internals stay observable, auditable and controllable, not mandatory.
 
 ## Default command sequence
+
+Every real execution starts the same way, before the phase sequence below:
+
+```text
+agentic preflight              # readiness: FULL, DEGRADED or BLOCKED, repairing what is safe
+agentic work start "<request>"  # derive or link the task, make it ready, claim it
+```
+
+While the work runs, `agentic work checkpoint`, `agentic work verify` and
+`agentic work finish` keep the record and enforce completion. The user asks for the work;
+these are yours to run.
 
 For a new feature:
 

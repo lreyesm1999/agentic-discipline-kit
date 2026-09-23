@@ -1,10 +1,9 @@
 # Validation — Agentic Discipline 2.1
 
-**Not a release.** The Adaptive Assurance Engine is implemented, tested and documented in
-this repository. The version, the platform CI matrix, the repository-wide mutation gate and
-human acceptance are the code owner's to run, exactly as
-[`v2/VALIDATION.md`](../v2/VALIDATION.md) records for 2.0. What follows is what was actually
-executed here, with the artefacts it produced. Absence of a result is not a pass.
+**Not a release.** 2.1 is the adaptive assurance engine together with the zero-touch
+operational bootstrap. What follows is the engine, executed in this working tree, and the
+pull-request mutation gate recorded from CI. The bootstrap's own gates are not in these
+numbers. Absence of a result is not a pass.
 
 Everything below ran on Windows 11 with CPython 3.12.2, in this working tree. Linux
 figures from the same tree are noted where they were taken.

@@ -31,6 +31,8 @@ MODULE_FUNCTIONS = (
     "parallel_safety",
     "assurance_service",
     "assurance_migration",
+    "preflight",
+    "work",
 )
 TASKS = [
     {"id": "TASK-A", "state": "READY"},
@@ -395,6 +397,55 @@ DISPATCH: list[
         [("assurance_migration.rollback", (PLANE, "ASSU-1", "reverting the upgrade"), {})],
         ("result", "assurance_migration.rollback"),
     ),
+    (
+        "preflight",
+        {},
+        [("preflight.for_plane", (PLANE,), {"repair_first": True, "deep": True})],
+        ("result", "preflight.for_plane"),
+    ),
+    (
+        "work_start",
+        {"request": "Add cancellation to src/app.py"},
+        [
+            (
+                "work.start",
+                (PLANE, "Add cancellation to src/app.py"),
+                {"agent": "local-agent", "capabilities": None, "claim": True},
+            )
+        ],
+        ("result", "work.start"),
+    ),
+    (
+        "work_derive",
+        {"request": "Add cancellation to src/app.py"},
+        [("work.derive", (PLANE, "Add cancellation to src/app.py"), {})],
+        ("result", "work.derive"),
+    ),
+    (
+        "work_checkpoint",
+        {"task_id": "TASK-A", "session": "token", "reason": "slice_complete"},
+        [
+            (
+                "work.checkpoint",
+                (PLANE, "TASK-A", "token"),
+                {"reason": "slice_complete", "summary": None, "next_action": None},
+            )
+        ],
+        ("result", "work.checkpoint"),
+    ),
+    (
+        "work_verify",
+        _session(),
+        [("work.verify", (PLANE, "TASK-A", "token"), {})],
+        ("result", "work.verify"),
+    ),
+    (
+        "work_finish",
+        _session(),
+        [("work.finish", (PLANE, "TASK-A", "token"), {"summary": None})],
+        ("result", "work.finish"),
+    ),
+    ("work_next", {}, [("work.next_ready", (PLANE,), {})], ("result", "work.next_ready")),
 ]
 
 
@@ -473,6 +524,9 @@ def test_owner_operations_are_listed_and_refused_to_workers(
         "assurance_register_verifier",
         "assurance_migrate",
         "assurance_rollback",
+        "preflight",
+        "work_start",
+        "work_derive",
     }
     plane, log = recorded
     arguments = {operation: args for operation, args, *_ in DISPATCH}
@@ -497,6 +551,7 @@ def test_read_only_operations_are_listed() -> None:
         "impact_analysis",
         "get_context",
         "get_ready_tasks",
+        "work_next",
         "task_list",
         "knowledge_health",
         "timeline",

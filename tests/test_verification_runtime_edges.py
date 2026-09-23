@@ -258,7 +258,9 @@ def test_cli_and_evolution_error_edges(tmp_path: Path) -> None:
         == 0
     )
     assert cli.command_doctor(
-        argparse.Namespace(config=str(project / "agentic.config.json"), check_tools=True)
+        argparse.Namespace(
+            config=str(project / "agentic.config.json"), check_tools=True, json=False, fast=False
+        )
     ) in (0, 1)
     with pytest.raises(ValueError, match="unknown adapters"):
         sync_adapters(project, ["unknown"])

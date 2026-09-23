@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import sqlite3
 import sys
 import sysconfig
 from pathlib import Path
@@ -28,6 +29,10 @@ PAYLOAD = {
     "templates": ".agentic/templates",
     "config/risk-weights.json": ".agentic/config/risk-weights.json",
 }
+
+# The payload layout this release installs. A project carrying a higher one was installed by
+# a newer kit, and this one must not quietly write over it.
+PAYLOAD_SCHEMA = "3"
 
 # Directories such as `specs/`, `acceptance/` and `artifacts/` are created on
 # demand by the phase that needs them; pre-creating them littered an adopting
@@ -132,7 +137,7 @@ def _install_payload(
     _write_json(
         target_root / ".agentic" / "config.json",
         {
-            "schema_version": "3",
+            "schema_version": PAYLOAD_SCHEMA,
             "adk": {"risk_default": "STANDARD", "unknown_blocks_release": True},
             "agents": {"mode": "auto", "adapters": ["generic"]},
             "verification": {
@@ -149,6 +154,8 @@ def _install_payload(
         dry_run,
     )
 
+
+CONTROL_DIRECTORY = ".agentic/control"
 
 MANAGED_MARKER = "# Agentic Discipline managed outputs"
 MANAGED_ENTRIES = (
@@ -204,6 +211,112 @@ def _write_gitignore(gitignore: Path, content: str, dry_run: bool) -> None:
         gitignore.write_bytes(content.encode("utf-8"))
 
 
+def _control_mode_for(target_root: Path, *, rules_only: bool, adopt: bool | None) -> str:
+    """`rules-only` is a decision, and init does not quietly reverse one.
+
+    A project that recorded it keeps it until someone asks for the control plane by name,
+    because the alternative is that a routine re-run turns orchestration on behind their
+    back. `adopt` is None for an ordinary run, True for `--adopt`, False for `--no-adopt`.
+    """
+
+    from .readiness import STATE_DB, control_mode
+
+    # An existing state database settles the question: the project is managed, whatever was
+    # recorded before. Recording rules-only cannot un-adopt it, because removing the state
+    # is the owner's decision rather than the side effect of an install flag.
+    if (target_root / STATE_DB).is_file():
+        return "managed"
+    if rules_only:
+        return "rules-only"
+    if adopt:
+        return "managed"
+    return control_mode(target_root)
+
+
+def _set_control_mode(target_root: Path, mode: str, actions: list[str], dry_run: bool) -> None:
+    """Record the mode in the payload config without disturbing the rest of it."""
+
+    path = target_root / ".agentic" / "config.json"
+    try:
+        payload = json.loads(path.read_bytes())
+    except (OSError, ValueError):
+        return
+    if payload.get("control", {}).get("mode") == mode:
+        return
+    if not dry_run:
+        path.write_bytes(
+            (json.dumps({**payload, "control": {"mode": mode}}, indent=2) + "\n").encode()
+        )
+    actions.append(f"UPDATE {path} (control mode {mode})")
+
+
+def _control_phase(
+    target_root: Path,
+    *,
+    mode: str,
+    adopt: bool | None,
+    rules_only: bool,
+    actions: list[str],
+    dry_run: bool,
+) -> dict[str, Any]:
+    """Make the control plane operational, or say exactly why it was left alone.
+
+    Adoption inspects the repository and records state; it never edits the project's own
+    files, installs anything, or runs instructions it finds in the tree.
+    """
+
+    from .control.plane import Plane
+    from .control.plane import adopt as adopt_project
+    from .readiness import STATE_DB
+
+    if rules_only and mode != "rules-only":
+        return {
+            "status": "REFUSED",
+            "detail": "this project is already adopted, so --rules-only was not recorded:"
+            " the existing tasks, leases and evidence stay, and removing"
+            f" {CONTROL_DIRECTORY} is yours to decide",
+            "repair": None,
+        }
+    if mode == "rules-only":
+        return {
+            "status": "SKIPPED",
+            "detail": "installed rules-only, so the control plane was not initialised",
+            "repair": "agentic-discipline init --adopt",
+        }
+    if adopt is False:
+        return {
+            "status": "SKIPPED",
+            "detail": "--no-adopt was given, so the control plane was left as it is",
+            "repair": "agentic adopt",
+        }
+    if dry_run:
+        return {
+            "status": "PENDING",
+            "detail": "would adopt the repository and index the project",
+            "repair": None,
+        }
+    already = (target_root / STATE_DB).is_file()
+    try:
+        adopt_project(target_root)
+    except (AgenticError, sqlite3.Error) as exc:
+        # An unexplained control directory is the one case adoption must not resolve on its
+        # own: a second database beside it would split the project's history in two.
+        return {"status": "BLOCKED", "detail": str(exc), "repair": None}
+    if not already:
+        actions.append(f"ADOPT {target_root / STATE_DB}")
+        return {"status": "ADOPTED", "detail": "the repository was adopted and indexed"}
+    # Re-running init on an adopted project keeps every task, lease, checkpoint and piece of
+    # evidence: the knowledge index is brought up to date and nothing else is touched.
+    with Plane(target_root) as plane:
+        reconciled = plane.reconcile()
+    changed = len(cast(list[object], reconciled.get("changed_paths", [])))
+    actions.append(f"RECONCILE {target_root / STATE_DB} ({changed} paths)")
+    return {
+        "status": "KEPT",
+        "detail": f"already adopted; the index was reconciled over {changed} changed path(s)",
+    }
+
+
 def initialize_project(
     target: Path,
     profile_ids: Iterable[str] | None = None,
@@ -212,6 +325,8 @@ def initialize_project(
     max_depth: int = 4,
     adapters: Iterable[str] | None = None,
     dry_run: bool = False,
+    adopt: bool | None = None,
+    rules_only: bool = False,
 ) -> dict[str, Any]:
     kit_root = find_contract_root().resolve()
     target_root = _prepare_target(target, kit_root, dry_run)
@@ -248,6 +363,17 @@ def initialize_project(
     selected = list(adapters) if adapters is not None else detect_adapters(target_root)
     adapter_result = sync_adapters(target_root, selected, dry_run=dry_run)
     actions.extend(str(action) for action in cast(list[object], adapter_result["actions"]))
+
+    mode = _control_mode_for(target_root, rules_only=rules_only, adopt=adopt)
+    _set_control_mode(target_root, mode, actions, dry_run)
+    control = _control_phase(
+        target_root,
+        mode=mode,
+        adopt=adopt,
+        rules_only=rules_only,
+        actions=actions,
+        dry_run=dry_run,
+    )
     actions.append(f"READY {target_root}")
 
     # A gate carrying a note was either relaxed or added; only the relaxed ones
@@ -265,6 +391,12 @@ def initialize_project(
         ),
         None,
     )
+    # The verdict is measured, not assumed: what init reports as ready is whatever the
+    # readiness checks find after it has finished writing. A dry run has written nothing,
+    # so there is nothing to measure.
+    from . import readiness
+
+    report = None if dry_run else readiness.inspect(target_root)
     return {
         "status": "PASS",
         "target": str(target_root),
@@ -278,5 +410,8 @@ def initialize_project(
         "gates": len(config["gates"]),
         "relaxed_gates": relaxed,
         "baseline_gate": baseline,
+        "control_mode": mode,
+        "control": control,
+        "readiness": report,
         "actions": actions,
     }

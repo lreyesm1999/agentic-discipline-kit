@@ -13,6 +13,27 @@
 
 Lower levels may not silently override higher levels.
 
+## Operational readiness
+
+```text
+IF   Agentic Discipline is installed
+AND  the user asks for implementation or execution
+THEN verify operational readiness first
+
+IF   the control plane is missing
+AND  a safe automatic bootstrap is possible
+THEN initialise and adopt it automatically
+
+NEVER continue silently without the control plane
+      while claiming full Agentic Discipline execution
+```
+
+Run `agentic preflight` before the first edit of real work. It reports `FULL`, `DEGRADED`
+or `BLOCKED`. A degraded mode is stated with what is unavailable and why; a blocked one stops
+the work. Then `agentic work start "<request>"` derives or links the task, evaluates readiness
+and claims it. The user does not write task contracts or run these commands; they ask for the
+work.
+
 ## Workflow state machine
 
 ```text
