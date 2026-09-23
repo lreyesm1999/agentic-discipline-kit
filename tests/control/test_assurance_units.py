@@ -594,7 +594,9 @@ def test_unknown_is_never_pass(repository: Any) -> None:
     strength = policy_obligation(repository, task_id, "TEST-STRENGTH")
     task = repository.store.get(task_id, "task")
 
-    resolution = resolver.resolve(repository, task, strength)
+    resolution = resolver.resolve(
+        repository, task, strength, evidence=resolver.task_evidence(repository, task["id"])
+    )
 
     assert resolution["status"] == "UNKNOWN"
     assert resolution["status"] not in model.RESOLVED

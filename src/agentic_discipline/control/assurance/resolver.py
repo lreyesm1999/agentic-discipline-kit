@@ -35,7 +35,7 @@ def outcome_matches(plane: Any, evidence: dict[str, Any]) -> bool:
     """
     artifact = plane.directory / "evidence" / (evidence["id"] + ".json")
     try:
-        recorded = json.loads(artifact.read_text(encoding="utf-8"))
+        recorded = json.loads(artifact.read_bytes())
     except (OSError, ValueError):
         return False
     if not isinstance(recorded, dict) or recorded.get("exit_code") != evidence["exit_code"]:
@@ -56,7 +56,8 @@ def obligation_binding(
         "files": fingerprint(workspace, paths),
         "protected_files": fingerprint(workspace, policy["protected_paths"]),
         "requirements": {
-            i: plane.store.get(i, "entity")["version"]
+            # Requirements were read as entities when the task that names them was created.
+            i: plane.store.get(i)["version"]
             for i in obligation["origin"]["requirement_ids"]
         },
         "acceptance": digest(
@@ -80,7 +81,7 @@ def matches(evidence: dict[str, Any], obligation: dict[str, Any]) -> bool:
     # Evidence recorded before this plan existed still proves an acceptance criterion,
     # because that binding is the task contract's own.
     return obligation["derivation"] == "CONTRACT" and bool(
-        set(obligation["origin"]["acceptance_ids"]) & set(evidence.get("acceptance", []))
+        set(obligation["origin"]["acceptance_ids"]) & set(evidence["acceptance"])
     )
 
 
@@ -103,12 +104,21 @@ def current_for(
     return bool(evidence["binding"] == task_binding)
 
 
+def task_evidence(plane: Any, task_id: str) -> list[dict[str, Any]]:
+    """The evidence recorded for one task, and nothing from another.
+
+    Criterion 0 of one task and criterion 0 of the next are different claims, so evidence
+    matched by acceptance index must never be read across tasks.
+    """
+    return [e for e in plane.store.list("evidence") if e["task_id"] == task_id]
+
+
 def resolve(
     plane: Any,
     task: dict[str, Any],
     obligation: dict[str, Any],
     *,
-    evidence: list[dict[str, Any]] | None = None,
+    evidence: list[dict[str, Any]],
     task_binding: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if obligation["status"] == "WAIVED":
@@ -123,11 +133,7 @@ def resolve(
         }
     from ..verification import binding as task_level_binding
 
-    records = (
-        evidence
-        if evidence is not None
-        else [e for e in plane.store.list("evidence") if e["task_id"] == task["id"]]
-    )
+    records = evidence
     conservative = task_binding if task_binding is not None else task_level_binding(plane, task)
     scoped = obligation_binding(plane, task, obligation)
     required = set(obligation["required_verifiers"])
@@ -188,7 +194,7 @@ def resolve_all(plane: Any, task: dict[str, Any]) -> list[dict[str, Any]]:
     obligations = obligations_for(plane, task["id"])
     if not obligations:
         return []
-    records = [e for e in plane.store.list("evidence") if e["task_id"] == task["id"]]
+    records = task_evidence(plane, task["id"])
     # The task-wide binding fingerprints the whole declared scope, so it is the expensive
     # part of resolution. It is only needed for a record that carries no binding of its
     # own; when every record does, an empty one is passed and can only read as stale.

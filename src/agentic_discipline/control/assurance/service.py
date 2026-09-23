@@ -27,7 +27,14 @@ from .model import (
 )
 from .planner import plan as plan_routes
 from .registry import Registry, descriptor_contract, normalized
-from .resolver import debt, obligation_binding, obligations_for, resolve, resolve_all
+from .resolver import (
+    debt,
+    obligation_binding,
+    obligations_for,
+    resolve,
+    resolve_all,
+    task_evidence,
+)
 
 
 def enabled(plane: Any) -> bool:
@@ -386,8 +393,8 @@ def explain_task(plane: Any, task_id: str) -> dict[str, Any]:
 def explain_obligation(plane: Any, obligation_id: str) -> dict[str, Any]:
     obligation = plane.store.get(obligation_id, "obligation")
     task = plane.store.get(obligation["task_id"], "task")
-    records = [e for e in plane.store.list("evidence") if e["task_id"] == task["id"]]
-    resolution = resolve(plane, task, obligation)
+    records = task_evidence(plane, task["id"])
+    resolution = resolve(plane, task, obligation, evidence=records)
     lookup = {e["id"]: e for e in records}
     requirements = [plane.store.get(i, "entity") for i in obligation["origin"]["requirement_ids"]]
     return {
@@ -471,7 +478,7 @@ def waive(plane: Any, obligation_id: str, reason: str, authorization: str) -> di
     )
     obligation = plane.store.get(obligation_id, "obligation")
     task = plane.store.get(obligation["task_id"], "task")
-    resolution = resolve(plane, task, obligation)
+    resolution = resolve(plane, task, obligation, evidence=task_evidence(plane, task["id"]))
     require(
         resolution["status"] not in {"FAILED", "CONFLICTED"},
         "EVIDENCE_REFUTES_CLAIM",

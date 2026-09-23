@@ -11,7 +11,7 @@ import re
 from typing import Any
 
 from ...risk import PATTERNS
-from ..contracts import digest
+from ..contracts import digest, require
 from . import impact
 from .model import obligation_id, stronger
 from .registry import Registry
@@ -112,8 +112,12 @@ HUMAN_RULE = (
 
 def signals(paths: list[str]) -> list[str]:
     """Risk signals the observed paths raise, using the existing deterministic patterns."""
-    text = "\n".join(sorted(paths)).lower()
-    return sorted(name for name, pattern in PATTERNS.items() if re.search(pattern, text))
+    # Path by path, as the policy rules match them: a pattern can never span two paths.
+    return sorted(
+        name
+        for name, pattern in PATTERNS.items()
+        if any(re.search(pattern, path.lower()) for path in paths)
+    )
 
 
 def _obligation(
@@ -135,12 +139,15 @@ def _obligation(
     verifiers: list[str] | None = None,
     mandatory: bool = True,
 ) -> dict[str, Any]:
+    # The origin key is the obligation's identity. Two different claims deriving the same
+    # key would collide into one record, so an empty one is a defect, not a default.
+    require(bool(origin_key), "INVALID_OBLIGATION", "An obligation needs an origin key")
     return {
         "id": obligation_id(task["id"], origin_key),
         "task_id": task["id"],
         "claim": claim,
         "origin": {
-            "requirement_ids": sorted(requirement_ids if requirement_ids is not None else []),
+            "requirement_ids": sorted(requirement_ids or []),
             "acceptance_ids": sorted(acceptance_ids or []),
             "policy_ids": sorted(policy_ids or []),
             "architecture_ids": sorted(architecture_ids or []),
@@ -290,7 +297,8 @@ def impact_obligations(
         because="recorded dependencies of the changed files",
     )
     for identifier in reach["dependent_requirements"]:
-        entity = plane.store.get(identifier, "entity")
+        # The knowledge graph's impact answer names entities, and only entities.
+        entity = plane.store.get(identifier)
         result.append(
             _obligation(
                 task,

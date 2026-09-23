@@ -15,13 +15,12 @@ JUDGMENTS = {
     "PASS": "NO_COUNTEREXAMPLE_FOUND",
     "FAIL": "COUNTEREXAMPLE_FOUND",
     "BLOCKED": "INCONCLUSIVE",
-    "ERROR": "INCONCLUSIVE",
 }
 
 
 def _judgment(status: str) -> str:
     """A judgment verdict is named as what it is; it never becomes a deterministic PASS."""
-    return JUDGMENTS.get(status, "INCONCLUSIVE")
+    return JUDGMENTS[status]
 
 
 def registry_for(plane: Plane) -> Any:
@@ -80,10 +79,9 @@ def assurance_stamps(plane: Plane, task: dict[str, Any]) -> dict[str, dict[str, 
             continue
         for spec in obligation["required_verifiers"]:
             entry = stamps.setdefault(spec, {"obligation_ids": [], "obligation_bindings": {}})
+            # Obligations are listed in identifier order, so each list is built sorted.
             entry["obligation_ids"].append(obligation["id"])
             entry["obligation_bindings"][obligation["id"]] = scoped
-    for entry in stamps.values():
-        entry["obligation_ids"] = sorted(entry["obligation_ids"])
     return stamps
 
 
@@ -324,7 +322,8 @@ def assurance_gate(plane: Plane, task_id: str) -> list[dict[str, Any]]:
     if not enabled(plane):
         return []
     reconcile(plane, task_id)
-    return mandatory_debt(plane, plane.store.get(task_id, "task"))
+    # `reconcile` has already read this identifier as a task.
+    return mandatory_debt(plane, plane.store.get(task_id))
 
 
 def complete(plane: Plane, task_id: str, session: str) -> dict[str, Any]:

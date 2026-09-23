@@ -347,7 +347,7 @@ def test_scenario_8_a_deterministic_route_is_chosen_over_agent_judgment(
 def test_scenario_8_judgment_evidence_does_not_close_a_deterministically_reachable_claim(
     repository: Any,
 ) -> None:
-    from agentic_discipline.control.assurance.resolver import resolve
+    from agentic_discipline.control.assurance.resolver import resolve, task_evidence
 
     task_id, session = claimed(
         repository,
@@ -373,7 +373,8 @@ def test_scenario_8_judgment_evidence_does_not_close_a_deterministically_reachab
                     expected=record["version"],
                 )
 
-    assert resolve(repository, task, strength)["status"] == "UNRESOLVED"
+    evidence = task_evidence(repository, task["id"])
+    assert resolve(repository, task, strength, evidence=evidence)["status"] == "UNRESOLVED"
 
 
 def test_scenario_8_judgment_is_still_used_when_nothing_deterministic_is_declared(

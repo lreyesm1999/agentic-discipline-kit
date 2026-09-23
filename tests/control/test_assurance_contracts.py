@@ -1002,7 +1002,12 @@ def test_a_waived_claim_resolves_to_a_complete_record(repository: Any) -> None:
     obligation = obligations_for(repository, task_id)[0]
     service.waive(repository, obligation["id"], "accepted", "owner")
     stored = repository.store.get(obligation["id"], "obligation")
-    assert resolver.resolve(repository, repository.store.get(task_id, "task"), stored) == {
+    assert resolver.resolve(
+        repository,
+        repository.store.get(task_id, "task"),
+        stored,
+        evidence=resolver.task_evidence(repository, task_id),
+    ) == {
         "obligation_id": obligation["id"],
         "status": "WAIVED",
         "reason": "an owner waiver is recorded for this obligation",
