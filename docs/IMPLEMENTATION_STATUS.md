@@ -94,9 +94,11 @@ roadmap.
 ### Release disposition
 
 2.1 is implemented, tested and documented in this repository. It is **not certified as a
-release**: the version, the platform CI matrix, the repository-wide mutation gate and human
-acceptance are the code owner's to run, exactly as `v2/VALIDATION.md` records for 2.0.
-`v2.1/VALIDATION.md` holds the gates that were executed here.
+release**. CI run 35906290627 passed the platform matrix and the four mutation shards on
+the pull-request diff: 14,837 killed of 14,976, 65 proved equivalent, 74 accepted by
+reviewed exception, none unresolved. `guardrails` failed because the branch changes
+protected paths. Human acceptance and the version bump from 2.0.0 are still open.
+`v2.1/VALIDATION.md` holds the gates and these numbers.
 
 ## Technical Debt
 

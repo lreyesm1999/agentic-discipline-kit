@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T18:59:09.779687+00:00",
+  "generated_at_utc": "2026-09-23T21:19:23.080760+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "de75fd706c8382f4916c0e05771ce68b144e5fa55fcf0967245a3a94704931f7",
-      "bytes": 10292
+      "sha256": "2747a868961b1ce32b00f71837ec123961201071ba8428800142f29973c5fe96",
+      "bytes": 10447
     },
     {
       "path": "docs/adoption.md",
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2.1/VALIDATION.md",
-      "sha256": "04f37f0d3156b9bca2bc77f3ab88a052e101dfaa6cebab3fc4da597868c51a78",
-      "bytes": 15470
+      "sha256": "fb6334ee659434ce20cb2cee7bbff9464b77a635bf116bb7bc86e52887f35821",
+      "bytes": 16206
     },
     {
       "path": "docs/v2.1/evidence/README.md",

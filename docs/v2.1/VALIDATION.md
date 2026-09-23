@@ -27,7 +27,10 @@ figures from the same tree are noted where they were taken.
 | Own-repository execution (dogfood) | PASS: `evidence/dogfood.json` |
 | Scoped mutation campaign | PASS: 98.71% of 2,163 mutants killed; every one of the 28 survivors has a reviewed disposition, none unresolved. `evidence/mutation.json` |
 | 1,000-file performance fixture | PASS: all targets met, `evidence/benchmark.json` |
-| Platform CI matrix, repository-wide mutation gate, human acceptance | **Not run here.** These are the owner's release gates. |
+| Platform CI matrix | PASS: GitHub Actions run [35906290627](https://github.com/lreyesm1999/agentic-discipline-kit/actions/runs/35906290627), Linux and Windows, Python 3.11, 3.12 and 3.13. |
+| Pull-request mutation gate | PASS: the same run, four shards, 14,837 killed of 14,976. 65 proved equivalent by rule, 74 accepted by reviewed exception, none unresolved. assurance 4,553/4,558; control 10,041/10,168; verifier 209/213; core 34/37. A pull request mutates the files its diff can affect, so modules the diff does not touch are not in these totals. |
+| Protected paths on that run | FAIL: `guardrails`. The branch changes `policies/mutation-exceptions.json` and `.github/workflows/ci.yml`. Owner acceptance at merge. |
+| Human acceptance | Not given. |
 
 ## The twelve acceptance scenarios
 
@@ -157,8 +160,9 @@ killed when a session ended, and one ran against a hand-written test list that l
 newest test file, so it measured an older suite. The harness now writes a journal as it
 goes, runs detached, and discovers its test selection with a glob.
 
-The repository-wide `mutmut` gate in CI is unchanged and still covers the whole package,
-including these modules, under the owner's release gates.
+CI run 35906290627 is the pull-request scope in the table above, not a fresh pass over
+every module. On a pull request each of the four shards mutates only the files that diff
+can affect; on `main`, and on a manual run, each shard mutates its whole tree.
 
 ## Measured cost
 
