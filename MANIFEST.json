@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-20T14:01:40.043273+00:00",
+  "generated_at_utc": "2026-09-23T02:23:36.555995+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1145,8 +1145,8 @@
     },
     {
       "path": "src/agentic_discipline/bootstrap.py",
-      "sha256": "711b8ce22a2b0c39c2ff8775c248bd365a3e641b841b32687efc14c92915a709",
-      "bytes": 10740
+      "sha256": "90c08b00cd667248ce94408cc6dc191ff41d63ca067ca38bf4c39f702a994285",
+      "bytes": 10933
     },
     {
       "path": "src/agentic_discipline/cli.py",
@@ -1880,8 +1880,8 @@
     },
     {
       "path": "tests/test_state_and_gitignore.py",
-      "sha256": "66cfa5f402bf1011dcdf21f506410334f936d206e4690a92f884ec705d7b269e",
-      "bytes": 7471
+      "sha256": "e08047db043f400514d5b1b35c5afab137e5588cd94c25c0fbfd9fab8d9b55de",
+      "bytes": 9055
     },
     {
       "path": "tests/test_utf8_on_legacy_code_pages.py",

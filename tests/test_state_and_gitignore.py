@@ -77,7 +77,7 @@ def test_a_missing_gitignore_is_created_with_the_block(tmp_path: Path) -> None:
     assert actions == [f"UPDATE {tmp_path / '.gitignore'}"]
 
 
-def test_a_gitignore_that_already_has_every_managed_rule_is_left_alone(tmp_path: Path) -> None:
+def test_an_already_configured_gitignore_is_left_alone(tmp_path: Path) -> None:
     gitignore = tmp_path / ".gitignore"
     content = "dist/" + BLOCK + "\n# mine\ncustom/\n"
     gitignore.write_text(content, encoding="utf-8")
@@ -128,6 +128,57 @@ def test_an_older_install_gains_the_rule_its_block_lacks(tmp_path: Path) -> None
         "notes/\n"
     )
     assert actions == [f"UPDATE {gitignore} (added .agentic/control/)"]
+
+
+def test_a_block_of_one_rule_gains_the_rest_inside_it_and_nowhere_else(tmp_path: Path) -> None:
+    """The block ends at its first blank line, however few lines it holds.
+
+    Walking it two lines at a time happens to stop correctly on an even-length block and
+    steps over the blank line of an odd one, landing the rules in the project's own section.
+    """
+
+    gitignore = tmp_path / ".gitignore"
+    gitignore.write_text(
+        "# Agentic Discipline managed outputs\nartifacts/\n\n# mine\nnotes/\n",
+        encoding="utf-8",
+    )
+
+    _update_gitignore(tmp_path, [], dry_run=False)
+
+    assert gitignore.read_text(encoding="utf-8") == (
+        "# Agentic Discipline managed outputs\n"
+        "artifacts/\n"
+        ".agent-memory/\n"
+        ".agentic/verification/artifacts/\n"
+        ".agentic/export/\n"
+        ".agentic/control/\n"
+        "\n"
+        "# mine\n"
+        "notes/\n"
+    )
+
+
+def test_an_empty_block_is_filled_in_place(tmp_path: Path) -> None:
+    """A marker with nothing under it still owns the lines up to the blank that follows it."""
+
+    gitignore = tmp_path / ".gitignore"
+    gitignore.write_text(
+        "# Agentic Discipline managed outputs\n\n# mine\nnotes/\n", encoding="utf-8"
+    )
+
+    _update_gitignore(tmp_path, [], dry_run=False)
+
+    assert gitignore.read_text(encoding="utf-8") == (
+        "# Agentic Discipline managed outputs\n"
+        "artifacts/\n"
+        ".agent-memory/\n"
+        ".agentic/verification/artifacts/\n"
+        ".agentic/export/\n"
+        ".agentic/control/\n"
+        "\n"
+        "# mine\n"
+        "notes/\n"
+    )
 
 
 def test_a_rule_the_project_already_ignores_elsewhere_is_not_repeated(tmp_path: Path) -> None:
