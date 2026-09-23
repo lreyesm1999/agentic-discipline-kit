@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T18:27:02.374263+00:00",
+  "generated_at_utc": "2026-09-23T18:59:09.779687+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "39feb23fd70d6fa31832430e105dcb5fed1789dfb4e14c0c404e64510b8af21b",
-      "bytes": 3831
+      "sha256": "59321b6524c252949aa95a9de1344b6b049bff033adf2662a5db39580ef70bbc",
+      "bytes": 5081
     },
     {
       "path": ".github/workflows/release.yml",
@@ -85,8 +85,8 @@
     },
     {
       "path": ".gitignore",
-      "sha256": "194717e242e0ff8611232974a6ce7405b469c991558f97ad13ed8d7848b5939d",
-      "bytes": 463
+      "sha256": "ed8c3c6e9a744129efda487b82875bdaf27f8637cce37e80123d408b112e768c",
+      "bytes": 482
     },
     {
       "path": ".pre-commit-config.yaml",
@@ -1095,8 +1095,13 @@
     },
     {
       "path": "scripts/mutation_gate.py",
-      "sha256": "6f8eeb8c7ebe9d9f83f21bce6b610621deb6a22731b63f140e3c2d5064596543",
-      "bytes": 19153
+      "sha256": "950ce30cdede3f871f0d2bc955805435f8e1a23235fe13375f6cf4a584fdb062",
+      "bytes": 20538
+    },
+    {
+      "path": "scripts/mutation_scope.py",
+      "sha256": "dceb887cc314971a427cb277e18d2d5ed380b63b92b904753a277a0d6447bee2",
+      "bytes": 9252
     },
     {
       "path": "scripts/repo_check.py",
@@ -2005,8 +2010,13 @@
     },
     {
       "path": "tests/test_mutation_gate.py",
-      "sha256": "f6b1f8e2e146838b65e67e4f442497e3bf8d7aa7042c10869372c6dd8b98f25f",
-      "bytes": 1996
+      "sha256": "4577d8e97241536f485bba4787fbd168105bde5742b4cbbd28244391821ad101",
+      "bytes": 3428
+    },
+    {
+      "path": "tests/test_mutation_scope.py",
+      "sha256": "5e33b34aa59824878bd603c7da085170f39018b72b97cf44217c59c2aa0f8d42",
+      "bytes": 7184
     },
     {
       "path": "tests/test_optional_keys.py",
