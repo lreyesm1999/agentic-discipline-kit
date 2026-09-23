@@ -46,5 +46,9 @@ def test_intelligence_research_and_mandatory_constraint_gate(project):
 
 def test_incomplete_intelligence_handoff_fails_closed(project):
     task = project.create_task(contract())["id"]
-    (project.root / ".agentic" / "intelligence").mkdir()
+    handoff = project.root / ".agentic" / "intelligence"
+    handoff.mkdir()
+    assert any(reason["type"] == "intelligence_invalid" for reason in project.readiness(task)["reasons"])
+    (handoff / "readiness.json").write_text(json.dumps({"ready": True, "blockers": []}),
+                                              encoding="utf-8")
     assert any(reason["type"] == "intelligence_invalid" for reason in project.readiness(task)["reasons"])

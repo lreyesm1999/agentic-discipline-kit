@@ -31,34 +31,32 @@ def intelligence_snapshot(root: Path, task_id: str) -> dict[str, Any]:
             for row in readiness["blockers"]
             if isinstance(row, dict) and row.get("id") == task_id
         ]
-        context_path = directory / "latest-context.json"
         constraints: list[dict[str, Any]] = []
-        if context_path.exists():
-            context = read_json("latest-context.json")
-            if not isinstance(context, dict) or not isinstance(context.get("items"), list):
-                raise ValueError("Invalid task context")
-            if context.get("root_id") == task_id:
-                included_ids = {item.get("node", {}).get("id") for item in context["items"]
-                                if isinstance(item, dict) and isinstance(item.get("node"), dict)}
-                reasons.extend(
-                    {"type": "intelligence_blocker", "code": row.get("code"), "id": row.get("id")}
-                    for row in readiness["blockers"]
-                    if isinstance(row, dict) and row.get("id") != task_id
-                    and any(part in included_ids for part in str(row.get("id", "")).split(","))
-                )
-                path = directory / "executable-constraints.jsonl"
-                if path.is_symlink() or not path.is_file() or path.stat().st_size > 2_000_000:
-                    raise ValueError("Invalid executable constraints artifact")
-                for line in path.read_text(encoding="utf-8").splitlines():
-                    if not line.strip():
-                        continue
-                    row = json.loads(line)
-                    if not isinstance(row, dict) or not isinstance(row.get("id"), str):
-                        raise ValueError("Invalid executable constraint row")
-                    if row["id"] in included_ids and row.get("severity") == "mandatory":
-                        constraints.append(row)
-                        if row.get("normative") is not True:
-                            reasons.append({"type": "intelligence_constraint_unapproved", "id": row["id"]})
+        context = read_json("latest-context.json")
+        if not isinstance(context, dict) or not isinstance(context.get("items"), list):
+            raise ValueError("Invalid task context")
+        if context.get("root_id") == task_id:
+            included_ids = {item.get("node", {}).get("id") for item in context["items"]
+                            if isinstance(item, dict) and isinstance(item.get("node"), dict)}
+            reasons.extend(
+                {"type": "intelligence_blocker", "code": row.get("code"), "id": row.get("id")}
+                for row in readiness["blockers"]
+                if isinstance(row, dict) and row.get("id") != task_id
+                and any(part in included_ids for part in str(row.get("id", "")).split(","))
+            )
+            path = directory / "executable-constraints.jsonl"
+            if path.is_symlink() or not path.is_file() or path.stat().st_size > 2_000_000:
+                raise ValueError("Invalid executable constraints artifact")
+            for line in path.read_text(encoding="utf-8").splitlines():
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+                    raise ValueError("Invalid executable constraint row")
+                if row["id"] in included_ids and row.get("severity") == "mandatory":
+                    constraints.append(row)
+                    if row.get("normative") is not True:
+                        reasons.append({"type": "intelligence_constraint_unapproved", "id": row["id"]})
         binding_input = {"reasons": reasons, "constraints": constraints}
         binding = hashlib.sha256(json.dumps(binding_input, sort_keys=True).encode()).hexdigest()
         return {"reasons": reasons, "constraints": constraints, "binding": binding}
