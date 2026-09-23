@@ -132,12 +132,10 @@ def _from_knowledge(plane: Any, request: str, known: set[str]) -> list[str]:
     """Files the project's own index associates with the words of the request."""
 
     found: list[str] = []
+    # The index sanitises what it is asked, and these terms are plain words and paths, so a
+    # query here answers rather than raising.
     for term in terms(request)[:6]:
-        try:
-            entities = plane.knowledge.query(text=term, graph="code", limit=8)
-        except (AgenticError, ValueError):
-            continue
-        for entity in entities:
+        for entity in plane.knowledge.query(text=term, graph="code", limit=8):
             path = entity.get("path")
             if path and path in known and path not in found:
                 found.append(path)
@@ -203,8 +201,6 @@ def _verifiers(root: Path, criteria: int) -> tuple[list[dict[str, Any]], list[st
             continue
         command = gate["command"]
         argv = list(command) if isinstance(command, list) else command.split()
-        if not argv:
-            continue
         kind = _kind(str(gate.get("name", "")))
         cited = list(range(criteria)) if kind in BEHAVIOURAL else []
         verifiers.append({"kind": kind, "command": argv, "acceptance": cited})
@@ -416,6 +412,7 @@ def start(
     agent: str = "local-agent",
     capabilities: list[str] | None = None,
     claim: bool = True,
+    flight: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Turn a request into governed work: link or derive, make ready, join and claim.
 
@@ -425,7 +422,9 @@ def start(
 
     from . import preflight
 
-    flight = preflight.run(plane.root)
+    # A caller that already ran the preflight - the command line has to, before there is a
+    # plane to open - passes it in rather than paying for it twice.
+    flight = flight if flight is not None else preflight.run(plane.root)
     preflight.requires(flight)
 
     derived = derive(plane, request)
@@ -749,11 +748,7 @@ def _outstanding(plane: Any, task: dict[str, Any]) -> list[str]:
     from .assurance import service
 
     if service.enabled(plane):
-        try:
-            debt = service.debt_report(plane, task_id=task["id"])
-        except (AgenticError, KeyError):
-            debt = None
-        reports = list((debt or {}).get("tasks", []))
+        reports = list(service.debt_report(plane, task_id=task["id"]).get("tasks", []))
         if sum(report.get("obligations", 0) for report in reports):
             return [
                 str(entry["claim"]) for report in reports for entry in report.get("outstanding", [])

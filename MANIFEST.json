@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T00:37:58.585405+00:00",
+  "generated_at_utc": "2026-09-23T01:17:02.341851+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -95,13 +95,13 @@
     },
     {
       "path": "AGENTS.md",
-      "sha256": "1734b5de486ee28c6e42b0847406c17efe461d85f425d68c2f7c1c83acf8405c",
-      "bytes": 3449
+      "sha256": "f91e05bade0b9f733bfecd9e2bfbcee5302b77444575a866e8c643614e692313",
+      "bytes": 4224
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "2d9c0bac8557947f5604e1dfd21f7c184e4999175327e063b6611be637aa12b9",
-      "bytes": 25469
+      "sha256": "0debf04a6b80b8c5994a50832f27364d2b393365eacda4276a465e5d7b7bbc52",
+      "bytes": 27006
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -135,8 +135,8 @@
     },
     {
       "path": "MASTER_PROMPT.md",
-      "sha256": "3c892fecc5cd54d8b95533c1cbf68a11bf261c8484131ed90ec0f71d7949d912",
-      "bytes": 2473
+      "sha256": "fdb4b32d9bfcea8930070eac1d80b48dd2be9e83772fc239501213920d418dfb",
+      "bytes": 3519
     },
     {
       "path": "Makefile",
@@ -145,8 +145,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "218c2f623c9d2250306034137694d284f1b5f6acfff42d389b9e3093e8204ae4",
-      "bytes": 18532
+      "sha256": "857991df169d99333b6b2c622ce870787281b5d2dc231b37067d72cae7edca2e",
+      "bytes": 19869
     },
     {
       "path": "ROADMAP.md",
@@ -320,18 +320,18 @@
     },
     {
       "path": "disciplines/12-autonomous-project-execution/SKILL.md",
-      "sha256": "121496d743676519fb6429f7c7a582462141a4dde932d53fa0e6437f28caeb5f",
-      "bytes": 9505
+      "sha256": "3b368e7d939546ee81c780b546d3333a28cd4711a28c18e031cd98d5f50396cf",
+      "bytes": 12776
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "de75fd706c8382f4916c0e05771ce68b144e5fa55fcf0967245a3a94704931f7",
-      "bytes": 10292
+      "sha256": "d63edf17e782e74218e2fd1b01b0b8a5d1d07c7d8315c116e0d3a0e7f7fb7e4b",
+      "bytes": 13521
     },
     {
       "path": "docs/adoption.md",
-      "sha256": "d83a591704573a1bdd3272817cf5ac0df2a9c6789e718049142c218cffdd4ec6",
-      "bytes": 2254
+      "sha256": "a739548bcc79a6966cde71fb3e76e206027e1a1f59b0b18a5c3f790e91b782a4",
+      "bytes": 3679
     },
     {
       "path": "docs/architecture.md",
@@ -475,8 +475,8 @@
     },
     {
       "path": "docs/v2/README.md",
-      "sha256": "849170a13903a7f0f0266dbc862ac8cb2a80288ccf16f81b262249148180d15e",
-      "bytes": 10884
+      "sha256": "33723faf801ed1d70b801459cbcf167076d7aca93cd19f923d9d2f66471fbc47",
+      "bytes": 11275
     },
     {
       "path": "docs/v2/VALIDATION.md",
@@ -765,8 +765,8 @@
     },
     {
       "path": "docs/workflow.md",
-      "sha256": "65c65905e920f6e80dcb87a34eb722d10399a7e391984a20e9da5cb8ae5f7fbe",
-      "bytes": 4408
+      "sha256": "d0a96d5d85a81995883b33f2c5a4c66bbce2be550d5e5b4863833c53a66f57c3",
+      "bytes": 5156
     },
     {
       "path": "examples/control/README.md",
@@ -880,8 +880,8 @@
     },
     {
       "path": "packaging/claude-plugin/skills/agentic-autonomous-project-execution/SKILL.md",
-      "sha256": "97208df73991787da85f2eaf8decdd53b789097f806e18659390ccfb68f8dc94",
-      "bytes": 10712
+      "sha256": "a8c2e9d0e29076ed6453c1f98fc2ff875b4d9f0c67aab677168b6fb66fc92b7c",
+      "bytes": 13983
     },
     {
       "path": "packaging/claude-plugin/skills/agentic-cleaning/SKILL.md",
@@ -1305,8 +1305,8 @@
     },
     {
       "path": "src/agentic_discipline/control/cli.py",
-      "sha256": "d788bfbe79bd8185c136e58772ba6ce81b168380fbc7bc873b4ea5138b471c34",
-      "bytes": 21421
+      "sha256": "de98c15980c4f353b3296661ef5c554a604fc6bc6d2234b0f84a0c03c9636521",
+      "bytes": 22120
     },
     {
       "path": "src/agentic_discipline/control/console.py",
@@ -1365,8 +1365,8 @@
     },
     {
       "path": "src/agentic_discipline/control/work.py",
-      "sha256": "b6316d8f694ab6b922176fbfe9cfe6ee3396043f6bf71fa43b385fedf4340618",
-      "bytes": 31996
+      "sha256": "25319b4887cd809dd85224f309176ea0d1585882b57f268584237e09ef254d96",
+      "bytes": 32108
     },
     {
       "path": "src/agentic_discipline/control/workspaces.py",
@@ -1410,8 +1410,8 @@
     },
     {
       "path": "src/agentic_discipline/readiness.py",
-      "sha256": "6396a830672ac73cdaa75c3d73d8d549e343a22da384e03459ab0cec8e80fa49",
-      "bytes": 21613
+      "sha256": "f17cbaeba429edf1cf67452df1f92fb1204ded540988d7443a29d8f64a29fc20",
+      "bytes": 21399
     },
     {
       "path": "src/agentic_discipline/repair.py",
@@ -1780,8 +1780,8 @@
     },
     {
       "path": "tests/control/test_work_execution.py",
-      "sha256": "9b0ce4f18c22f0139b6cfa6e1789e06a06431aed2a3c2347f86d88fbaf4a347e",
-      "bytes": 9933
+      "sha256": "40ea690454ed41d1a8a769be601bba073478ce143d828cb42e78beeaafcaeeac",
+      "bytes": 9895
     },
     {
       "path": "tests/control/test_workspace_records.py",
@@ -1792,6 +1792,16 @@
       "path": "tests/control/test_workspaces.py",
       "sha256": "0a6219d3b699f06c669c5defba129f1228855d3c57fd4c1b75df0f8bf58be285",
       "bytes": 8557
+    },
+    {
+      "path": "tests/control/test_zero_touch_acceptance.py",
+      "sha256": "51d1b50bb09a70185f51253aba77e253d9bb96610bd68b0698e9ca32e7882582",
+      "bytes": 9011
+    },
+    {
+      "path": "tests/control/test_zero_touch_edges.py",
+      "sha256": "158cdd81dc9fa05dfb2351802196952430339c4f5ac31eb4bd9be3fe2e974bac",
+      "bytes": 18459
     },
     {
       "path": "tests/legacy_code_page.py",
@@ -1830,8 +1840,8 @@
     },
     {
       "path": "tests/test_cli.py",
-      "sha256": "fecf58a4129806531512d61139c7f6784da44ae0696c98ced2674f5738aa4cfc",
-      "bytes": 6193
+      "sha256": "ef1ca0434fabb4109a6607f5d51b17c2881cffe59051c9ed84308cee06191991",
+      "bytes": 6266
     },
     {
       "path": "tests/test_cli_listings.py",

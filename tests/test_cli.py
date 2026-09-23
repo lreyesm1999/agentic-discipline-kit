@@ -15,12 +15,17 @@ def ns(**values: object) -> argparse.Namespace:
     return argparse.Namespace(**values)
 
 
-def test_doctor_passes_from_repository_root(capsys: pytest.CaptureFixture[str]) -> None:
+def test_doctor_passes_from_repository_root() -> None:
     """The exit code follows execution readiness, which depends on whether this checkout has
     been adopted, so what is asserted here is the installation half it cannot change."""
 
-    cli.command_doctor(ns(json=True))
-    report = json.loads(capsys.readouterr().out)
+    import contextlib
+    import io
+
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        cli.command_doctor(ns(json=True))
+    report = json.loads(output.getvalue())
     assert report["readiness"]["installation"] == "PASS"
     assert report["readiness"]["shape"] == "checkout"
 

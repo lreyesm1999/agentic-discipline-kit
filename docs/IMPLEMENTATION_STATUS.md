@@ -98,6 +98,51 @@ release**: the version, the platform CI matrix, the repository-wide mutation gat
 acceptance are the code owner's to run, exactly as `v2/VALIDATION.md` records for 2.0.
 `v2.1/VALIDATION.md` holds the gates that were executed here.
 
+## Zero-touch operational bootstrap
+
+Installing the kit now leaves the project able to run the whole workflow, and a request in
+natural language is enough to start governed work. Seven slices, each implemented, tested,
+verified and documented before the next.
+
+| Slice | What it delivers | Where |
+|---|---|---|
+| 1 Readiness | Installation health, project health and execution readiness reported apart; `READY`, `PARTIAL`, `DEGRADED`, `BROKEN`, `NOT_INITIALIZED`; `doctor` prints them | `readiness.py`, `cli.py` |
+| 2 Operational `init` | Adoption, indexing and a measured verdict by default; `--rules-only`, `--no-adopt`, `--adopt`; idempotent | `bootstrap.py` |
+| 3 Safe repair | Payload, adapters, control plane and index repaired without a decision, recorded in the audit chain | `repair.py` |
+| 4 Preflight | Eight requirements, three modes, `requires` for operations that cannot run degraded | `control/preflight.py` |
+| 5 Request to task | Contract derived from recorded sources, linked or created, readied, joined and claimed | `control/work.py` |
+| 6 Execution | Checkpoints filled from the records, verification through the project's gates, completion or its refusal | `control/work.py` |
+| 7 Canonical rule | One rule in `disciplines/12`, compiled to every adapter; `AGENTS.md` and `MASTER_PROMPT.md` state it | `disciplines/`, `AGENTS.md`, `MASTER_PROMPT.md` |
+
+Evidence: 2,065 tests pass and 26 POSIX-only cases are skipped on Windows; coverage 99.19% of
+lines and 97.87% of branches; ruff, format, mypy, bandit, `repo_check` and the integrity audit
+pass. `tests/control/test_zero_touch_acceptance.py` drives the acceptance cases through the
+command lines an agent calls: a fresh repository, one `init` and one request reach a completed
+task with recorded evidence; an installation from before adoption bootstraps on the first
+request; a broken control plane blocks and is never replaced.
+
+Defects found by doing the work, not by looking for them:
+- The expected discipline count was eleven with twelve installed, so a missing discipline read
+  as a complete installation.
+- A test run's `.coverage` counted as project content: running the coverage gate failed a task
+  for a change outside its scope and made other evidence stale.
+- A corrupt state database made `init` crash instead of report.
+- `agentic work start` opened the plane before its preflight, so an installation without a
+  state database was told to adopt rather than being adopted.
+
+Decisions that are the owner's to review:
+- `AGENTS.md` and `MASTER_PROMPT.md` changed with explicit authorisation; the `protected` gate
+  reports them, as it should.
+- The command allow-list is widened only by the gates the project itself declares.
+- One working tree holds one claim; a second task waits rather than getting a worktree nobody
+  asked for.
+- Git is advisory for readiness because adoption works without it; operations that need a
+  commit refuse on their own.
+
+Remaining gaps: five defensive lines in `readiness.py` and one in `control/work.py` are not
+covered - an sqlite error while auditing, a working tree that cannot be scanned, and a readiness
+refusal other than a dependency. Linux behaviour is covered by CI, not by a run on this machine.
+
 ## Technical Debt
 
 - External network/cost enforcement requires host isolation and metering; the local

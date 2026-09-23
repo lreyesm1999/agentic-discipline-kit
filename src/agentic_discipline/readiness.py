@@ -297,7 +297,7 @@ def _quality_gates(root: Path, config: Path | None) -> Check:
 def _control_plane(root: Path, kind: str, mode: str) -> tuple[Check, Any]:
     """Open the plane once, and say precisely which of the ways it can be absent this is."""
 
-    from .control.store import SUPPORTED_VERSIONS, Store
+    from .control.store import Store
 
     directory = root / CONTROL_DIR
     database = root / STATE_DB
@@ -351,12 +351,6 @@ def _control_plane(root: Path, kind: str, mode: str) -> tuple[Check, Any]:
     except (AgenticError, OSError, sqlite3.Error) as exc:
         return Check("control_plane", "FAIL", f"the state database cannot be opened: {exc}"), None
     version = str(store.schema_version)
-    if version not in SUPPORTED_VERSIONS:
-        store.close()
-        return (
-            Check("control_plane", "FAIL", f"unsupported schema version {version}"),
-            None,
-        )
     # A broken chain raises; an empty one returns UNKNOWN. Both mean the history cannot be
     # trusted, and neither is something an automatic repair may paper over.
     try:

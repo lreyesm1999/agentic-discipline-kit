@@ -20,6 +20,66 @@ This discipline coordinates the existing lifecycle; it does not replace acceptan
 risk classification, protected contracts, quality gates, or release requirements.
 Apply the relevant disciplines as each slice reaches their phase.
 
+## Establish operational readiness before executing
+
+```text
+IF   Agentic Discipline is installed
+AND  the user asks for implementation or execution
+THEN verify operational readiness first
+
+IF   the control plane is missing
+AND  a safe automatic bootstrap is possible
+THEN initialise and adopt it automatically
+
+NEVER continue silently without the control plane while claiming
+      full Agentic Discipline execution
+```
+
+Before the first edit of a real execution, check installation, version, control plane,
+repository adoption, project knowledge, Git state, quality configuration and task
+orchestration. Where the kit is installed, `agentic preflight` performs those eight checks,
+repairs what can be repaired without a decision, and reports one mode:
+
+- **FULL** — the whole workflow is available. Proceed.
+- **DEGRADED** — proceed only after stating what is unavailable and why. Never describe
+  degraded work as full Agentic Discipline execution, and stop when the task needs what is
+  missing.
+- **BLOCKED** — do not start. Report the precise reason and what would unblock it.
+
+Repair only what cannot lose data, cannot change business intent, needs nothing outside the
+machine and writes only the kit's own files. Never adopt beside an unexplained control
+directory, never work around an audit chain that does not verify, and never create a second
+state database: each of those needs a person.
+
+## Turn the request into governed work
+
+Do not ask the user to write a task contract, create a task, mark it ready, register an
+agent or claim a lease. Where the kit is installed, `agentic work start "<request>"` links
+the request to work that already exists or derives the contract from what is recorded: the
+request itself, the project's requirements, its knowledge index, its quality gates, its risk
+rules and its policy. Verifiers are the project's own gates; nothing is invented to run.
+
+Record the request verbatim as the objective, and keep the derivation traceable. Do not fill
+in detail nobody stated. Stop and ask when the decision is the user's: no scope can be
+derived, the scope touches a protected contract, the project's rules make the work
+`CRITICAL`, or no declared gate proves behaviour. Finish the independent work first, then ask
+one precise question.
+
+## Keep the record while the work runs
+
+Take a checkpoint without being asked, at each moment where losing the thread would cost
+real work: a completed slice, before a risky operation, before releasing a lease, on a
+blocker, at a context limit, before a handoff, before integration. State what was being
+attempted and what comes next; the rest - changed files, commands, results, failures - is
+read from the records rather than retyped, so a checkpoint never disagrees with the evidence
+beside it. A checkpoint with nothing proven says so.
+
+Run the task's verifiers when the work reaches a verifiable state, without waiting to be
+told, and record the evidence. Complete only when dependencies are satisfied, the scope held,
+contracts were respected, a current checkpoint exists, verification passed on current
+evidence and no mandatory proof obligation is outstanding. A failing gate and unresolved
+proof debt are refusals, not warnings. Then continue with the next task whose turn it is.
+
 ## Establish the execution boundary
 
 1. Read repository instructions and inspect the working tree before editing. Preserve

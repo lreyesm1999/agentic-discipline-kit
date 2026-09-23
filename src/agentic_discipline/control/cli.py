@@ -304,6 +304,28 @@ def assurance_command(plane: Plane, args: argparse.Namespace) -> dict[str, Any]:
 def run(args: argparse.Namespace) -> dict[str, Any] | None:
     if args.group == "adopt":
         return {"api_version": API_VERSION, "data": adopt(args.path, args.dry_run)}
+    if args.group == "work" and args.action in {"start", "derive"}:
+        require(bool(args.request.strip()), "INVALID_REQUEST", "Describe the work")
+        flight = preflight.run(args.root)
+        if flight["mode"] == "BLOCKED":
+            return {"api_version": API_VERSION, "data": {**flight, "status": "BLOCKED"}}
+        # Governed work needs the control plane. A rules-only project is refused by name
+        # rather than told to adopt something it chose not to have.
+        preflight.requires(flight)
+        with Plane(args.root) as plane:
+            if args.action == "derive":
+                return {"api_version": API_VERSION, "data": work.derive(plane, args.request)}
+            result = work.start(
+                plane,
+                args.request,
+                agent=args.agent,
+                capabilities=args.capabilities or None,
+                claim=not args.no_claim,
+                flight=flight,
+            )
+        if args.session_out and result.get("session"):
+            write_session(args.session_out, str(result["session"]))
+        return {"api_version": API_VERSION, "data": result}
     if args.group == "preflight":
         return {
             "api_version": API_VERSION,
@@ -353,19 +375,7 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
                         next_action=args.next_action,
                     )
                 }
-            require(bool(args.request.strip()), "INVALID_REQUEST", "Describe the work")
-            if args.action == "derive":
-                return {"data": work.derive(plane, args.request)}
-            result = work.start(
-                plane,
-                args.request,
-                agent=args.agent,
-                capabilities=args.capabilities or None,
-                claim=not args.no_claim,
-            )
-            if args.session_out and result.get("session"):
-                write_session(args.session_out, str(result["session"]))
-            return {"data": result}
+            raise ControlError("UNKNOWN_OPERATION", f"work {args.action}")
         if args.group == "api":
             data = read_input(args.input)
             if args.session_file:
@@ -478,7 +488,8 @@ def main() -> None:
             elif args.group == "assurance" and args.action in {"status", "debt", "explain"}:
                 print(render_assurance(args.action, result["data"]))
             elif args.group == "work" and args.action == "start":
-                print(work.render(result["data"]))
+                data = result["data"]
+                print(preflight.render(data) if "requirements" in data else work.render(data))
             elif args.group == "preflight":
                 print(preflight.render(result["data"]))
             elif args.group == "status":

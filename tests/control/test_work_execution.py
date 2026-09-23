@@ -41,7 +41,9 @@ def plane(tmp_path: Path) -> Any:
     (root / "tests").mkdir()
     (root / "pyproject.toml").write_text("[project]\nname='r'\nversion='0.1'\n", encoding="utf-8")
     (root / "src" / "app.py").write_text("VALUE = 1\n", encoding="utf-8")
-    (root / "tests" / "test_app.py").write_text("def test_ok() -> None:\n    pass\n", encoding="utf-8")
+    (root / "tests" / "test_app.py").write_text(
+        "def test_ok() -> None:\n    pass\n", encoding="utf-8"
+    )
     run_git(["init"], cwd=root)
     initialize_project(root)
     _gates(root, {"python/tests", "python/lint"})
@@ -129,7 +131,9 @@ def test_verification_runs_what_the_task_declared_and_records_it(plane: Any) -> 
 
     assert result["status"] == "PASS"
     assert result["outstanding"] == []
-    recorded = [record for record in plane.store.list("evidence") if record["task_id"] == task["id"]]
+    recorded = [
+        record for record in plane.store.list("evidence") if record["task_id"] == task["id"]
+    ]
     assert {record["kind"] for record in recorded} == {"unit", "static_analysis"}
     assert {record["result"] for record in recorded} == {"PASS"}
 
@@ -171,25 +175,22 @@ def test_a_failing_gate_stops_completion_and_says_which(plane: Any) -> None:
     assert failed
 
 
-def test_completion_is_refused_while_a_claim_holds_proof_debt(plane: Any) -> None:
-    """The 2.1 invariant, reached through the automatic path: passing gates are not enough if
-    an obligation the change raised is still unresolved."""
-
-    from agentic_discipline.control.assurance import service
+def test_evidence_that_went_stale_after_verification_blocks_completion(plane: Any) -> None:
+    """The 2.1 invariant, reached through the automatic path: a proof counts only while the
+    inputs it was taken against are still the inputs. Editing the work after it was verified
+    leaves a claim without current evidence, and completion refuses rather than trusting the
+    earlier run."""
 
     task, session = _start(plane)
     _edit(plane)
-    work.verify(plane, task["id"], session)
-    # A second obligation appears that nothing has proven, the way a recompile would add one.
-    service.compile_plan(plane, task["id"], phase="RECONCILED")
+    assert work.verify(plane, task["id"], session)["status"] == "PASS"
+    (Path(plane.root) / "src" / "app.py").write_text("VALUE = 1\nTOTAL = 3\n", encoding="utf-8")
 
-    debt = service.debt_report(plane, task_id=task["id"])["tasks"][0]
-    if debt["proof_debt"]:
-        result = work.finish(plane, task["id"], session)
-        assert result["status"] == "BLOCKED"
-        assert result["outstanding"]
-    else:
-        assert work.finish(plane, task["id"], session)["status"] == "PASS"
+    result = work.finish(plane, task["id"], session)
+
+    assert result["status"] == "BLOCKED"
+    assert result["outstanding"] == [REQUEST]
+    assert plane.store.get(task["id"], "task")["state"] != "COMPLETED"
 
 
 def test_the_next_ready_task_is_offered_when_one_finishes(plane: Any) -> None:
@@ -231,9 +232,7 @@ def test_the_automatic_path_is_on_the_api_beside_the_explicit_operations(plane: 
         {"task_id": task["id"], "session": session, "reason": "slice_complete"},
     )
     assert answer["data"]["status"] == "PASS"
-    finished = call(
-        plane, "work_finish", {"task_id": task["id"], "session": session}
-    )
+    finished = call(plane, "work_finish", {"task_id": task["id"], "session": session})
     assert finished["data"]["state"] == "COMPLETED"
 
 

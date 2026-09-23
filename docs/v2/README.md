@@ -12,9 +12,16 @@ See [implementation status](../IMPLEMENTATION_STATUS.md), [design decisions](AUD
 and [validation evidence](VALIDATION.md). The supplied [plan](plan/00_README.md) is
 preserved as the design input, separately from measured implementation status.
 
+## Normal use
+
+`agentic-discipline init` adopts the project and indexes it, and the agent runs the rest: the
+preflight, the task, the checkpoints, the verification and the completion. The sections below
+are for inspecting and steering that by hand. None of them is a step you have to take.
+
 ## Install and inspect
 
-Use Python 3.11 or newer, Git, and a Python SQLite build with FTS5 support:
+Use Python 3.11 or newer, Git, and a Python SQLite build with FTS5 support. Adopting by hand
+is what `init` already did; it is idempotent, so running it again changes nothing:
 
 ```sh
 python -m pip install -e '.[dev]'

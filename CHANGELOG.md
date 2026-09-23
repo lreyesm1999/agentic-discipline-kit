@@ -7,6 +7,15 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 ## [Unreleased]
 
 ### Added
+- **The canonical execution rule, in one source and on every agent surface.**
+  `agentic-autonomous-project-execution` now opens with it: when the kit is installed and the
+  user asks for implementation, verify operational readiness first; initialise and adopt the
+  control plane when that is safe; never continue silently without it while claiming the full
+  workflow. It carries the preflight, the request-to-task derivation, the automatic
+  checkpoints, verification and completion, and the degraded-mode reporting contract, and it
+  compiles to Claude Code, Cursor, Copilot, Windsurf, Antigravity, Gemini, the ChatGPT bundle
+  and `AGENTS.md` from that one file. `AGENTS.md` and `MASTER_PROMPT.md` state the same rule,
+  with the owner's authorisation for the protected-contract change.
 - **Checkpoints, verification and completion without being asked.** `agentic work checkpoint`
   records resumable state at the seven moments worth recording, filling in everything the
   records already hold - the files measured against the tree as it was claimed, the commands
@@ -125,6 +134,14 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
     `docs/v2.1/evidence/mutation-dispositions.json`.
 
 ### Changed
+- **`agentic-discipline init` makes the project operational by default.** It used to install
+  the rules and leave the control plane to a separate `agentic adopt`. For the previous
+  behaviour, pass `--rules-only` (recorded) or `--no-adopt` (this run only). Existing
+  installations need nothing: the next implementation request, or another `init`, adopts them
+  and changes nothing else. See [docs/adoption.md](docs/adoption.md#upgrading-an-existing-installation).
+- **`agentic-discipline doctor` prints a table and exits on execution readiness.** The 2.0 JSON
+  fields are unchanged under `--json`, with a `readiness` block added. A project whose rules
+  are installed and whose control plane is missing now exits nonzero, which is the point.
 - One file hasher: `sha256_file` replaces the three copies in the verifier package and the
   inline hashing in the control plane, so evidence artifacts are read in chunks rather than
   loaded whole.
