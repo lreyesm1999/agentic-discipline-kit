@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T12:16:41.594306+00:00",
+  "generated_at_utc": "2026-09-23T14:42:08.189881+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -440,8 +440,8 @@
     },
     {
       "path": "docs/v2.1/evidence/mutation-dispositions.json",
-      "sha256": "3c0299271f543181faec75a4578f665925d6cf13fdd275937aeccf5c125a8d75",
-      "bytes": 4295
+      "sha256": "274c617fde2b103efbf3d8c3282a95455ef5c91adea4e620333a88d1ca1fa3e0",
+      "bytes": 4210
     },
     {
       "path": "docs/v2.1/evidence/mutation.json",
@@ -1495,13 +1495,13 @@
     },
     {
       "path": "tests/control/test_assurance_command_line.py",
-      "sha256": "28bf1c902f3bf9fc86d802b5f6097d6acf87b76da6255ed3910374afe65b7962",
-      "bytes": 8395
+      "sha256": "7ac929c2ee94bd9ba58534520cbd95025d1e63cd0b9c00f221d0fe992aa9a57d",
+      "bytes": 7974
     },
     {
       "path": "tests/control/test_assurance_completion_guards.py",
-      "sha256": "86703af07fc03d8731974243af73b79baeea3203c206fa342d6c2b00adf62420",
-      "bytes": 4821
+      "sha256": "2d8a3c203a3843d1fdb59150e904e9b1d153e412192d98866e04527f63867f9b",
+      "bytes": 5238
     },
     {
       "path": "tests/control/test_assurance_contracts.py",
@@ -1555,8 +1555,8 @@
     },
     {
       "path": "tests/control/test_assurance_small_guards.py",
-      "sha256": "5a85e84056e3add93295fe5f428190645a45c0cd12c7fa7e1f10ef4f8aa03b07",
-      "bytes": 3906
+      "sha256": "4f5c7200df014bbc7a851100e2b259c7763d5f74b859ff420da5338fa444cce4",
+      "bytes": 3938
     },
     {
       "path": "tests/control/test_assurance_units.py",
