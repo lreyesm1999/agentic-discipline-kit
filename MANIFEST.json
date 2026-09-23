@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T14:59:23.023583+00:00",
+  "generated_at_utc": "2026-09-23T21:50:33.940574+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "39feb23fd70d6fa31832430e105dcb5fed1789dfb4e14c0c404e64510b8af21b",
-      "bytes": 3831
+      "sha256": "59321b6524c252949aa95a9de1344b6b049bff033adf2662a5db39580ef70bbc",
+      "bytes": 5081
     },
     {
       "path": ".github/workflows/release.yml",
@@ -85,8 +85,8 @@
     },
     {
       "path": ".gitignore",
-      "sha256": "194717e242e0ff8611232974a6ce7405b469c991558f97ad13ed8d7848b5939d",
-      "bytes": 463
+      "sha256": "ed8c3c6e9a744129efda487b82875bdaf27f8637cce37e80123d408b112e768c",
+      "bytes": 482
     },
     {
       "path": ".pre-commit-config.yaml",
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "d63edf17e782e74218e2fd1b01b0b8a5d1d07c7d8315c116e0d3a0e7f7fb7e4b",
-      "bytes": 13521
+      "sha256": "41f43198e0fc4738b22d45654f0ce3ec1bf7d115e4f99fa78475fdfb4f94ea17",
+      "bytes": 13876
     },
     {
       "path": "docs/adoption.md",
@@ -415,8 +415,8 @@
     },
     {
       "path": "docs/v2.1/VALIDATION.md",
-      "sha256": "04f37f0d3156b9bca2bc77f3ab88a052e101dfaa6cebab3fc4da597868c51a78",
-      "bytes": 15470
+      "sha256": "7eb592859436df63b83477a80020a19a0e53746cf20df5e9690d01481822a892",
+      "bytes": 16099
     },
     {
       "path": "docs/v2.1/evidence/README.md",
@@ -465,8 +465,8 @@
     },
     {
       "path": "docs/v2/MUTATION_EXEMPTIONS.md",
-      "sha256": "c7697bfb567aa488c89b8b61604e2b74102c6b968e9082a5e4b9a9ccbc1e533b",
-      "bytes": 11528
+      "sha256": "7a0afc493d7d21fa1ca72011d3691fd703a3db7eb3c9a7860a79a11e9f6b98be",
+      "bytes": 12349
     },
     {
       "path": "docs/v2/OPERATIONS.md",
@@ -980,8 +980,8 @@
     },
     {
       "path": "policies/mutation-exceptions.json",
-      "sha256": "c86743ee136bfb98f2dce77a7fcb36e7e2cf34a51ac5770e2af19c2b6462256a",
-      "bytes": 46491
+      "sha256": "10bc3c2802de177b574bd2ce4d8adfeb3f1bd90a5b9539a017243386d517323a",
+      "bytes": 49007
     },
     {
       "path": "policies/quality-gates.md",
@@ -1095,8 +1095,13 @@
     },
     {
       "path": "scripts/mutation_gate.py",
-      "sha256": "6f8eeb8c7ebe9d9f83f21bce6b610621deb6a22731b63f140e3c2d5064596543",
-      "bytes": 19153
+      "sha256": "950ce30cdede3f871f0d2bc955805435f8e1a23235fe13375f6cf4a584fdb062",
+      "bytes": 20538
+    },
+    {
+      "path": "scripts/mutation_scope.py",
+      "sha256": "dceb887cc314971a427cb277e18d2d5ed380b63b92b904753a277a0d6447bee2",
+      "bytes": 9252
     },
     {
       "path": "scripts/repo_check.py",
@@ -1530,8 +1535,8 @@
     },
     {
       "path": "tests/control/test_assurance_derivation.py",
-      "sha256": "df6227ea00000f7081cab3390cb14ddb776a7ab9c4e9e2c9b5544bf56ec745d0",
-      "bytes": 5509
+      "sha256": "477072c3dd4fbfc5c6229e34f7cbc272f261ce2271846b5e27bd6f0edf85c610",
+      "bytes": 5574
     },
     {
       "path": "tests/control/test_assurance_details.py",
@@ -1552,6 +1557,11 @@
       "path": "tests/control/test_assurance_interfaces.py",
       "sha256": "2328dd57bfe880efb45965c5b930d52faa3368576caca8f2b2033109517fb4a2",
       "bytes": 28496
+    },
+    {
+      "path": "tests/control/test_assurance_mutation_survivors.py",
+      "sha256": "4409050715e402d08ace64de6a188fbb3fbe22c9f581c849ae05b255614fc64a",
+      "bytes": 6376
     },
     {
       "path": "tests/control/test_assurance_properties.py",
@@ -2095,8 +2105,13 @@
     },
     {
       "path": "tests/test_mutation_gate.py",
-      "sha256": "f6b1f8e2e146838b65e67e4f442497e3bf8d7aa7042c10869372c6dd8b98f25f",
-      "bytes": 1996
+      "sha256": "4577d8e97241536f485bba4787fbd168105bde5742b4cbbd28244391821ad101",
+      "bytes": 3428
+    },
+    {
+      "path": "tests/test_mutation_scope.py",
+      "sha256": "5e33b34aa59824878bd603c7da085170f39018b72b97cf44217c59c2aa0f8d42",
+      "bytes": 7184
     },
     {
       "path": "tests/test_optional_keys.py",

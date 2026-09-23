@@ -143,6 +143,16 @@ kills the sites where the parent can be missing.
 
 ## Others, each checked
 
+- **`None` for `False`, including a missing `dict.get` default, where the value is only tested for truth or passed through `bool`.**
+  `assurance` migrates unless `dry_run` is true, so `args.get("dry_run", False)`,
+  `args.get("dry_run", None)` and `args.get("dry_run")` all migrate. `normalized`
+  stores `bool` of a missing `supports_incremental`, and `bool(None)` is `False`.
+  Checked: both migrate calls write the upgrade, and both normalizations store `False`.
+- **Undeclared evidence is already measured.** Migration classifies an undeclared
+  kind as `MEASURED`. That descriptor's own class is `MEASURED`, and every declared
+  descriptor is stored with `declared` true, so a condition forced true records the
+  same class. Checked on legacy evidence of a kind nobody registered: both versions
+  store `MEASURED`.
 - **`None` for `False` or `""` where the value is only tested for truth.**
   `getattr(args, "check_tools", None)` and `"check_paths"`, the adapters' `nested`,
   the flags `pending_id`, `required_tool_missing`, `has_required`, `reaches_evidence`,

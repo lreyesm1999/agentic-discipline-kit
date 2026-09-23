@@ -86,7 +86,7 @@ def test_obligations_carry_the_task_s_requirements_and_boundaries(plane: Any) ->
 
 
 def test_an_obligation_without_an_origin_key_is_refused() -> None:
-    with pytest.raises(ControlError, match="^An obligation needs an origin key$"):
+    with pytest.raises(ControlError, match="^An obligation needs an origin key$") as refused:
         compiler._obligation(
             {"id": "TASK-1"},
             origin_key="",
@@ -99,6 +99,7 @@ def test_an_obligation_without_an_origin_key_is_refused() -> None:
             phase="INITIAL",
             enforced=True,
         )
+    assert refused.value.code == "INVALID_OBLIGATION"
 
 
 def test_risk_signals_are_read_one_path_at_a_time() -> None:

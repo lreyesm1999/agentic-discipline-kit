@@ -30,12 +30,14 @@ scale target. Detailed limitations are in `v2/LIMITATIONS.md`.
   102 survivors equivalent by rule and accepted 109 through the reviewed exceptions in
   `policies/mutation-exceptions.json`, leaving none unresolved.
 
-## Agentic Discipline 2.1 — the Adaptive Assurance Engine
+## Agentic Discipline 2.1 — assurance engine and zero-touch bootstrap
 
-Implemented alongside 2.0 and inactive until a project is migrated on purpose, so an
-existing 2.0 installation behaves exactly as it did. The table records executable behaviour
-with the evidence that demonstrates it; detailed limits are in `v2.1/LIMITATIONS.md` and
-the engine is described in `v2.1/README.md`.
+2.1 is two parts of one release. The adaptive assurance engine is on `main` and stays
+inactive until a project is migrated on purpose, so an existing 2.0 installation behaves
+exactly as it did. The zero-touch bootstrap, below, is how a project reaches that engine:
+installing the kit leaves it able to run the workflow, and a request in natural language
+is enough to start governed work. The table records the engine; detailed limits are in
+`v2.1/LIMITATIONS.md` and the engine is described in `v2.1/README.md`.
 
 | Dependency phase | Implemented behaviour | Deterministic evidence |
 |---|---|---|
@@ -93,12 +95,14 @@ roadmap.
 
 ### Release disposition
 
-2.1 is implemented, tested and documented in this repository. It is **not certified as a
-release**: the version, the platform CI matrix, the repository-wide mutation gate and human
-acceptance are the code owner's to run, exactly as `v2/VALIDATION.md` records for 2.0.
-`v2.1/VALIDATION.md` holds the gates that were executed here.
+2.1 is **not certified as a release**. The engine's pull-request mutation gate, CI run
+35906290627, passed: 14,837 killed of 14,976, 65 proved equivalent, 74 accepted by
+reviewed exception, none unresolved. The bootstrap is not in that run. Its own CI,
+including the sharded mutation gate, and the owner's acceptance of the protected paths
+it changes, are still open. The version remains 2.0.0 until both parts have passed.
+`v2.1/VALIDATION.md` holds the engine's gates.
 
-## Zero-touch operational bootstrap
+### Zero-touch operational bootstrap
 
 Installing the kit now leaves the project able to run the whole workflow, and a request in
 natural language is enough to start governed work. Seven slices, each implemented, tested,
