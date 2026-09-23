@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-22T19:15:30.040195+00:00",
+  "generated_at_utc": "2026-09-23T12:16:41.594306+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -440,8 +440,8 @@
     },
     {
       "path": "docs/v2.1/evidence/mutation-dispositions.json",
-      "sha256": "3acbcb0eaa04a0db0c2c3139df63b62dc703dcd561fc105c7fceb7a8390e50d1",
-      "bytes": 6915
+      "sha256": "3c0299271f543181faec75a4578f665925d6cf13fdd275937aeccf5c125a8d75",
+      "bytes": 4295
     },
     {
       "path": "docs/v2.1/evidence/mutation.json",
@@ -1230,8 +1230,8 @@
     },
     {
       "path": "src/agentic_discipline/bootstrap.py",
-      "sha256": "711b8ce22a2b0c39c2ff8775c248bd365a3e641b841b32687efc14c92915a709",
-      "bytes": 10740
+      "sha256": "90c08b00cd667248ce94408cc6dc191ff41d63ca067ca38bf4c39f702a994285",
+      "bytes": 10933
     },
     {
       "path": "src/agentic_discipline/cli.py",
@@ -1260,8 +1260,8 @@
     },
     {
       "path": "src/agentic_discipline/control/assurance/compiler.py",
-      "sha256": "afb3e4151b21f98943ff4138c6c8f0a4104a179053715ef338d6ff678b2eb0c5",
-      "bytes": 12739
+      "sha256": "559fd5a7135617e3a91212a45e9d22962c1d5d5a79bdda0964bd359bc1786b40",
+      "bytes": 13155
     },
     {
       "path": "src/agentic_discipline/control/assurance/decision.py",
@@ -1280,13 +1280,13 @@
     },
     {
       "path": "src/agentic_discipline/control/assurance/model.py",
-      "sha256": "1b3fe9fc6a4719716dcf8c336ee76fa3b5b1b3d33122076bdb8e4a3656c457e9",
-      "bytes": 8563
+      "sha256": "c72f0c3055f9ecbea3a946aa342490e2e4bc0e68747344a918a6535425d6518f",
+      "bytes": 8532
     },
     {
       "path": "src/agentic_discipline/control/assurance/planner.py",
-      "sha256": "78257d533652166079a11dfa210bbf589af1f3b5365f2f9bafd98a32d4c67783",
-      "bytes": 6494
+      "sha256": "fd98c568b04344858b1f57af9bb7caacf1fad6ace2c5ddc57a75423ab2d5cb60",
+      "bytes": 6398
     },
     {
       "path": "src/agentic_discipline/control/assurance/registry.py",
@@ -1295,18 +1295,18 @@
     },
     {
       "path": "src/agentic_discipline/control/assurance/resolver.py",
-      "sha256": "98134bd94d80e0b9344a9abe0b78b7e96e5971a8efe1b1dcd82d8c9439c3450f",
-      "bytes": 10418
+      "sha256": "b51dcd24e40276fb7045f394261168a5fe786919dd43c19151d85bc7be14d1b0",
+      "bytes": 10675
     },
     {
       "path": "src/agentic_discipline/control/assurance/service.py",
-      "sha256": "52070d6d0e2069500ba8f9215ea9847739c9fbe7538456810006c4b11e05f557",
-      "bytes": 28298
+      "sha256": "6038958f9f76e41fe1d1ae28edb83cc25cf1b464c9cdf776bd870ae698af049b",
+      "bytes": 28350
     },
     {
       "path": "src/agentic_discipline/control/cli.py",
-      "sha256": "6bffe41b6eb1580a35569bf34a30f911da4493c42bd1b247565ba9330b4b1b5a",
-      "bytes": 17625
+      "sha256": "291d1dedb9a85d6da4d1a160cb2d30e54efa768ed65ca380646a0d191aa376e3",
+      "bytes": 17510
     },
     {
       "path": "src/agentic_discipline/control/console.py",
@@ -1355,8 +1355,8 @@
     },
     {
       "path": "src/agentic_discipline/control/verification.py",
-      "sha256": "e1b0526e20cda919e3da633fa48d31c5b869f25978fa0a2502cfbcc38f7f6ec8",
-      "bytes": 18869
+      "sha256": "56117184a5f03f4f6c0059b488f15ac0dc5b1624b96b2eba60ff7cc51c37f4c8",
+      "bytes": 18862
     },
     {
       "path": "src/agentic_discipline/control/workspaces.py",
@@ -1494,14 +1494,29 @@
       "bytes": 18473
     },
     {
+      "path": "tests/control/test_assurance_command_line.py",
+      "sha256": "28bf1c902f3bf9fc86d802b5f6097d6acf87b76da6255ed3910374afe65b7962",
+      "bytes": 8395
+    },
+    {
+      "path": "tests/control/test_assurance_completion_guards.py",
+      "sha256": "86703af07fc03d8731974243af73b79baeea3203c206fa342d6c2b00adf62420",
+      "bytes": 4821
+    },
+    {
       "path": "tests/control/test_assurance_contracts.py",
-      "sha256": "f2cf0ec68164884b3396cba2c4e9c57ed5d47d0a8cee40288a83817df0e632d1",
-      "bytes": 73515
+      "sha256": "91a6fce84c6716a79af7a1b5d709078a080dca9ac533430b904e2e24b5f27263",
+      "bytes": 73596
+    },
+    {
+      "path": "tests/control/test_assurance_derivation.py",
+      "sha256": "df6227ea00000f7081cab3390cb14ddb776a7ab9c4e9e2c9b5544bf56ec745d0",
+      "bytes": 5509
     },
     {
       "path": "tests/control/test_assurance_details.py",
-      "sha256": "d538088d2e2f802c05deda14e3859394036c995ac432690915b64d1c2fc628b4",
-      "bytes": 33735
+      "sha256": "1aa3d3e499c6e6494f69514be667db4103a401e3d951e8d564d6ea4e286c5cff",
+      "bytes": 33828
     },
     {
       "path": "tests/control/test_assurance_edges.py",
@@ -1510,8 +1525,8 @@
     },
     {
       "path": "tests/control/test_assurance_failures.py",
-      "sha256": "b15f96b9048d136c3ec4d4c4ebcc69aa228224e4c551dd126a4329f41dae195f",
-      "bytes": 13130
+      "sha256": "3b521800a532393ae7f4f069b45cbe9367b584cb4dbdf5191089487105201028",
+      "bytes": 13364
     },
     {
       "path": "tests/control/test_assurance_interfaces.py",
@@ -1524,14 +1539,29 @@
       "bytes": 10538
     },
     {
+      "path": "tests/control/test_assurance_rendering.py",
+      "sha256": "0a7f4ce7aed9e5437147cdc40edf89a96982e2ba8c397a98100bba8fd9f01e8c",
+      "bytes": 6173
+    },
+    {
       "path": "tests/control/test_assurance_scenarios.py",
-      "sha256": "221dece4377588d5a022e9430c8dccd78f1c0638837243f34c418a3e66cc1a27",
-      "bytes": 29048
+      "sha256": "9412f135a230dd9766f43c91e5ba428b2393e66dc566c87b357f3e2f784c3b72",
+      "bytes": 29135
+    },
+    {
+      "path": "tests/control/test_assurance_service_guards.py",
+      "sha256": "03140f20ba2580904bb6024b12a33135f11d2dcae30cc9b3936206800d8779a2",
+      "bytes": 6575
+    },
+    {
+      "path": "tests/control/test_assurance_small_guards.py",
+      "sha256": "5a85e84056e3add93295fe5f428190645a45c0cd12c7fa7e1f10ef4f8aa03b07",
+      "bytes": 3906
     },
     {
       "path": "tests/control/test_assurance_units.py",
-      "sha256": "8599b270b0574b8d6f9aec6a52731197fcd787f85fe7dfe47e48774272ff32ef",
-      "bytes": 24006
+      "sha256": "d3a262236c5383bd578dab4adae8b0b1a7888e5e92edf11a702a2a520ca154e6",
+      "bytes": 24065
     },
     {
       "path": "tests/control/test_blocker_and_workspace_root.py",
@@ -1565,8 +1595,8 @@
     },
     {
       "path": "tests/control/test_console_responses.py",
-      "sha256": "43c1624319712182a78e823039fc39035ae26dc3e989ca054a6f0220b483c60b",
-      "bytes": 5832
+      "sha256": "8f9f5fc9e9a50dfd242797aaee7fa6b1fa6a6b50de30beef72e27b29c7a70285",
+      "bytes": 5908
     },
     {
       "path": "tests/control/test_context_document.py",
@@ -2060,8 +2090,8 @@
     },
     {
       "path": "tests/test_state_and_gitignore.py",
-      "sha256": "66cfa5f402bf1011dcdf21f506410334f936d206e4690a92f884ec705d7b269e",
-      "bytes": 7471
+      "sha256": "e08047db043f400514d5b1b35c5afab137e5588cd94c25c0fbfd9fab8d9b55de",
+      "bytes": 9055
     },
     {
       "path": "tests/test_utf8_on_legacy_code_pages.py",
