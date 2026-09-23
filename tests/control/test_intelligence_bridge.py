@@ -34,6 +34,13 @@ def test_intelligence_research_and_mandatory_constraint_gate(project):
     assert intelligence_snapshot(project.root, task)["binding"] != before
     assert binding(project, project.store.get(task, "task"))["intelligence"] != proof_before
     assert any(reason.get("code") == "research_gate_missing" for reason in project.readiness(task)["reasons"])
+    assert any(reason["type"] == "intelligence_constraint_unmapped" for reason in project.readiness(task)["reasons"])
+    current = project.store.get(task, "task")
+    with project.store.transaction():
+        project.store.put("task", {**current, "acceptance": ["CON-1: callbacks are idempotent"]},
+                          expected=current["version"])
+    assert not any(reason["type"] == "intelligence_constraint_unmapped"
+                   for reason in project.readiness(task)["reasons"])
     assert intelligence_snapshot(project.root, "OTHER")["constraints"] == []
 
 

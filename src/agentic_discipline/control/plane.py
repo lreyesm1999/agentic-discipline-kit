@@ -385,7 +385,13 @@ class Plane:
         reasons.extend({"type": "conflict", "id": c} for c in conflicts)
         if task.get("blocker"):
             reasons.append({"type": "human", "reason": task["blocker"]})
-        reasons.extend(intelligence_snapshot(self.root, task_id)["reasons"])
+        intelligence = intelligence_snapshot(self.root, task_id)
+        reasons.extend(intelligence["reasons"])
+        for constraint in intelligence["constraints"]:
+            if constraint.get("normative") is True and not any(
+                constraint["id"] in criterion for criterion in task["acceptance"]
+            ):
+                reasons.append({"type": "intelligence_constraint_unmapped", "id": constraint["id"]})
         return {
             "task_id": task_id,
             "status": "BLOCKED"
