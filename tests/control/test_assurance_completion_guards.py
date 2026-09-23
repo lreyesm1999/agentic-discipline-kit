@@ -129,3 +129,15 @@ def test_an_obligation_that_cannot_be_bound_does_not_stop_the_others_from_being_
     stamped = {identifier for entry in stamps.values() for identifier in entry["obligation_ids"]}
     assert ordered[0] not in stamped
     assert set(ordered[1:]) <= stamped
+
+
+def test_verifying_a_proof_the_task_never_declared_is_refused(plane: Any) -> None:
+    task, session = claimed(plane, contract())
+
+    with pytest.raises(ControlError) as refused:
+        verification.verify(plane, task, session, ["not-a-declared-verifier"])
+
+    assert (refused.value.code, str(refused.value)) == (
+        "NO_VERIFIER_SELECTED",
+        "No declared verifier matches the requested proof",
+    )
