@@ -45,6 +45,23 @@ def plane(tmp_path: Path) -> Any:
         yield opened
 
 
+def _configured(tmp_path: Path, name: str) -> Path:
+    """A project whose only quality configuration is the one `init` writes, under `name`.
+
+    Built here rather than copied from this checkout: the mutation gate runs the tests from a
+    copy of the tree that does not carry the shipped example.
+    """
+
+    root = tmp_path / "configured"
+    root.mkdir()
+    initialize_project(root, adopt=False)
+    if name == "agentic.config.json":
+        (root / "agentic.config.example.json").unlink(missing_ok=True)
+    else:
+        (root / "agentic.config.json").replace(root / name)
+    return root
+
+
 def _requirement(plane: Any, name: str, **fields: Any) -> dict[str, Any]:
     entity: dict[str, Any] = plane.knowledge.apply(
         [
@@ -175,10 +192,7 @@ def test_each_gate_name_maps_to_the_proof_it_gives(name: str, kind: str) -> None
 
 
 def test_the_verifiers_are_the_required_gates_in_their_own_words(tmp_path: Path) -> None:
-    root = tmp_path / "project"
-    root.mkdir()
-    source = Path(__file__).resolve().parents[2] / "agentic.config.example.json"
-    shutil.copyfile(source, root / "agentic.config.example.json")
+    root = _configured(tmp_path, "agentic.config.example.json")
     _write_gates(
         root / "agentic.config.example.json",
         [
@@ -209,10 +223,7 @@ def test_the_project_s_own_configuration_wins_over_the_example(plane: Any) -> No
 
 
 def test_gates_that_prove_nothing_name_what_they_are(tmp_path: Path) -> None:
-    root = tmp_path / "project"
-    root.mkdir()
-    source = Path(__file__).resolve().parents[2] / "agentic.config.example.json"
-    shutil.copyfile(source, root / "agentic.config.json")
+    root = _configured(tmp_path, "agentic.config.json")
     _write_gates(
         root / "agentic.config.json",
         [
