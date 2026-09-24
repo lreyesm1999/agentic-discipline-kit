@@ -238,6 +238,31 @@ def test_a_repair_that_fails_does_not_cancel_the_next_one(
     assert "agent_adapter" in checks
 
 
+def test_resync_passes_the_detected_adapters(
+    project: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    seen: dict[str, Any] = {}
+
+    def sync(root: Path, adapters: object) -> dict[str, Any]:
+        seen["adapters"] = adapters
+        return {"actions": ["SKIP agents.md"]}
+
+    monkeypatch.setattr("agentic_discipline.adapters.detect_adapters", lambda root: ["cursor"])
+    monkeypatch.setattr("agentic_discipline.adapters.sync_adapters", sync)
+    assert repair._resync(project) == "recompiled the agent surfaces (0 file(s) rewritten)"
+    assert seen["adapters"] == ["cursor"]
+
+
+def test_a_shared_payload_does_not_drop_the_later_repairs() -> None:
+    report = {
+        "checks": [
+            {"name": name, "status": "MISSING", "caused_by": None}
+            for name in ("installation", "disciplines", "quality_gates", "agent_adapter")
+        ]
+    }
+    assert [name for name, _repair in repair.plan(report)] == ["installation", "agent_adapter"]
+
+
 def test_only_knowledge_is_planned_when_the_earlier_checks_already_pass(project: Path) -> None:
     (project / "extra.py").write_text("EXTRA = 1\n", encoding="utf-8")
     chosen = [name for name, _repair in repair.plan(readiness.inspect(project))]

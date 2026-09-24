@@ -1,0 +1,372 @@
+"""Exact values the work mutation survivors still change.
+
+Each case is the branch the survivor sits on, and the assertion is the whole value, not a
+substring of it.
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+from types import SimpleNamespace
+from typing import Any
+
+import pytest
+
+from agentic_discipline.bootstrap import initialize_project
+from agentic_discipline.common import AgenticError, run_git
+from agentic_discipline.control import work
+from agentic_discipline.control.contracts import ControlError
+from agentic_discipline.control.plane import Plane
+
+GATE = [sys.executable, "-c", "pass"]
+
+
+def _write_gates(path: Path, gates: list[dict[str, Any]]) -> None:
+    config = json.loads(path.read_text(encoding="utf-8"))
+    config["gates"] = gates
+    path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+
+
+@pytest.fixture
+def plane(tmp_path: Path) -> Any:
+    root = tmp_path / "project"
+    (root / "src").mkdir(parents=True)
+    (root / "pyproject.toml").write_text("[project]\nname='r'\nversion='0.1'\n", encoding="utf-8")
+    (root / "src" / "app.py").write_text("def compute_total():\n    return 1\n", encoding="utf-8")
+    run_git(["init"], cwd=root)
+    initialize_project(root)
+    _write_gates(root / "agentic.config.json", [{"name": "python/tests", "command": GATE}])
+    with Plane(root) as opened:
+        opened.reconcile()
+        yield opened
+
+
+class _Store:
+    def __init__(self, rows: dict[str, list[dict[str, Any]]]) -> None:
+        self.rows = rows
+
+    def list(self, kind: str) -> list[dict[str, Any]]:
+        return list(self.rows.get(kind, []))
+
+    def get(self, identifier: str) -> dict[str, Any]:
+        for kind in self.rows.values():
+            for row in kind:
+                if row.get("id") == identifier:
+                    return row
+        raise KeyError(identifier)
+
+
+def test_a_trailing_x_is_a_word_and_punctuation_is_not() -> None:
+    assert work.terms("see appX now") == ["see", "appx", "now"]
+    assert work.terms("see app. now") == ["see", "app", "now"]
+
+
+def test_requirements_skip_a_non_match_and_read_statement_and_excerpt() -> None:
+    store = _Store(
+        {
+            "entity": [
+                {
+                    "id": "a",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "name": "unrelated",
+                },
+                {
+                    "id": "b",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "statement": "the total",
+                },
+                {
+                    "id": "c",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "excerpt": "the total",
+                },
+            ]
+        }
+    )
+    matched = work._requirements(SimpleNamespace(store=store), "compute the total")
+    assert [entity["id"] for entity in matched] == ["b", "c"]
+
+
+def test_an_optional_gate_does_not_hide_the_required_one(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "gates"
+    root.mkdir()
+    (root / "agentic.config.json").write_text("{}", encoding="utf-8")
+
+    def load(path: Path) -> dict[str, Any]:
+        return {
+            "gates": [
+                {"name": "lint", "command": "ruff", "required": False},
+                {"name": "unit tests", "command": GATE},
+            ]
+        }
+
+    monkeypatch.setattr("agentic_discipline.validation.load_quality_config", load)
+    verifiers, kinds, source = work._verifiers(root, 1)
+    assert kinds == ["unit"]
+    assert verifiers[0]["acceptance"] == [0]
+    assert source == "the 1 required gates in agentic.config.json"
+
+
+def test_no_required_gate_says_there_are_none(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = tmp_path / "gates"
+    root.mkdir()
+    (root / "agentic.config.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(
+        "agentic_discipline.validation.load_quality_config",
+        lambda path: {"gates": [{"name": "lint", "command": "ruff", "required": False}]},
+    )
+    verifiers, kinds, source = work._verifiers(root, 1)
+    assert (verifiers, kinds) == ([], [])
+    assert source == (
+        "none of the required gates in agentic.config.json proves behaviour: no gates at all"
+    )
+
+
+def test_risk_is_assessed_against_an_empty_diff(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: dict[str, Any] = {}
+
+    def assess(diff: str, scope: list[str]) -> Any:
+        seen["diff"] = diff
+        return SimpleNamespace(level="LOW", factors={"paths": False})
+
+    monkeypatch.setattr("agentic_discipline.risk.assess_risk", assess)
+    assert work._risk(["src/app.py"]) == ("LOW", [])
+    assert seen["diff"] == ""
+
+
+def test_stale_code_is_not_a_path_the_request_may_name(plane: Any) -> None:
+    with plane.store.transaction():
+        for entity in plane.store.list("entity"):
+            if entity.get("path") == "src/app.py":
+                plane.store.put("entity", {**entity, "stale": True}, expected=entity["version"])
+    derived = work.derive(plane, "Change src/app.py please")
+    assert "src/app.py" not in derived["contract"]["scope"]
+
+
+def test_evidence_after_a_checkpoint_excludes_the_same_timestamp() -> None:
+    store = _Store(
+        {
+            "evidence": [
+                {"task_id": "T", "finished_at": 10.0, "result": "PASS"},
+                {"task_id": "T", "finished_at": 11.0, "result": "PASS"},
+            ]
+        }
+    )
+    previous = {"payload": {"timestamp": 10.0}}
+    found = work._evidence_since(SimpleNamespace(store=store), "T", previous)
+    assert [record["finished_at"] for record in found] == [11.0]
+
+
+def test_a_context_defaults_to_an_empty_list() -> None:
+    task = {
+        "id": "T",
+        "state": "READY",
+        "scope": ["src/app.py"],
+        "objective": "add",
+    }
+    store = _Store({"task": [task]})
+    assert work._existing(SimpleNamespace(store=store), "add a total", ["src/app.py"])["task"] is task
+
+
+def test_a_later_active_lease_still_holds_the_tree() -> None:
+    store = _Store(
+        {
+            "lease": [
+                {"id": "L1", "state": "RELEASED", "task_id": "other"},
+                {"id": "L2", "state": "ACTIVE", "task_id": "holder"},
+            ],
+            "task": [
+                {"id": "other", "workspace_id": ""},
+                {"id": "holder"},
+            ],
+        }
+    )
+    assert work._held_elsewhere(SimpleNamespace(store=store), "mine") == "holder"
+    store.rows["task"][1]["workspace_id"] = "ws-1"
+    assert work._held_elsewhere(SimpleNamespace(store=store), "mine") is None
+
+
+def test_waiting_is_only_when_every_reason_is_a_dependency() -> None:
+    task = {"id": "T", "dependencies": ["dep"]}
+    store = _Store({"task": [{"id": "dep", "state": "READY"}]})
+
+    def readiness(task_id: str) -> dict[str, Any]:
+        return {"status": "BLOCKED", "reasons": [{"type": "dependency"}, {"type": "scope"}]}
+
+    state = work._readiness(SimpleNamespace(store=store, readiness=readiness), task)
+    assert state["state"] == "BLOCKED"
+    assert state["waiting_for"] == ["dep"]
+
+    def only_deps(task_id: str) -> dict[str, Any]:
+        return {"status": "BLOCKED", "reasons": [{"type": "dependency"}]}
+
+    waiting = work._readiness(SimpleNamespace(store=store, readiness=only_deps), task)
+    assert waiting == {"state": "WAITING", "reasons": [{"type": "dependency"}], "waiting_for": ["dep"]}
+
+
+def test_a_blocked_report_uses_that_reason() -> None:
+    task = {"id": "T", "state": "PLANNED", "dependencies": []}
+    plane = SimpleNamespace(
+        readiness=lambda task_id: {"status": "BLOCKED", "reasons": [{"type": "scope"}]},
+        store=_Store({"lease": [], "task": [task]}),
+    )
+    result = work._report(
+        plane,
+        {},
+        {"provenance": {"request": "add a total"}},
+        task,
+        "derived from this request",
+        [],
+        claim=False,
+        agent="local-agent",
+        capabilities=None,
+    )
+    assert result["status"] == "BLOCKED"
+    assert result["state"] == "BLOCKED"
+    assert result["reason"] == "the task is recorded and cannot start yet"
+    assert result["request"] == "add a total"
+
+
+def test_a_blocked_reason_is_that_sentence() -> None:
+    result = {
+        "state": "BLOCKED",
+        "task": {
+            "id": "T",
+            "state": "PLANNED",
+            "objective": "add a total",
+            "scope": ["src/app.py", "src/other.py"],
+            "risk": "LOW",
+            "required_evidence": ["unit", "static_analysis"],
+        },
+        "matched_by": "derived from this request",
+        "session": "sess",
+        "provenance": {
+            "scope_from": "paths named in the request",
+            "acceptance_from": "the request",
+            "verifiers_from": "the gates",
+        },
+        "decisions": [{"question": "Which files?", "why": "none were named"}],
+        "readiness": {"reasons": [{"type": "scope", "detail": "open"}]},
+        "reason": "the task is recorded and cannot start yet",
+    }
+    text = work.render(result)
+    assert text.startswith("Work state: BLOCKED\n\n")
+    assert "  Scope      src/app.py, src/other.py" in text
+    assert "  Evidence   unit, static_analysis" in text
+    assert "  Claimed    yes, with a lease" in text
+    assert "\nDerived from:\n" in text
+    assert "\nWaiting on a decision that is yours to make:\n" in text
+    assert "\nNot ready because:\n" in text
+    assert '  - {"detail": "open", "type": "scope"}' in text
+    assert text.endswith("\nReason: the task is recorded and cannot start yet")
+
+
+def test_render_of_a_result_without_provenance_uses_an_empty_mapping() -> None:
+    text = work.render(
+        {"state": "BLOCKED", "reason": "stopped", "decisions": [], "task": None}
+    )
+    assert text == "Work state: BLOCKED\n\n\nReason: stopped"
+
+
+def test_outstanding_reads_the_task_debt_and_passes_evidence(monkeypatch: pytest.MonkeyPatch) -> None:
+    def debt_report(plane: Any, task_id: str | None = None) -> dict[str, Any]:
+        assert task_id == "T"
+        return {"tasks": [{"obligations": 1, "outstanding": [{"claim": "prove the total"}]}]}
+
+    monkeypatch.setattr("agentic_discipline.control.assurance.service.enabled", lambda plane: True)
+    monkeypatch.setattr("agentic_discipline.control.assurance.service.debt_report", debt_report)
+    store = _Store(
+        {
+            "evidence": [
+                {"task_id": "T", "kind": "unit", "result": "PASS"},
+                {"task_id": "other", "kind": "unit", "result": "PASS"},
+            ]
+        }
+    )
+    claims = work._outstanding(
+        SimpleNamespace(store=store),
+        {"id": "T", "required_evidence": ["unit"], "acceptance": ["the total"]},
+    )
+    assert claims == ["prove the total"]
+
+    def empty(plane: Any, task_id: str | None = None) -> dict[str, Any]:
+        return {"tasks": [{"obligations": 0, "outstanding": []}]}
+
+    monkeypatch.setattr("agentic_discipline.control.assurance.service.debt_report", empty)
+    assert (
+        work._outstanding(
+            SimpleNamespace(store=store),
+            {"id": "T", "required_evidence": ["unit"], "acceptance": ["the total"]},
+        )
+        == []
+    )
+
+
+def test_a_checkpoint_quotes_a_failing_command(plane: Any) -> None:
+    started = work.start(plane, "Add a total to src/app.py", capabilities=["testing"])
+    agents = [row for row in plane.store.list("agent") if row["name"] == "local-agent"]
+    assert agents[-1]["capabilities"] == ["testing"]
+    task, session = started["task"], started["session"]
+    with plane.store.transaction():
+        plane.store.put(
+            "evidence",
+            {
+                "task_id": task["id"],
+                "kind": "unit",
+                "result": "FAIL",
+                "exit_code": 1,
+                "acceptance": [],
+                "command": ["pytest", "tests"],
+                "finished_at": 1.0,
+            },
+        )
+    with plane.store.transaction():
+        current = plane.store.get(task["id"])
+        plane.store.put(
+            "task",
+            {**current, "assumptions": ["the total is an integer"]},
+            expected=current["version"],
+        )
+    result = work.checkpoint(
+        plane, task["id"], session, reason="blocked", pending=[], assumptions=None
+    )
+    context = result["context"]
+    assert context["failures"] == ["unit: FAIL (exit 1)"]
+    assert context["commands_run"] == ["pytest tests"]
+    assert context["pending_issues"] == []
+    assert context["assumptions"] == ["the total is an integer"]
+
+
+def test_finish_uses_the_error_code_when_it_has_one_and_the_default_when_it_does_not(
+    plane: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+
+    def coded(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        raise ControlError("CONTRACT", "the contract is open")
+
+    monkeypatch.setattr("agentic_discipline.control.verification.complete", coded)
+    refused = work.finish(plane, task["id"], session)
+    assert refused["code"] == "CONTRACT"
+    assert refused["reason"] == "the contract is open"
+    assert refused["state"] == plane.store.get(task["id"])["state"]
+    assert "verification" in refused
+    assert "state" in refused
+
+    def bare(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        raise AgenticError("completion was refused")
+
+    monkeypatch.setattr("agentic_discipline.control.verification.complete", bare)
+    again = work.finish(plane, task["id"], session)
+    assert again["code"] == "COMPLETION_REFUSED"
+    assert again["reason"] == "completion was refused"

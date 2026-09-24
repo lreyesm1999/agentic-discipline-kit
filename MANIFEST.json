@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-24T15:36:55.905923+00:00",
+  "generated_at_utc": "2026-09-24T21:25:40.202870+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1765,8 +1765,8 @@
     },
     {
       "path": "tests/control/test_repair.py",
-      "sha256": "8dca525b9d563018b8ccd12610cc38cc3c59fd0810d5b90156d8a0d31fba4da5",
-      "bytes": 11172
+      "sha256": "4bf6090d69107a83da87b0432da99fa621be6f052668d92195ab8b243cee334b",
+      "bytes": 12139
     },
     {
       "path": "tests/control/test_repair_records.py",
@@ -1847,6 +1847,11 @@
       "path": "tests/control/test_work_logic.py",
       "sha256": "2676ad2d1982d1c5ee4fcc33e89ed564d1af4ffd38aee09891ddc9509a10fd21",
       "bytes": 14255
+    },
+    {
+      "path": "tests/control/test_work_pins.py",
+      "sha256": "80f44ebc559f47bef795ef164b11c38458439b64d47a14ac0a226dcd27f7f2dd",
+      "bytes": 13732
     },
     {
       "path": "tests/control/test_work_records.py",
@@ -2167,6 +2172,11 @@
       "path": "tests/test_readiness.py",
       "sha256": "b495b0277dc8a965760d155778c7c5ab9c06ce0f387e2abfe4f3f89390055109",
       "bytes": 13664
+    },
+    {
+      "path": "tests/test_readiness_pins.py",
+      "sha256": "d6965902ee0c069366db1be58f78354e466f955a9c75493e0473d7f603d7ad5b",
+      "bytes": 14810
     },
     {
       "path": "tests/test_readiness_render.py",
