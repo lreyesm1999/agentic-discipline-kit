@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -228,16 +229,14 @@ def test_handoff_reads_json_with_explicit_utf8(project, monkeypatch):
 
 
 @pytest.mark.parametrize("artifact", ["readiness.json", "executable-constraints.jsonl"])
+@pytest.mark.skipif(os.name == "nt", reason="Symlink permissions vary on Windows")
 def test_handoff_rejects_artifact_symlinks(project, artifact):
     task = project.create_task(contract())["id"]
     directory = _write_handoff(project, task)
     target = project.root / "safe-copy"
     target.write_bytes((directory / artifact).read_bytes())
     (directory / artifact).unlink()
-    try:
-        (directory / artifact).symlink_to(target)
-    except OSError:
-        pytest.skip("Symlink creation is unavailable")
+    (directory / artifact).symlink_to(target)
     assert intelligence_snapshot(project.root, task)["reasons"] == [{
         "type": "intelligence_invalid",
         "detail": f"Invalid {'handoff artifact: readiness.json' if artifact == 'readiness.json' else 'executable constraints artifact'}",
