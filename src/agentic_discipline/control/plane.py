@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import secrets
 import shutil
 import time
@@ -389,7 +390,8 @@ class Plane:
         reasons.extend(intelligence["reasons"])
         for constraint in intelligence["constraints"]:
             if constraint.get("normative") is True and not any(
-                constraint["id"] in criterion for criterion in task["acceptance"]
+                re.search(rf"(?<![\w-]){re.escape(constraint['id'])}(?![\w-])", criterion)
+                for criterion in task["acceptance"]
             ):
                 reasons.append({"type": "intelligence_constraint_unmapped", "id": constraint["id"]})
         return {

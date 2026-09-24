@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-23T20:40:03.679743+00:00",
+  "generated_at_utc": "2026-09-24T01:43:03.375006+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1195,8 +1195,8 @@
     },
     {
       "path": "src/agentic_discipline/control/intelligence.py",
-      "sha256": "8a8be8bdeef582c3c5bb55f538cba69715d753f71d0bc31e8f8512d4fd8b2849",
-      "bytes": 3430
+      "sha256": "481c92be5b34653e0edec2b1a70b9d15127cba5a5125fb34530ac01772360249",
+      "bytes": 3643
     },
     {
       "path": "src/agentic_discipline/control/knowledge.py",
@@ -1215,8 +1215,8 @@
     },
     {
       "path": "src/agentic_discipline/control/plane.py",
-      "sha256": "7892d2149afffa9859988634bc211330876ec7b4b9a2607bbfdc25b4e445d392",
-      "bytes": 35940
+      "sha256": "4ebb6684ea37b53a868a17a15d117f68eac61cf20b5d4101f3ae52ecce9fa336",
+      "bytes": 36011
     },
     {
       "path": "src/agentic_discipline/control/store.py",
@@ -1445,8 +1445,8 @@
     },
     {
       "path": "tests/control/test_intelligence_bridge.py",
-      "sha256": "a62bfe2f63cd888b532ca878440e441a28788dd43dc54e302f811a706838f391",
-      "bytes": 3191
+      "sha256": "a6cabedf4563bbc214182780cc76fabbc3489a59f30e7353e42d614872724775",
+      "bytes": 14723
     },
     {
       "path": "tests/control/test_interfaces.py",
