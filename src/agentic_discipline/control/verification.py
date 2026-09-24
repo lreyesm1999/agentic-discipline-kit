@@ -9,6 +9,7 @@ from ..evidence import sha256_file
 from ..quality import run_gate
 from .contracts import ControlError, digest, encode, redact, require, uid
 from .discovery import fingerprint, link_fingerprint, validate_inputs
+from .intelligence import intelligence_snapshot
 from .plane import Plane
 
 JUDGMENTS = {
@@ -38,7 +39,7 @@ def binding(plane: Plane, task: dict[str, Any]) -> dict[str, Any]:
     policy = plane.policy()
     validate_inputs(workspace, inputs)
     validate_inputs(workspace, policy["protected_paths"])
-    return {
+    result = {
         "files": fingerprint(workspace, inputs),
         "requirements": {i: plane.store.get(i, "entity")["version"] for i in task["requirements"]},
         "canonical_constraints": {
@@ -56,6 +57,11 @@ def binding(plane: Plane, task: dict[str, Any]) -> dict[str, Any]:
         "acceptance": digest(task["acceptance"]),
         "policy": digest(policy),
     }
+    if task.get("id"):
+        intelligence = intelligence_snapshot(plane.root, task["id"])
+        if intelligence["binding"] is not None or intelligence["reasons"]:
+            result["intelligence"] = intelligence["binding"] or digest(intelligence["reasons"])
+    return result
 
 
 def fresh(plane: Plane, evidence: dict[str, Any], current: dict[str, Any]) -> bool:
