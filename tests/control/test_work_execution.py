@@ -157,7 +157,7 @@ def test_finishing_verifies_checkpoints_and_completes_without_being_asked(plane:
     task, session = _start(plane)
     _edit(plane)
 
-    result = work.finish(plane, task["id"], session)
+    result = work.finish(plane, task["id"], session, summary=["shipped the total"])
 
     assert (result["status"], result["state"], result["reason"]) == (
         "PASS",
@@ -174,7 +174,11 @@ def test_finishing_verifies_checkpoints_and_completes_without_being_asked(plane:
         if record["task_id"] == task["id"]
     ]
     assert [item["next_action"] for item in checkpoints] == ["complete the task"]
+    assert checkpoints[0]["completed_work"] == ["shipped the total"]
     assert result["verification"]["status"] == "PASS"
+    shown = work.render(result | {"state": "READY", "session": session, "task": task, "provenance": {"scope_from": "request", "acceptance_from": "request", "verifiers_from": "gates"}, "decisions": [], "readiness": {"reasons": []}, "matched_by": "request", "reason": result["reason"]})
+    assert "Derived from:" in shown
+    assert shown.startswith("Work state: READY\n")
     rendered = work.render(work.start(plane, "Add a note to src/app.py"))
     assert rendered.startswith("Work state: ")
     assert "\n\n" not in rendered.replace("\n\nDerived", "\nDerived") or "Derived from:" in rendered
@@ -237,6 +241,7 @@ def test_the_next_ready_task_is_offered_when_one_finishes(plane: Any) -> None:
     assert "Derived from:" in rendered
     assert ", " in rendered
     assert second["reason"] in rendered
+    assert "Not ready because:" in rendered or "waits for" in rendered or "cannot start" in rendered
 
     _edit(plane)
     assert work.finish(plane, first_task["id"], session)["status"] == "PASS"

@@ -209,13 +209,10 @@ def test_a_dry_run_reports_the_plan_and_writes_nothing(project: Path) -> None:
 
 
 def test_reinstall_writes_only_missing_files_and_does_not_adopt(project: Path) -> None:
-    before = (project / readiness.STATE_DB).exists()
+    _remove(project / readiness.CONTROL_DIR)
     outcome = repair._reinstall(project)
-    assert outcome.startswith("reinstalled the missing payload files (")
-    assert outcome.endswith(" written)")
-    written = int(outcome.split("(")[1].split(" ")[0])
-    assert written == 1
-    assert (project / readiness.STATE_DB).exists() is before
+    assert outcome == "reinstalled the missing payload files (1 written)"
+    assert not (project / readiness.STATE_DB).exists()
 
 
 def test_resync_of_current_surfaces_rewrites_nothing(project: Path) -> None:
@@ -239,6 +236,12 @@ def test_a_repair_that_fails_does_not_cancel_the_next_one(
     checks = {item["check"] for item in result["failed"] + result["repaired"]}
     assert "installation" in checks
     assert "agent_adapter" in checks
+
+
+def test_only_knowledge_is_planned_when_the_earlier_checks_already_pass(project: Path) -> None:
+    (project / "extra.py").write_text("EXTRA = 1\n", encoding="utf-8")
+    chosen = [name for name, _repair in repair.plan(readiness.inspect(project))]
+    assert chosen == ["knowledge"]
 
 
 def test_a_rules_only_project_is_left_alone(project: Path) -> None:
