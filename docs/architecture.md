@@ -62,3 +62,22 @@ This helps detect dropped requirements and orphaned implementation.
 For high-risk changes, the reviewer should reconstruct intent from the protected contracts before
 reading the implementation diff. The implementer's explanatory summary should not be treated as
 review evidence.
+
+## Assurance plane
+
+The `agentic` control plane adds a layer above verification that asks a different question
+from "did the gates pass?":
+
+```text
+Change
+→ Proof obligations      the claims this change must keep true
+→ Evidence routes        the cheapest sufficient proof for each claim
+→ Current evidence       real executions, bound to what each claim depends on
+→ Assurance state        VERIFIED / FAILED / UNKNOWN / STALE / CONFLICTED / WAIVED
+→ Decision               CONTINUE / REPAIR / EXPAND / BLOCK / ESCALATE / HUMAN / COMPLETE
+```
+
+A task completes only when no mandatory obligation is open. The obligation set may grow
+when the real diff reaches further than the contract declared; it never shrinks without an
+audited waiver. See [Agentic Discipline 2.1](v2.1/README.md) and its
+[architecture](v2.1/ARCHITECTURE.md).

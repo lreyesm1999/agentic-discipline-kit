@@ -12,6 +12,7 @@ venv/
 .coverage
 coverage.xml
 coverage.json
+mutation-scope.txt
 htmlcov/
 
 # Editors / OS

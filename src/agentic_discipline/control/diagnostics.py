@@ -11,8 +11,10 @@ from .plane import Plane
 
 
 def doctor(plane: Plane) -> dict[str, Any]:
+    from .assurance.service import integrity
+
     result = subprocess.run(
-        [sys.executable, "-m", "agentic_discipline", "doctor"],
+        [sys.executable, "-m", "agentic_discipline", "doctor", "--json"],
         cwd=plane.root,
         text=True,
         capture_output=True,
@@ -21,8 +23,13 @@ def doctor(plane: Plane) -> dict[str, Any]:
     )
     installation = json.loads(result.stdout)
     audit = plane.store.audit()
+    # The assurance invariants are part of project health: an obligation that disappeared or
+    # a completed task that lost its proof is a finding, not something to discover later.
+    assurance = integrity(plane)
+    healthy = result.returncode == 0 and audit["status"] == "PASS" and assurance["status"] != "FAIL"
     return {
-        "status": "PASS" if result.returncode == 0 and audit["status"] == "PASS" else "FAIL",
+        "status": "PASS" if healthy else "FAIL",
         "installation": installation,
         "control_audit": audit,
+        "assurance_integrity": assurance,
     }

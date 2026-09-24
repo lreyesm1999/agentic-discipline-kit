@@ -82,10 +82,30 @@ Each stage has explicit inputs, outputs, stop conditions, and evidence requireme
 npx agentic-discipline init
 ```
 
-That is the whole install. It detects the agent tools your repository already
-uses and writes each one's native format - Claude Code skills, Cursor rules,
-Copilot instructions, Windsurf rules, `AGENTS.md` for everything that reads it -
-all compiled from one canonical source so they cannot drift apart.
+Then ask your agent for the work you want done:
+
+```text
+Implement a reservations API.
+```
+
+That is all a normal user does. `init` installs the disciplines into whichever agent
+tools your repository already uses - Claude Code skills, Cursor rules, Copilot
+instructions, Windsurf rules, `AGENTS.md` for everything that reads it, all compiled
+from one canonical source so they cannot drift apart - and it also makes the project
+operational: the control plane is initialised, the repository adopted and indexed, and
+readiness measured, so the report ends with `Status: READY FOR AGENTIC EXECUTION`.
+
+From the request on, the agent runs a preflight, turns your words into a task contract
+derived from what the project already records, claims it, checkpoints as it goes, runs
+your project's own gates, and completes only on current evidence. It stops and asks when
+a decision is genuinely yours - scope nobody can derive, a protected contract, `CRITICAL`
+risk - and it never presents a degraded mode as the full workflow. Want the rules
+without the control plane? Say so: `init --rules-only`.
+
+**Normal user:** init once, then work normally.
+**Advanced user:** every internal - `agentic preflight`, `agentic work`, tasks, leases,
+checkpoints, evidence - stays observable, auditable and controllable by hand. None of it
+is a step you have to take.
 
 Two files appear in your repository root:
 
@@ -95,8 +115,9 @@ agentic.config.json    quality gates, generated for your detected stack
 .agentic/              everything else, the way tooling belongs in .github/
 ```
 
-Preview before writing anything with `--dry-run`, and check the result with
-`agentic-discipline doctor --check-tools`.
+Preview before writing anything with `--dry-run`. `agentic-discipline doctor` reports
+installation health, project health and execution readiness separately, so a repository
+whose rules are installed and whose control plane is missing says exactly that.
 
 Using Claude Code? Install it as a plugin instead, and get the lifecycle as
 slash commands:
@@ -357,10 +378,51 @@ For a tiny throwaway script, the full lifecycle may be unnecessary. For a produc
 
 The `agentic` command adds persistent project knowledge, task contracts, cross-agent
 checkpoints, Git workspaces, current verification evidence, MCP and a local console.
+`init` sets it up, and the agent drives it; its commands are there for inspecting and
+steering what happens on your behalf, not as a ceremony you have to perform.
 It ships in every distribution: `pipx install agentic-discipline-kit`, the standalone
 executables, and `npx -p agentic-discipline agentic`. See the [guide](docs/v2/README.md),
 its [trust boundary](docs/v2/LIMITATIONS.md) and [implementation status](docs/IMPLEMENTATION_STATUS.md).
 The `agentic-discipline` command and its adapters are unchanged.
+
+## Agentic Discipline 2.1: the Adaptive Assurance Engine
+
+> Every change creates proof obligations. A task is complete only when all required proof
+> obligations are resolved by current evidence.
+
+2.0 asks whether a task's verifiers passed. 2.1 asks whether every claim the change must
+keep true is currently supported by evidence - and refuses completion while any mandatory
+claim is failed, unknown, blocked, conflicted, stale or waiting on a human.
+
+```bash
+agentic assurance plan TASK-104 --compile
+agentic assurance verify TASK-104 --session-file /private/worker-a.json
+agentic assurance status TASK-104
+agentic assurance explain PO-007
+```
+
+```text
+TASK-104 ASSURANCE
+  Required obligations 12
+  FAILED                 1
+  HUMAN_REQUIRED         1
+  UNKNOWN                1
+  VERIFIED               9
+  Proof debt           3
+  Decision             BLOCK
+```
+
+Obligations are derived deterministically from the task contract and from repository policy
+applied to the paths the change actually touched. The set grows when the real diff reaches
+further than the contract declared; it never shrinks without an audited waiver. Each claim
+binds to what it depends on, so an unrelated edit does not invalidate it and a relevant one
+always does. Deterministic proof always beats agent judgment, and `UNKNOWN` is never `PASS`.
+
+The engine is off until a project is migrated on purpose, so existing 2.0 projects are
+unaffected. See the [guide](docs/v2.1/README.md), the
+[architecture](docs/v2.1/ARCHITECTURE.md), the [migration](docs/v2.1/MIGRATION.md), the
+[threat model](docs/v2.1/SECURITY.md) and the
+[measured limits](docs/v2.1/LIMITATIONS.md).
 
 ## Documentation
 

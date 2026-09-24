@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 from typing import cast
 
-from . import __version__
+from . import __version__, readiness, repair
 from .acceptance import compile_feature
 from .adapters import ADAPTERS, ALIASES, EMITTERS, LABELS, detect_adapters, sync_adapters
 from .bootstrap import initialize_project
@@ -28,7 +28,7 @@ from .verifier.protection import check_protected_verifiers, protect_verifier
 from .verifier.registry import list_verifiers, load_verifier, register_verifier
 from .verifier.schema import load_and_validate_verifier, validate_verifier
 
-EXPECTED_DISCIPLINES = 11
+EXPECTED_DISCIPLINES = readiness.EXPECTED_DISCIPLINES
 
 
 def _json(data: object) -> None:
@@ -48,11 +48,7 @@ def _doctor_root() -> Path:
 
 
 def _installed_skills(root: Path) -> int:
-    for relative in (Path(".agentic") / "skills", Path("disciplines")):
-        directory = root / relative
-        if directory.is_dir():
-            return len(list(directory.glob("*/SKILL.md")))
-    return 0
+    return readiness.skill_count(root)
 
 
 def _first_existing(root: Path, *candidates: Path) -> bool:
@@ -100,13 +96,42 @@ def _render_init(result: dict[str, object]) -> None:
         print(f"                   + {baseline}: added so the config still checks something")
     tally = ", ".join(f"{count} {verb.lower()}" for verb, count in sorted(_counts(actions).items()))
     print(f"  Files            {tally}")
+    control = cast(dict[str, object], result.get("control") or {})
+    print(f"  Control plane    {str(control.get('detail', 'not attempted'))}")
     print("")
     print("Visible in your repository root: AGENTS.md, agentic.config.json")
     print("Everything else lives in .agentic/")
     print("")
     if relaxed:
         print("Review the relaxed gates in agentic.config.json before making CI blocking.")
-    print("Next:  agentic-discipline doctor --check-tools")
+
+    # What init claims is what the readiness checks measured after it finished writing, so
+    # the closing line cannot say ready while the workflow is not.
+    report = cast(dict[str, object] | None, result.get("readiness"))
+    if report is None:
+        print("Next:  agentic-discipline init        (this run wrote nothing)")
+        return
+    state = str(report["execution_readiness"])
+    headline = {
+        "READY": "Status: READY FOR AGENTIC EXECUTION",
+        "DEGRADED": "Status: RULES ONLY - orchestration is not available",
+    }.get(state, f"Status: {state}")
+    print(headline)
+    if state not in {"READY", "DEGRADED"}:
+        print("")
+        print(f"Reason: {report['reason']}")
+        for check in cast(list[dict[str, object]], report["checks"]):
+            if check["status"] == "PASS" or check["advisory"]:
+                continue
+            print(f"  - {check['label']} ({check['status']}): {check['detail']}")
+            if check["repair"]:
+                print(f"    Repair: {check['repair']}")
+    print("")
+    print(
+        "Next:  ask for the work you want done."
+        if state == "READY"
+        else "Next:  agentic-discipline doctor --check-tools"
+    )
 
 
 def _render_adapters(result: dict[str, object], root: Path) -> None:
@@ -182,7 +207,12 @@ def command_doctor(args: argparse.Namespace) -> int:
             Path("schemas") / "agentic-config.schema.json",
         ),
     }
-    status = "PASS"
+    # Installation facts alone once decided this, which is how a project with every
+    # discipline installed and no control plane reported PASS. They are still reported,
+    # because they are true and callers read them, but the verdict now comes from whether
+    # the workflow can actually run.
+    report = readiness.inspect(root, deep=not args.fast, config=config_path)
+    status = "PASS" if report["execution_readiness"] in {"READY", "DEGRADED"} else "FAIL"
     if (
         not git_worktree
         or skill_count < EXPECTED_DISCIPLINES
@@ -202,10 +232,63 @@ def command_doctor(args: argparse.Namespace) -> int:
         "config_error": config_error,
         "tools": tools,
         "skills": skill_count,
+        "readiness": report,
         "status": status,
     }
-    _json(checks)
+    if args.json:
+        _json(checks)
+    else:
+        print(readiness.render(report))
     return 0 if status == "PASS" else 1
+
+
+def command_repair(args: argparse.Namespace) -> int:
+    result = repair.apply(
+        _doctor_root(),
+        dry_run=args.dry_run,
+        deep=not args.fast,
+    )
+    if args.json:
+        _json(result)
+    else:
+        _render_repair(result)
+    return 0 if result["status"] == "PASS" else 1
+
+
+def _render_repair(result: dict[str, object]) -> None:
+    report = cast(dict[str, object], result["readiness"])
+    planned = cast(list[dict[str, object]], result["planned"])
+    repaired = cast(list[dict[str, object]], result["repaired"])
+    failed = cast(list[dict[str, object]], result["failed"])
+    if result["dry_run"]:
+        print("DRY RUN - nothing was written.")
+    print(f"Execution readiness  {result['before']} -> {report['execution_readiness']}")
+    print("")
+    for entry in planned or repaired:
+        print(f"  - {entry['action']}: {entry['outcome']}")
+    for entry in failed:
+        print(f"  ! {entry['action']}: {entry['outcome']}")
+    if not planned and not repaired and not failed:
+        print("  Nothing to repair.")
+    # Only what no repair answers belongs under that heading: in a dry run the checks a
+    # planned repair covers are not waiting on anybody.
+    covered = {entry["check"] for entry in [*planned, *repaired, *failed]}
+    remaining = [
+        check
+        for check in cast(list[dict[str, object]], report["checks"])
+        if check["status"] != "PASS"
+        and not check["advisory"]
+        and check["name"] not in covered
+        and check["caused_by"] not in covered
+    ]
+    # And a consequence of something already named above is not a second decision.
+    named = {check["name"] for check in remaining}
+    remaining = [check for check in remaining if check["caused_by"] not in named]
+    if remaining:
+        print("")
+        print("Left for a person to decide:")
+        for check in remaining:
+            print(f"  - {check['label']} ({check['status']}): {check['detail']}")
 
 
 def command_crap(args: argparse.Namespace) -> int:
@@ -355,6 +438,14 @@ def command_evidence_verify(args: argparse.Namespace) -> int:
     return 0 if result["status"] == "PASS" else 1
 
 
+def _adopt_choice(args: argparse.Namespace) -> bool | None:
+    """None is the ordinary run: adopt unless the project recorded that it does not want to."""
+
+    if args.no_adopt:
+        return False
+    return True if args.adopt else None
+
+
 def command_init(args: argparse.Namespace) -> int:
     result = initialize_project(
         Path(args.target),
@@ -364,11 +455,18 @@ def command_init(args: argparse.Namespace) -> int:
         max_depth=args.max_depth,
         adapters=args.adapter or None,
         dry_run=args.dry_run,
+        adopt=_adopt_choice(args),
+        rules_only=args.rules_only,
     )
     if args.json:
         _json(result)
     else:
         _render_init(result)
+    # An install that did not reach a usable state says so in its exit code, so a script
+    # that chains `init` with real work stops here instead of continuing half-configured.
+    report = result.get("readiness")
+    if isinstance(report, dict) and report["execution_readiness"] not in {"READY", "DEGRADED"}:
+        return 1
     return 0
 
 
@@ -466,10 +564,30 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p = sub.add_parser("doctor", help="Validate repository installation")
+    p = sub.add_parser("doctor", help="Report installation, project and execution readiness")
     p.add_argument("--config")
     p.add_argument("--check-tools", action="store_true")
+    p.add_argument(
+        "--json", action="store_true", help="Emit the machine report instead of the table"
+    )
+    p.add_argument(
+        "--fast",
+        action="store_true",
+        help="Skip the working-tree scan that detects stale project knowledge",
+    )
     p.set_defaults(func=command_doctor)
+
+    p = sub.add_parser(
+        "repair", help="Repair what can be repaired without a decision, and report the rest"
+    )
+    p.add_argument(
+        "--dry-run", action="store_true", help="Report what would be repaired without writing"
+    )
+    p.add_argument(
+        "--fast", action="store_true", help="Skip the working-tree scan that detects drift"
+    )
+    p.add_argument("--json", action="store_true", help="Emit machine-readable output")
+    p.set_defaults(func=command_repair)
 
     p = sub.add_parser("crap", help="Calculate CRAP score")
     p.add_argument("--complexity", type=float, required=True)
@@ -546,6 +664,22 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p.add_argument(
         "--dry-run", action="store_true", help="Report what would change without writing"
+    )
+    p.add_argument(
+        "--rules-only",
+        action="store_true",
+        help="Install the disciplines and quality configuration alone, recording that this"
+        " project does not want the control plane",
+    )
+    p.add_argument(
+        "--no-adopt",
+        action="store_true",
+        help="Skip the control plane for this run only, without recording a choice",
+    )
+    p.add_argument(
+        "--adopt",
+        action="store_true",
+        help="Initialise the control plane even on a project previously installed rules-only",
     )
     p.add_argument("--json", action="store_true", help="Emit machine-readable output")
     p.set_defaults(func=command_init)

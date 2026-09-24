@@ -16,10 +16,16 @@ exits 1. Human status output and `--json` are views of the same persisted record
 | Verification | `record_evidence`, `complete_task`, `integration_gate`, `parallel_safety` |
 | Owner authority | `task_create`, `task_ready`, `task_transition`, `resolve_blocker`, `resolve_claim`, `approve_command`, `knowledge_apply`, `knowledge_link`, `lifecycle` |
 | Owner workspaces | `workspace_create`, `workspace_refresh`, `workspace_merge`, `workspace_cleanup` |
+| Assurance, read | `assurance_status`, `assurance_plan`, `assurance_explain`, `assurance_debt`, `assurance_registry`, `assurance_integrity` |
+| Assurance, worker | `assurance_verify` |
+| Assurance, owner | `assurance_compile`, `assurance_waive`, `assurance_resolve_human`, `assurance_register_verifier`, `assurance_migrate`, `assurance_rollback` |
 
 Owner operations are excluded from the MCP tool list and rejected through its worker
 API. Worker discovery submissions are inferred claims; they cannot grant themselves
-human authority, set execution state, or promote assertions to verified facts.
+human authority, set execution state, or promote assertions to verified facts. The same
+rule governs assurance: a worker can read the obligation state and run the verifiers it was
+authorized to run, and cannot waive a claim, record a human verdict, register a capability,
+or change what the engine requires. See [Agentic Discipline 2.1](../v2.1/README.md).
 For historical queries supply `at_version` to `query_knowledge`; retired entities are
 excluded by default and available with `historical: true`.
 

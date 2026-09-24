@@ -21,6 +21,7 @@ import pytest
 from agentic_discipline import __version__, cli
 from agentic_discipline.bootstrap import initialize_project
 from agentic_discipline.common import AgenticError, run_git
+from agentic_discipline.control.plane import adopt
 from agentic_discipline.validation import load_quality_config
 
 
@@ -30,6 +31,7 @@ def installed(tmp_path: Path) -> Path:
     root.mkdir()
     initialize_project(root)
     run_git(["init"], cwd=root)
+    adopt(root)
     return root
 
 
@@ -38,8 +40,11 @@ def _doctor(
 ) -> tuple[int, dict[str, Any]]:
     monkeypatch.chdir(root)
     capsys.readouterr()
-    code = cli.command_doctor(argparse.Namespace(**args))
-    return code, json.loads(capsys.readouterr().out)
+    code = cli.command_doctor(argparse.Namespace(json=True, fast=False, **args))
+    report = json.loads(capsys.readouterr().out)
+    # The readiness block has its own tests; what belongs here is the installation half.
+    report.pop("readiness")
+    return code, report
 
 
 def _skills(root: Path) -> int:

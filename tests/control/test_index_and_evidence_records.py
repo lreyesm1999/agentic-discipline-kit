@@ -346,6 +346,11 @@ def test_passing_run_persists_evidence_and_its_redacted_artifact(project: Any) -
         "artifact_hash": hashlib.sha256(artifact.read_bytes()).hexdigest(),
         "artifact_ref": f".agentic/control/evidence/{record['id']}.json",
         "stale": False,
+        # No assurance plan is compiled here, so this run binds to no obligation.
+        "obligation_ids": [],
+        "obligation_bindings": {},
+        "evidence_class": "DETERMINISTIC",
+        "run_consistent": True,
     }
     assert started <= record["started_at"] <= record["finished_at"] <= time.time()
 

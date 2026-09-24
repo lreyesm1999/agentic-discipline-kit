@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from .. import __version__
-from . import API_VERSION
+from . import API_VERSION, preflight, work
 from .api import SCHEMAS, call
 from .contracts import ControlError, encode, require
 from .migration import import_legacy, rollback_changeset
@@ -30,6 +30,35 @@ def parser() -> argparse.ArgumentParser:
     adoption.add_argument("--dry-run", action="store_true")
     for name in ("status", "doctor", "reconcile"):
         commands.add_parser(name)
+    flight = commands.add_parser(
+        "preflight", help="Check, repair what is safe, and report the mode work may proceed in"
+    )
+    flight.add_argument(
+        "--no-repair", action="store_true", help="Report without repairing anything"
+    )
+    flight.add_argument(
+        "--fast", action="store_true", help="Skip the working-tree scan that detects drift"
+    )
+    job = commands.add_parser(
+        "work", help="Turn a request in your own words into governed, claimed work"
+    )
+    job.add_argument(
+        "action", choices=["start", "derive", "checkpoint", "verify", "finish", "next"]
+    )
+    job.add_argument("request", nargs="?", default="", help="What you want done, in your own words")
+    job.add_argument("--task", help="The task to act on, for checkpoint, verify and finish")
+    job.add_argument("--session-file", type=Path)
+    job.add_argument("--reason", choices=list(work.CHECKPOINT_REASONS), default="slice_complete")
+    job.add_argument("--summary", action="append", default=[])
+    job.add_argument("--next-action")
+    job.add_argument("--agent", default="local-agent")
+    job.add_argument("--capability", action="append", default=[], dest="capabilities")
+    job.add_argument(
+        "--no-claim", action="store_true", help="Record and ready the task without claiming it"
+    )
+    job.add_argument(
+        "--session-out", type=Path, help="Write the session token of the claim to this file"
+    )
     api = commands.add_parser("api", help="Call a versioned operation using a JSON input file")
     api.add_argument("operation", choices=sorted(SCHEMAS))
     api.add_argument("--input", type=Path)
@@ -74,6 +103,34 @@ def parser() -> argparse.ArgumentParser:
     plan = commands.add_parser("plan")
     plan.add_argument("action", choices=["audit"])
     plan.add_argument("--input", required=True, type=Path)
+    assurance = commands.add_parser(
+        "assurance", help="Proof obligations, their current evidence and remaining proof debt"
+    )
+    assurance.add_argument(
+        "action",
+        choices=[
+            "plan",
+            "verify",
+            "status",
+            "explain",
+            "debt",
+            "registry",
+            "integrity",
+            "waive",
+            "resolve",
+            "migrate",
+            "rollback",
+        ],
+    )
+    assurance.add_argument("identifier", nargs="?")
+    assurance.add_argument("--session-file", type=Path)
+    assurance.add_argument("--input", type=Path)
+    assurance.add_argument("--reason")
+    assurance.add_argument("--authorization")
+    assurance.add_argument("--decision")
+    assurance.add_argument("--rejected", action="store_true")
+    assurance.add_argument("--compile", action="store_true")
+    assurance.add_argument("--dry-run", action="store_true")
     readiness = commands.add_parser("readiness")
     readiness.add_argument("identifier")
     context = commands.add_parser("context")
@@ -106,6 +163,15 @@ def read_input(path: Path | None) -> dict[str, Any]:
     return cast(dict[str, Any], data)
 
 
+def write_session(path: Path, token: str) -> None:
+    """Hand the claim's session to the caller the way `agent join --session-file` does."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes((json.dumps({"session": token}) + "\n").encode())
+    if os.name == "posix":
+        path.chmod(0o600)
+
+
 def session(path: Path | None) -> str:
     require(
         path is not None and path.is_file() and not path.is_symlink(),
@@ -115,9 +181,155 @@ def session(path: Path | None) -> str:
     return str(read_input(path)["session"])
 
 
+def render_assurance(action: str, data: dict[str, Any]) -> str:
+    """The plain reading of an assurance answer; --json carries the whole record."""
+    lines: list[str] = []
+    if action == "explain" and "headline" in data:
+        lines = [data["headline"], f"{data['required']} mandatory proof obligations."]
+        lines += [f"  {state:<16} {count}" for state, count in sorted(data["counts"].items())]
+        for item in data["outstanding"]:
+            lines += [
+                "",
+                f"{item['status']}:",
+                f"  {item['obligation_id']}",
+                f"  {item['claim']}",
+                f"  Reason: {item['reason']}",
+            ]
+            for identifier in item["current_evidence"] + item["stale_evidence"]:
+                lines.append(f"  Evidence: {identifier}")
+        if data["required_next_actions"]:
+            lines.append("")
+            lines.append("Required next actions:")
+            lines += [
+                f"  {number}. {action_text}"
+                for number, action_text in enumerate(data["required_next_actions"], 1)
+            ]
+        return "\n".join(lines)
+    if action == "explain":
+        evidence = [
+            f"  {e['id']} {e['result']} {e['currency']} ({e['kind']}, {e['evidence_class']})"
+            for e in data["evidence"]
+        ]
+        lines = [
+            data["obligation"]["id"],
+            "Claim:",
+            f"  {data['claim']}",
+            "Origin:",
+            f"  {data['required_because']}",
+            "Affected by:",
+            *(f"  {p}" for p in data["affected_paths"] or ["(declared task scope)"]),
+            "Evidence:",
+            *(evidence or ["  none recorded"]),
+            "Current state:",
+            f"  {data['status']} - {data['reason']}",
+        ]
+        if data["human_request"]:
+            lines += ["Human resolution:", f"  {data['human_request']['resolve_with']}"]
+        return "\n".join(lines)
+    for report in data["tasks"]:
+        identifier = report["task_id"]
+        counts = report["counts"]
+        lines.append(f"{identifier} ASSURANCE")
+        lines.append(f"  Required obligations {report['required']}")
+        for state, count in sorted(counts.items()):
+            lines.append(f"  {state:<22} {count}")
+        lines.append(f"  Proof debt           {report['proof_debt']}")
+        if action == "status":
+            lines.append(f"  Decision             {report['decision']['decision']}")
+        for item in report.get("outstanding", []):
+            lines.append(f"  - {item['obligation_id']} {item['status']}: {item['claim']}")
+    if not lines:
+        lines.append("No assurance plan has been compiled yet")
+    return "\n".join(lines)
+
+
+def assurance_command(plane: Plane, args: argparse.Namespace) -> dict[str, Any]:
+    if args.action == "plan":
+        if args.compile:
+            return call(plane, "assurance_compile", {"task_id": args.identifier}, local=True)
+        return call(plane, "assurance_plan", {"task_id": args.identifier})
+    if args.action == "verify":
+        return call(
+            plane,
+            "assurance_verify",
+            {"task_id": args.identifier, "session": session(args.session_file)},
+        )
+    if args.action in {"status", "debt"}:
+        data = {"task_id": args.identifier} if args.identifier else {}
+        return call(plane, "assurance_" + args.action, data)
+    if args.action == "explain":
+        return call(plane, "assurance_explain", {"obligation_id": args.identifier})
+    if args.action in {"registry", "integrity"}:
+        return call(plane, "assurance_" + args.action, {})
+    if args.action == "waive":
+        require(
+            args.reason is not None and args.authorization is not None,
+            "DECISION_REQUIRED",
+            "A waiver needs --reason and --authorization",
+        )
+        return call(
+            plane,
+            "assurance_waive",
+            {
+                "obligation_id": args.identifier,
+                "reason": args.reason,
+                "authorization": args.authorization,
+            },
+            local=True,
+        )
+    if args.action == "resolve":
+        require(args.decision is not None, "DECISION_REQUIRED", "Record --decision")
+        return call(
+            plane,
+            "assurance_resolve_human",
+            {
+                "obligation_id": args.identifier,
+                "decision": args.decision,
+                "accepted": not args.rejected,
+            },
+            local=True,
+        )
+    if args.action == "migrate":
+        return call(plane, "assurance_migrate", {"dry_run": args.dry_run}, local=True)
+    require(args.reason is not None, "REASON_REQUIRED", "Rollback requires --reason")
+    return call(
+        plane,
+        "assurance_rollback",
+        {"identifier": args.identifier, "reason": args.reason},
+        local=True,
+    )
+
+
 def run(args: argparse.Namespace) -> dict[str, Any] | None:
     if args.group == "adopt":
         return {"api_version": API_VERSION, "data": adopt(args.path, args.dry_run)}
+    if args.group == "work" and args.action in {"start", "derive"}:
+        require(bool(args.request.strip()), "INVALID_REQUEST", "Describe the work")
+        flight = preflight.run(args.root)
+        if flight["mode"] == "BLOCKED":
+            return {"api_version": API_VERSION, "data": {**flight, "status": "BLOCKED"}}
+        # Governed work needs the control plane. A rules-only project is refused by name
+        # rather than told to adopt something it chose not to have.
+        preflight.requires(flight)
+        with Plane(args.root) as plane:
+            if args.action == "derive":
+                return {"api_version": API_VERSION, "data": work.derive(plane, args.request)}
+            result = work.start(
+                plane,
+                args.request,
+                agent=args.agent,
+                capabilities=args.capabilities,
+                claim=not args.no_claim,
+                flight=flight,
+            )
+        if args.session_out and result.get("session"):
+            write_session(args.session_out, str(result["session"]))
+        return {"api_version": API_VERSION, "data": result}
+    if args.group == "preflight":
+        return {
+            "api_version": API_VERSION,
+            "data": preflight.run(args.root, repair_first=not args.no_repair, deep=not args.fast),
+        }
     with Plane(args.root) as plane:
         if args.group == "mcp":
             from .mcp import serve
@@ -140,6 +352,27 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
             return {"data": rollback_changeset(plane, args.identifier, args.reason)}
         if args.group in {"status", "doctor", "reconcile"}:
             return call(plane, args.group, {}, local=True)
+        if args.group == "work":
+            if args.action == "next":
+                return {"data": work.next_ready(plane)}
+            if args.action in {"checkpoint", "verify", "finish"}:
+                require(bool(args.task), "TASK_REQUIRED", "Name the task with --task")
+                token = session(args.session_file)
+                if args.action == "verify":
+                    return {"data": work.verify(plane, args.task, token)}
+                if args.action == "finish":
+                    return {"data": work.finish(plane, args.task, token, summary=args.summary)}
+                return {
+                    "data": work.checkpoint(
+                        plane,
+                        args.task,
+                        token,
+                        reason=args.reason,
+                        summary=args.summary,
+                        next_action=args.next_action,
+                    )
+                }
+            raise ControlError("UNKNOWN_OPERATION", f"work {args.action}")
         if args.group == "api":
             data = read_input(args.input)
             if args.session_file:
@@ -192,6 +425,8 @@ def run(args: argparse.Namespace) -> dict[str, Any] | None:
                 {"identifier": args.value},
                 local=True,
             )
+        if args.group == "assurance":
+            return assurance_command(plane, args)
         if args.group == "plan":
             return call(plane, "plan_audit", {"plan": read_input(args.input)}, local=True)
         if args.group in {"readiness", "context"}:
@@ -247,6 +482,13 @@ def main() -> None:
         if result is not None:
             if args.json:
                 print(encode(result))
+            elif args.group == "assurance" and args.action in {"status", "debt", "explain"}:
+                print(render_assurance(args.action, result["data"]))
+            elif args.group == "work" and args.action == "start":
+                data = result["data"]
+                print(preflight.render(data) if "requirements" in data else work.render(data))
+            elif args.group == "preflight":
+                print(preflight.render(result["data"]))
             elif args.group == "status":
                 data = result["data"]
                 print(

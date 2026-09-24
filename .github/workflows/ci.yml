@@ -87,42 +87,66 @@ jobs:
       - run: python scripts/repo_check.py
       - run: python -m agentic_discipline doctor
 
-  mutation:
+  # Four shards run at once. A pull request mutates only the files its diff can
+  # affect; main and a manual run mutate each shard's whole tree. `mutation` below
+  # stays the single check: it passes only when every shard does.
+  mutation-shard:
+    name: mutation (${{ matrix.shard }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [assurance, control, verifier, core]
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Fetch the pull request base
+        if: github.event_name == 'pull_request'
+        run: git fetch origin ${{ github.base_ref }}
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
           cache: pip
       - run: python -m pip install -e ".[dev]"
-      - run: mutmut run
-      - name: Export mutation evidence
-        if: always()
-        run: mutmut export-cicd-stats > mutation-stats.json
+      - id: scope
+        env:
+          MUTATION_EVENT: ${{ github.event_name }}
+          MUTATION_BASE: origin/${{ github.base_ref }}
+        run: python scripts/mutation_scope.py --shard ${{ matrix.shard }}
+      - name: Run mutmut
+        if: steps.scope.outcome == 'success' && steps.scope.outputs.count != '0'
+        run: mutmut run
       - name: Export canonical mutation evidence
-        if: always()
+        if: always() && steps.scope.outcome == 'success' && steps.scope.outputs.count != '0'
         run: mutmut export-cicd-stats
       - name: Enforce mutation outcome
+        if: always() && steps.scope.outcome == 'success' && steps.scope.outputs.count != '0'
         env:
           MUTATION_EXCEPTIONS: policies/mutation-exceptions.json
-        run: python scripts/mutation_gate.py --report mutants/mutmut-cicd-stats.json
+        run: python scripts/mutation_gate.py --report mutants/mutmut-cicd-stats.json --scope mutation-scope.txt
+      # Per-mutant outcomes, so survivors can be triaged by module without re-running.
       - uses: actions/upload-artifact@v7
-        if: always()
+        if: always() && steps.scope.outcome == 'success' && steps.scope.outputs.count != '0'
         with:
-          name: mutation-stats
-          path: mutation-stats.json
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: mutation-canonical-stats
+          name: mutation-stats-${{ matrix.shard }}
           path: mutants/mutmut-cicd-stats.json
-      # Per-mutant outcomes (exit code by mutant name, one file per source module),
-      # so survivors can be triaged by module without re-running the campaign.
+          if-no-files-found: error
       - uses: actions/upload-artifact@v7
-        if: always()
+        if: always() && steps.scope.outcome == 'success' && steps.scope.outputs.count != '0'
         with:
-          name: mutation-outcomes
+          name: mutation-outcomes-${{ matrix.shard }}
           path: mutants/**/*.meta
           if-no-files-found: error
           retention-days: 14
+
+  mutation:
+    name: mutation
+    needs: mutation-shard
+    if: always() && !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every shard passed
+        run: |
+          echo "mutation shards: ${{ needs.mutation-shard.result }}"
+          test "${{ needs.mutation-shard.result }}" = "success"

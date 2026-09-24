@@ -84,7 +84,12 @@ def test_static_assets_are_served_with_security_headers(
 
 
 @pytest.mark.parametrize(
-    ("path", "operation"), [("/api/status", "status"), ("/api/timeline", "timeline")]
+    ("path", "operation"),
+    [
+        ("/api/status", "status"),
+        ("/api/timeline", "timeline"),
+        ("/api/assurance", "assurance_status"),
+    ],
 )
 def test_api_routes_return_the_versioned_read_operation(
     project: Any, path: str, operation: str

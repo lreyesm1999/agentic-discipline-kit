@@ -6,7 +6,9 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
-from . import API_VERSION
+from . import API_VERSION, preflight, work
+from .assurance import migration as assurance_migration
+from .assurance import service as assurance_service
 from .contracts import ControlError, require
 from .diagnostics import doctor
 from .plane import Plane
@@ -37,6 +39,38 @@ def schema(properties: dict[str, Any], required: list[str] | None = None) -> dic
 SCHEMAS: dict[str, dict[str, Any]] = {
     "status": schema({}),
     "doctor": schema({}),
+    "work_start": schema(
+        {
+            "request": {"type": "string", "minLength": 1},
+            "agent": {"type": "string", "minLength": 1},
+            "capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}},
+            "claim": {"type": "boolean"},
+        },
+        required=["request"],
+    ),
+    "work_derive": schema({"request": {"type": "string", "minLength": 1}}),
+    "work_checkpoint": schema(
+        {
+            "task_id": STRING,
+            "session": STRING,
+            "reason": {"type": "string", "enum": list(work.CHECKPOINT_REASONS)},
+            "summary": {"type": "array", "items": STRING},
+            "next_action": {"type": "string", "minLength": 1},
+        },
+        required=["task_id", "session", "reason"],
+    ),
+    "work_verify": schema({"task_id": STRING, "session": STRING}),
+    "work_finish": schema(
+        {"task_id": STRING, "session": STRING, "summary": {"type": "array", "items": STRING}},
+        required=["task_id", "session"],
+    ),
+    "work_next": schema({}),
+    # Both flags default to the safe reading: repair what can be repaired, and look at the
+    # working tree. A caller that only wants the report says so.
+    "preflight": schema(
+        {"repair": {"type": "boolean"}, "deep": {"type": "boolean"}},
+        required=[],
+    ),
     "discover_project": schema({}),
     "query_knowledge": schema(
         {
@@ -99,6 +133,24 @@ SCHEMAS: dict[str, dict[str, Any]] = {
     "workspace_create": schema({"task_id": STRING}),
     "workspace_cleanup": schema({"task_id": STRING}),
     "parallel_safety": schema({"left": STRING, "right": STRING}),
+    "assurance_status": schema({"task_id": STRING}, []),
+    "assurance_plan": schema({"task_id": STRING}),
+    "assurance_explain": schema({"obligation_id": STRING}),
+    "assurance_debt": schema({"task_id": STRING}, []),
+    "assurance_registry": schema({}),
+    "assurance_integrity": schema({}),
+    "assurance_verify": schema({"task_id": STRING, "session": STRING}),
+    "assurance_compile": schema(
+        {"task_id": STRING, "phase": {"enum": ["INITIAL", "RECONCILED"]}}, ["task_id"]
+    ),
+    "assurance_waive": schema({"obligation_id": STRING, "reason": STRING, "authorization": STRING}),
+    "assurance_resolve_human": schema(
+        {"obligation_id": STRING, "decision": STRING, "accepted": {"type": "boolean"}},
+        ["obligation_id", "decision"],
+    ),
+    "assurance_register_verifier": schema({"descriptor": OBJECT}),
+    "assurance_migrate": schema({"dry_run": {"type": "boolean"}}, []),
+    "assurance_rollback": schema({"identifier": STRING, "reason": STRING}),
 }
 LOCAL_ONLY = {
     "task_create",
@@ -114,6 +166,18 @@ LOCAL_ONLY = {
     "workspace_cleanup",
     "workspace_refresh",
     "workspace_merge",
+    "assurance_compile",
+    "assurance_waive",
+    "assurance_resolve_human",
+    "assurance_register_verifier",
+    "assurance_migrate",
+    "assurance_rollback",
+    # Preflight repairs what it safely can, which is a write, so it stays with the owner.
+    "preflight",
+    # Deriving work creates a task, approves the project's own gate commands and claims a
+    # lease. Each of those is the owner's to do.
+    "work_start",
+    "work_derive",
 }
 READ_ONLY = {
     "doctor",
@@ -124,13 +188,57 @@ READ_ONLY = {
     "impact_analysis",
     "get_context",
     "get_ready_tasks",
+    "work_next",
     "task_list",
     "knowledge_health",
     "timeline",
     "readiness",
     "plan_audit",
     "parallel_safety",
+    "assurance_status",
+    "assurance_plan",
+    "assurance_explain",
+    "assurance_debt",
+    "assurance_registry",
+    "assurance_integrity",
 }
+
+
+def assurance(plane: Plane, name: str, args: dict[str, Any]) -> Any:
+    """One dispatch for the assurance engine; every interface reaches the same service."""
+    if name == "assurance_status":
+        return assurance_service.status(plane, args.get("task_id"))
+    if name == "assurance_plan":
+        return assurance_service.plan_view(plane, args["task_id"])
+    if name == "assurance_explain":
+        return assurance_service.explain(plane, args["obligation_id"])
+    if name == "assurance_debt":
+        return assurance_service.debt_report(plane, args.get("task_id"))
+    if name == "assurance_registry":
+        return assurance_service.registry(plane)
+    if name == "assurance_integrity":
+        return assurance_service.integrity(plane)
+    if name == "assurance_verify":
+        return assurance_service.verify(plane, args["task_id"], args["session"])
+    if name == "assurance_compile":
+        return assurance_service.compile_plan(
+            plane, args["task_id"], phase=args.get("phase", "RECONCILED")
+        )
+    if name == "assurance_waive":
+        return assurance_service.waive(
+            plane, args["obligation_id"], args["reason"], args["authorization"]
+        )
+    if name == "assurance_resolve_human":
+        return assurance_service.resolve_human(
+            plane, args["obligation_id"], args["decision"], args.get("accepted", True)
+        )
+    if name == "assurance_register_verifier":
+        return assurance_service.register_verifier(plane, args["descriptor"])
+    if name == "assurance_migrate":
+        return assurance_migration.migrate(plane, dry_run=args.get("dry_run", False))
+    if name == "assurance_rollback":
+        return assurance_migration.rollback(plane, args["identifier"], args["reason"])
+    raise ControlError("UNKNOWN_OPERATION", name)
 
 
 def call(plane: Plane, name: str, args: dict[str, Any], *, local: bool = False) -> dict[str, Any]:
@@ -144,6 +252,35 @@ def call(plane: Plane, name: str, args: dict[str, Any], *, local: bool = False) 
     require(not errors, "INVALID_INPUT", "; ".join(e.message for e in errors))
     if name == "doctor":
         result: Any = doctor(plane)
+    elif name == "work_start":
+        result = work.start(
+            plane,
+            args["request"],
+            agent=args.get("agent", "local-agent"),
+            capabilities=args.get("capabilities"),
+            claim=args.get("claim", True),
+        )
+    elif name == "work_derive":
+        result = work.derive(plane, args["request"])
+    elif name == "work_checkpoint":
+        result = work.checkpoint(
+            plane,
+            args["task_id"],
+            args["session"],
+            reason=args["reason"],
+            summary=args.get("summary"),
+            next_action=args.get("next_action"),
+        )
+    elif name == "work_verify":
+        result = work.verify(plane, args["task_id"], args["session"])
+    elif name == "work_finish":
+        result = work.finish(plane, args["task_id"], args["session"], summary=args.get("summary"))
+    elif name == "work_next":
+        result = work.next_ready(plane)
+    elif name == "preflight":
+        result = preflight.for_plane(
+            plane, repair_first=args.get("repair", True), deep=args.get("deep", True)
+        )
     elif name in {"status", "knowledge_health"}:
         result = plane.status()
     elif name in {"discover_project", "reconcile"}:
@@ -230,6 +367,8 @@ def call(plane: Plane, name: str, args: dict[str, Any], *, local: bool = False) 
         result = parallel_safety(
             plane.store.get(args["left"], "task"), plane.store.get(args["right"], "task")
         )
+    elif name.startswith("assurance_"):
+        result = assurance(plane, name, args)
     else:
         raise ControlError("UNKNOWN_OPERATION", name)
     return {"api_version": API_VERSION, "operation": name, "data": result}

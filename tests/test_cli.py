@@ -16,7 +16,18 @@ def ns(**values: object) -> argparse.Namespace:
 
 
 def test_doctor_passes_from_repository_root() -> None:
-    assert cli.command_doctor(ns()) == 0
+    """The exit code follows execution readiness, which depends on whether this checkout has
+    been adopted, so what is asserted here is the installation half it cannot change."""
+
+    import contextlib
+    import io
+
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        cli.command_doctor(ns(json=True, fast=False))
+    report = json.loads(output.getvalue())
+    assert report["readiness"]["installation"] == "PASS"
+    assert report["readiness"]["shape"] == "checkout"
 
 
 def test_crap_command_pass_and_fail() -> None:
@@ -51,6 +62,9 @@ def test_init_command_reports_detected_profile(tmp_path: Path) -> None:
                 adapter=[],
                 dry_run=False,
                 json=True,
+                rules_only=False,
+                no_adopt=False,
+                adopt=False,
             )
         )
         == 0

@@ -32,17 +32,141 @@ agentic-discipline init --max-depth 6
 When nothing is recognized, `init` emits a generic Git-based gate instead of rejecting the project.
 See [Project profiles](profiles.md) for the descriptor format.
 
+One run leaves the project operational, not merely configured: after the contracts and the
+adapters, `init` initialises the control plane, indexes the project and then measures
+readiness, so its closing line is what the checks found rather than a claim.
+
+```text
+  Control plane    the repository was adopted and indexed
+
+Status: READY FOR AGENTIC EXECUTION
+
+Next:  ask for the work you want done.
+```
+
+Adoption inspects the repository and records state. It does not edit your files, install
+dependencies, or run instructions it finds in the tree, and it works outside git as well,
+so the order of `init` and `git init` does not matter.
+
+Every phase is idempotent. A second `init` keeps the existing state database with its tasks,
+leases, checkpoints and evidence, brings the index up to date, and writes nothing else. Two
+cases are refused rather than resolved:
+
+| Situation | What `init` does |
+|---|---|
+| `.agentic/control/` exists without a state database | installs the rules, leaves the directory untouched, reports `BROKEN`, and exits nonzero. A second database beside the first would split the project's history. |
+| `--rules-only` on a project that is already adopted | records nothing and says so. Removing existing state is the owner's decision, never the side effect of a flag. |
+
+For the rules alone, say so explicitly:
+
+```bash
+agentic-discipline init --rules-only   # records the choice; readiness reads DEGRADED
+agentic-discipline init --no-adopt     # skips the control plane for this run only
+agentic-discipline init --adopt        # initialises it on a project installed rules-only
+```
+
+A recorded `--rules-only` survives ordinary re-runs: nothing turns orchestration on behind
+the owner's back, and `--adopt` is how it is turned on.
+
+`init` exits nonzero when the project it leaves behind is not usable, so a script that chains
+it with real work stops instead of continuing half-configured.
+
 The generated configuration is intentionally conservative: it recommends gates but does not install
 or execute project dependencies during initialization.
 
 ## doctor
 
-Checks Git worktree state, protected contracts, schemas and quality configuration. Add
-`--check-tools` to verify configured executables.
+Answers three separate questions and never blurs them: whether the kit is installed
+correctly, whether this project is under management, and whether the full workflow can
+actually run. Rules that nothing enforces are not a passing project, so a repository with
+every discipline installed and no control plane now reports what it is.
 
 ```bash
 agentic-discipline doctor
 ```
+
+```text
+Agentic Discipline status
+
+Installation         PASS
+Disciplines          PASS
+Agent adapter        PASS
+Quality gates        PASS
+Control plane        MISSING
+Project adoption     MISSING
+Knowledge            MISSING
+Task orchestration   MISSING
+Git integration      PASS
+
+Installation health  PASS
+Project health       PARTIAL
+Execution readiness  PARTIAL
+
+Reason: Control plane: the control plane has never been initialised here
+
+Outstanding:
+- Control plane (MISSING): the control plane has never been initialised here
+  Repair: agentic adopt
+```
+
+Execution readiness is one of five states:
+
+| State | Meaning |
+|---|---|
+| `READY` | the whole workflow is available |
+| `PARTIAL` | every gap can be repaired without a decision, and each repair is named |
+| `DEGRADED` | orchestration is unavailable by the project's own choice, such as a rules-only install |
+| `BROKEN` | something needs a human: an altered audit chain, an unreadable database, a control directory with no database, a plane adopted for another checkout |
+| `NOT_INITIALIZED` | the kit is not installed here |
+
+The exit code is zero for `READY` and `DEGRADED`, because a recorded choice is not a fault,
+and nonzero for the rest.
+
+An index that has fallen behind the working tree is reported as drift rather than as a gap:
+it is listed, `agentic reconcile` repairs it, and starting work repairs it anyway, so it does
+not by itself make a project less than `READY`.
+
+Options: `--check-tools` probes the executables the gates call, `--json` prints the machine
+report (the 2.0 fields plus a `readiness` block), `--fast` skips the working-tree scan that
+detects drift, and `--config` points at a specific quality configuration.
+
+## repair
+
+Closes the gaps `doctor` found that can be closed without a decision, and reports the rest.
+
+```bash
+agentic-discipline repair            # or --dry-run to see the plan first
+```
+
+```text
+Execution readiness  PARTIAL -> READY
+
+  - initialise the control plane: adopted the repository and indexed the project
+```
+
+A repair qualifies only when it cannot lose data, cannot change what the project is supposed
+to do, needs nothing from outside the machine, and writes only files the kit itself owns: the
+payload under `.agentic/`, the managed block inside each adapter file, and the control
+directory. The payload is filled in rather than overwritten, so a configuration you edited by
+hand comes out as you left it, and tasks, leases, checkpoints and evidence are never touched.
+
+Four repairs exist, and they run in dependency order, with the reindex last because the
+earlier ones write files: reinstall the payload, recompile the agent surfaces, initialise the
+control plane, reindex the project. A check that is only failing because another one is has no
+repair of its own - adopting a project restores its record, its index and its orchestration
+together - so nothing is attempted whose cause is still open.
+
+These are never repaired, because each one needs a person and guessing would destroy history:
+
+| Finding | Why not |
+|---|---|
+| `.agentic/control/` with no state database | a second database beside it would split the project's history |
+| an audit chain that does not verify | the history has been altered; what it recorded is no longer known |
+| a plane adopted for another checkout | its tasks and evidence belong to a different tree |
+
+Every repair is written to the audit chain as `readiness.repair`, with the state it moved
+from and to. Nothing to repair writes nothing, including no audit record. The exit code is
+zero when the project is usable afterwards.
 
 ## risk
 
@@ -183,3 +307,34 @@ additions:
 agentic-discipline hygiene
 agentic-discipline hygiene --base-ref origin/main
 ```
+
+## agentic assurance
+
+The `agentic` control plane's assurance engine: the proof obligations a change creates, the
+evidence that currently resolves them, and what the work is allowed to do next. It is
+inactive until a project is migrated; see [Agentic Discipline 2.1](v2.1/README.md).
+
+```bash
+agentic assurance plan TASK-ID --compile        # compile or reconcile the plan
+agentic assurance plan TASK-ID                  # read it: initial, current, what expanded
+agentic assurance verify TASK-ID --session-file /private/worker-a.json
+agentic assurance status [TASK-ID]
+agentic assurance explain PO-ID                  # one claim
+agentic assurance explain TASK-ID                # why a task can or cannot complete
+agentic assurance debt [TASK-ID]
+agentic assurance registry
+agentic assurance integrity
+```
+
+Owner actions, each requiring its own recorded justification:
+
+```bash
+agentic assurance waive PO-ID --reason "..." --authorization "code owner"
+agentic assurance resolve PO-ID --decision "..." [--rejected]
+agentic assurance migrate [--dry-run]
+agentic assurance rollback ASSU-ID --reason "..."
+```
+
+`status`, `debt` and `explain` print a plain reading; every action accepts `--json` for the
+whole record. `verify` exits 1 when a mandatory obligation is still open, and `integrity`
+exits 1 when an invariant is violated.

@@ -12,9 +12,14 @@ from typing import Any, Iterator
 
 from .contracts import digest, encode, require, safe_data, uid
 
+# Schema 1 is Agentic Discipline 2.0. Schema 2 adds the assurance engine and is reached
+# only through the explicit `agentic assurance migrate`, so a 2.0 project keeps its
+# behaviour until an owner upgrades it.
+SUPPORTED_VERSIONS = ("1", "2")
+CURRENT_VERSION = "2"
 SCHEMA = (
     "CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)",
-    "INSERT INTO meta VALUES ('schema_version','1'),('knowledge_version','0')",
+    f"INSERT INTO meta VALUES ('schema_version','{CURRENT_VERSION}'),('knowledge_version','0')",
     "CREATE TABLE records (id TEXT PRIMARY KEY, kind TEXT NOT NULL, version INTEGER NOT NULL, payload TEXT NOT NULL)",
     "CREATE INDEX records_kind ON records(kind)",
     "CREATE TABLE revisions (id TEXT NOT NULL, version INTEGER NOT NULL, payload TEXT NOT NULL, knowledge_version INTEGER NOT NULL, PRIMARY KEY(id,version))",
@@ -50,10 +55,11 @@ class Store:
                 raise
         row = self.db.execute("SELECT value FROM meta WHERE key='schema_version'").fetchone()
         require(
-            row and row[0] == "1",
+            row is not None and row[0] in SUPPORTED_VERSIONS,
             "SCHEMA_VERSION",
             "Unsupported database version; restore or upgrade explicitly",
         )
+        self.schema_version = int(row[0])
 
     def close(self) -> None:
         self.db.close()

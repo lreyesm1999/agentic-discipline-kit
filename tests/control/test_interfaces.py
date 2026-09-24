@@ -109,30 +109,28 @@ def test_console_real_http_and_host_boundary(project):
     http = server(project.root, 0)
     worker = threading.Thread(target=http.serve_forever, daemon=True)
     worker.start()
-    connection = HTTPConnection("127.0.0.1", http.server_port)
+
+    def fetch(method, path, headers=None, body=None):
+        # The handler speaks HTTP/1.0 and closes each response, so no connection is reused.
+        connection = HTTPConnection("127.0.0.1", http.server_port)
+        try:
+            connection.request(method, path, body=body, headers=headers or {})
+            response = connection.getresponse()
+            return response.status, response.read(), response.headers
+        finally:
+            connection.close()
+
     try:
         for path in ("/", "/app.js", "/app.css", "/api/status", "/api/timeline"):
-            connection.request("GET", path)
-            response = connection.getresponse()
-            body = response.read()
-            assert response.status == 200 and body
-            assert "frame-ancestors 'none'" in response.getheader("Content-Security-Policy")
+            status, body, headers = fetch("GET", path)
+            assert status == 200 and body
+            assert "frame-ancestors 'none'" in headers["Content-Security-Policy"]
             if path == "/api/status":
                 assert json.loads(body)["data"]["project"]["name"] == project.root.name
-        connection.request("GET", "/missing")
-        response = connection.getresponse()
-        response.read()
-        assert response.status == 404
-        connection.request("GET", "/", headers={"Host": "attacker.example"})
-        response = connection.getresponse()
-        response.read()
-        assert response.status == 403
-        connection.request("POST", "/api/status", body="{}")
-        response = connection.getresponse()
-        response.read()
-        assert response.status == 501
+        assert fetch("GET", "/missing")[0] == 404
+        assert fetch("GET", "/", headers={"Host": "attacker.example"})[0] == 403
+        assert fetch("POST", "/api/status", body="{}")[0] == 501
     finally:
-        connection.close()
         http.shutdown()
         http.server_close()
         worker.join()

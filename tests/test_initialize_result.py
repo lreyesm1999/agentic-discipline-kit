@@ -66,6 +66,13 @@ def test_result_summarizes_detection_adapters_and_gates(
     kit = find_contract_root().resolve()
     detections = requested_projects(root.resolve(), ["python"], load_profiles(kit))
     actions = result.pop("actions")
+    # The control plane phase and the verdict it produces have their own tests; here they
+    # only have to be the ones a fresh project gets.
+    # The verdict itself is measured, and this fixture's gates are deliberately invalid, so
+    # what belongs here is that the phase ran and reported: tests/control/test_init_operational
+    # owns what each state means.
+    assert result.pop("readiness")["checks"]
+    assert result.pop("control")["status"] == "ADOPTED"
     assert result == {
         "status": "PASS",
         "target": str(root.resolve()),
@@ -82,10 +89,17 @@ def test_result_summarizes_detection_adapters_and_gates(
             {"name": "docs", "note": "optional by design"},
         ],
         "baseline_gate": "syntax",
+        "control_mode": "managed",
     }
-    assert actions[-3:] == ["WRITE AGENTS.md", "rules.md", f"READY {root.resolve()}"]
+    assert actions[-1] == f"READY {root.resolve()}"
+    assert actions[-2] == f"ADOPT {root.resolve() / '.agentic' / 'control' / 'state.db'}"
+    assert ["WRITE AGENTS.md", "rules.md"] == [
+        a for a in actions if "AGENTS.md" in a or a == "rules.md"
+    ]
     assert f"WRITE {root.resolve() / 'agentic.config.json'}" in actions
-    assert recorded == [
+    # Measuring readiness renders the adapters again to see whether they are current, so the
+    # doubles record those calls too; what matters here is the install itself.
+    assert recorded[:2] == [
         ("detect", root.resolve()),
         ("sync", root.resolve(), ["generic", "claude"], False),
     ]
@@ -119,7 +133,7 @@ def test_undetected_projects_fall_back_to_the_generic_profile(
             "evidence": ["no known project manifest detected"],
         }
     ]
-    assert recorded == [("sync", root.resolve(), ["generic"], False)]
+    assert recorded[:1] == [("sync", root.resolve(), ["generic"], False)]
 
     initialize_project(tmp_path / "default-depth", adapters=["generic"])
     assert depths == [2, 4]
@@ -132,7 +146,7 @@ def test_dry_run_writes_nothing_and_says_so(tmp_path: Path, recorded: list[Any])
 
     assert result["dry_run"] is True
     assert not root.exists()
-    assert recorded == [("sync", root.resolve(), [], True)]
+    assert recorded[:2] == [("sync", root.resolve(), [], True)]
 
 
 def test_existing_configuration_is_kept_unless_forced(tmp_path: Path, recorded: list[Any]) -> None:
