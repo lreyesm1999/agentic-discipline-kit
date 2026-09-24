@@ -97,10 +97,12 @@ def test_the_searchable_words_are_lowercased_once_each_in_order_without_filler()
     assert work.terms("Rename src/app.py/ and .hidden.") == ["rename", "src/app.py", "hidden"]
     # Two letters are not a word worth searching for.
     assert work.terms("do it on db") == []
+    assert work.terms(".../total.") == ["total"]
 
 
 def test_the_same_request_in_other_spacing_and_case_is_the_same_request() -> None:
     assert work.digest("Add  a TOTAL\tto src/app.py") == work.digest("add a total to src/app.py")
+    assert work.digest("Ab") == __import__("hashlib").sha256(b"ab").hexdigest()[:16]
     assert len(work.digest("anything")) == 16
     assert work.digest("add a total") != work.digest("add a subtotal")
 

@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-24T02:05:10.393688+00:00",
+  "generated_at_utc": "2026-09-24T11:38:22.169367+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -980,8 +980,8 @@
     },
     {
       "path": "policies/mutation-exceptions.json",
-      "sha256": "10bc3c2802de177b574bd2ce4d8adfeb3f1bd90a5b9539a017243386d517323a",
-      "bytes": 49007
+      "sha256": "3059525caecb10d7d586d8b665709ea4aa2a14260fc8fe4086172aa5d7b29a03",
+      "bytes": 48609
     },
     {
       "path": "policies/quality-gates.md",
@@ -1775,8 +1775,8 @@
     },
     {
       "path": "tests/control/test_repair.py",
-      "sha256": "c94987a8856e61a17f604acc40b18a6be5ce274c5435e8daf27285fcdbd104e9",
-      "bytes": 9487
+      "sha256": "215cb9d629408fcacb0d1828cc836dcc9577516a33f2b0eb64494aa5967b59dc",
+      "bytes": 9831
     },
     {
       "path": "tests/control/test_repair_records.py",
@@ -1850,13 +1850,13 @@
     },
     {
       "path": "tests/control/test_work_execution.py",
-      "sha256": "40ea690454ed41d1a8a769be601bba073478ce143d828cb42e78beeaafcaeeac",
-      "bytes": 9895
+      "sha256": "4125ee0b00b0111a75aa6200daef22417d5c61b5aba847043efa23e0f36e9944",
+      "bytes": 10922
     },
     {
       "path": "tests/control/test_work_logic.py",
-      "sha256": "163c46c3f1d7ed50b364622883c233983bd5f3addec39967455e97402fe094dc",
-      "bytes": 12797
+      "sha256": "de9587cc547c59ff06a30f437aa2eca0eb7c38970cfda4fe6e5035b8342890dc",
+      "bytes": 12931
     },
     {
       "path": "tests/control/test_work_records.py",
@@ -2175,8 +2175,8 @@
     },
     {
       "path": "tests/test_readiness.py",
-      "sha256": "4128804ff9000d83bfe66610baa79e1957982e3768c6faeded80329756bfac07",
-      "bytes": 10250
+      "sha256": "b495b0277dc8a965760d155778c7c5ab9c06ce0f387e2abfe4f3f89390055109",
+      "bytes": 13664
     },
     {
       "path": "tests/test_readiness_render.py",

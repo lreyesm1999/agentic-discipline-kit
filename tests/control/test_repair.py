@@ -53,6 +53,7 @@ def test_a_missing_control_plane_is_restored_in_one_action(project: Path) -> Non
     # Adoption restores the project record, the index and the orchestration together, so the
     # three checks that depend on it do not each ask for a repair of their own.
     assert _actions(result) == ["initialise the control plane"]
+    assert result["repaired"][0]["outcome"] == "adopted the repository and indexed the project"
 
 
 def test_stale_adapters_and_a_pruned_payload_are_rebuilt(project: Path) -> None:
@@ -69,6 +70,9 @@ def test_stale_adapters_and_a_pruned_payload_are_rebuilt(project: Path) -> None:
         "recompile the agent surfaces",
         "reindex the project",
     ]
+    outcomes = [item["outcome"] for item in result["repaired"]]
+    assert any(item.startswith("reinstalled the missing payload files (") for item in outcomes)
+    assert any(item.startswith("recompiled the agent surfaces (") for item in outcomes)
     assert result["readiness"]["drift"] == []
     assert readiness.skill_count(project) == readiness.EXPECTED_DISCIPLINES
     assert "Agentic Discipline" in (project / "AGENTS.md").read_text(encoding="utf-8")

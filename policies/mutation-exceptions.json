@@ -631,13 +631,6 @@
       "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
     },
     {
-      "function": "agentic_discipline.validation.x_validate_quality_config",
-      "original": "has_required = False",
-      "mutant": "has_required = None",
-      "family": "falsy-default",
-      "reason": "The value is only tested for truth, so None, False, an empty string or the argument's own False default behave the same (docs/v2/MUTATION_EXEMPTIONS.md: Others, each checked)."
-    },
-    {
       "function": "agentic_discipline.verifier.executor.x_execute_verifier",
       "original": "result_path.parent.mkdir(parents=True, exist_ok=True)",
       "mutant": "result_path.parent.mkdir(parents=None, exist_ok=True)",
