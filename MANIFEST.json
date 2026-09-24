@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-24T13:21:48.330208+00:00",
+  "generated_at_utc": "2026-09-24T16:37:45.191131+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1775,8 +1775,8 @@
     },
     {
       "path": "tests/control/test_repair.py",
-      "sha256": "7d01e7b08ca69d63b2b69699dfe952b5265fa2cfbaa974bffa6a01ffb1a4aaf3",
-      "bytes": 11020
+      "sha256": "8dca525b9d563018b8ccd12610cc38cc3c59fd0810d5b90156d8a0d31fba4da5",
+      "bytes": 11172
     },
     {
       "path": "tests/control/test_repair_records.py",
@@ -1850,8 +1850,8 @@
     },
     {
       "path": "tests/control/test_work_execution.py",
-      "sha256": "cc1c7432b6da01c42797e7e4bd2f17ddafd08abe8822a1b858ec56fe0ca7aa79",
-      "bytes": 11784
+      "sha256": "b86ccdaab52a43335666e063c60e9c51e15d2ca1a4a8927146e9665fa56f15b6",
+      "bytes": 12357
     },
     {
       "path": "tests/control/test_work_logic.py",
