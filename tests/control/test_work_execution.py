@@ -81,6 +81,13 @@ def test_a_checkpoint_fills_in_everything_that_can_be_measured(plane: Any) -> No
     # The next action is the first thing still unproven, which the obligations decide.
     assert context["next_action"] == f"prove: {REQUEST}"
     assert context["pending_issues"] == [REQUEST]
+    recorded = [
+        event
+        for event in plane.store.timeline(task["id"])
+        if event["action"] == "work.checkpoint"
+    ]
+    assert recorded[-1]["actor"] == "local-agent"
+    assert recorded[-1]["payload"] == {"task": task["id"], "reason": "slice_complete"}
 
 
 def test_a_checkpoint_reads_the_evidence_rather_than_being_told_about_it(plane: Any) -> None:
@@ -96,6 +103,11 @@ def test_a_checkpoint_reads_the_evidence_rather_than_being_told_about_it(plane: 
     assert any("pytest" in command for command in context["commands_run"])
     # With nothing said by the agent, what the records prove is what the checkpoint claims.
     assert sorted(context["completed_work"]) == ["static_analysis verified", "unit verified"]
+    assert " " in context["commands_run"][0]
+    quiet = work.checkpoint(plane, task["id"], session, reason="before_release", pending=[])
+    assert quiet["context"]["pending_issues"] == []
+    assert quiet["context"]["next_action"] == "complete the task"
+    assert quiet["context"]["completed_work"][0].startswith("previously verified: ")
 
 
 def test_a_blocked_checkpoint_may_say_that_nothing_is_proven_yet(plane: Any) -> None:
@@ -219,6 +231,12 @@ def test_the_next_ready_task_is_offered_when_one_finishes(plane: Any) -> None:
     first_task, session = _start(plane)
     second = work.start(plane, "Add a subtotal to tests/test_app.py")
     assert second["state"] == "WAITING"
+    rendered = work.render(second)
+    assert rendered.startswith(f"Work state: {second['state']}\n")
+    assert "\nReason: " in rendered
+    assert "Derived from:" in rendered
+    assert ", " in rendered
+    assert second["reason"] in rendered
 
     _edit(plane)
     assert work.finish(plane, first_task["id"], session)["status"] == "PASS"
