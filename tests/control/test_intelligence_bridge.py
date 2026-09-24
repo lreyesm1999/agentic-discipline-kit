@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 from conftest import contract
 
+from agentic_discipline.control.contracts import digest
 from agentic_discipline.control.intelligence import intelligence_snapshot
 from agentic_discipline.control.verification import binding
 
@@ -76,6 +77,26 @@ def test_incomplete_intelligence_handoff_fails_closed(project):
 def test_intelligence_is_optional_until_handoff_directory_exists(project):
     task = project.create_task(contract())["id"]
     assert intelligence_snapshot(project.root, task) == {"reasons": [], "constraints": [], "binding": None}
+
+
+def test_valid_handoff_without_blockers_is_bound_to_context_and_proof(project):
+    task = project.create_task(contract())["id"]
+    _write_handoff(project, task)
+    snapshot = intelligence_snapshot(project.root, task)
+    assert snapshot["binding"] is not None
+    assert snapshot["reasons"] == []
+    assert project.context(task)["mandatory"]["intelligence"] == snapshot
+    assert binding(project, project.store.get(task, "task"))["intelligence"] == snapshot["binding"]
+
+
+def test_invalid_handoff_reasons_are_bound_to_context_and_proof(project):
+    task = project.create_task(contract())["id"]
+    (project.root / ".agentic" / "intelligence").mkdir()
+    snapshot = intelligence_snapshot(project.root, task)
+    assert snapshot["binding"] is None
+    assert snapshot["reasons"]
+    assert project.context(task)["mandatory"]["intelligence"] == snapshot
+    assert binding(project, project.store.get(task, "task"))["intelligence"] == digest(snapshot["reasons"])
 
 
 def test_intelligence_blockers_and_constraints_are_task_scoped(project):
@@ -321,8 +342,8 @@ def test_acceptance_requires_exact_mandatory_constraint_id(project):
     with project.store.transaction():
         project.store.put("task", {**current, "acceptance": ["CON-10: prove other behavior"]},
                           expected=current["version"])
-    assert any(reason["type"] == "intelligence_constraint_unmapped"
-               for reason in project.readiness(task)["reasons"])
+    assert {reason["id"] for reason in project.readiness(task)["reasons"]
+            if reason["type"] == "intelligence_constraint_unmapped"} == {"CON-1"}
     current = project.store.get(task, "task")
     with project.store.transaction():
         project.store.put("task", {**current, "acceptance": ["CON-1: prove the behavior"]},
