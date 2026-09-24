@@ -208,6 +208,39 @@ def test_a_dry_run_reports_the_plan_and_writes_nothing(project: Path) -> None:
     assert not (project / readiness.CONTROL_DIR).exists()
 
 
+def test_reinstall_writes_only_missing_files_and_does_not_adopt(project: Path) -> None:
+    before = (project / readiness.STATE_DB).exists()
+    outcome = repair._reinstall(project)
+    assert outcome.startswith("reinstalled the missing payload files (")
+    assert outcome.endswith(" written)")
+    written = int(outcome.split("(")[1].split(" ")[0])
+    assert written == 1
+    assert (project / readiness.STATE_DB).exists() is before
+
+
+def test_resync_of_current_surfaces_rewrites_nothing(project: Path) -> None:
+    assert repair._resync(project) == "recompiled the agent surfaces (0 file(s) rewritten)"
+
+
+def test_a_repair_that_fails_does_not_cancel_the_next_one(
+    project: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def boom(root: Path) -> str:
+        raise OSError("nope")
+
+    payload = repair.PAYLOAD
+    monkeypatch.setitem(
+        repair.REPAIRS,
+        "installation",
+        repair.Repair(payload.action, payload.writes, boom),
+    )
+    (project / "AGENTS.md").unlink()
+    result = repair.apply(project)
+    checks = {item["check"] for item in result["failed"] + result["repaired"]}
+    assert "installation" in checks
+    assert "agent_adapter" in checks
+
+
 def test_a_rules_only_project_is_left_alone(project: Path) -> None:
     _remove(project / readiness.CONTROL_DIR)
     payload = project / ".agentic" / "config.json"

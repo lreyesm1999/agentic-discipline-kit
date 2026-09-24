@@ -103,6 +103,7 @@ def test_the_searchable_words_are_lowercased_once_each_in_order_without_filler()
 def test_the_same_request_in_other_spacing_and_case_is_the_same_request() -> None:
     assert work.digest("Add  a TOTAL\tto src/app.py") == work.digest("add a total to src/app.py")
     assert work.digest("Ab") == __import__("hashlib").sha256(b"ab").hexdigest()[:16]
+    assert work.digest("a b") == __import__("hashlib").sha256(b"a b").hexdigest()[:16]
     assert len(work.digest("anything")) == 16
     assert work.digest("add a total") != work.digest("add a subtotal")
 
@@ -116,6 +117,8 @@ def test_a_named_path_is_found_through_the_punctuation_around_it() -> None:
     ]
     assert work._paths_in("Fix src/app.py: now", known) == ["src/app.py"]
     assert work._paths_in("Fix src/missing.py", known) == []
+    assert work._paths_in("see src/app.pyX", known) == []
+    assert work._paths_in("Fix src/app.py.", known) == ["src/app.py"]
 
 
 def test_without_a_named_path_the_scope_comes_from_the_project_s_index(plane: Any) -> None:
@@ -329,3 +332,31 @@ def test_the_next_ready_task_is_one_the_plane_would_let_start(plane: Any) -> Non
     ready = work.next_ready(plane)
     assert ready is not None
     assert ready["id"] == first
+
+
+def test_index_search_asks_for_eight_code_hits_and_keeps_twelve(plane: Any, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[dict[str, Any]] = []
+
+    def query(**kwargs: Any) -> list[dict[str, str]]:
+        calls.append(kwargs)
+        return [{"path": f"src/f{index}.py"} for index in range(13)]
+
+    monkeypatch.setattr(plane.knowledge, "query", query)
+    found = work._from_knowledge(plane, "compute_total", {f"src/f{index}.py" for index in range(13)})
+
+    assert calls[0]["graph"] == "code"
+    assert calls[0]["limit"] == 8
+    assert len(found) == 12
+
+
+def test_a_trailing_slash_on_a_protected_directory_still_covers_its_children(plane: Any) -> None:
+    plane.policy = lambda: {"protected_paths": ["specs/"]}
+    assert work._protected(plane, ["specs/a.md"]) == ["specs/a.md"]
+    plane.policy = lambda: {"protected_paths": ["specsX"]}
+    assert work._protected(plane, ["specs/a.md"]) == []
+
+
+def test_risk_is_read_from_the_paths_alone(plane: Any) -> None:
+    level, signals = work._risk(["src/app.py"])
+    assert isinstance(level, str) and level
+    assert isinstance(signals, list)
