@@ -71,7 +71,8 @@ def test_a_checkpoint_fills_in_everything_that_can_be_measured(plane: Any) -> No
     )
 
     context = result["context"]
-    assert result["status"] == "PASS"
+    assert (result["status"], result["reason"]) == ("PASS", "slice_complete")
+    assert result["outstanding"] == [REQUEST]
     assert context["completed_work"] == ["added the total"]
     # Measured, not retyped: the files come from the tree, the rest from the records.
     assert context["modified_files"] == ["src/app.py"]
@@ -109,8 +110,9 @@ def test_a_blocked_checkpoint_may_say_that_nothing_is_proven_yet(plane: Any) -> 
 def test_only_a_known_reason_is_recorded(plane: Any) -> None:
     task, session = _start(plane)
 
-    with pytest.raises(ControlError, match="Unknown reason"):
+    with pytest.raises(ControlError, match="^Unknown reason: because-i-said-so$") as refused:
         work.checkpoint(plane, task["id"], session, reason="because-i-said-so")
+    assert refused.value.code == "INVALID_CHECKPOINT"
 
     assert work.CHECKPOINT_REASONS == (
         "slice_complete",
@@ -130,6 +132,7 @@ def test_verification_runs_what_the_task_declared_and_records_it(plane: Any) -> 
     result = work.verify(plane, task["id"], session)
 
     assert result["status"] == "PASS"
+    assert result["state"] == plane.store.get(task["id"])["state"]
     assert result["outstanding"] == []
     recorded = [
         record for record in plane.store.list("evidence") if record["task_id"] == task["id"]
@@ -144,9 +147,14 @@ def test_finishing_verifies_checkpoints_and_completes_without_being_asked(plane:
 
     result = work.finish(plane, task["id"], session)
 
-    assert (result["status"], result["state"]) == ("PASS", "COMPLETED")
-    assert result["reason"] == "every requirement of completion is met"
+    assert (result["status"], result["state"], result["reason"]) == (
+        "PASS",
+        "COMPLETED",
+        "every requirement of completion is met",
+    )
     assert result["outstanding"] == []
+    assert isinstance(result["checkpoint"], str)
+    assert result["completion"] is not None
     # A checkpoint was taken before integration, and the verification ran on the way.
     checkpoints = [
         record["payload"]
@@ -155,6 +163,11 @@ def test_finishing_verifies_checkpoints_and_completes_without_being_asked(plane:
     ]
     assert [item["next_action"] for item in checkpoints] == ["complete the task"]
     assert result["verification"]["status"] == "PASS"
+    rendered = work.render(work.start(plane, "Add a note to src/app.py"))
+    assert rendered.startswith("Work state: ")
+    assert "\n\n" not in rendered.replace("\n\nDerived", "\nDerived") or "Derived from:" in rendered
+    assert "Reason: " in rendered
+    assert "  Claimed    yes, with a lease" in rendered or "waits" in rendered or "cannot start" in rendered
 
 
 def test_a_failing_gate_stops_completion_and_says_which(plane: Any) -> None:
@@ -163,9 +176,14 @@ def test_a_failing_gate_stops_completion_and_says_which(plane: Any) -> None:
 
     result = work.finish(plane, task["id"], session)
 
-    assert (result["status"], result["code"]) == ("BLOCKED", "VERIFICATION_FAILED")
-    assert result["reason"] == "verification did not pass, so the task cannot complete"
+    assert (result["status"], result["code"], result["reason"]) == (
+        "BLOCKED",
+        "VERIFICATION_FAILED",
+        "verification did not pass, so the task cannot complete",
+    )
+    assert isinstance(result["checkpoint"], str)
     assert result["completion"] is None
+    assert "verification" in result and "outstanding" in result
     assert plane.store.get(task["id"], "task")["state"] != "COMPLETED"
     failed = [
         record["kind"]
@@ -189,7 +207,11 @@ def test_evidence_that_went_stale_after_verification_blocks_completion(plane: An
     result = work.finish(plane, task["id"], session)
 
     assert result["status"] == "BLOCKED"
+    assert isinstance(result["code"], str) and result["code"]
+    assert isinstance(result["checkpoint"], str)
     assert result["outstanding"] == [REQUEST]
+    assert result["reason"]
+    assert result["completion"] is None
     assert plane.store.get(task["id"], "task")["state"] != "COMPLETED"
 
 
