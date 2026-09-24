@@ -200,6 +200,37 @@ def test_task_blocker_is_not_duplicated_when_task_is_in_context(project):
     }]
 
 
+def test_global_readiness_blockers_apply_to_the_task(project):
+    task = project.create_task(contract())["id"]
+    _write_handoff(project, task, blockers=[
+        {"code": "missing_core_type", "id": "project"},
+        {"code": "discovery_gap", "id": "operations"},
+        {"code": "missing_research", "id": "DISC-1"},
+        {"code": "unrelated", "id": "OTHER"},
+    ])
+    assert [reason.get("code") for reason in intelligence_snapshot(project.root, task)["reasons"]] == [
+        "missing_core_type", "discovery_gap", "missing_research",
+    ]
+    assert any(reason.get("code") == "missing_core_type"
+               for reason in project.readiness(task)["reasons"])
+
+
+@pytest.mark.parametrize(("ready", "blockers"), [
+    (True, [{"code": "missing_core_type", "id": "project"}]),
+    (False, []),
+    ("false", []),
+])
+def test_inconsistent_readiness_report_fails_closed(project, ready, blockers):
+    task = project.create_task(contract())["id"]
+    directory = _write_handoff(project, task)
+    (directory / "readiness.json").write_text(
+        json.dumps({"ready": ready, "blockers": blockers}), encoding="utf-8",
+    )
+    assert intelligence_snapshot(project.root, task)["reasons"] == [{
+        "type": "intelligence_invalid", "detail": "Invalid readiness report",
+    }]
+
+
 def test_blank_constraint_rows_do_not_hide_later_rules(project):
     task = project.create_task(contract())["id"]
     directory = _write_handoff(project, task, items=["CON-1"])

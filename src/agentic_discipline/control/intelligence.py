@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 UTF8_ENCODING = "utf-8"
+GLOBAL_BLOCKER_CODES = frozenset({"missing_core_type", "missing_research", "discovery_gap"})
 
 
 def intelligence_snapshot(root: Path, task_id: str) -> dict[str, Any]:
@@ -26,7 +27,9 @@ def intelligence_snapshot(root: Path, task_id: str) -> dict[str, Any]:
 
     try:
         readiness = read_json("readiness.json")
-        if not isinstance(readiness, dict) or not isinstance(readiness.get("blockers"), list):
+        if (not isinstance(readiness, dict) or not isinstance(readiness.get("ready"), bool)
+                or not isinstance(readiness.get("blockers"), list)
+                or readiness["ready"] == bool(readiness["blockers"])):
             raise ValueError("Invalid readiness report")
         if any(not isinstance(row, dict) or not isinstance(row.get("code"), str)
                or not isinstance(row.get("id"), str) for row in readiness["blockers"]):
@@ -34,7 +37,7 @@ def intelligence_snapshot(root: Path, task_id: str) -> dict[str, Any]:
         reasons = [
             {"type": "intelligence_blocker", "code": row.get("code"), "id": row.get("id")}
             for row in readiness["blockers"]
-            if row["id"] == task_id
+            if row["id"] == task_id or row["code"] in GLOBAL_BLOCKER_CODES
         ]
         constraints: list[dict[str, Any]] = []
         context = read_json("latest-context.json")

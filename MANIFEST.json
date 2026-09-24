@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-24T01:53:19.428374+00:00",
+  "generated_at_utc": "2026-09-24T02:05:10.393688+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -1335,8 +1335,8 @@
     },
     {
       "path": "src/agentic_discipline/control/intelligence.py",
-      "sha256": "ffaa3e70c8401753b7898d67b8a6d7856371df502c920445fe4449f4ce7a31ae",
-      "bytes": 3593
+      "sha256": "fc981505e0d3d7203ace45307e001ffa8e864d4280b1e7e9831cc1c10b4aa627",
+      "bytes": 3860
     },
     {
       "path": "src/agentic_discipline/control/knowledge.py",
@@ -1690,8 +1690,8 @@
     },
     {
       "path": "tests/control/test_intelligence_bridge.py",
-      "sha256": "2d31b5fbd8833405385c5f49eb5384d41e4a697ea6b55b776c8d9b19b83fbe38",
-      "bytes": 14728
+      "sha256": "80f995ab8608786bece9fa039177b298c3183b9342f63fba163c5b509084a68a",
+      "bytes": 16016
     },
     {
       "path": "tests/control/test_interfaces.py",
