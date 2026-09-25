@@ -555,6 +555,105 @@ def test_derive_critical_risk_decision_why_string(
         " requires explicit human acceptance: auth"
     )
 
+    # When signals is empty, fallback to 'critical paths'
+    monkeypatch.setattr(
+        "agentic_discipline.control.work._risk",
+        lambda scope: ("CRITICAL", []),
+    )
+    derived_empty = work.derive(plane, "Update src/app.py")
+    crit_empty = next(d for d in derived_empty["decisions"] if d["decision"] == "critical_risk")
+    assert crit_empty["why"] == (
+        "the project's own risk rules classify this scope as CRITICAL, which"
+        " requires explicit human acceptance: critical paths"
+    )
+
+
+def test_finish_populates_verification_artifact_on_blocked_status(
+    plane: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+
+    def failing_verify(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        return {
+            "status": "FAIL",
+            "verification": {"evidence": ["some_run"]},
+            "outstanding": ["do tests"],
+            "state": "CLAIMED",
+        }
+
+    monkeypatch.setattr("agentic_discipline.control.work.verify", failing_verify)
+    res = work.finish(plane, task["id"], session)
+    assert res["status"] == "BLOCKED"
+    assert res["code"] == "VERIFICATION_FAILED"
+    assert res["state"] == "CLAIMED"
+    assert res["verification"] == {"evidence": ["some_run"]}
+
+
+def test_finish_with_pre_verified_task_has_none_verification(
+    plane: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+
+    with plane.store.transaction():
+        cur = plane.store.get(task["id"])
+        plane.store.put("task", {**cur, "state": "READY"}, expected=cur["version"])
+
+    def ok_complete(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        return {"completed": True}
+
+    monkeypatch.setattr("agentic_discipline.control.verification.complete", ok_complete)
+    res = work.finish(plane, task["id"], session)
+    assert res["status"] == "PASS"
+    assert res["verification"] is None
+    assert res["state"] == "READY"
+
+
+def test_requirements_multi_word_and_stale_entity_handling() -> None:
+    store = _Store(
+        {
+            "entity": [
+                {
+                    "id": "stale_req",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "stale": True,
+                    "statement": "compute total",
+                },
+                {
+                    "id": "active_multi",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "statement": "compute",
+                    "excerpt": "total",
+                },
+            ]
+        }
+    )
+    matched = work._requirements(SimpleNamespace(store=store), "compute total")
+    assert [e["id"] for e in matched] == ["active_multi"]
+
+
+def test_render_with_none_or_empty_provenance() -> None:
+    result = {
+        "state": "READY",
+        "task": None,
+        "decisions": [],
+        "reason": "ready",
+        "provenance": None,
+    }
+    rendered = work.render(result)
+    assert "Derived from:" not in rendered
+    assert "Work state: READY" in rendered
+
+
+def test_terms_strips_punctuation_but_preserves_slashes_and_dots_properly() -> None:
+    # Test strip of ".-/" exactly
+    assert work.terms("...hello///") == ["hello"]
+    assert work.terms("-hello-") == ["hello"]
+
+
 
 def test_render_preserves_blank_lines_around_sections() -> None:
     result = {
