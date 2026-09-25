@@ -50,7 +50,7 @@ SHARD_TEST_SELECTION: dict[str, list[str]] = {
         "tests/test_verifier_result_contract.py",
         "tests/control/test_verifier_inputs.py",
     ],
-    "core": ["tests/", "--ignore=tests/control"],
+    "core": ["tests/"],
 }
 
 

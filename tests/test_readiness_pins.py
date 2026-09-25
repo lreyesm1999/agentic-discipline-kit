@@ -69,6 +69,8 @@ def test_an_incomplete_installation_names_each_missing_file(tmp_path: Path) -> N
         "agentic-discipline init --force",
     )
     assert check.detail == "the installation is incomplete: AGENTS.md, MASTER_PROMPT.md, schemas"
+    assert "schemas" in check.detail
+    assert "SCHEMAS" not in check.detail and "XXschemasXX" not in check.detail
 
 
 def test_a_complete_project_reports_the_kit_version(tmp_path: Path) -> None:
@@ -112,6 +114,7 @@ def test_version_pins_each_schema_outcome(tmp_path: Path) -> None:
     (root / "policies").mkdir()
     payload.write_text(json.dumps({"schema_version": PAYLOAD_SCHEMA}), encoding="utf-8")
     stale = readiness._version(root, "project")
+    assert stale.status == "STALE"
     assert (stale.name, stale.status, stale.repair) == (
         "version",
         "STALE",
@@ -207,11 +210,9 @@ def test_an_unopenable_database_names_the_failure(tmp_path: Path, monkeypatch: p
     monkeypatch.setattr("agentic_discipline.control.store.Store", refuse)
     check, store = readiness._control_plane(root, "project", "managed")
     assert store is None
-    assert (check.name, check.status, check.detail) == (
-        "control_plane",
-        "FAIL",
-        "the state database cannot be opened: locked",
-    )
+    assert check.name == "control_plane"
+    assert check.status == "FAIL"
+    assert check.detail == "the state database cannot be opened: locked"
 
 
 def test_project_adoption_and_knowledge_name_a_missing_plane(tmp_path: Path) -> None:
@@ -261,11 +262,9 @@ def test_an_unscannable_tree_is_a_knowledge_failure(
 
     monkeypatch.setattr("agentic_discipline.control.discovery.scan", boom)
     check = readiness._knowledge(tmp_path, Store(), deep=True)
-    assert (check.name, check.status, check.detail) == (
-        "knowledge",
-        "FAIL",
-        "the working tree cannot be scanned: denied",
-    )
+    assert check.name == "knowledge"
+    assert check.status == "FAIL"
+    assert check.detail == "the working tree cannot be scanned: denied"
 
 
 def test_task_orchestration_counts_open_work(tmp_path: Path) -> None:
@@ -397,6 +396,12 @@ def test_installation_recognizes_root_schemas_directory(tmp_path: Path) -> None:
     check = readiness._installation(root, "project")
     assert check.status == "PASS"
     assert check.name == "installation"
+    assert check.detail == f"version {__version__}"
+    assert check.repair is None
+    # Windows is case-insensitive, but let's test a non-matching name
+    (root / "schemas").rename(root / "other_schemas")
+    other_check = readiness._installation(root, "project")
+    assert other_check.status == "MISSING"
 
 
 def test_control_plane_database_open_failure_returns_exact_check(tmp_path: Path) -> None:
@@ -409,6 +414,10 @@ def test_control_plane_database_open_failure_returns_exact_check(tmp_path: Path)
     assert check.name == "control_plane"
     assert check.status == "FAIL"
     assert check.detail.startswith("the state database cannot be opened: ")
+    assert check.detail == (
+        "the state database cannot be opened: "
+        f"{check.detail.removeprefix('the state database cannot be opened: ')}"
+    )
 
 
 def test_knowledge_and_adoption_check_names_are_exact(tmp_path: Path) -> None:
@@ -480,4 +489,43 @@ def test_version_reads_utf8_config(tmp_path: Path) -> None:
     payload.write_text(json.dumps({"schema_version": PAYLOAD_SCHEMA, "desc": "diseño y gestión"}), encoding="utf-8")
     check = readiness._version(root, "project")
     assert check.status == "PASS"
+
+
+def test_inspect_calls_version_with_exact_kind(tmp_path: Path) -> None:
+    root = tmp_path / "absent_tree"
+    root.mkdir()
+    report = readiness.inspect(root, deep=False)
+    v_check = next(c for c in report["checks"] if c["name"] == "version")
+    assert v_check["status"] == "PASS"
+    assert v_check["detail"] == f"kit {__version__}"
+
+
+def test_knowledge_missing_check_name_is_exact(tmp_path: Path) -> None:
+    check = readiness._knowledge(tmp_path, None, deep=False)
+    assert check.name == "knowledge"
+    assert check.status == "MISSING"
+
+
+def test_project_adoption_missing_check_name_is_exact(tmp_path: Path) -> None:
+    check = readiness._project_adoption(tmp_path, None)
+    assert check.name == "project_adoption"
+    assert check.status == "MISSING"
+
+
+def test_knowledge_scanned_failure_name_is_exact(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    class FakeStore:
+        def list(self, kind: str) -> list[dict[str, Any]]:
+            if kind == "entity":
+                return [{"graph": "code", "path": "src/app.py"}]
+            return []
+
+    monkeypatch.setattr(
+        "agentic_discipline.control.discovery.scan",
+        lambda root: (_ for _ in ()).throw(AgenticError("disk full")),
+    )
+    check = readiness._knowledge(tmp_path, FakeStore(), deep=True)
+    assert check.name == "knowledge"
+    assert check.status == "FAIL"
+    assert "disk full" in check.detail
+
 

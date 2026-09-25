@@ -220,3 +220,9 @@ def test_restrict_mutmut_updates_pytest_test_selection(tmp_path: Path) -> None:
     assert 'only_mutate = [\n  "src/agentic_discipline/control/api.py",\n]' in text
     assert 'pytest_add_cli_args_test_selection = [\n  "tests/control/",\n]' in text
 
+    # Core uses all tests/
+    _tree(tmp_path)
+    SCOPE["restrict_mutmut"](tmp_path, ["src/agentic_discipline/cli.py"], "core")
+    core_text = (tmp_path / "pyproject.toml").read_text(encoding="utf-8")
+    assert 'pytest_add_cli_args_test_selection = [\n  "tests/",\n]' in core_text
+
