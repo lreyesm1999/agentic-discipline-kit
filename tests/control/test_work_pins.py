@@ -91,6 +91,51 @@ def test_requirements_skip_a_non_match_and_read_statement_and_excerpt() -> None:
     matched = work._requirements(SimpleNamespace(store=store), "compute the total")
     assert [entity["id"] for entity in matched] == ["b", "c"]
 
+    # When mutmut replaces continue with break on non-matching or stale entity:
+    # A store with the first entity not matching must not break the loop!
+    store_first_unrelated = _Store(
+        {
+            "entity": [
+                {
+                    "id": "unrelated_1",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "name": "something else entirely",
+                },
+                {
+                    "id": "target_req",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "statement": "important work item",
+                },
+            ]
+        }
+    )
+    res = work._requirements(SimpleNamespace(store=store_first_unrelated), "important work item")
+    assert len(res) == 1
+    assert res[0]["id"] == "target_req"
+
+    # Multi-word statement joining: text = " ".join(...)
+    # If joined with "XX XX", overlap of multi-word phrase inside entity won't match words of request
+    store_multi = _Store(
+        {
+            "entity": [
+                {
+                    "id": "multi_word",
+                    "graph": "requirement",
+                    "lifecycle": "ACTIVE",
+                    "name": "first",
+                    "statement": "second",
+                    "excerpt": "third",
+                }
+            ]
+        }
+    )
+    res_multi = work._requirements(SimpleNamespace(store=store_multi), "first second third")
+    assert len(res_multi) == 1
+    assert res_multi[0]["id"] == "multi_word"
+
+
 
 def test_an_optional_gate_does_not_hide_the_required_one(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -370,6 +415,9 @@ def test_finish_uses_the_error_code_when_it_has_one_and_the_default_when_it_does
     again = work.finish(plane, task["id"], session)
     assert again["code"] == "COMPLETION_REFUSED"
     assert again["reason"] == "completion was refused"
+    assert again["state"] == "VERIFYING"
+    assert "state" in again
+    assert "STATE" not in again and "XXstateXX" not in again
 
 
 def test_outstanding_falls_back_to_acceptance_when_obligations_key_is_missing(
@@ -556,6 +604,7 @@ def test_derive_critical_risk_decision_why_string(
     )
 
     # When signals is empty, fallback to 'critical paths'
+    # Mutants test `and` vs `or`: `', '.join(signals) and 'critical paths'` produces '' when signals is empty!
     monkeypatch.setattr(
         "agentic_discipline.control.work._risk",
         lambda scope: ("CRITICAL", []),
@@ -566,6 +615,20 @@ def test_derive_critical_risk_decision_why_string(
         "the project's own risk rules classify this scope as CRITICAL, which"
         " requires explicit human acceptance: critical paths"
     )
+    assert "critical paths" in crit_empty["why"]
+
+    # When signals has items, `or 'critical paths'` must produce the signals, not 'critical paths'
+    monkeypatch.setattr(
+        "agentic_discipline.control.work._risk",
+        lambda scope: ("CRITICAL", ["payment_module"]),
+    )
+    derived_with_signal = work.derive(plane, "Update src/app.py")
+    crit_sig = next(d for d in derived_with_signal["decisions"] if d["decision"] == "critical_risk")
+    assert "payment_module" in crit_sig["why"]
+    assert "critical paths" not in crit_sig["why"]
+    assert crit_sig["why"].startswith("the project's own risk rules classify this scope as CRITICAL, which requires explicit human acceptance: ")
+    assert "THE PROJECT'S OWN RISK RULES" not in crit_sig["why"]
+
 
 
 def test_finish_populates_verification_artifact_on_blocked_status(
@@ -588,6 +651,8 @@ def test_finish_populates_verification_artifact_on_blocked_status(
     assert res["code"] == "VERIFICATION_FAILED"
     assert res["state"] == "CLAIMED"
     assert res["verification"] == {"evidence": ["some_run"]}
+    assert "verification" in res
+    assert "VERIFICATION" not in res and "XXverificationXX" not in res
 
 
 def test_finish_with_pre_verified_task_has_none_verification(
@@ -635,23 +700,117 @@ def test_requirements_multi_word_and_stale_entity_handling() -> None:
     assert [e["id"] for e in matched] == ["active_multi"]
 
 
-def test_render_with_none_or_empty_provenance() -> None:
-    result = {
+def test_finish_verification_field_is_preserved_when_completion_fails_with_agentic_error(
+    plane: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+
+    def pass_verify(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        return {
+            "status": "PASS",
+            "verification": {"evidence": ["run_passed"]},
+            "outstanding": [],
+            "state": "CLAIMED",
+        }
+
+    def failing_complete(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        raise ControlError("INTEGRATION_FAILED", "integration checks failed")
+
+    monkeypatch.setattr("agentic_discipline.control.work.verify", pass_verify)
+    monkeypatch.setattr("agentic_discipline.control.verification.complete", failing_complete)
+
+    res = work.finish(plane, task["id"], session)
+    assert res["status"] == "BLOCKED"
+    assert res["code"] == "INTEGRATION_FAILED"
+    assert res["verification"] == {"evidence": ["run_passed"]}
+    assert "verification" in res
+
+
+def test_finish_verification_field_is_preserved_on_successful_completion(
+    plane: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+
+    def pass_verify(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        return {
+            "status": "PASS",
+            "verification": {"evidence": ["run_passed_ok"]},
+            "outstanding": [],
+            "state": "CLAIMED",
+        }
+
+    def ok_complete(plane: Any, task_id: str, session: str) -> dict[str, Any]:
+        return {"done": True}
+
+    monkeypatch.setattr("agentic_discipline.control.work.verify", pass_verify)
+    monkeypatch.setattr("agentic_discipline.control.verification.complete", ok_complete)
+
+    res = work.finish(plane, task["id"], session)
+    assert res["status"] == "PASS"
+    assert res["verification"] == {"evidence": ["run_passed_ok"]}
+    assert "verification" in res
+    assert "VERIFICATION" not in res and "XXverificationXX" not in res
+
+
+def test_render_with_omitted_provenance_key() -> None:
+    # When provenance key is not present in result at all, get("provenance", {}) returns {}
+    # Mutants replace default {} with None, causing if provenance to fail or crash if None
+    result_without_key = {
         "state": "READY",
         "task": None,
         "decisions": [],
         "reason": "ready",
-        "provenance": None,
     }
-    rendered = work.render(result)
+    rendered = work.render(result_without_key)
     assert "Derived from:" not in rendered
-    assert "Work state: READY" in rendered
+    assert "Work state: READY\n\n\nReason: ready" == rendered
+
+    # When provenance is {} explicitly
+    result_empty = {
+        "state": "READY",
+        "task": None,
+        "decisions": [],
+        "reason": "ready",
+        "provenance": {},
+    }
+    assert work.render(result_empty) == rendered
+
+    # When provenance has entries
+    result_with_prov = {
+        "state": "READY",
+        "task": None,
+        "decisions": [],
+        "reason": "ready",
+        "provenance": {
+            "scope_from": "from_test",
+            "acceptance_from": "acc_test",
+            "verifiers_from": "ver_test",
+        },
+    }
+    rendered_prov = work.render(result_with_prov)
+    assert "Derived from:" in rendered_prov
+    assert "  scope       from_test" in rendered_prov
 
 
-def test_terms_strips_punctuation_but_preserves_slashes_and_dots_properly() -> None:
-    # Test strip of ".-/" exactly
-    assert work.terms("...hello///") == ["hello"]
+def test_terms_strips_punctuation_characters_and_survives_partial_strips() -> None:
+    # Mutants replace ".-/" with "XX.-/XX"
+    # A token with leading 'X' or trailing 'X' must not be stripped!
+    # A token like "...hello---" stripped by ".-/" produces "hello".
+    # Stripped by "XX.-/XX" with leading/trailing X:
+    # "Xhello" stripped of "XX.-/XX" loses 'X'! But stripped of ".-/" keeps 'X'!
+    assert work.terms("XhelloX") == ["xhellox"]
+    assert work.terms(".XhelloX.") == ["xhellox"]
     assert work.terms("-hello-") == ["hello"]
+    assert work.terms("/hello/") == ["hello"]
+    assert work.terms(".hello.") == ["hello"]
+    assert work.terms("...hello...") == ["hello"]
+    assert work.terms("///hello///") == ["hello"]
+    assert work.terms("---hello---") == ["hello"]
+    assert work.terms("X-hello-X") == ["x-hello-x"]
+
+
 
 
 
