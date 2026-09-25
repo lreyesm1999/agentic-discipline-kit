@@ -112,6 +112,17 @@ def _rule(tmp_path: Path, original: str, mutant: str, header: str = HEADER) -> s
             'return re.compile(r"WHEN", re.IGNORECASE | re.MULTILINE)',
             "ignorecase-pattern",
         ),
+        # Empty dict default in boolean condition.
+        (
+            'if dict.get("key", {}): return 1',
+            'if dict.get("key", None): return 1',
+            "dict-default-empty",
+        ),
+        (
+            'if not dict.get("key", {}): return 1',
+            'if not dict.get("key"): return 1',
+            "dict-default-empty",
+        ),
     ],
 )
 def test_each_rule_accepts_the_mutations_it_proves(

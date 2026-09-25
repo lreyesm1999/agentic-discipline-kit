@@ -18,7 +18,7 @@
         "required": false,
         "help": "show program's version number and exit",
         "metavar": null,
-        "version": "2.0.0"
+        "version": "2.1.0"
       }
     ],
     "subcommands": {
@@ -1294,7 +1294,7 @@
         "required": false,
         "help": "show program's version number and exit",
         "metavar": null,
-        "version": "2.0.0"
+        "version": "2.1.0"
       },
       {
         "action": "_StoreAction",

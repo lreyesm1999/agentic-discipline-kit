@@ -68,7 +68,7 @@ write access. Require Code Owner approval for protected-contract and workflow ch
 
 ## Releases
 
-Semantic versioning; the current release is `v2.0.0`. Pushing a `v*.*.*` tag runs
+Semantic versioning; the current release is `v2.1.0`. Pushing a `v*.*.*` tag runs
 `release.yml`, which builds the Python distribution and an SBOM, builds and smoke-tests
 the `agentic-discipline` and `agentic` executables for Linux and Windows, and publishes:
 

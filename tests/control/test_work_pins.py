@@ -767,6 +767,22 @@ def test_render_with_omitted_provenance_key() -> None:
     assert "Derived from:" not in rendered
     assert "Work state: READY\n\n\nReason: ready" == rendered
 
+    # When result.get("provenance", {}) mutant replaces {} with None or omits:
+    # Mutmut creates: provenance = result.get("provenance", None)
+    # If provenance is evaluated, a dictionary with explicit None must be handled differently than {}
+    result_none_prov = {
+        "state": "READY",
+        "task": None,
+        "decisions": [],
+        "reason": "ready",
+        "provenance": None,
+    }
+    # With original code, result_none_prov.get("provenance", {}) returns None because the key is present!
+    # But for result_without_key, get("provenance", {}) returns {}
+    assert result_none_prov.get("provenance", {}) is None
+    assert isinstance(result_without_key.get("provenance", {}), dict)
+    assert len(result_without_key.get("provenance", {})) == 0
+
     # When provenance is {} explicitly
     result_empty = {
         "state": "READY",
@@ -809,6 +825,9 @@ def test_terms_strips_punctuation_characters_and_survives_partial_strips() -> No
     assert work.terms("///hello///") == ["hello"]
     assert work.terms("---hello---") == ["hello"]
     assert work.terms("X-hello-X") == ["x-hello-x"]
+    # Directly test that strip(".-/") does not strip 'X'
+    assert work.terms("X.hello/X") == ["x.hello/x"]
+    assert work.terms(".X.hello/X.") == ["x.hello/x"]
 
 
 

@@ -6,6 +6,8 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-25
+
 ### Added
 - **The canonical execution rule, in one source and on every agent surface.**
   `agentic-autonomous-project-execution` now opens with it: when the kit is installed and the

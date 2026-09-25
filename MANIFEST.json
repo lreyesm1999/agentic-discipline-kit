@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
-  "version": "2.0.0",
-  "generated_at_utc": "2026-09-25T20:23:32.237780+00:00",
+  "version": "2.1.0",
+  "generated_at_utc": "2026-09-25T23:12:23.933515+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -10,7 +10,7 @@
     },
     {
       "path": ".claude-plugin/marketplace.json",
-      "sha256": "8c019090868a81b5e6fb10e330610920386166cf8482e2b289372a3722bda0dc",
+      "sha256": "e6e6ef5dc24a559d9e94a70d118161db0555b00605b8e2aad66ae348859e03eb",
       "bytes": 974
     },
     {
@@ -70,8 +70,8 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "59321b6524c252949aa95a9de1344b6b049bff033adf2662a5db39580ef70bbc",
-      "bytes": 5081
+      "sha256": "397bc31d7a72425d574da545c82c02ee8b7291535973bb2a522e7f6f57c04cce",
+      "bytes": 5426
     },
     {
       "path": ".github/workflows/release.yml",
@@ -100,8 +100,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "0debf04a6b80b8c5994a50832f27364d2b393365eacda4276a465e5d7b7bbc52",
-      "bytes": 27006
+      "sha256": "77ac7e5d63ac2a752f0be9e6de972bd5bbb6c117eb0376767b3e4ae13cd65050",
+      "bytes": 27031
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -120,7 +120,7 @@
     },
     {
       "path": "GITHUB_SETUP.md",
-      "sha256": "ab78edfa5f58c15fde325025f346e35564e7c57425a19c2d5523e1b02961c236",
+      "sha256": "578672a8828757d6e2e47aac7cb2124927ff9ae8265e8e5fd9677845f8d7c7f5",
       "bytes": 2533
     },
     {
@@ -165,7 +165,7 @@
     },
     {
       "path": "VERSION",
-      "sha256": "c28fcca53637bc88e124af1725df13cb98c69dedefd62fb3cdbe1cdb6b760624",
+      "sha256": "c89b87c262e9d5ffd20e73aac74a1772adcc9f5a21682cc33adcf5086e5fef5c",
       "bytes": 6
     },
     {
@@ -325,8 +325,8 @@
     },
     {
       "path": "docs/IMPLEMENTATION_STATUS.md",
-      "sha256": "41f43198e0fc4738b22d45654f0ce3ec1bf7d115e4f99fa78475fdfb4f94ea17",
-      "bytes": 13876
+      "sha256": "ea2ee97eb7b5f821e184f148a4cce84af289060a4c64695a5330c07768c52652",
+      "bytes": 13544
     },
     {
       "path": "docs/adoption.md",
@@ -810,7 +810,7 @@
     },
     {
       "path": "packaging/claude-plugin/.claude-plugin/plugin.json",
-      "sha256": "3d62d8dc8b6ebc926015f27cae58b94b65f806e6b9dbe7166511fa00221e3aa2",
+      "sha256": "c7868fe5ced3b186b528d3c8d696f799278d76c90ab31514eef03d5ff0c99b54",
       "bytes": 474
     },
     {
@@ -960,7 +960,7 @@
     },
     {
       "path": "packaging/npm/package.json",
-      "sha256": "cd70e748aae077b33d128cb16270e3a4890289d2227f864ef9dc23c1a2ec2f18",
+      "sha256": "678ace9447b12c7ed3ad39fbba7c6c54d76241cece0155b51db38222d915e1fc",
       "bytes": 815
     },
     {
@@ -1005,7 +1005,7 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "7872986ddce96696787b5c4588785447f90afb8f3023fda47e6cd2357786dd65",
+      "sha256": "f1b768c03b5881af5414ffbba9b730f57527cda098ddd8010153918de7d6906e",
       "bytes": 5858
     },
     {
@@ -1095,13 +1095,13 @@
     },
     {
       "path": "scripts/mutation_gate.py",
-      "sha256": "950ce30cdede3f871f0d2bc955805435f8e1a23235fe13375f6cf4a584fdb062",
-      "bytes": 20538
+      "sha256": "44e884d1239e85d8c9567010fadca0fd7d4c1cebc0342d3feb480548017e5516",
+      "bytes": 22812
     },
     {
       "path": "scripts/mutation_scope.py",
-      "sha256": "2469217f06884a4c492fd4e09c348b1515b7188ce3667a3531f333595824d267",
-      "bytes": 10319
+      "sha256": "be9a10cf740ad322351f21b06bdd79fb031d2cf827458400b3bdf16f24d6a508",
+      "bytes": 10911
     },
     {
       "path": "scripts/repo_check.py",
@@ -1215,7 +1215,7 @@
     },
     {
       "path": "src/agentic_discipline/__init__.py",
-      "sha256": "a25b42ecbff864b9d2752077f09fbdbc8ce8c8e20f3735d6ff6860205fe777c8",
+      "sha256": "4fef952f64acc2b23be0f53327b0539ea4e51b0cbc3ced5d327fc6b126c8085f",
       "bytes": 53
     },
     {
@@ -1500,7 +1500,7 @@
     },
     {
       "path": "tests/cli_surface.json",
-      "sha256": "f5d2763eb414cf54e772c33e7597edbbd0ce47c51e66584cbc886bda4f7c7251",
+      "sha256": "9fce0ddda8c671a9b96a01fe29b8c2ef3a43fc8b32267cb74e9a2ab9580a03e6",
       "bytes": 81598
     },
     {
@@ -1865,8 +1865,8 @@
     },
     {
       "path": "tests/control/test_work_pins.py",
-      "sha256": "309798e3e14733f94208d83c2e771af440e73ffe6e35cf041edafa166e055aa3",
-      "bytes": 31445
+      "sha256": "3b6dd8bcda39bd2aca8e4837fe17ed2122436c0534989c39881565ab12197688",
+      "bytes": 32378
     },
     {
       "path": "tests/control/test_work_records.py",
@@ -2125,8 +2125,8 @@
     },
     {
       "path": "tests/test_mutation_equivalence.py",
-      "sha256": "93fa9b842b08f9bfb99a8d987c5eadc7d57bf1eb8ec523ed27e909d598dec8c6",
-      "bytes": 18347
+      "sha256": "d21cfd2773e08ebbd5ff5b2149c5a4e30dacd3460787a2b561b7880644e82b1b",
+      "bytes": 18706
     },
     {
       "path": "tests/test_mutation_gate.py",
@@ -2135,8 +2135,8 @@
     },
     {
       "path": "tests/test_mutation_scope.py",
-      "sha256": "44f6380e025612cc2160231439207e0377da3f8e1ceaf6070ce2acf71a1f94d4",
-      "bytes": 8319
+      "sha256": "ea146d80f581604a9685ee45951da2cb1d1b53661c4ed20d39663877327671ad",
+      "bytes": 9054
     },
     {
       "path": "tests/test_optional_keys.py",

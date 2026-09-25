@@ -276,6 +276,7 @@ def _rule(module: ast.Module, function: str, number: str) -> str | None:
         ("sql-case", _sql_case),
         ("cast-type", _cast_type),
         ("ignorecase-pattern", _ignorecase_pattern),
+        ("dict-default-empty", _dict_default_empty),
     ):
         if check(module, ancestry, before, after):
             return name
@@ -294,7 +295,9 @@ def _compare(before: Any, after: Any, ancestry: Ancestry, out: list[Difference])
             return
         for index, (left, right) in enumerate(zip(before, after, strict=True)):
             located = (
-                ancestry[:-1] + [(ancestry[-1][0], ancestry[-1][1], index)] if ancestry else []
+                ancestry[:-1] + [(ancestry[-1][0], ancestry[-1][1], index)]
+                if ancestry
+                else [(ancestry, "list", index)]
             )
             _compare(left, right, located, out)
         return
@@ -437,6 +440,49 @@ def _names_ignorecase(node: ast.AST) -> bool:
         and part.attr in {"IGNORECASE", "I"}
         for part in ast.walk(node)
     )
+
+
+def _dict_default_empty(module: ast.Module, ancestry: Ancestry, before: Any, after: Any) -> bool:
+    """A .get(key, {}) whose default is mutated to None or omitted."""
+    # Case 1: argument mutated: before is ast.Dict empty, after is None or ast.Constant(None)
+    # Case 2: argument list mutated: before is [key, {}], after is [key]
+    if isinstance(before, list) and isinstance(after, list) and len(before) == 2 and len(after) == 1:
+        if isinstance(before[1], ast.Dict) and len(before[1].keys) == 0:
+            if ancestry:
+                parent, field, _ = ancestry[-1]
+                if isinstance(parent, ast.Call) and field == "args":
+                    if isinstance(parent.func, ast.Attribute) and parent.func.attr == "get":
+                        if len(ancestry) >= 2:
+                            grandparent, gp_field, _ = ancestry[-2]
+                            if isinstance(grandparent, (ast.If, ast.While)) and gp_field == "test":
+                                return True
+                            if isinstance(grandparent, ast.UnaryOp) and isinstance(grandparent.op, ast.Not):
+                                return True
+                            if isinstance(grandparent, ast.BoolOp):
+                                return True
+        return False
+
+    if not (isinstance(before, ast.Dict) and len(before.keys) == 0):
+        return False
+    if after is not None and not (isinstance(after, ast.Constant) and after.value is None):
+        return False
+    if not ancestry:
+        return False
+    parent, field, index = ancestry[-1]
+    if not (isinstance(parent, ast.Call) and field == "args" and index == 1):
+        return False
+    if not (isinstance(parent.func, ast.Attribute) and parent.func.attr == "get"):
+        return False
+    if len(ancestry) >= 2:
+        grandparent, gp_field, _ = ancestry[-2]
+        if isinstance(grandparent, (ast.If, ast.While)) and gp_field == "test":
+            return True
+        if isinstance(grandparent, ast.UnaryOp) and isinstance(grandparent.op, ast.Not):
+            return True
+        if isinstance(grandparent, ast.BoolOp):
+            return True
+    return False
+
 
 
 def _only_literal_case(before: str, after: str) -> bool:
