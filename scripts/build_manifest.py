@@ -22,7 +22,7 @@ def included(path: Path, root: Path) -> bool:
     relative = path.relative_to(root)
     if relative.parts[:2] == (".agentic", "control"):
         return False
-    if path.name in {"MANIFEST.json", ".coverage", "coverage.json", "coverage.xml"} or any(
+    if path.name in {"MANIFEST.json", ".coverage", "coverage.json", "coverage.xml", "mutation-scope.txt"} or any(
         part in EXCLUDED_PARTS or part.endswith(".egg-info") for part in relative.parts
     ):
         return False

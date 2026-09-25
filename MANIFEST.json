@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-25T03:53:35.865051+00:00",
+  "generated_at_utc": "2026-09-25T03:57:36.261608+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -804,11 +804,6 @@
       "bytes": 191
     },
     {
-      "path": "mutation-scope.txt",
-      "sha256": "18d4f85c29b85396d4fdd8c0d72e016c3e5f6f3b955d7e9d8dad39fa0e404e88",
-      "bytes": 713
-    },
-    {
       "path": "packaging/agentic-discipline.spec",
       "sha256": "bdddf6d06af497921b1af3cdac696ae8343a5bd9a6b98ecb04c67739401ab21d",
       "bytes": 1578
@@ -1080,8 +1075,8 @@
     },
     {
       "path": "scripts/build_manifest.py",
-      "sha256": "42f4642b75aa76bbd41de97069a7e303c55f3530bd7efd5e56c11c857ae1a13e",
-      "bytes": 1940
+      "sha256": "65ccb061a265c5348aef74448d25f4c29e39a0e15ecee6868d400ce621f9f8b1",
+      "bytes": 1962
     },
     {
       "path": "scripts/checkpoint.py",
