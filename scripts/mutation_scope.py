@@ -37,6 +37,21 @@ SHARDS: tuple[tuple[str, str], ...] = (
     ("core", "src/agentic_discipline/"),
 )
 MUTMUT_MARKER = "mutate_only_covered_lines = true\n"
+TEST_SELECTION_MARKER = 'pytest_add_cli_args_test_selection = ["tests/"]\n'
+SHARD_TEST_SELECTION: dict[str, list[str]] = {
+    "assurance": ["tests/control/"],
+    "control": ["tests/control/"],
+    "verifier": [
+        "tests/verifier/",
+        "tests/test_verifier.py",
+        "tests/test_verifier_contract_rules.py",
+        "tests/test_verifier_execution_paths.py",
+        "tests/test_verifier_registration.py",
+        "tests/test_verifier_result_contract.py",
+        "tests/control/test_verifier_inputs.py",
+    ],
+    "core": ["tests/", "--ignore=tests/control"],
+}
 
 
 def shard_of(path: str) -> str | None:
@@ -69,10 +84,12 @@ def files_for_module(root: Path, module: str) -> set[str]:
         file = candidate.with_suffix(".py")
         if file.is_file():
             return {file.relative_to(root).as_posix()}
-        if (candidate / "__init__.py").is_file() and end == len(parts):
-            return {
-                path.relative_to(root).as_posix() for path in candidate.rglob("*.py") if path.is_file()
-            }
+        if (candidate / "__init__.py").is_file():
+            if end == len(parts):
+                return {
+                    path.relative_to(root).as_posix() for path in candidate.rglob("*.py") if path.is_file()
+                }
+            return {(candidate / "__init__.py").relative_to(root).as_posix()}
     return set()
 
 
@@ -83,7 +100,6 @@ def modules_imported_by(path: Path) -> set[str]:
         if isinstance(node, ast.Import):
             found.update(alias.name for alias in node.names)
         elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
-            found.add(node.module)
             found.update(f"{node.module}.{alias.name}" for alias in node.names)
     return {
         name
@@ -192,8 +208,8 @@ def changed_files(base: str) -> list[str]:
     return [line.strip() for line in completed.stdout.splitlines() if line.strip()]
 
 
-def restrict_mutmut(root: Path, files: list[str]) -> None:
-    """Point mutmut's ``only_mutate`` at the files this shard will run."""
+def restrict_mutmut(root: Path, files: list[str], shard: str | None = None) -> None:
+    """Point mutmut's ``only_mutate`` and targeted tests at what this shard runs."""
 
     path = root / "pyproject.toml"
     text = path.read_text(encoding="utf-8")
@@ -202,7 +218,16 @@ def restrict_mutmut(root: Path, files: list[str]) -> None:
     if MUTMUT_MARKER not in text:
         raise SystemExit("pyproject.toml is missing the mutmut coverage marker")
     block = "only_mutate = [\n" + "".join(f'  "{item}",\n' for item in files) + "]\n"
-    path.write_text(text.replace(MUTMUT_MARKER, MUTMUT_MARKER + block, 1), encoding="utf-8")
+    new_text = text.replace(MUTMUT_MARKER, MUTMUT_MARKER + block, 1)
+    if shard and shard in SHARD_TEST_SELECTION and TEST_SELECTION_MARKER in new_text:
+        selection = SHARD_TEST_SELECTION[shard]
+        formatted = (
+            "pytest_add_cli_args_test_selection = [\n"
+            + "".join(f'  "{item}",\n' for item in selection)
+            + "]\n"
+        )
+        new_text = new_text.replace(TEST_SELECTION_MARKER, formatted, 1)
+    path.write_text(new_text, encoding="utf-8")
 
 
 def publish_count(count: int) -> None:
@@ -233,7 +258,7 @@ def main() -> int:
         files = select(root, args.shard, None)
     (root / "mutation-scope.txt").write_text("".join(f"{path}\n" for path in files), encoding="utf-8")
     if files:
-        restrict_mutmut(root, files)
+        restrict_mutmut(root, files, args.shard)
     publish_count(len(files))
     print(json.dumps({"shard": args.shard, "event": args.event, "count": len(files), "files": files}))
     return 0
