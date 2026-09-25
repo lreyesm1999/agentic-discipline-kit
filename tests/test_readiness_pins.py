@@ -386,3 +386,98 @@ def test_inspect_passes_the_resolved_root(tmp_path: Path) -> None:
     assert report["root"] == str(tmp_path.resolve())
     assert report["reason"] == "Agentic Discipline is not installed in this directory"
     assert report["status"] == "FAIL"
+
+
+def test_installation_recognizes_root_schemas_directory(tmp_path: Path) -> None:
+    root = tmp_path / "proj"
+    root.mkdir()
+    (root / "AGENTS.md").write_text("x", encoding="utf-8")
+    (root / "MASTER_PROMPT.md").write_text("x", encoding="utf-8")
+    (root / "schemas").mkdir()
+    check = readiness._installation(root, "project")
+    assert check.status == "PASS"
+    assert check.name == "installation"
+
+
+def test_control_plane_database_open_failure_returns_exact_check(tmp_path: Path) -> None:
+    root = tmp_path / "proj"
+    root.mkdir()
+    (root / ".agentic" / "control").mkdir(parents=True)
+    (root / ".agentic" / "control" / "state.db").write_bytes(b"corrupt")
+    check, store = readiness._control_plane(root, "project", "managed")
+    assert store is None
+    assert check.name == "control_plane"
+    assert check.status == "FAIL"
+    assert check.detail.startswith("the state database cannot be opened: ")
+
+
+def test_knowledge_and_adoption_check_names_are_exact(tmp_path: Path) -> None:
+    class DummyStore:
+        def list(self, kind: str) -> list[dict[str, Any]]:
+            if kind == "entity":
+                return [{"graph": "code", "path": "src/app.py"}]
+            if kind == "project":
+                return [{"name": "proj", "root": str(tmp_path)}]
+            return []
+
+    store = DummyStore()
+    k_check = readiness._knowledge(tmp_path, store, deep=False)
+    assert k_check.name == "knowledge"
+    assert k_check.status == "PASS"
+
+    p_check = readiness._project_adoption(tmp_path, store)
+    assert p_check.name == "project_adoption"
+    assert p_check.status == "PASS"
+
+
+def test_verdict_advisory_pass_does_not_count_as_drift(tmp_path: Path) -> None:
+    checks = [
+        Check(name, "PASS", "ok", advisory=(name == "git_integration"))
+        for name in (
+            *readiness.INSTALLATION_CHECKS,
+            *readiness.PROJECT_CHECKS,
+            *readiness.ENVIRONMENT_CHECKS,
+        )
+    ]
+    verdict = readiness._verdict(tmp_path, "project", "managed", checks)
+    assert verdict["drift"] == []
+    assert verdict["execution_readiness"] == "READY"
+
+
+def test_verdict_failed_reason_is_populated(tmp_path: Path) -> None:
+    checks = [
+        Check(name, "FAIL" if name == "installation" else "PASS", "missing installation")
+        for name in (
+            *readiness.INSTALLATION_CHECKS,
+            *readiness.PROJECT_CHECKS,
+            *readiness.ENVIRONMENT_CHECKS,
+        )
+    ]
+    verdict = readiness._verdict(tmp_path, "project", "managed", checks)
+    assert verdict["execution_readiness"] == "BROKEN"
+    assert verdict["reason"] == "Installation: missing installation"
+
+
+def test_inspect_fails_on_newer_schema_when_shape_is_project(tmp_path: Path) -> None:
+    root = _project(tmp_path)
+    payload = root / ".agentic" / "config.json"
+    payload.write_text(json.dumps({"schema_version": "99"}), encoding="utf-8")
+    report = readiness.inspect(root, deep=False)
+    v_check = next(c for c in report["checks"] if c["name"] == "version")
+    assert v_check["status"] == "FAIL"
+
+
+def test_check_report_includes_caused_by_key() -> None:
+    check = Check("knowledge", "MISSING", "no store", caused_by="control_plane")
+    rep = check.report()
+    assert "caused_by" in rep
+    assert rep["caused_by"] == "control_plane"
+
+
+def test_version_reads_utf8_config(tmp_path: Path) -> None:
+    root = _project(tmp_path)
+    payload = root / ".agentic" / "config.json"
+    payload.write_text(json.dumps({"schema_version": PAYLOAD_SCHEMA, "desc": "diseño y gestión"}), encoding="utf-8")
+    check = readiness._version(root, "project")
+    assert check.status == "PASS"
+

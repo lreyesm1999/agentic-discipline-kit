@@ -370,3 +370,221 @@ def test_finish_uses_the_error_code_when_it_has_one_and_the_default_when_it_does
     again = work.finish(plane, task["id"], session)
     assert again["code"] == "COMPLETION_REFUSED"
     assert again["reason"] == "completion was refused"
+
+
+def test_outstanding_falls_back_to_acceptance_when_obligations_key_is_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("agentic_discipline.control.assurance.service.enabled", lambda plane: True)
+    monkeypatch.setattr(
+        "agentic_discipline.control.assurance.service.debt_report",
+        lambda plane, task_id=None: {"tasks": [{}]},
+    )
+    plane = SimpleNamespace(store=_Store({"evidence": []}))
+    task = {"id": "T", "required_evidence": ["unit"], "acceptance": ["prove total"]}
+    assert work._outstanding(plane, task) == ["prove total"]
+
+
+def test_outstanding_tolerates_missing_outstanding_key_in_report(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("agentic_discipline.control.assurance.service.enabled", lambda plane: True)
+    monkeypatch.setattr(
+        "agentic_discipline.control.assurance.service.debt_report",
+        lambda plane, task_id=None: {"tasks": [{"obligations": 1}]},
+    )
+    plane = SimpleNamespace(store=_Store({"evidence": []}))
+    task = {"id": "T", "required_evidence": ["unit"], "acceptance": ["prove total"]}
+    assert work._outstanding(plane, task) == []
+
+
+def test_outstanding_does_not_count_passing_evidence_from_another_task(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("agentic_discipline.control.assurance.service.enabled", lambda plane: False)
+    plane = SimpleNamespace(
+        store=_Store({
+            "evidence": [{"task_id": "OTHER", "kind": "unit", "result": "PASS"}]
+        })
+    )
+    task = {"id": "T", "required_evidence": ["unit"], "acceptance": ["prove total"]}
+    assert work._outstanding(plane, task) == ["prove total"]
+
+
+def test_outstanding_handles_debt_report_without_tasks_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("agentic_discipline.control.assurance.service.enabled", lambda plane: True)
+    monkeypatch.setattr(
+        "agentic_discipline.control.assurance.service.debt_report",
+        lambda plane, task_id=None: {},
+    )
+    plane = SimpleNamespace(store=_Store({"evidence": []}))
+    task = {"id": "T", "required_evidence": ["unit"], "acceptance": ["prove total"]}
+    assert work._outstanding(plane, task) == ["prove total"]
+
+
+def test_readiness_dependency_in_completed_state_is_not_waiting() -> None:
+    task = {"id": "T", "dependencies": ["dep"]}
+    store = _Store({"task": [{"id": "dep", "state": "COMPLETED"}]})
+    plane = SimpleNamespace(
+        store=store,
+        readiness=lambda task_id: {"status": "BLOCKED", "reasons": [{"type": "scope"}]},
+    )
+    res = work._readiness(plane, task)
+    assert res["state"] == "BLOCKED"
+    assert res["waiting_for"] == []
+    assert "reasons" in res
+    assert res["reasons"] == [{"type": "scope"}]
+
+
+def test_report_held_elsewhere_ignores_own_lease() -> None:
+    task = {"id": "T", "state": "READY", "dependencies": []}
+    lease = {"id": "L", "state": "ACTIVE", "task_id": "T"}
+    store = _Store({"lease": [lease], "task": [task]})
+    plane = SimpleNamespace(
+        store=store,
+        readiness=lambda task_id: {"status": "READY", "reasons": []},
+        root=".",
+    )
+    rep = work._report(
+        plane,
+        {},
+        {"provenance": {"request": "do total"}},
+        task,
+        "derived",
+        [],
+        claim=False,
+        agent="agent",
+        capabilities=None,
+    )
+    assert rep["state"] == "READY"
+    assert rep["status"] == "PASS"
+
+
+def test_checkpoint_passes_clean_evidence_and_custom_summary(plane: Any) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+    with plane.store.transaction():
+        plane.store.put(
+            "evidence",
+            {
+                "task_id": task["id"],
+                "kind": "unit",
+                "result": "PASS",
+                "exit_code": 0,
+                "command": ["pytest"],
+                "finished_at": 1.0,
+                "acceptance": [],
+            },
+        )
+    result = work.checkpoint(
+        plane, task["id"], session, reason="slice_complete", summary=["custom summary"]
+    )
+    ctx = result["context"]
+    assert ctx["failures"] == []
+    assert ctx["completed_work"] == ["custom summary"]
+
+
+def test_checkpoint_counts_only_this_task_proven_evidence(plane: Any) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+    with plane.store.transaction():
+        plane.store.put(
+            "evidence",
+            {
+                "task_id": "OTHER",
+                "kind": "unit",
+                "result": "PASS",
+                "exit_code": 0,
+                "command": ["pytest"],
+                "finished_at": 1.0,
+                "acceptance": [],
+            },
+        )
+    result = work.checkpoint(plane, task["id"], session, reason="slice_complete", summary=None)
+    assert result["context"]["completed_work"] == ["no verified work yet"]
+
+
+def test_checkpoint_multiple_proven_kinds_are_comma_separated(plane: Any) -> None:
+    started = work.start(plane, "Add a total to src/app.py")
+    task, session = started["task"], started["session"]
+    with plane.store.transaction():
+        plane.store.put(
+            "evidence",
+            {
+                "task_id": task["id"],
+                "kind": "lint",
+                "result": "PASS",
+                "exit_code": 0,
+                "command": ["ruff"],
+                "finished_at": 1.0,
+                "acceptance": [],
+            },
+        )
+        plane.store.put(
+            "evidence",
+            {
+                "task_id": task["id"],
+                "kind": "unit",
+                "result": "PASS",
+                "exit_code": 0,
+                "command": ["pytest"],
+                "finished_at": 2.0,
+                "acceptance": [],
+            },
+        )
+    # Take a first checkpoint to consume the new evidence
+    work.checkpoint(plane, task["id"], session, reason="slice_complete")
+    # Second checkpoint has no new evidence, so it formats proven_all
+    second = work.checkpoint(plane, task["id"], session, reason="slice_complete")
+    assert second["context"]["completed_work"] == ["previously verified: lint, unit"]
+
+
+def test_derive_critical_risk_decision_why_string(
+    plane: Any, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "agentic_discipline.control.work._risk",
+        lambda scope: ("CRITICAL", ["auth"]),
+    )
+    derived = work.derive(plane, "Update src/app.py")
+    critical_decision = next(d for d in derived["decisions"] if d["decision"] == "critical_risk")
+    assert critical_decision["why"] == (
+        "the project's own risk rules classify this scope as CRITICAL, which"
+        " requires explicit human acceptance: auth"
+    )
+
+
+def test_render_preserves_blank_lines_around_sections() -> None:
+    result = {
+        "state": "READY",
+        "task": {
+            "id": "T",
+            "state": "CLAIMED",
+            "objective": "obj",
+            "scope": ["src/app.py"],
+            "risk": "LOW",
+            "required_evidence": ["unit"],
+        },
+        "matched_by": "matched",
+        "session": "sess",
+        "provenance": {
+            "scope_from": "request",
+            "acceptance_from": "request",
+            "verifiers_from": "config",
+        },
+        "decisions": [{"question": "Q?", "why": "W"}],
+        "readiness": {"reasons": [{"type": "scope", "detail": "open"}]},
+        "reason": "ready",
+    }
+    rendered = work.render(result)
+    assert "\n\nDerived from:\n" in rendered
+    assert "\n\nWaiting on a decision that is yours to make:\n" in rendered
+    assert "\n\nNot ready because:\n" in rendered
+    assert "  Claimed    yes, with a lease\n" in rendered
+
+
+def test_terms_does_not_strip_surrounding_letter_x() -> None:
+    assert "xapix" in work.terms("modify XapiX now")
+
