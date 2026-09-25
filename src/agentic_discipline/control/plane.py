@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import secrets
 import shutil
 import time
@@ -22,6 +23,7 @@ from .contracts import (
     uid,
 )
 from .discovery import fingerprint, git, line_counts, link_fingerprint, scan
+from .intelligence import intelligence_snapshot
 from .knowledge import Knowledge
 from .store import Store
 
@@ -384,6 +386,14 @@ class Plane:
         reasons.extend({"type": "conflict", "id": c} for c in conflicts)
         if task.get("blocker"):
             reasons.append({"type": "human", "reason": task["blocker"]})
+        intelligence = intelligence_snapshot(self.root, task_id)
+        reasons.extend(intelligence["reasons"])
+        for constraint in intelligence["constraints"]:
+            if constraint.get("normative") is True and not any(
+                re.search(rf"(?<![\w-]){re.escape(constraint['id'])}(?![\w-])", criterion)
+                for criterion in task["acceptance"]
+            ):
+                reasons.append({"type": "intelligence_constraint_unmapped", "id": constraint["id"]})
         return {
             "task_id": task_id,
             "status": "BLOCKED"
@@ -783,6 +793,9 @@ class Plane:
             "policy": self.policy(),
             "current_failures": failures,
         }
+        intelligence = intelligence_snapshot(self.root, task_id)
+        if intelligence["binding"] is not None or intelligence["reasons"]:
+            mandatory["intelligence"] = intelligence
         used = len(encode(mandatory).encode())
         require(
             type(budget) is int and used <= budget <= 1000000,

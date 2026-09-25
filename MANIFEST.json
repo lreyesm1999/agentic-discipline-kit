@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.0.0",
-  "generated_at_utc": "2026-09-24T21:25:40.202870+00:00",
+  "generated_at_utc": "2026-09-25T02:26:57.634110+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -455,8 +455,8 @@
     },
     {
       "path": "docs/v2/INTERFACES.md",
-      "sha256": "b77abf84400dbc49922db92534ea70b6037e07cd26590208efb2cd0c8311638d",
-      "bytes": 4065
+      "sha256": "be0b817bb94b3d22fcde139ed526757e6b3811e1b6366b8ddee8861c14b6fe2d",
+      "bytes": 4984
     },
     {
       "path": "docs/v2/LIMITATIONS.md",
@@ -1334,6 +1334,11 @@
       "bytes": 10484
     },
     {
+      "path": "src/agentic_discipline/control/intelligence.py",
+      "sha256": "fc981505e0d3d7203ace45307e001ffa8e864d4280b1e7e9831cc1c10b4aa627",
+      "bytes": 3860
+    },
+    {
       "path": "src/agentic_discipline/control/knowledge.py",
       "sha256": "9ee3f7c9b8a67963ad24c636aaa9ba48026316afb1756cee66f798a1703d8104",
       "bytes": 14327
@@ -1350,8 +1355,8 @@
     },
     {
       "path": "src/agentic_discipline/control/plane.py",
-      "sha256": "7a1779bd117d9f6258b4aa881b86f5b2926f0f9380c270ccc564e25068b5f636",
-      "bytes": 35269
+      "sha256": "4ebb6684ea37b53a868a17a15d117f68eac61cf20b5d4101f3ae52ecce9fa336",
+      "bytes": 36011
     },
     {
       "path": "src/agentic_discipline/control/preflight.py",
@@ -1365,8 +1370,8 @@
     },
     {
       "path": "src/agentic_discipline/control/verification.py",
-      "sha256": "9c8d231ffeca997617293d8cf2c3e7774402e58b7b2494049449ef7950ca6e95",
-      "bytes": 19110
+      "sha256": "421fb87866637eac4f7a4ae792128c7a5c8a2da671156b02c1460c7d0e13d27d",
+      "bytes": 19441
     },
     {
       "path": "src/agentic_discipline/control/work.py",
@@ -1682,6 +1687,11 @@
       "path": "tests/control/test_init_operational.py",
       "sha256": "dcbc1a07f5498383dc1ce1f9d551f0978f39101822cdd393999d10885d1fb80f",
       "bytes": 10038
+    },
+    {
+      "path": "tests/control/test_intelligence_bridge.py",
+      "sha256": "a69ad12718e1a1bb866d96fea882e3ccb6e39d1d810f55193cd41d1a2f1fd3cf",
+      "bytes": 17062
     },
     {
       "path": "tests/control/test_interfaces.py",
