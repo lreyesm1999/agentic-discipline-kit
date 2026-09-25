@@ -43,8 +43,8 @@ MUTMUT_MARKER = "mutate_only_covered_lines = true\n"
 TEST_SELECTION_MARKER = 'pytest_add_cli_args_test_selection = ["tests/"]\n'
 SHARD_TEST_SELECTION: dict[str, list[str]] = {
     "assurance": ["tests/control/"],
-    "control-work": ["tests/control/test_work_pins.py", "tests/control/test_work_logic.py", "tests/control/test_work_execution.py", "tests/control/test_work.py"],
-    "control-plane": ["tests/control/test_plane_pins.py", "tests/control/test_plane_operations.py", "tests/control/"],
+    "control-work": ["tests/control/"],
+    "control-plane": ["tests/control/"],
     "control": ["tests/control/"],
     "verifier": [
         "tests/verifier/",
@@ -55,7 +55,7 @@ SHARD_TEST_SELECTION: dict[str, list[str]] = {
         "tests/test_verifier_result_contract.py",
         "tests/control/test_verifier_inputs.py",
     ],
-    "core-readiness": ["tests/test_readiness_pins.py", "tests/test_readiness.py", "tests/test_readiness_render.py"],
+    "core-readiness": ["tests/"],
     "core": ["tests/"],
 }
 
