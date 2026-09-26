@@ -33,18 +33,13 @@ from pathlib import Path
 SHARDS: tuple[tuple[str, str], ...] = (
     ("assurance", "src/agentic_discipline/control/assurance/"),
     ("verifier", "src/agentic_discipline/verifier/"),
-    ("control-work", "src/agentic_discipline/control/work.py"),
-    ("control-plane", "src/agentic_discipline/control/plane.py"),
     ("control", "src/agentic_discipline/control/"),
-    ("core-readiness", "src/agentic_discipline/readiness.py"),
     ("core", "src/agentic_discipline/"),
 )
 MUTMUT_MARKER = "mutate_only_covered_lines = true\n"
 TEST_SELECTION_MARKER = 'pytest_add_cli_args_test_selection = ["tests/"]\n'
 SHARD_TEST_SELECTION: dict[str, list[str]] = {
     "assurance": ["tests/control/"],
-    "control-work": ["tests/control/"],
-    "control-plane": ["tests/control/"],
     "control": ["tests/control/"],
     "verifier": [
         "tests/verifier/",
@@ -55,7 +50,6 @@ SHARD_TEST_SELECTION: dict[str, list[str]] = {
         "tests/test_verifier_result_contract.py",
         "tests/control/test_verifier_inputs.py",
     ],
-    "core-readiness": ["tests/"],
     "core": ["tests/"],
 }
 

@@ -87,16 +87,16 @@ jobs:
       - run: python scripts/repo_check.py
       - run: python -m agentic_discipline doctor
 
-  # Seven shards run at once. Heavy modules (work, plane, readiness) run on dedicated shards.
-  # A pull request mutates only the files its diff can affect; main and a manual run mutate
-  # each shard's whole tree. `mutation` below stays the single check: it passes only when every shard does.
+  # Four shards run at once. A pull request mutates only the files its diff can
+  # affect; main and a manual run mutate each shard's whole tree. `mutation` below
+  # stays the single check: it passes only when every shard does.
   mutation-shard:
     name: mutation (${{ matrix.shard }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shard: [assurance, control-work, control-plane, control, verifier, core-readiness, core]
+        shard: [assurance, control, verifier, core]
     steps:
       - uses: actions/checkout@v7
         with:

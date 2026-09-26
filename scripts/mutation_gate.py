@@ -589,7 +589,7 @@ def main() -> int:
                 unproven = [name for name in names if name not in equivalent]
                 reviewed, stale = review(mutants, unproven, exceptions)
         elif exceptions:
-            stale = exceptions if report.get("survived", 0) > 0 else None
+            stale = exceptions
         result = gate(report, equivalent, reviewed, stale)
     except (OSError, ValueError) as exc:
         result = {"status": "FAIL", "reason": f"Cannot read mutation evidence: {exc}"}

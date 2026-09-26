@@ -73,15 +73,8 @@ def test_shards_do_not_share_a_source_file(tmp_path: Path) -> None:
     assert owned["control"] == [
         "src/agentic_discipline/control/__init__.py",
         "src/agentic_discipline/control/api.py",
-    ]
-    assert owned["control-work"] == [
-        "src/agentic_discipline/control/work.py",
-    ]
-    assert owned["control-plane"] == [
         "src/agentic_discipline/control/plane.py",
-    ]
-    assert owned["core-readiness"] == [
-        "src/agentic_discipline/readiness.py",
+        "src/agentic_discipline/control/work.py",
     ]
     assert owned["verifier"] == [
         "src/agentic_discipline/verifier/__init__.py",
@@ -90,6 +83,7 @@ def test_shards_do_not_share_a_source_file(tmp_path: Path) -> None:
     assert owned["core"] == [
         "src/agentic_discipline/__init__.py",
         "src/agentic_discipline/cli.py",
+        "src/agentic_discipline/readiness.py",
     ]
     flat = [path for paths in owned.values() for path in paths]
     assert len(flat) == len(set(flat)) == len(SCOPE["package_files"](tmp_path))
@@ -207,9 +201,9 @@ def test_a_pull_request_without_a_base_is_refused(tmp_path: Path) -> None:
     [
         ("src/agentic_discipline/control/assurance/service.py", "assurance"),
         ("src/agentic_discipline/control/api.py", "control"),
-        ("src/agentic_discipline/control/work.py", "control-work"),
-        ("src/agentic_discipline/control/plane.py", "control-plane"),
-        ("src/agentic_discipline/readiness.py", "core-readiness"),
+        ("src/agentic_discipline/control/work.py", "control"),
+        ("src/agentic_discipline/control/plane.py", "control"),
+        ("src/agentic_discipline/readiness.py", "core"),
         ("src/agentic_discipline/verifier/executor.py", "verifier"),
         ("src/agentic_discipline/cli.py", "core"),
         ("tests/control/test_service.py", None),
