@@ -40,7 +40,7 @@ MUTMUT_MARKER = "mutate_only_covered_lines = true\n"
 TEST_SELECTION_MARKER = 'pytest_add_cli_args_test_selection = ["tests/"]\n'
 SHARD_TEST_SELECTION: dict[str, list[str]] = {
     "assurance": ["tests/control/"],
-    "control": ["tests/control/"],
+    "control": ["tests/"],
     "verifier": [
         "tests/verifier/",
         "tests/test_verifier.py",
