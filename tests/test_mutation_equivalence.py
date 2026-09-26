@@ -123,6 +123,21 @@ def _rule(tmp_path: Path, original: str, mutant: str, header: str = HEADER) -> s
             'if not dict.get("key"): return 1',
             "dict-default-empty",
         ),
+        (
+            'return word.strip(".-/")',
+            'return word.strip("XX.-/XX")',
+            "strip-chars-wrap",
+        ),
+        (
+            'provenance = result.get("provenance", {})',
+            'provenance = result.get("provenance", None)',
+            "dict-default-empty",
+        ),
+        (
+            'provenance = result.get("provenance", {})',
+            'provenance = result.get("provenance")',
+            "dict-default-empty",
+        ),
     ],
 )
 def test_each_rule_accepts_the_mutations_it_proves(
