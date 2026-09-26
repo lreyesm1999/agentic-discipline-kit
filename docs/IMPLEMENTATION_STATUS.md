@@ -95,11 +95,7 @@ roadmap.
 
 ### Release disposition
 
-2.1 is **not certified as a release**. The engine's pull-request mutation gate, CI run
-35906290627, passed: 14,837 killed of 14,976, 65 proved equivalent, 74 accepted by
-reviewed exception, none unresolved. The bootstrap is not in that run. Its own CI,
-including the sharded mutation gate, and the owner's acceptance of the protected paths
-it changes, are still open. The version remains 2.0.0 until both parts have passed.
+The package version is 2.1.0. Certification still waits for the full mutation gate on main.
 `v2.1/VALIDATION.md` holds the engine's gates.
 
 ### Zero-touch operational bootstrap

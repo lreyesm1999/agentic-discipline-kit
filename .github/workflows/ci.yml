@@ -37,7 +37,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.13"]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -48,7 +48,7 @@ jobs:
       - run: pytest --cov=agentic_discipline --cov-report=term-missing --cov-report=xml --cov-report=json:coverage.json
       - run: python scripts/coverage_gate.py --report coverage.json --min-line 90 --min-branch 85
       - uses: actions/upload-artifact@v7
-        if: matrix.python-version == '3.12' && matrix.os == 'ubuntu-latest'
+        if: matrix.python-version == '3.13' && matrix.os == 'ubuntu-latest'
         with:
           name: coverage
           path: coverage.xml

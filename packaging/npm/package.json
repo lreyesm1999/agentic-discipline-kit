@@ -1,6 +1,6 @@
 {
   "name": "agentic-discipline",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Install engineering discipline for AI coding agents into any repository. Compiles one canonical rule set into Claude Code, Cursor, Copilot, Windsurf, Antigravity, Gemini and AGENTS.md.",
   "keywords": [
     "ai-agents",

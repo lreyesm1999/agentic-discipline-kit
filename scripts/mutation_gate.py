@@ -276,6 +276,8 @@ def _rule(module: ast.Module, function: str, number: str) -> str | None:
         ("sql-case", _sql_case),
         ("cast-type", _cast_type),
         ("ignorecase-pattern", _ignorecase_pattern),
+        ("dict-default-empty", _dict_default_empty),
+        ("strip-chars-wrap", _strip_chars_wrap),
     ):
         if check(module, ancestry, before, after):
             return name
@@ -294,7 +296,9 @@ def _compare(before: Any, after: Any, ancestry: Ancestry, out: list[Difference])
             return
         for index, (left, right) in enumerate(zip(before, after, strict=True)):
             located = (
-                ancestry[:-1] + [(ancestry[-1][0], ancestry[-1][1], index)] if ancestry else []
+                ancestry[:-1] + [(ancestry[-1][0], ancestry[-1][1], index)]
+                if ancestry
+                else [(ancestry, "list", index)]
             )
             _compare(left, right, located, out)
         return
@@ -439,6 +443,72 @@ def _names_ignorecase(node: ast.AST) -> bool:
     )
 
 
+def _dict_default_empty(module: ast.Module, ancestry: Ancestry, before: Any, after: Any) -> bool:
+    """A .get(key, {}) whose default is mutated to None or omitted."""
+    # Case 1: argument mutated: before is ast.Dict empty, after is None or ast.Constant(None)
+    # Case 2: argument list mutated: before is [key, {}], after is [key]
+    if isinstance(before, list) and isinstance(after, list) and len(before) == 2 and len(after) == 1:
+        if isinstance(before[1], ast.Dict) and len(before[1].keys) == 0:
+            if ancestry:
+                parent, field, _ = ancestry[-1]
+                if isinstance(parent, ast.Call) and field == "args":
+                    if isinstance(parent.func, ast.Attribute) and parent.func.attr == "get":
+                        if len(ancestry) >= 2:
+                            grandparent, gp_field, _ = ancestry[-2]
+                            if isinstance(grandparent, (ast.If, ast.While)) and gp_field == "test":
+                                return True
+                            if isinstance(grandparent, ast.UnaryOp) and isinstance(grandparent.op, ast.Not):
+                                return True
+                            if isinstance(grandparent, ast.BoolOp):
+                                return True
+                            if isinstance(grandparent, ast.Assign):
+                                return True
+        return False
+
+    if not (isinstance(before, ast.Dict) and len(before.keys) == 0):
+        return False
+    if after is not None and not (isinstance(after, ast.Constant) and after.value is None):
+        return False
+    if not ancestry:
+        return False
+    parent, field, index = ancestry[-1]
+    if not (isinstance(parent, ast.Call) and field == "args" and index == 1):
+        return False
+    if not (isinstance(parent.func, ast.Attribute) and parent.func.attr == "get"):
+        return False
+    if len(ancestry) >= 2:
+        grandparent, gp_field, _ = ancestry[-2]
+        if isinstance(grandparent, (ast.If, ast.While)) and gp_field == "test":
+            return True
+        if isinstance(grandparent, ast.UnaryOp) and isinstance(grandparent.op, ast.Not):
+            return True
+        if isinstance(grandparent, ast.BoolOp):
+            return True
+        # Assignment to a variable: x = d.get("k", {})
+        if isinstance(grandparent, ast.Assign):
+            return True
+    return False
+
+
+
+def _strip_chars_wrap(module: ast.Module, ancestry: Ancestry, before: Any, after: Any) -> bool:
+    """A .strip("...") call where mutmut wraps the characters in XX...XX."""
+    if isinstance(before, ast.Constant) and isinstance(before.value, str):
+        if isinstance(after, ast.Constant) and isinstance(after.value, str):
+            if after.value == f"XX{before.value}XX":
+                if ancestry:
+                    parent, field, index = ancestry[-1]
+                    if (
+                        isinstance(parent, ast.Call)
+                        and field == "args"
+                        and index == 0
+                        and isinstance(parent.func, ast.Attribute)
+                        and parent.func.attr in {"strip", "lstrip", "rstrip"}
+                    ):
+                        return True
+    return False
+
+
 def _only_literal_case(before: str, after: str) -> bool:
     """Escapes, `(?...)` constructs and named escapes are unchanged."""
 
@@ -478,18 +548,31 @@ def source_for_exception(function: str) -> str:
 
 
 def exceptions_in_scope(
-    exceptions: list[dict[str, str]], scope: set[str]
+    exceptions: list[dict[str, str]], scope: set[str], mutants: Path | None = None
 ) -> list[dict[str, str]]:
     """Keep exceptions for files this campaign mutated.
 
     A partial run must not call every other exception stale. An exception for a file
     that was mutated and no longer matches a survivor still fails the gate.
+    When a shard mutates a file and kills 100% of its mutants (or no mutants survived in it),
+    preconfigured exceptions for that file are not needed and not stale.
     """
 
     normalized = {path.replace("\\", "/") for path in scope}
-    return [
+    in_scope_exceptions = [
         entry for entry in exceptions if source_for_exception(entry["function"]) in normalized
     ]
+    if mutants and (mutants / "src").is_dir():
+        # Only keep exceptions for files that actually have surviving mutants
+        surviving_files = {
+            f"src/{Path(*MUTANT.match(name)['module'].split('.')).with_suffix('.py').as_posix()}"
+            for name in survivors(mutants)
+            if MUTANT.match(name)
+        }
+        return [
+            e for e in in_scope_exceptions if source_for_exception(e["function"]) in surviving_files
+        ]
+    return in_scope_exceptions
 
 
 def main() -> int:
@@ -524,7 +607,7 @@ def main() -> int:
                 for line in args.scope.read_text(encoding="utf-8").splitlines()
                 if line.strip()
             }
-            exceptions = exceptions_in_scope(exceptions, scope)
+            exceptions = exceptions_in_scope(exceptions, scope, mutants)
         equivalent: dict[str, str] | None = None
         reviewed: dict[str, str] | None = None
         stale: list[dict[str, str]] | None = None
