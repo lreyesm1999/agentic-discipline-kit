@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-11-22T16:24:19.518420+00:00",
+  "generated_at_utc": "2026-11-22T17:35:33.736774+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -45,13 +45,18 @@
     },
     {
       "path": ".github/ISSUE_TEMPLATE/config.yml",
-      "sha256": "1f103c6a9dd07cd13a9a6f17ace6b813f47747eb9cb7e00488cb2073caaf91bb",
-      "bytes": 28
+      "sha256": "90ad1421cc3d85a3625a5605ca2900d1c0d077cca081a05fddfcef998d7d5cff",
+      "bytes": 676
     },
     {
       "path": ".github/ISSUE_TEMPLATE/feature.yml",
       "sha256": "6921fb1a43253b570c7bf431d121c9acd326fdac1d824a989d201f51823f483f",
       "bytes": 673
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/question.yml",
+      "sha256": "82f09f489e8ae6e20cb007a5daf42884b29b9fa46b878116c39e04362eb10330",
+      "bytes": 1110
     },
     {
       "path": ".github/dependabot.yml",
@@ -160,8 +165,8 @@
     },
     {
       "path": "SUPPORT.md",
-      "sha256": "2398b6c0bf75d18382815a2d5c4ce3342019dcd275bef01a7905b5b2b6bcad54",
-      "bytes": 259
+      "sha256": "fa61a4498e46051a5e44ec41dad6d5e416a51c7cfa57ba5e2491bb2031df4a8c",
+      "bytes": 367
     },
     {
       "path": "VERSION",
@@ -342,6 +347,16 @@
       "path": "docs/assets/agentic-discipline-hero.svg",
       "sha256": "8d8935d174b64c24867ce87723bfab0c0ac760a4b5c03d513c9e66c4b1d708cb",
       "bytes": 2836
+    },
+    {
+      "path": "docs/assets/social-preview.png",
+      "sha256": "beab8d7a251e75705510c5670b189db21f99d9747ac88fc929941be6e5800269",
+      "bytes": 413657
+    },
+    {
+      "path": "docs/assets/social-preview.svg",
+      "sha256": "24c89e764219ed4676e0c2ebabb30979c7ce38da448fe932bb7d4953f517c2bc",
+      "bytes": 3031
     },
     {
       "path": "docs/cli.md",
