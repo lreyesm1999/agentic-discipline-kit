@@ -11,7 +11,10 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   (Windows PowerShell 5.1 and 7) install `agentic-discipline` and `agentic` for the user.
   On Linux x64 and Windows x64 they download the standalone build of the latest (or a
   pinned) release and refuse to install anything that does not match the release's
-  `SHA256SUMS`; elsewhere they install from PyPI with `uv` or `pipx`. Both uninstall too.
+  `SHA256SUMS`. They run the new executables before installing them, so a build that does
+  not start (the Linux one needs glibc 2.38+) never replaces a working install; `install.sh`
+  then falls back to PyPI with `uv` or `pipx`, as it does on macOS and Linux ARM. Both
+  uninstall too.
 - **`SHA256SUMS` on every release**, covering each asset, written by the release workflow.
 
 ### Fixed

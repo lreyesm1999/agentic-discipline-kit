@@ -136,6 +136,14 @@ function Install-AgenticDiscipline {
                 throw "$asset does not contain $command; nothing was installed."
             }
         }
+        # Run the new build before it replaces anything: an install that does not start is
+        # worse than the one it would overwrite.
+        foreach ($command in $commands) {
+            $check = & (Join-Path $unpacked $command) --version 2>&1 | Select-Object -First 3
+            if ($LASTEXITCODE -ne 0) {
+                throw "The standalone $command in $asset does not run on this system; nothing was installed. $($check -join ' ')"
+            }
+        }
 
         New-Item -ItemType Directory -Path $bindir -Force | Out-Null
         foreach ($command in $commands) {

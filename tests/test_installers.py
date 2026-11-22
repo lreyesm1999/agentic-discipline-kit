@@ -85,12 +85,14 @@ def _sums(asset: str, payload: bytes) -> str:
 
 
 def _linux_archive(
-    version: str, commands: tuple[str, ...] = ("agentic-discipline", "agentic")
+    version: str,
+    commands: tuple[str, ...] = ("agentic-discipline", "agentic"),
+    body: str | None = None,
 ) -> bytes:
     buffer = io.BytesIO()
     with tarfile.open(fileobj=buffer, mode="w:gz") as archive:
         for command in commands:
-            script = f"#!/bin/sh\necho '{command} {version}'\n".encode()
+            script = ("#!/bin/sh\n" + (body or f"echo '{command} {version}'\n")).encode()
             info = tarfile.TarInfo(command)
             info.size = len(script)
             info.mode = 0o755
@@ -238,6 +240,73 @@ def test_sh_uninstall_removes_only_what_it_installed(
     assert "Nothing to remove" in _run_sh(base, bindir, "--uninstall").stdout
 
 
+_UNRUNNABLE = (
+    "echo \"libm.so.6: version 'GLIBC_2.38' not found (required by libpython3.12.so.1.0)\" >&2\n"
+    "exit 255\n"
+)
+_TOOLS = (
+    "sh awk cat chmod cp curl cut dirname gzip head mkdir mktemp mv rm sed sha256sum sort tar tr "
+    "uname"
+).split()
+
+
+def _toolbox(tmp_path: Path, **extra: str) -> str:
+    """A PATH with only the tools install.sh needs, plus fake ones: uv and pipx stay absent."""
+
+    box = tmp_path / "toolbox"
+    box.mkdir()
+    for tool in _TOOLS:
+        found = shutil.which(tool)
+        if found:
+            (box / tool).symlink_to(found)
+    for name, script in extra.items():
+        (box / name).write_text("#!/bin/sh\n" + script, encoding="utf-8")
+        (box / name).chmod(0o755)
+    return str(box)
+
+
+@linux_x64
+def test_sh_leaves_an_existing_install_alone_when_the_new_build_does_not_run(
+    release: tuple[Path, str], tmp_path: Path
+) -> None:
+    served, base = release
+    payload = _linux_archive("9.9.9", body=_UNRUNNABLE)
+    _publish(served, None, LINUX_ASSET, payload, _sums(LINUX_ASSET, payload))
+    bindir = tmp_path / "bin"
+    bindir.mkdir()
+    (bindir / "agentic-discipline").write_text("#!/bin/sh\necho 'previous'\n", encoding="utf-8")
+
+    completed = _run_sh(base, bindir, PATH=_toolbox(tmp_path))
+
+    assert completed.returncode == 1
+    assert "GLIBC_2.38" in completed.stderr
+    assert "pipx install agentic-discipline-kit" in completed.stderr
+    assert sorted(path.name for path in bindir.iterdir()) == ["agentic-discipline"]
+    assert "previous" in (bindir / "agentic-discipline").read_text(encoding="utf-8")
+
+
+@linux_x64
+def test_sh_falls_back_to_pypi_when_the_build_does_not_run(
+    release: tuple[Path, str], tmp_path: Path
+) -> None:
+    served, base = release
+    payload = _linux_archive("2.1.0", body=_UNRUNNABLE)
+    _publish(served, "v2.1.0", LINUX_ASSET, payload, _sums(LINUX_ASSET, payload))
+    calls = tmp_path / "uv-calls.txt"
+    path = _toolbox(tmp_path, uv=f'echo "$*" >> "{calls}"\n')
+    bindir = tmp_path / "bin"
+
+    completed = _run_sh(base, bindir, PATH=path, AGENTIC_DISCIPLINE_VERSION="2.1.0")
+
+    assert completed.returncode == 0, completed.stderr
+    assert "GLIBC_2.38" in completed.stdout + completed.stderr
+    assert (
+        calls.read_text(encoding="utf-8").strip()
+        == "tool install --force agentic-discipline-kit==2.1.0"
+    )
+    assert not bindir.exists()
+
+
 @pytest.mark.skipif(shutil.which("sh") is None, reason="needs a POSIX sh")
 def test_sh_rejects_an_unknown_argument(tmp_path: Path) -> None:
     completed = _run_sh("http://127.0.0.1:9", tmp_path / "bin", "--yes")
@@ -252,14 +321,16 @@ _FAKE_EXE = """
 class Program {
     static int Main(string[] args) {
         System.Console.WriteLine("NAME VERSION");
-        return 0;
+        return EXIT_CODE;
     }
 }
 """
 
 
-def _windows_archive(tmp_path: Path, version: str, commands: tuple[str, ...]) -> bytes:
-    build = tmp_path / f"build-{version}"
+def _windows_archive(
+    tmp_path: Path, version: str, commands: tuple[str, ...], exit_code: int = 0
+) -> bytes:
+    build = tmp_path / f"build-{version}-{exit_code}"
     build.mkdir(exist_ok=True)
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w") as archive:
@@ -267,7 +338,10 @@ def _windows_archive(tmp_path: Path, version: str, commands: tuple[str, ...]) ->
             name = command.removesuffix(".exe")
             source = build / f"{name}.cs"
             source.write_text(
-                _FAKE_EXE.replace("NAME VERSION", f"{name} {version}"), encoding="utf-8"
+                _FAKE_EXE.replace("NAME VERSION", f"{name} {version}").replace(
+                    "EXIT_CODE", str(exit_code)
+                ),
+                encoding="utf-8",
             )
             binary = build / command
             subprocess.run(
@@ -398,6 +472,27 @@ def test_ps1_refuses_an_archive_without_both_commands(
     assert completed.returncode != 0
     assert "does not contain agentic.exe" in completed.stdout + completed.stderr
     assert not bindir.exists()
+
+
+@windows
+def test_ps1_leaves_an_existing_install_alone_when_the_new_build_does_not_run(
+    release: tuple[Path, str], tmp_path: Path
+) -> None:
+    served, base = release
+    payload = _windows_archive(
+        tmp_path, "9.9.9", ("agentic-discipline.exe", "agentic.exe"), exit_code=3
+    )
+    _publish(served, None, WINDOWS_ASSET, payload, _sums(WINDOWS_ASSET, payload))
+    bindir = tmp_path / "bin"
+    bindir.mkdir()
+    (bindir / "agentic-discipline.exe").write_bytes(b"previous")
+
+    completed = _run_ps1(_powershells()[0], base, bindir)
+
+    assert completed.returncode != 0
+    assert "does not run on this system" in completed.stdout + completed.stderr
+    assert sorted(path.name for path in bindir.iterdir()) == ["agentic-discipline.exe"]
+    assert (bindir / "agentic-discipline.exe").read_bytes() == b"previous"
 
 
 @windows

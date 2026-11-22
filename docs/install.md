@@ -127,12 +127,16 @@ administrator rights:
 
 | Platform | Installs to | PATH |
 |---|---|---|
-| Linux x64 | `~/.local/bin` | prints the line to add when it is missing |
+| Linux x64 with glibc 2.38+ (Ubuntu 24.04, Fedora 39 and newer) | `~/.local/bin` | prints the line to add when it is missing |
 | Windows x64 (and ARM64, under emulation) | `%LOCALAPPDATA%\Programs\agentic-discipline\bin` | added to your user PATH |
-| macOS, Linux ARM | wherever `uv tool` or `pipx` puts tools | managed by that tool |
+| macOS, Linux ARM, older Linux | wherever `uv tool` or `pipx` puts tools | managed by that tool |
 
-There is no standalone build for macOS or Linux ARM yet, so there the script
-installs the package from PyPI with `uv` or `pipx`, whichever is present.
+The script runs the downloaded executables before installing them. When they
+do not start (the Linux build needs glibc 2.38 or newer, so Ubuntu 22.04,
+Debian 12 or RHEL 9 cannot run it), it prints why, installs nothing from the
+archive and falls back to PyPI. There is no standalone build for macOS or Linux
+ARM yet, so there it installs from PyPI directly. Either way it uses `uv` or
+`pipx`, whichever is present, and stops with instructions if neither is.
 
 Options are environment variables, because a piped script takes no arguments:
 

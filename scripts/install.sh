@@ -90,10 +90,10 @@ sha256() { # file
   fi
 }
 
-from_pypi() { # platform
+from_pypi() { # reason
   spec=$package
   [ -z "$version" ] || spec="$package==$version"
-  say "There is no standalone build for $1; installing $spec from PyPI."
+  say "$1; installing $spec from PyPI."
   if command -v uv >/dev/null 2>&1; then
     uv tool install --force "$spec"
   elif command -v pipx >/dev/null 2>&1; then
@@ -109,7 +109,7 @@ case "$platform" in
   Linux-x86_64 | Linux-amd64) asset=agentic-discipline-Linux-X64.tar.gz ;;
   MINGW* | MSYS* | CYGWIN*) fail "on Windows use scripts/install.ps1 from PowerShell" ;;
   *)
-    from_pypi "$platform"
+    from_pypi "There is no standalone build for $platform"
     exit 0
     ;;
 esac
@@ -143,6 +143,20 @@ mkdir "$work/unpacked"
 tar -xzf "$work/$asset" -C "$work/unpacked" || fail "could not unpack $asset"
 for command in $commands; do
   [ -f "$work/unpacked/$command" ] || fail "$asset does not contain $command; nothing was installed"
+done
+
+# Run the new build before it replaces anything: the Linux build needs a recent glibc, and
+# an install that does not start is worse than the one it would overwrite.
+for command in $commands; do
+  chmod 755 "$work/unpacked/$command"
+  if ! "$work/unpacked/$command" --version >"$work/check.log" 2>&1; then
+    {
+      say "The standalone $command in $asset does not run on this system:"
+      sed -n '1,3p' "$work/check.log" | sed 's/^/  /'
+    } >&2
+    from_pypi "Nothing was installed from $asset"
+    exit 0
+  fi
 done
 
 mkdir -p "$bindir"
