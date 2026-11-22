@@ -1,0 +1,42 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Agentic Discipline Kit</title>
+  <desc id="desc">Evidence-backed engineering controls, quality gates and protected contracts for AI coding agents.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1830"/>
+      <stop offset="0.55" stop-color="#132F4C"/>
+      <stop offset="1" stop-color="#1A5C70"/>
+    </linearGradient>
+    <linearGradient id="line" x1="760" y1="150" x2="1200" y2="470" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8FD8FF"/>
+      <stop offset="1" stop-color="#68F0C2"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1150" cy="70" r="240" fill="#4FD1C5" opacity="0.08"/>
+  <circle cx="1240" cy="560" r="280" fill="#6EA8FE" opacity="0.07"/>
+  <path d="M770 140C890 140 900 260 990 260C1080 260 1070 440 1200 440" stroke="url(#line)" stroke-width="4" opacity="0.85"/>
+  <path d="M770 260C860 260 880 180 960 180C1050 180 1060 340 1130 340C1170 340 1185 440 1200 440" stroke="url(#line)" stroke-width="2.5" opacity="0.45"/>
+  <g filter="url(#glow)">
+    <circle cx="770" cy="140" r="9" fill="#8FD8FF"/>
+    <circle cx="770" cy="260" r="9" fill="#8FD8FF"/>
+    <circle cx="990" cy="260" r="9" fill="#68F0C2"/>
+    <circle cx="1130" cy="340" r="9" fill="#68F0C2"/>
+    <circle cx="1200" cy="440" r="12" fill="#F7C873"/>
+  </g>
+  <g fill="#DCEEFF" opacity="0.6">
+    <circle cx="860" cy="90" r="2.5"/><circle cx="900" cy="470" r="2.5"/><circle cx="1060" cy="110" r="2.5"/><circle cx="1210" cy="220" r="2.5"/>
+  </g>
+  <text x="80" y="150" fill="#9FD8FF" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" letter-spacing="4">FOR AI CODING AGENTS</text>
+  <text x="80" y="240" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="700">Agentic Discipline</text>
+  <text x="80" y="326" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="700">Kit</text>
+  <text x="80" y="398" fill="#DCE9F6" font-family="Arial, Helvetica, sans-serif" font-size="32">Quality gates, protected contracts</text>
+  <text x="80" y="440" fill="#DCE9F6" font-family="Arial, Helvetica, sans-serif" font-size="32">and evidence for every change.</text>
+  <rect x="80" y="488" width="260" height="4" rx="2" fill="#68F0C2"/>
+  <text x="80" y="540" fill="#9FB9D1" font-family="Arial, Helvetica, sans-serif" font-size="22" letter-spacing="2">SPEC  /  TESTS  /  MUTATION  /  EVIDENCE</text>
+  <text x="80" y="580" fill="#7F9BB5" font-family="Consolas, Menlo, monospace" font-size="20">pip install agentic-discipline-kit</text>
+</svg>

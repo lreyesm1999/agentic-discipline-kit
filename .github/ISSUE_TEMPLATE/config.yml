@@ -1,1 +1,11 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/lreyesm1999/agentic-discipline-kit/security/advisories/new
+    about: Please report security issues privately, never in a public issue.
+  - name: Ask a question or share an idea
+    url: https://github.com/lreyesm1999/agentic-discipline-kit/discussions
+    about: Usage questions (Q&A), adoption help, adapter ideas and things you built with the kit.
+  - name: Install and adoption guide
+    url: https://github.com/lreyesm1999/agentic-discipline-kit/blob/main/docs/install.md
+    about: Installing the CLI, adopting a repository and running the first preflight.
