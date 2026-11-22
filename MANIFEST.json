@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-11-22T17:44:36.983038+00:00",
+  "generated_at_utc": "2026-11-22T17:58:46.207764+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -80,8 +80,8 @@
     },
     {
       "path": ".github/workflows/release.yml",
-      "sha256": "9ea6af48561d0b4b697f5f86d33aac3532191d30076b29fb72236c5b3879bd02",
-      "bytes": 6481
+      "sha256": "1eb0b424c1c8c34b00219322a0d96023d01d4f9ba2475caa3579d8ce3804dfbd",
+      "bytes": 7276
     },
     {
       "path": ".github/workflows/security.yml",
@@ -105,8 +105,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "77ac7e5d63ac2a752f0be9e6de972bd5bbb6c117eb0376767b3e4ae13cd65050",
-      "bytes": 27031
+      "sha256": "62f7920ac44237589ec1b0af43cd9165c591643f3597b3d07ba9315ec4a4c234",
+      "bytes": 27769
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -150,8 +150,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "578387132a037713493f7afc928cfa2a85db92f509f50b8e7227c1f3857251c6",
-      "bytes": 12156
+      "sha256": "eaded34d42a82c05db794be662379f06ccf32ab6c7f8ac8a15454c1652e85376",
+      "bytes": 12668
     },
     {
       "path": "ROADMAP.md",
@@ -370,8 +370,8 @@
     },
     {
       "path": "docs/install.md",
-      "sha256": "38b6ba0868bc5402aec12dca05991d6e8c5042562b86bbf3cdd317d09725ba5f",
-      "bytes": 6289
+      "sha256": "0cd7754b9277f68b493a43e6d5e99e1b29dd8640b6584e5376593a83af3779c4",
+      "bytes": 8469
     },
     {
       "path": "docs/payload-migration.md",
@@ -1107,6 +1107,16 @@
       "path": "scripts/coverage_gate.py",
       "sha256": "6e7f716e25d5e645be8f27bcc57d3d14372c51b921608b7a088b3aa8077df552",
       "bytes": 1379
+    },
+    {
+      "path": "scripts/install.ps1",
+      "sha256": "011ef8b5b7bf529582e0560918a81b8995ac533dba94a74a982b600a9162d615",
+      "bytes": 8933
+    },
+    {
+      "path": "scripts/install.sh",
+      "sha256": "bfcd0feb7e1aedbfb1d09829339feba0ea117f7b9f62a4e7b54f8f9516038588",
+      "bytes": 5952
     },
     {
       "path": "scripts/mutation_gate.py",
@@ -2102,6 +2112,11 @@
       "path": "tests/test_installer_output.py",
       "sha256": "5017b10f5b8c80779e3c9a3f5227161c010fcae0aecbd2e0364bfb9a5d65fbc7",
       "bytes": 10613
+    },
+    {
+      "path": "tests/test_installers.py",
+      "sha256": "c276edc6187a1e79b7d68f637cdfd2deabff5a207900041b2dd7892d7c45298c",
+      "bytes": 15026
     },
     {
       "path": "tests/test_integrity.py",
