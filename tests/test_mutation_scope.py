@@ -213,6 +213,21 @@ def test_shard_prefixes_do_not_overlap(path: str, shard: str | None) -> None:
     assert SCOPE["shard_of"](path) == shard
 
 
+@pytest.mark.parametrize(
+    ("shard", "selected"),
+    [
+        (shard, selected)
+        for shard, paths in SCOPE["SHARD_TEST_SELECTION"].items()
+        for selected in paths
+    ],
+)
+def test_every_shard_test_selection_exists(shard: str, selected: str) -> None:
+    # pytest refuses a missing path with exit code 1 before running anything, so under
+    # mutmut the whole shard fails without a single mutant tried.
+    repository = SCOPE_SCRIPT.parent.parent
+    assert (repository / selected).exists(), f"{shard} selects {selected}, which does not exist"
+
+
 def test_importing_a_submodule_does_not_expand_the_parent_package(tmp_path: Path) -> None:
     _tree(tmp_path)
     test = tmp_path / "tests/test_submodule.py"
