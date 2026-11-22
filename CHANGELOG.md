@@ -6,6 +6,16 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 
 ## [Unreleased]
 
+### Fixed
+- **`agentic adopt` and `agentic-discipline init` work on a machine without git.** Stock
+  containers and minimal servers often ship without it, and adoption already works without git
+  by walking the tree, but its repository probes still started `git` and failed with
+  `OPERATION_FAILED: [Errno 2] No such file or directory: 'git'`. Those probes now read a
+  missing git as no answer, the same as a directory outside any repository, so adoption
+  completes and the preflight names git as the gap. An operation that cannot run without git
+  now refuses with `NOT_READY` and "git is not installed or not on PATH; install git and run the
+  command again" instead of a bare errno.
+
 ## [2.1.0] - 2026-09-25
 
 ### Added

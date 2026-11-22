@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from ..bootstrap import find_contract_root
+from ..common import git_installed
 from ..profiles import detect_projects, load_profiles
 from .contracts import digest, redact, require
 
@@ -62,14 +63,23 @@ def allowed(path: Path) -> bool:
 def git(root: Path, args: list[str]) -> str:
     # Git writes UTF-8, and `ls-files -z` leaves non-ASCII paths unquoted; the locale
     # default on Windows is a legacy code page that would misread them.
-    result = subprocess.run(
-        ["git", *args],
-        cwd=root,
-        encoding="utf-8",
-        errors="replace",
-        capture_output=True,
-        timeout=30,
-    )
+    try:
+        result = subprocess.run(
+            ["git", *args],
+            cwd=root,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            timeout=30,
+        )
+    except FileNotFoundError:
+        # Git not installed (stock containers, minimal servers) is one more way for git to
+        # have no answer. Adoption works without it, so this must not crash the caller;
+        # operations that need a commit refuse on their own through `run_git`. A missing
+        # working directory raises the same error and is not this case.
+        if git_installed():
+            raise
+        return ""
     return result.stdout.strip() if result.returncode == 0 else ""
 
 
