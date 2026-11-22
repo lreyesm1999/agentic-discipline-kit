@@ -12,12 +12,19 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
   On Linux x64 and Windows x64 they download the standalone build of the latest (or a
   pinned) release and refuse to install anything that does not match the release's
   `SHA256SUMS`. They run the new executables before installing them, so a build that does
-  not start (the Linux one needs glibc 2.38+) never replaces a working install; `install.sh`
-  then falls back to PyPI with `uv` or `pipx`, as it does on macOS and Linux ARM. Both
-  uninstall too.
+  not start (glibc older than 2.28, musl, or a release up to 2.1.0 on glibc older than
+  2.38) never replaces a working install; `install.sh` then falls back to PyPI with `uv` or
+  `pipx`, as it does on macOS and Linux ARM. Both uninstall too.
 - **`SHA256SUMS` on every release**, covering each asset, written by the release workflow.
 
 ### Fixed
+- **The Linux standalone executables start on Ubuntu 22.04, Debian 12 and RHEL 8/9.** They
+  were built on the runner's Ubuntu 24.04, so the bundled `libpython3.12.so` needed
+  `GLIBC_2.38` and `npx agentic-discipline` failed there with `version 'GLIBC_2.38' not
+  found`. They are now built in a `manylinux_2_28` container and need glibc 2.28 or newer:
+  the build fails if anything bundled asks for more, and the release runs them on
+  AlmaLinux 8, Debian 12 and Ubuntu 22.04 first. Pull requests that change the release
+  build run the same build and checks, without attesting or publishing anything.
 - The `mutation (verifier)` shard selected `tests/verifier/`, which does not exist, so every
   push to `main` failed since 2026-09-24; it now selects the tests that exercise the verifier.
 

@@ -145,8 +145,8 @@ for command in $commands; do
   [ -f "$work/unpacked/$command" ] || fail "$asset does not contain $command; nothing was installed"
 done
 
-# Run the new build before it replaces anything: the Linux build needs a recent glibc, and
-# an install that does not start is worse than the one it would overwrite.
+# Run the new build before it replaces anything: the Linux build needs glibc 2.28 (2.38 up to
+# 2.1.0) and not musl, and an install that does not start is worse than the one it replaces.
 for command in $commands; do
   chmod 755 "$work/unpacked/$command"
   if ! "$work/unpacked/$command" --version >"$work/check.log" 2>&1; then

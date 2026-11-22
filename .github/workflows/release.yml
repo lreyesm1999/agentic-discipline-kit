@@ -4,15 +4,23 @@ on:
   push:
     tags:
       - "v*.*.*"
+  # A change to how the release is built gets the same build and smoke tests before it
+  # merges. Nothing is attested or published outside a tag.
+  pull_request:
+    paths:
+      - ".github/workflows/release.yml"
+      - "packaging/**"
 
 permissions:
-  contents: write
-  id-token: write
-  attestations: write
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
@@ -23,7 +31,7 @@ jobs:
       - run: python -m pip install dist/*.whl
       - run: pip-audit --format cyclonedx-json --output sbom.json
       - uses: actions/attest@v4
-        if: github.event.repository.visibility == 'public'
+        if: github.event.repository.visibility == 'public' && startsWith(github.ref, 'refs/tags/')
         with:
           subject-path: "dist/*"
       - uses: actions/upload-artifact@v7
@@ -36,6 +44,10 @@ jobs:
   standalone:
     name: Standalone ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
     strategy:
       matrix:
         # macOS is left out until CI runs the test suite there; macOS users install
@@ -43,23 +55,28 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v7
+      # The runner's own Python links against its glibc (2.39 on ubuntu-24.04), so a build
+      # made there does not start on Ubuntu 22.04, Debian 12 or RHEL 9. The manylinux_2_28
+      # image (glibc 2.28) sets the floor instead; the script builds, runs the same smoke
+      # tests and fails if anything bundled needs a newer glibc.
+      - name: Build and smoke test in manylinux_2_28 (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src             quay.io/pypa/manylinux_2_28_x86_64@sha256:55a36963bc0504cdf004011001c1072306402f0b8b83be5a5eba7068f93eec53             bash packaging/linux/build-standalone.sh "agentic-discipline-${RUNNER_OS}-${RUNNER_ARCH}.tar.gz"
+      - name: Run on the oldest supported distributions (Linux)
+        if: runner.os == 'Linux'
+        run: bash packaging/linux/smoke-old-distros.sh "agentic-discipline-${RUNNER_OS}-${RUNNER_ARCH}.tar.gz"
       - uses: actions/setup-python@v7
+        if: runner.os == 'Windows'
         with:
           python-version: "3.12"
-      - run: python -m pip install -e . pyinstaller
-      - run: pyinstaller --clean --noconfirm packaging/agentic-discipline.spec
+      - name: Build standalone executables (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          python -m pip install -e . pyinstaller
+          pyinstaller --clean --noconfirm packaging/agentic-discipline.spec
       # `agentic adopt` creates the SQLite store with its full-text index and
       # `knowledge query` searches it, so a frozen build without FTS5 fails here.
-      - name: Smoke test standalone executables (Unix)
-        if: runner.os != 'Windows'
-        run: |
-          ./dist/agentic-discipline --version
-          ./dist/agentic-discipline init --target standalone-smoke
-          ./dist/agentic --version
-          mkdir control-smoke && echo "value = 1" > control-smoke/app.py
-          ./dist/agentic adopt control-smoke --json
-          ./dist/agentic --root control-smoke knowledge query app.py --json
-          tar -czf "agentic-discipline-${RUNNER_OS}-${RUNNER_ARCH}.tar.gz" -C dist agentic-discipline agentic
       - name: Smoke test standalone executables (Windows)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -73,7 +90,7 @@ jobs:
           .\dist\agentic.exe --root control-smoke knowledge query app.py --json
           Compress-Archive -LiteralPath .\dist\agentic-discipline.exe, .\dist\agentic.exe -DestinationPath "agentic-discipline-$env:RUNNER_OS-$env:RUNNER_ARCH.zip"
       - uses: actions/attest@v4
-        if: github.event.repository.visibility == 'public'
+        if: github.event.repository.visibility == 'public' && startsWith(github.ref, 'refs/tags/')
         with:
           subject-path: "agentic-discipline-*"
       - uses: actions/upload-artifact@v7
@@ -84,6 +101,7 @@ jobs:
   pypi:
     name: Publish to PyPI
     needs: [build, standalone]
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
@@ -108,6 +126,7 @@ jobs:
   npm:
     name: Publish npm launcher
     needs: [standalone]
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     # Must match the Environment name registered on the package's trusted
     # publisher, and trusted publishing only runs on GitHub-hosted runners.
@@ -148,7 +167,10 @@ jobs:
 
   publish:
     needs: [build, standalone]
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/download-artifact@v8
         with:

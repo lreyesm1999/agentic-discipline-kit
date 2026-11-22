@@ -55,7 +55,8 @@ Its trust boundary is one trusted user on a local filesystem; see
 Each command reuses the same command already on your `PATH`, and
 otherwise downloads the standalone build for your platform once and caches it
 under `~/.cache/agentic-discipline`. Node 18 or newer. Standalone builds exist for
-Linux x64 and Windows x64; on macOS and other platforms, install with pipx below.
+Linux x64 (glibc 2.28 or newer) and Windows x64; on macOS and other platforms,
+install with pipx below.
 
 Prefer Python? `pipx install agentic-discipline-kit` provides both commands.
 
