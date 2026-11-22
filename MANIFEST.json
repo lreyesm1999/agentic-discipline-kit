@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-11-22T17:58:46.207764+00:00",
+  "generated_at_utc": "2026-11-22T18:06:57.673719+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -105,8 +105,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "62f7920ac44237589ec1b0af43cd9165c591643f3597b3d07ba9315ec4a4c234",
-      "bytes": 27769
+      "sha256": "2d987b0a176af7026575522436db0ee4d2bcd99c3521851ad651de189cc3ef7c",
+      "bytes": 27966
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -370,8 +370,8 @@
     },
     {
       "path": "docs/install.md",
-      "sha256": "0cd7754b9277f68b493a43e6d5e99e1b29dd8640b6584e5376593a83af3779c4",
-      "bytes": 8469
+      "sha256": "f263623642abaa4ba704db12d31d67d3dfda4f553dc8d3f6273359f4784e8bd8",
+      "bytes": 8842
     },
     {
       "path": "docs/payload-migration.md",
@@ -1110,13 +1110,13 @@
     },
     {
       "path": "scripts/install.ps1",
-      "sha256": "011ef8b5b7bf529582e0560918a81b8995ac533dba94a74a982b600a9162d615",
-      "bytes": 8933
+      "sha256": "ede93fd207b0adac06e9f856643946079e5b02ce996d2396533a306ff9304d18",
+      "bytes": 9402
     },
     {
       "path": "scripts/install.sh",
-      "sha256": "bfcd0feb7e1aedbfb1d09829339feba0ea117f7b9f62a4e7b54f8f9516038588",
-      "bytes": 5952
+      "sha256": "ec16ea2537189742d79653d9f817adfafc8d2b75dbea35e32f0790547d7bfe31",
+      "bytes": 6473
     },
     {
       "path": "scripts/mutation_gate.py",
@@ -2115,8 +2115,8 @@
     },
     {
       "path": "tests/test_installers.py",
-      "sha256": "c276edc6187a1e79b7d68f637cdfd2deabff5a207900041b2dd7892d7c45298c",
-      "bytes": 15026
+      "sha256": "90c0e695c0ddbe67dfd54afba8c146105619af97fa0a2be1cd528ba3158a7d42",
+      "bytes": 18429
     },
     {
       "path": "tests/test_integrity.py",
