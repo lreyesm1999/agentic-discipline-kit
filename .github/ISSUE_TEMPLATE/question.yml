@@ -1,0 +1,27 @@
+name: Question
+description: Ask how to do something, or why something behaves the way it does.
+title: "[Question]: "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open-ended questions and ideas fit better in [Discussions](https://github.com/lreyesm1999/agentic-discipline-kit/discussions).
+        Please check the [install guide](https://github.com/lreyesm1999/agentic-discipline-kit/blob/main/docs/install.md) and the [CLI reference](https://github.com/lreyesm1999/agentic-discipline-kit/blob/main/docs/cli.md) first.
+  - type: textarea
+    id: question
+    attributes:
+      label: What are you trying to do?
+      description: The goal, what you tried (commands, config) and what happened.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: output of `agentic --version`, or a commit SHA
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: OS, Python version, install method (pip, npm, standalone, Claude plugin), agent (Claude Code, Cursor, Codex, Copilot)
