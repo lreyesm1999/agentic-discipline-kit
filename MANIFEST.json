@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-11-22T16:24:19.518420+00:00",
+  "generated_at_utc": "2026-11-22T17:29:50.878670+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -90,7 +90,7 @@
     },
     {
       "path": ".pre-commit-config.yaml",
-      "sha256": "47e2bda09612e041e7263b4048a17c4ec38d8d903fb7f2e6c0c032a2526a1542",
+      "sha256": "a3b3b1ae7c23fc6d1eaefab5d3bd28c55610f7642c050fc91f7f9e0174adff27",
       "bytes": 475
     },
     {
