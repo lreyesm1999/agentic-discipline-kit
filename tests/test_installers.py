@@ -433,6 +433,34 @@ def test_ps1_installs_a_pinned_version_from_its_tag(
 
 
 @windows
+@pytest.mark.skipif(
+    not (shutil.which("powershell") and shutil.which("pwsh")), reason="needs both PowerShells"
+)
+def test_ps1_works_in_windows_powershell_started_from_pwsh(
+    release: tuple[Path, str], tmp_path: Path
+) -> None:
+    # Windows PowerShell started from pwsh inherits pwsh's PSModulePath. It then finds no
+    # Get-FileHash, and pwsh's Expand-Archive calls an overload .NET Framework lacks.
+    pwsh_module_path = subprocess.run(
+        ["pwsh", "-NoProfile", "-Command", "$env:PSModulePath"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    served, base = release
+    payload = _windows_archive(tmp_path, "9.9.9", ("agentic-discipline.exe", "agentic.exe"))
+    _publish(served, None, WINDOWS_ASSET, payload, _sums(WINDOWS_ASSET, payload))
+    bindir = tmp_path / "bin"
+
+    completed = _run_ps1("powershell", base, bindir, piped=True, PSModulePath=pwsh_module_path)
+
+    assert completed.returncode == 0, completed.stdout + completed.stderr
+    assert "Checksum verified" in completed.stdout
+    assert "Installed agentic-discipline 9.9.9" in completed.stdout
+    assert (bindir / "agentic.exe").is_file()
+
+
+@windows
 @pytest.mark.parametrize(
     ("sums", "message"),
     [

@@ -123,14 +123,24 @@ function Install-AgenticDiscipline {
             }
         }
         if (-not $expected) { throw "SHA256SUMS has no line for $asset; nothing was installed." }
-        $actual = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+        # Not Get-FileHash or Expand-Archive: Windows PowerShell 5.1 started from pwsh
+        # inherits pwsh's PSModulePath, and then one is missing and the other breaks.
+        $sha256 = [System.Security.Cryptography.SHA256]::Create()
+        $stream = [System.IO.File]::OpenRead($archive)
+        try {
+            $actual = [System.BitConverter]::ToString($sha256.ComputeHash($stream)).Replace('-', '').ToLowerInvariant()
+        } finally {
+            $stream.Dispose()
+            $sha256.Dispose()
+        }
         if ($actual -ne $expected) {
             throw "Checksum mismatch for ${asset}: expected $expected, got $actual; nothing was installed."
         }
         Write-Host "Checksum verified (SHA-256 $($actual.Substring(0, 16))...)."
 
         $unpacked = Join-Path $work 'unpacked'
-        Expand-Archive -LiteralPath $archive -DestinationPath $unpacked
+        Add-Type -AssemblyName System.IO.Compression.FileSystem
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($archive, $unpacked)
         foreach ($command in $commands) {
             if (-not (Test-Path -LiteralPath (Join-Path $unpacked $command))) {
                 throw "$asset does not contain $command; nothing was installed."
