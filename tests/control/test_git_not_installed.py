@@ -77,7 +77,9 @@ def test_a_missing_working_directory_is_not_reported_as_missing_git(
     # Git counts as installed whatever this machine has, so the test always runs the branch
     # that must re-raise. POSIX raises FileNotFoundError for a missing cwd, the same type as a missing
     # executable; Windows raises NotADirectoryError. Neither may be relabelled.
-    monkeypatch.setattr(common.shutil, "which", lambda name, *_a, **_k: f"/usr/bin/{name}")
+    monkeypatch.setattr(
+        common.shutil, "which", lambda name, *_a, **_k: "/usr/bin/git" if name == "git" else None
+    )
     assert common.git_installed()
     gone = tmp_path / "gone"
     with pytest.raises(OSError) as caught:
