@@ -71,11 +71,14 @@ def test_an_operation_that_needs_git_says_to_install_it(no_git: Path) -> None:
     assert isinstance(error, OSError)
 
 
-def test_a_missing_working_directory_is_not_reported_as_missing_git(tmp_path: Path) -> None:
-    if not common.git_installed():
-        pytest.skip("needs git installed")
-    # POSIX raises FileNotFoundError for a missing cwd, the same type as a missing
+def test_a_missing_working_directory_is_not_reported_as_missing_git(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Git counts as installed whatever this machine has, so the test always runs the branch
+    # that must re-raise. POSIX raises FileNotFoundError for a missing cwd, the same type as a missing
     # executable; Windows raises NotADirectoryError. Neither may be relabelled.
+    monkeypatch.setattr(common.shutil, "which", lambda name, *_a, **_k: f"/usr/bin/{name}")
+    assert common.git_installed()
     gone = tmp_path / "gone"
     with pytest.raises(OSError) as caught:
         run_git(["status"], cwd=gone)
