@@ -24,8 +24,8 @@ from pathlib import Path
 
 import pytest
 
-# The nearest ancestor that holds the scripts, not a fixed depth: the mutation run copies
-# tests/ into mutants/ without scripts/, as test_mutation_gate.py already allows for.
+# Search upwards rather than use parents[1]: mutmut runs this file from a copy in
+# mutants/tests/, and mutants/ has no scripts/.
 ROOT = next(
     parent
     for parent in Path(__file__).resolve().parents

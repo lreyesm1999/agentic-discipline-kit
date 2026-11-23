@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-11-23T03:13:07.442804+00:00",
+  "generated_at_utc": "2026-11-23T02:17:00.882833+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -105,8 +105,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "76074235ff0b04518e2d8b428bdab58e45449d7c2d2e6a82d6f77eb049f24abe",
-      "bytes": 29296
+      "sha256": "23e8b7c59e17ec6827dd155855173363c7251a5b82ec0fbc44d79113e2f8a2aa",
+      "bytes": 28617
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -1280,8 +1280,8 @@
     },
     {
       "path": "src/agentic_discipline/common.py",
-      "sha256": "0a33510a766db5313d0fe7c3a05f0cb31a2c7236c027a12b2fb6e3a96d45a5f5",
-      "bytes": 1908
+      "sha256": "4e5b1ff2fcdcb72442b8e98ec76c8c9f7c59a73090625d50b18f69244ab690ae",
+      "bytes": 952
     },
     {
       "path": "src/agentic_discipline/control/__init__.py",
@@ -1365,8 +1365,8 @@
     },
     {
       "path": "src/agentic_discipline/control/discovery.py",
-      "sha256": "4144850652c7aa64069dab69b1bb58120d487cc915991e07b1a55f8331d33e05",
-      "bytes": 10994
+      "sha256": "f02b75eae4a8f8c429c71ffabcd7bb74824d4f4fd36c53ef9037ee41c81ca43c",
+      "bytes": 10484
     },
     {
       "path": "src/agentic_discipline/control/intelligence.py",
@@ -1702,11 +1702,6 @@
       "path": "tests/control/test_execution.py",
       "sha256": "ac13379d7929a3bd431998ef6dc9111629fb5190e76b902f6223a7b4757c7d62",
       "bytes": 4313
-    },
-    {
-      "path": "tests/control/test_git_not_installed.py",
-      "sha256": "2499d1d0247e0747dd78fae2ffff52acc4c193a6b8be5d88ef5b5e4107a52906",
-      "bytes": 3547
     },
     {
       "path": "tests/control/test_governance.py",
@@ -2130,8 +2125,8 @@
     },
     {
       "path": "tests/test_installers.py",
-      "sha256": "bdf38152de493b9472ea1cc0740133602477ce529565c76036cb5232f5fc1521",
-      "bytes": 19876
+      "sha256": "a3f7bc6300c987a3f12439a175ec0a8557e05ca8ee1f5dbe08d2e7cf02584184",
+      "bytes": 19830
     },
     {
       "path": "tests/test_integrity.py",
