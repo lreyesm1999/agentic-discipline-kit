@@ -64,11 +64,18 @@ Run one command in your project root:
 npx agentic-discipline init
 ```
 
-*Prefer Python tooling?*
+*No Node? Install the CLI in one line, then run `agentic-discipline init`:*
 ```bash
-pipx install agentic-discipline-kit
-agentic-discipline init
+# Linux and macOS
+curl -fsSL https://raw.githubusercontent.com/lreyesm1999/agentic-discipline-kit/main/scripts/install.sh | sh
 ```
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/lreyesm1999/agentic-discipline-kit/main/scripts/install.ps1 | iex
+```
+The script checks the download against the release's `SHA256SUMS` before installing; see
+[docs/install.md](docs/install.md#the-cli-for-gates-and-ci) for options and uninstalling. With Python
+tooling, `pipx install agentic-discipline-kit` works too.
 
 *Using Claude Code?*
 ```text
