@@ -24,7 +24,13 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
+# The nearest ancestor that holds the scripts, not a fixed depth: the mutation run copies
+# tests/ into mutants/ without scripts/, as test_mutation_gate.py already allows for.
+ROOT = next(
+    parent
+    for parent in Path(__file__).resolve().parents
+    if (parent / "scripts" / "install.sh").is_file()
+)
 INSTALL_SH = ROOT / "scripts" / "install.sh"
 INSTALL_PS1 = ROOT / "scripts" / "install.ps1"
 LINUX_ASSET = "agentic-discipline-Linux-X64.tar.gz"
