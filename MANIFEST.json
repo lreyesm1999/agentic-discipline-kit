@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-11-23T01:43:01.577064+00:00",
+  "generated_at_utc": "2026-11-23T01:42:46.093847+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -80,8 +80,8 @@
     },
     {
       "path": ".github/workflows/release.yml",
-      "sha256": "1eb0b424c1c8c34b00219322a0d96023d01d4f9ba2475caa3579d8ce3804dfbd",
-      "bytes": 7276
+      "sha256": "14c6cadb7eeb39f7d50704c2c92cd9f2282bcb530c1c2ac664b28e31aaf4623b",
+      "bytes": 8397
     },
     {
       "path": ".github/workflows/security.yml",
@@ -105,8 +105,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "093b8b62a9b240784821ba456346dbd9c443ea33e2e508e2ff1a14eac773ef77",
-      "bytes": 28645
+      "sha256": "23e8b7c59e17ec6827dd155855173363c7251a5b82ec0fbc44d79113e2f8a2aa",
+      "bytes": 28617
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -370,8 +370,8 @@
     },
     {
       "path": "docs/install.md",
-      "sha256": "f263623642abaa4ba704db12d31d67d3dfda4f553dc8d3f6273359f4784e8bd8",
-      "bytes": 8842
+      "sha256": "a2ee4121b3445be2edb270d597df21d374fa910b92e194b85afe76bdd47ecb82",
+      "bytes": 9242
     },
     {
       "path": "docs/payload-migration.md",
@@ -954,9 +954,19 @@
       "bytes": 87
     },
     {
+      "path": "packaging/linux/build-standalone.sh",
+      "sha256": "c93a20e1c5455b9e4d296b98a2a67b03c6f211a08db46e4fedb5f2fd53f06be8",
+      "bytes": 3041
+    },
+    {
+      "path": "packaging/linux/smoke-old-distros.sh",
+      "sha256": "c8794932a6c120c8328b75818e3b05ce583e31da1f84fb81fe59d640b8ce4ef6",
+      "bytes": 1321
+    },
+    {
       "path": "packaging/npm/README.md",
-      "sha256": "9c28b731644b398599c4f336385422983bc3ea2b84f4247f0e8778da9217b768",
-      "bytes": 2629
+      "sha256": "43e5d1f611bffced4ab098ce0b678b9bd7fcdf1492e2c316e00de59f8ef1199a",
+      "bytes": 2651
     },
     {
       "path": "packaging/npm/bin/agentic-discipline.js",
@@ -1115,8 +1125,8 @@
     },
     {
       "path": "scripts/install.sh",
-      "sha256": "ec16ea2537189742d79653d9f817adfafc8d2b75dbea35e32f0790547d7bfe31",
-      "bytes": 6473
+      "sha256": "75e6c08412d363adba5851cf42710cd5adb36f8d402bb8aa6d6e87612f48a899",
+      "bytes": 6494
     },
     {
       "path": "scripts/mutation_gate.py",
@@ -1270,8 +1280,8 @@
     },
     {
       "path": "src/agentic_discipline/common.py",
-      "sha256": "0a33510a766db5313d0fe7c3a05f0cb31a2c7236c027a12b2fb6e3a96d45a5f5",
-      "bytes": 1908
+      "sha256": "4e5b1ff2fcdcb72442b8e98ec76c8c9f7c59a73090625d50b18f69244ab690ae",
+      "bytes": 952
     },
     {
       "path": "src/agentic_discipline/control/__init__.py",
@@ -1355,8 +1365,8 @@
     },
     {
       "path": "src/agentic_discipline/control/discovery.py",
-      "sha256": "4144850652c7aa64069dab69b1bb58120d487cc915991e07b1a55f8331d33e05",
-      "bytes": 10994
+      "sha256": "f02b75eae4a8f8c429c71ffabcd7bb74824d4f4fd36c53ef9037ee41c81ca43c",
+      "bytes": 10484
     },
     {
       "path": "src/agentic_discipline/control/intelligence.py",
@@ -1692,11 +1702,6 @@
       "path": "tests/control/test_execution.py",
       "sha256": "ac13379d7929a3bd431998ef6dc9111629fb5190e76b902f6223a7b4757c7d62",
       "bytes": 4313
-    },
-    {
-      "path": "tests/control/test_git_not_installed.py",
-      "sha256": "bc5f98d35c8f0fc939b902f65eca7f61647ad62c605d0098b33af538585b75a6",
-      "bytes": 3510
     },
     {
       "path": "tests/control/test_governance.py",
