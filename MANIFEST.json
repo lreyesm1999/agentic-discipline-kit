@@ -1,7 +1,7 @@
 {
   "name": "agentic-discipline-kit",
   "version": "2.1.0",
-  "generated_at_utc": "2026-11-22T23:19:24.279874+00:00",
+  "generated_at_utc": "2026-11-23T01:43:01.577064+00:00",
   "files": [
     {
       "path": ".agent-memory/.gitkeep",
@@ -105,8 +105,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "2d987b0a176af7026575522436db0ee4d2bcd99c3521851ad651de189cc3ef7c",
-      "bytes": 27966
+      "sha256": "093b8b62a9b240784821ba456346dbd9c443ea33e2e508e2ff1a14eac773ef77",
+      "bytes": 28645
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -1270,8 +1270,8 @@
     },
     {
       "path": "src/agentic_discipline/common.py",
-      "sha256": "4e5b1ff2fcdcb72442b8e98ec76c8c9f7c59a73090625d50b18f69244ab690ae",
-      "bytes": 952
+      "sha256": "0a33510a766db5313d0fe7c3a05f0cb31a2c7236c027a12b2fb6e3a96d45a5f5",
+      "bytes": 1908
     },
     {
       "path": "src/agentic_discipline/control/__init__.py",
@@ -1355,8 +1355,8 @@
     },
     {
       "path": "src/agentic_discipline/control/discovery.py",
-      "sha256": "f02b75eae4a8f8c429c71ffabcd7bb74824d4f4fd36c53ef9037ee41c81ca43c",
-      "bytes": 10484
+      "sha256": "4144850652c7aa64069dab69b1bb58120d487cc915991e07b1a55f8331d33e05",
+      "bytes": 10994
     },
     {
       "path": "src/agentic_discipline/control/intelligence.py",
@@ -1692,6 +1692,11 @@
       "path": "tests/control/test_execution.py",
       "sha256": "ac13379d7929a3bd431998ef6dc9111629fb5190e76b902f6223a7b4757c7d62",
       "bytes": 4313
+    },
+    {
+      "path": "tests/control/test_git_not_installed.py",
+      "sha256": "bc5f98d35c8f0fc939b902f65eca7f61647ad62c605d0098b33af538585b75a6",
+      "bytes": 3510
     },
     {
       "path": "tests/control/test_governance.py",
