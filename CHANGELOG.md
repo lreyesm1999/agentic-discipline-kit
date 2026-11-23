@@ -6,7 +6,20 @@ The format is inspired by Keep a Changelog and versions follow Semantic Versioni
 
 ## [Unreleased]
 
+### Added
+- **One-line installer.** `scripts/install.sh` (Linux, macOS) and `scripts/install.ps1`
+  (Windows PowerShell 5.1 and 7) install `agentic-discipline` and `agentic` for the user.
+  On Linux x64 and Windows x64 they download the standalone build of the latest (or a
+  pinned) release and refuse to install anything that does not match the release's
+  `SHA256SUMS`. They run the new executables before installing them, so a build that does
+  not start (the Linux one needs glibc 2.38+) never replaces a working install; `install.sh`
+  then falls back to PyPI with `uv` or `pipx`, as it does on macOS and Linux ARM. Both
+  uninstall too.
+- **`SHA256SUMS` on every release**, covering each asset, written by the release workflow.
+
 ### Fixed
+- The `mutation (verifier)` shard selected `tests/verifier/`, which does not exist, so every
+  push to `main` failed since 2026-09-24; it now selects the tests that exercise the verifier.
 - **`agentic adopt` and `agentic-discipline init` work on a machine without git.** Stock
   containers and minimal servers often ship without it, and adoption already works without git
   by walking the tree, but its repository probes still started `git` and failed with

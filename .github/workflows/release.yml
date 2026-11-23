@@ -153,6 +153,19 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           path: release-assets
+      # scripts/install.sh and scripts/install.ps1 refuse to install anything they cannot
+      # check against this file, so every asset of the release gets a line in it.
+      - name: Write SHA256SUMS
+        shell: bash
+        run: |
+          mapfile -d '' assets < <(find release-assets -type f -print0)
+          names="$(for asset in "${assets[@]}"; do basename "$asset"; done | sort)"
+          test -z "$(uniq -d <<<"$names")" || { echo "duplicate asset names: $(uniq -d <<<"$names")" >&2; exit 1; }
+          for asset in "${assets[@]}"; do
+            (cd "$(dirname "$asset")" && sha256sum "$(basename "$asset")")
+          done | sort -k2 > release-assets/SHA256SUMS
+          cat release-assets/SHA256SUMS
+          test "$(wc -l < release-assets/SHA256SUMS)" -eq "${#assets[@]}"
       - name: Publish GitHub release assets
         env:
           GH_TOKEN: ${{ github.token }}

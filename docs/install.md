@@ -106,14 +106,71 @@ tools with a single description field receive them combined, so a rule scoped by
 ## The CLI, for gates and CI
 
 The disciplines above are markdown; the deterministic checks are a program.
-Install it when you want `quality`, `verify`, `risk` or `evidence`. It installs both
-commands, `agentic-discipline` and `agentic`:
+Install it when you want `quality`, `verify`, `risk` or `evidence`, or to run
+`agentic-discipline init` without Node. One line installs both commands,
+`agentic-discipline` and `agentic`, for your user:
+
+```bash
+# Linux and macOS
+curl -fsSL https://raw.githubusercontent.com/lreyesm1999/agentic-discipline-kit/main/scripts/install.sh | sh
+```
+
+```powershell
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/lreyesm1999/agentic-discipline-kit/main/scripts/install.ps1 | iex
+```
+
+On Linux x64 and Windows x64 it downloads the standalone executables from the
+latest release, checks them against the release's `SHA256SUMS` and installs
+nothing if the checksum is missing or does not match. No Python, no sudo or
+administrator rights:
+
+| Platform | Installs to | PATH |
+|---|---|---|
+| Linux x64 with glibc 2.38+ (Ubuntu 24.04, Fedora 39 and newer) | `~/.local/bin` | prints the line to add when it is missing |
+| Windows x64 (and ARM64, under emulation) | `%LOCALAPPDATA%\Programs\agentic-discipline\bin` | added to your user PATH |
+| macOS, Linux ARM, older Linux | wherever `uv tool` or `pipx` puts tools | managed by that tool |
+
+The script runs the downloaded executables before installing them. When they
+do not start (the Linux build needs glibc 2.38 or newer, so Ubuntu 22.04,
+Debian 12 or RHEL 9 cannot run it), it prints why, installs nothing from the
+archive and falls back to PyPI. There is no standalone build for macOS or Linux
+ARM yet, so there it installs from PyPI directly. Either way it uses `uv` or
+`pipx`, whichever is present, and stops with instructions if neither is.
+
+Options are environment variables, because a piped script takes no arguments:
+
+| Variable | Effect |
+|---|---|
+| `AGENTIC_DISCIPLINE_VERSION=2.1.0` | install that release instead of the latest |
+| `AGENTIC_DISCIPLINE_INSTALL_DIR=<dir>` | put the executables somewhere else |
+| `AGENTIC_DISCIPLINE_NO_MODIFY_PATH=1` | Windows only: leave the user PATH alone |
+| `AGENTIC_DISCIPLINE_RELEASES_URL=<url>` | a mirror laid out like `.../releases` |
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lreyesm1999/agentic-discipline-kit/main/scripts/install.sh | AGENTIC_DISCIPLINE_VERSION=2.1.0 sh
+```
+
+To uninstall what the script installed:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/lreyesm1999/agentic-discipline-kit/main/scripts/install.sh | sh -s -- --uninstall
+```
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/lreyesm1999/agentic-discipline-kit/main/scripts/install.ps1))) -Uninstall
+```
+
+Prefer to read a script before running it? Download it first, then run the file:
+`sh install.sh` or `.\install.ps1`.
+
+With Python tooling instead:
 
 ```bash
 pipx install agentic-discipline-kit
 ```
 
-Alternatives: a standalone executable from
+Other options: the standalone archives from
 [Releases](https://github.com/lreyesm1999/agentic-discipline-kit/releases), a
 container built from the repository's `Dockerfile`, or the composite action,
 which installs the CLI on the runner for you:
