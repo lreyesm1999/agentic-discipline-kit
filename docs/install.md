@@ -14,8 +14,8 @@ It detects the tools present in the repository and writes each one's native
 format. Run it from the repository root. Node 18+ is the only requirement; the
 launcher reuses an `agentic-discipline` already on your `PATH` and otherwise
 downloads the standalone build for your platform once and caches it. Standalone
-builds exist for Linux x64 and Windows x64; on macOS, use `pipx install
-agentic-discipline-kit` for now.
+builds exist for Linux x64 (glibc 2.28 or newer) and Windows x64; on macOS, use
+`pipx install agentic-discipline-kit` for now.
 
 That one command is all a normal user runs. It installs the disciplines **and** makes the
 control plane operational: the project is adopted, indexed and checked, and the report ends
@@ -127,15 +127,21 @@ administrator rights:
 
 | Platform | Installs to | PATH |
 |---|---|---|
-| Linux x64 with glibc 2.38+ (Ubuntu 24.04, Fedora 39 and newer) | `~/.local/bin` | prints the line to add when it is missing |
+| Linux x64 with glibc 2.28+ (Ubuntu 20.04, Debian 10, RHEL 8 and newer) | `~/.local/bin` | prints the line to add when it is missing |
 | Windows x64 (and ARM64, under emulation) | `%LOCALAPPDATA%\Programs\agentic-discipline\bin` | added to your user PATH |
-| macOS, Linux ARM, older Linux | wherever `uv tool` or `pipx` puts tools | managed by that tool |
+| macOS, Linux ARM, musl (Alpine) or glibc older than 2.28 | wherever `uv tool` or `pipx` puts tools | managed by that tool |
+
+The Linux build is made in a `manylinux_2_28` container, fails to build if
+anything it bundles needs a glibc newer than 2.28, and runs on AlmaLinux 8,
+Debian 12 and Ubuntu 22.04 before it is released. Releases up to and including
+2.1.0 were built on Ubuntu 24.04 and need glibc 2.38, so pinning one of them on
+Ubuntu 22.04, Debian 12 or RHEL 9 takes the PyPI path below.
 
 The script runs the downloaded executables before installing them. When they
-do not start (the Linux build needs glibc 2.38 or newer, so Ubuntu 22.04,
-Debian 12 or RHEL 9 cannot run it), it prints why, installs nothing from the
-archive and falls back to PyPI. There is no standalone build for macOS or Linux
-ARM yet, so there it installs from PyPI directly. Either way it uses `uv` or
+do not start (an older or musl-based C library, or one of those older
+releases), it prints why, installs nothing from the archive and falls back to
+PyPI. There is no standalone build for macOS or Linux ARM yet, so there it
+installs from PyPI directly. Either way it uses `uv` or
 `pipx`, whichever is present, and stops with instructions if neither is.
 
 Options are environment variables, because a piped script takes no arguments:
